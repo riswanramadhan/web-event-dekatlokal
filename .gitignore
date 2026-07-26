@@ -1,0 +1,38 @@
+# dependencies
+/node_modules
+
+# Next.js
+/.next
+/out
+
+# production
+/build
+/dist
+
+# local environment files
+.env
+.env.*
+!.env.example
+
+# logs and reports
+*.log
+/coverage
+/playwright-report
+/test-results
+/.tmp-qa
+
+# editors and OS files
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+
+# generated hosting artifacts
+/.open-next
+/.vinext
+/*.tgz
+/*.tar.gz
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

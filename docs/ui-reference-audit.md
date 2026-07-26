@@ -1,0 +1,205 @@
+# Audit Referensi UI DekatLokal
+
+## Ruang lingkup
+
+Folder `referensi-ui-dekatlokal` diaudit sebagai referensi visual read-only. Folder ini berisi potongan App Router, komponen layout, komponen UI, section landing, form assessment, serta logic lama yang tidak lengkap sebagai aplikasi mandiri.
+
+File utama yang ditinjau:
+
+- `referensi-ui-dekatlokal/app/globals.css`
+- `referensi-ui-dekatlokal/app/layout.tsx`
+- `referensi-ui-dekatlokal/components/layout/PublicHeader.tsx`
+- `referensi-ui-dekatlokal/components/layout/Navbar.tsx`
+- `referensi-ui-dekatlokal/components/layout/Footer.tsx`
+- `referensi-ui-dekatlokal/components/layout/FinalCTA.tsx`
+- `referensi-ui-dekatlokal/components/ui/button.tsx`
+- `referensi-ui-dekatlokal/components/ui/input.tsx`
+- `referensi-ui-dekatlokal/components/ui/field.tsx`
+- `referensi-ui-dekatlokal/components/sections/landing/HeroSection.tsx`
+- `referensi-ui-dekatlokal/components/sections/ProcessStepsSection.tsx`
+- `referensi-ui-dekatlokal/components/sections/FaqSection.tsx`
+
+Source produksi harus dibangun mandiri di `src` dan tidak boleh mengimpor runtime dari folder referensi.
+
+## Temuan visual
+
+### Typography
+
+- Font utama: **Poppins** weight 400, 500, 600, dan 700.
+- Fallback: Geist Sans, system UI, dan Segoe UI.
+- Geist Mono dipakai terbatas untuk kicker, angka langkah, kode, dan label teknis.
+- Heading memakai tracking negatif dan line-height rapat; body memakai line-height lega.
+- Pola ukuran yang terlihat:
+  - hero H1 sekitar 30 px pada mobile, 48 px pada tablet, hingga 68 px pada desktop;
+  - section H2 sekitar 24 px pada mobile dan 36–44 px pada desktop;
+  - body 14–16 px dengan line-height sekitar 28–32 px;
+  - eyebrow/kicker 11–13 px, uppercase, tracking lebar.
+
+Adaptasi event mempertahankan hierarki tersebut, tetapi teks form dan informasi penting tidak boleh terlalu kecil.
+
+### Warna
+
+Palet utama referensi:
+
+| Token | Nilai |
+|---|---|
+| Primary | `#0255F5` |
+| Primary 50 | `#EBF1FE` |
+| Primary 100 | `#B7CFFC` |
+| Primary 200 | `#83AEFA` |
+| Primary 300 | `#4F8DF8` |
+| Primary 400 | `#1B6CF6` |
+| Primary 600 | `#0244C4` |
+| Primary 700 | `#013393` |
+| Primary 800 | `#012262` |
+| Primary 900 | `#001131` |
+
+Neutral memakai skala Tailwind dari `#FAFAFA` sampai `#0A0A0A`. Latar global cenderung putih, `#F8FBFF`, atau `#FBFDFF` dengan tint biru tipis. Warna semantic yang tersedia: success `#22C55E`, warning `#F59E0B`, error `#EF4444`, dan info `#3B82F6`.
+
+Keputusan untuk MVP:
+
+- biru `#0255F5` menjadi primary CTA, link, active state, dan aksen;
+- teks utama memakai neutral 900/950;
+- teks sekunder memakai neutral 600;
+- border memakai neutral 200 atau primary dengan opacity rendah;
+- status tidak disampaikan melalui warna saja;
+- gradient digunakan terbatas pada hero/CTA, bukan sebagai dekorasi setiap section.
+
+### Spacing dan container
+
+- Container utama umumnya `max-w-7xl` atau sekitar 80 rem.
+- Padding horizontal: 16 px mobile, 24 px tablet, dan 48 px desktop.
+- Konten hero sering dibatasi `max-w-5xl`; copy dibatasi `max-w-2xl` sampai `max-w-4xl`.
+- Jarak antar-section bertambah menurut breakpoint, sekitar 64 px mobile hingga 96–128 px desktop.
+- Grid memakai gap 16–20 px pada card rapat dan 32–56 px pada komposisi section.
+- Whitespace digunakan untuk memisahkan hierarki, bukan menambah banyak divider.
+
+### Radius dan shadow
+
+- Token radius dasar adalah `0.625rem`.
+- Input dan kontrol kecil memakai radius 8–12 px.
+- Card memakai radius 16–24 px; card editorial/FAQ sering memakai 24 px.
+- Navbar dan CTA utama memakai pill penuh.
+- Shadow biru gelap ber-opacity rendah; hover mengangkat card atau tombol sekitar 2–4 px.
+
+MVP menggunakan satu keluarga radius yang konsisten dan shadow ringan. Glass effect hanya boleh muncul terbatas pada navigasi, bukan pada seluruh card.
+
+### Button
+
+Pola referensi:
+
+- primary biru dengan teks putih;
+- CTA hero putih dengan teks biru;
+- secondary berupa outline;
+- bentuk pill untuk CTA utama;
+- tinggi interaktif minimal sekitar 40–48 px;
+- icon dapat ditempatkan dalam lingkaran terpisah;
+- hover berupa perubahan warna, shadow, dan lift ringan;
+- active state mengecil tipis;
+- focus-visible memakai ring yang jelas;
+- disabled state tidak interaktif dan opacity berkurang.
+
+Adaptasi event menetapkan target sentuh minimal 44 px, label CTA yang langsung, serta pending/disabled state untuk mencegah double submit.
+
+### Card
+
+- Surface putih atau primary-50.
+- Border neutral tipis atau primary dengan opacity rendah.
+- Radius 16–24 px.
+- Shadow `rgba(1,34,98,...)` yang halus.
+- Heading pendek, body ber-line-height lega, dan icon pada tile biru/tinted.
+- Grid berubah dari satu kolom ke dua/empat kolom sesuai ruang.
+- Hover lift digunakan hanya jika card memang interaktif.
+
+Metric card harus menyebut konteks `Target` atau `Actual`, bukan hanya menampilkan angka besar.
+
+### Navbar
+
+Referensi memakai:
+
+- header fixed di atas konten;
+- desktop navbar berbentuk pill putih/transparan dengan border dan backdrop blur;
+- active link memakai primary-50 dan primary;
+- CTA biru di sisi kanan;
+- menu mobile berubah menjadi panel collapsible;
+- kontrol menu memiliki label, `aria-expanded`, Escape handling, focus ring, dan target sentuh memadai.
+
+Adaptasi MVP memakai struktur lebih sederhana untuk platform/event. Promo bar komersial bukan bagian wajib dan tidak dibawa bila tidak relevan dengan event.
+
+### Footer
+
+- Surface putih dengan border-top beraksen primary.
+- Container mengikuti lebar navbar.
+- Desktop memakai beberapa kolom; mobile menumpuk.
+- Brand, deskripsi singkat, navigasi, kontak, legal, dan tahun dinamis.
+- Link memiliki target sentuh dan focus-visible state.
+
+Footer event mengutamakan link event, privacy, terms, `dekatlokal.com`, serta label “Powered by DekatLokal”. Kontak hanya ditampilkan setelah config resmi tersedia.
+
+### Form
+
+Referensi menyediakan pola:
+
+- `fieldset`/legend dan field group;
+- label terhubung dengan kontrol;
+- helper text;
+- error dengan `role="alert"`;
+- border dan ring untuk focus/invalid state;
+- input full-width;
+- pilihan horizontal atau vertical yang responsif.
+
+Adaptasi registration:
+
+- section form dipisahkan secara semantik;
+- field memiliki label dan helper dalam Bahasa Indonesia;
+- input mobile minimal 44 px;
+- error field dan feedback submit diumumkan;
+- multi-select dapat digunakan dengan keyboard;
+- consent memakai label eksplisit;
+- honeypot tidak mengganggu pembaca layar;
+- tidak ada PII dalam URL atau analytics.
+
+### Responsive dan motion
+
+- Breakpoint utama mengikuti `sm`, `md`, dan `lg`.
+- Navbar desktop muncul mulai `md`; mobile menu digunakan di bawahnya.
+- Grid beralih 1 → 2 → 4 kolom.
+- Padding, type scale, radius, dan visual hero mengecil di mobile.
+- `overflow-x` dicegah pada page shell.
+- Referensi menghormati `prefers-reduced-motion` dan mematikan animation/transition yang tidak penting.
+
+MVP mempertahankan motion ringan untuk hover/feedback dan tidak bergantung pada animasi untuk menyampaikan status.
+
+## Elemen yang digunakan
+
+- Poppins sebagai font utama dan mono untuk label/kode terpilih.
+- Palet primary serta neutral.
+- Container dan pola padding responsif.
+- Header pill, active link, dan mobile navigation yang accessible.
+- CTA primary/secondary dengan target sentuh memadai.
+- Card putih/tinted, border tipis, radius besar, dan shadow halus.
+- Eyebrow uppercase, heading ringkas, dan body lega.
+- Form label/helper/error yang semantik.
+- Footer responsif dengan link legal.
+- Reduced-motion support.
+
+## Elemen yang sengaja tidak digunakan
+
+- Import runtime dari `referensi-ui-dekatlokal`.
+- Auth, admin dashboard, assessment scoring, API, database, atau business logic lama.
+- Splash screen delapan detik.
+- DekatAI widget dan WhatsApp floating action button.
+- Promo komersial yang tidak berhubungan dengan event.
+- Marquee, orbit visual, animasi rail, dan decorative motion kompleks.
+- Dependency lama seperti `motion/react`, Iconify, Radix, atau shadcn hanya demi menyalin komponen.
+- Gradient, glassmorphism, shimmer, dan decorative blob berlebihan.
+- Logo, foto, testimoni, atau partner dari situs referensi sebagai klaim event.
+- Copy layanan website/UMKM dari produk lama.
+
+## Boundary implementasi
+
+- Folder referensi tidak diedit atau dihapus.
+- Aset referensi tidak otomatis dianggap berlisensi untuk event.
+- Komponen produksi dibangun ulang sesuai kebutuhan MVP.
+- Pola visual boleh diadaptasi; logic dan dependency tidak disalin tanpa alasan.
+- Pemeriksaan akhir harus memastikan tidak ada import production yang mengarah ke `referensi-ui-dekatlokal`.
