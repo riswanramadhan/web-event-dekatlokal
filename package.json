@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:open-next": "opennextjs-cloudflare build",
+    "build:open-next": "npm run build && node scripts/patch-opennext-runtime.mjs && opennextjs-cloudflare build --skipNextBuild",
     "start": "next start",
     "lint": "eslint src --max-warnings=0",
     "typecheck": "tsc --noEmit"

@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   experimental: {
     globalNotFound: true,
   },
+  output: "standalone",
   images: {
     unoptimized: true,
   },

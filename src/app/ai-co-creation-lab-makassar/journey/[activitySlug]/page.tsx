@@ -17,7 +17,6 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { EventStatusBadge } from "@/components/ui/status-badge";
 import { aiCoCreationLabEvent as event } from "@/data/events";
 import {
-  JOURNEY_ACTIVITY_SLUGS,
   getJourneyActivity,
   journeyStatusLabels,
 } from "@/data/gep-journey";
@@ -26,7 +25,7 @@ type ActivityPageProps = {
   params: Promise<{ activitySlug: string }>;
 };
 
-export const dynamicParams = false;
+export const dynamic = "force-dynamic";
 
 const statusTones = {
   planned: "neutral",
@@ -41,10 +40,6 @@ const statusIcons = {
   completed: CheckCircle,
   published: CheckCircle,
 } as const;
-
-export function generateStaticParams() {
-  return JOURNEY_ACTIVITY_SLUGS.map((activitySlug) => ({ activitySlug }));
-}
 
 export async function generateMetadata({
   params,
