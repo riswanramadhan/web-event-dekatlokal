@@ -34,7 +34,7 @@
 
 ## 4. Keputusan integritas data
 
-- Angka 16 mahasiswa, 4 UMKM, 4 tim, dan 4 solusi selalu dilabeli sebagai target/komposisi program, bukan capaian aktual.
+- Kuota 20 mahasiswa dan 5 UMKM selalu dibedakan dari jumlah hadir aktual; target tim/solusi juga tidak boleh dipresentasikan sebagai capaian.
 - Tanggal dan lokasi tetap `Belum Dikonfirmasi`.
 - Partner selain DekatLokal tidak ditampilkan sebagai partner aktif tanpa `approved: true`.
 - Nama peserta dan UMKM tidak ditampilkan.

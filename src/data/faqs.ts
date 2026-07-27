@@ -31,7 +31,7 @@ export const faqs = [
     id: "event-date-location",
     question: "Kapan dan di mana kegiatan berlangsung?",
     answer:
-      "Tanggal dan lokasi final belum dikonfirmasi. Informasi resmi akan diperbarui pada halaman event setelah penetapan selesai.",
+      "Kegiatan berlangsung pada 10 Agustus 2026 pukul 13.00–16.30 WITA di Balai Besar Pelatihan Komunikasi dan Digital Makassar (KOMDIGI).",
     category: "program",
   },
   {
@@ -45,7 +45,7 @@ export const faqs = [
     id: "registration-status",
     question: "Apakah pendaftaran sudah dibuka?",
     answer:
-      "Pendaftaran belum dibuka. Tombol aplikasi akan diaktifkan setelah jadwal dan kesiapan program dikonfirmasi.",
+      "Pendaftaran belum dibuka. Tombol aplikasi akan diaktifkan setelah kesiapan pendaftaran selesai.",
     category: "registration",
   },
   {
@@ -99,4 +99,3 @@ export function getFaqsByCategory(
 ): readonly FaqItem[] {
   return faqs.filter((faq) => faq.category === category);
 }
-

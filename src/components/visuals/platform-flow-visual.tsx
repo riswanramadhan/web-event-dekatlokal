@@ -1,15 +1,15 @@
 import {
-  BarChart3,
   CalendarCheck2,
-  FileCheck2,
+  ClipboardCheck,
+  MailCheck,
   UsersRound,
 } from "lucide-react";
 
 const steps = [
-  { label: "Halaman acara", icon: CalendarCheck2, state: "live" },
-  { label: "Pendaftaran", icon: UsersRound, state: "ready" },
-  { label: "Dokumentasi", icon: FileCheck2, state: "ready" },
-  { label: "Laporan dampak", icon: BarChart3, state: "ready" },
+  { label: "Informasi acara", icon: CalendarCheck2, state: "live" },
+  { label: "Pilih jalur", icon: UsersRound, state: "ready" },
+  { label: "Kirim aplikasi", icon: ClipboardCheck, state: "ready" },
+  { label: "Terima konfirmasi", icon: MailCheck, state: "ready" },
 ] as const;
 
 export function PlatformFlowVisual() {

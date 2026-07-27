@@ -198,7 +198,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menyusun konsep awal program, pengguna, nilai, aktivitas, output, dan indikator dampak.",
     progressDescription:
-      "Konsep awal AI Co-Creation Lab Makassar disusun dengan melibatkan target 16 mahasiswa dan 4 UMKM dalam empat tim. Setiap tim direncanakan merancang satu solusi AI sederhana berdasarkan permasalahan nyata melalui bootcamp dan co-creation selama satu hari. Canvas masih dapat berubah mengikuti hasil validasi dan partnership.",
+      "Konsep awal AI Co-Creation Lab Makassar disusun dengan kuota 20 mahasiswa dan 5 UMKM. Peserta direncanakan merancang solusi AI sederhana berdasarkan permasalahan nyata melalui bootcamp dan co-creation selama satu hari. Canvas masih dapat berubah mengikuti hasil validasi dan partnership.",
     output: [
       "Rumusan masalah dan sasaran.",
       "Value proposition program.",
@@ -553,4 +553,3 @@ export function getJourneyNavigation(slug: string): {
     next: journeyActivities[index + 1] ?? null,
   };
 }
-

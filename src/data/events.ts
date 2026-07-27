@@ -178,25 +178,26 @@ export const aiCoCreationLabEvent = {
   title: "AI Co-Creation Lab Makassar",
   tagline: "From AI Users to Local Problem Solvers",
   description:
-    "Program kolaborasi satu hari yang mempertemukan 16 mahasiswa dan 4 pelaku UMKM untuk merancang dan menguji 4 solusi berbantuan AI berdasarkan kebutuhan usaha yang nyata.",
+    "Program kolaborasi satu hari yang mempertemukan 20 mahasiswa dan 5 pelaku UMKM untuk merancang serta menguji solusi berbantuan AI berdasarkan kebutuhan usaha yang nyata.",
   featuredSummary:
-    "16 mahasiswa dan 4 UMKM berkolaborasi menciptakan solusi berbantuan AI untuk kebutuhan usaha yang nyata.",
+    "20 mahasiswa dan 5 UMKM berkolaborasi menciptakan solusi berbantuan AI untuk kebutuhan usaha yang nyata.",
   status: "draft",
   statusLabel: "Dalam Persiapan",
   registrationOpen: false,
   registrationStatus: "not_open",
   registrationStatusLabel: "Pendaftaran Belum Dibuka",
   date: {
-    value: null,
-    displayValue: "Segera Diumumkan",
-    status: "unconfirmed",
+    value: "2026-08-10",
+    displayValue: "10 Agustus 2026",
+    status: "confirmed",
   },
   location: {
-    name: null,
+    name: "Balai Besar Pelatihan Komunikasi dan Digital Makassar (KOMDIGI)",
     address: null,
     city: "Makassar",
-    displayValue: "Lokasi Belum Dikonfirmasi",
-    status: "unconfirmed",
+    displayValue:
+      "Balai Besar Pelatihan Komunikasi dan Digital Makassar (KOMDIGI)",
+    status: "confirmed",
   },
   projectPeriod: {
     value: null,
@@ -205,24 +206,24 @@ export const aiCoCreationLabEvent = {
   },
   mainActivity: {
     startTime: "13.00",
-    endTime: "15.30",
+    endTime: "16.30",
     timezone: "WITA",
-    displayTime: "13.00–15.30 WITA",
-    durationMinutes: 150,
-    format: "Satu kegiatan utama",
+    displayTime: "13.00–16.30 WITA",
+    durationMinutes: 210,
+    format: "Bootcamp dan co-creation",
   },
   heroMetrics: [
     {
       id: "students",
       label: "Mahasiswa",
-      target: 16,
+      target: 20,
       unit: "orang",
       kind: "target",
     },
     {
       id: "umkm",
       label: "UMKM",
-      target: 4,
+      target: 5,
       unit: "usaha",
       kind: "target",
     },
@@ -243,7 +244,7 @@ export const aiCoCreationLabEvent = {
   ],
   formatFacts: [
     { label: "Kegiatan utama", value: "1 sesi" },
-    { label: "Durasi pelaksanaan", value: "2,5 jam" },
+    { label: "Durasi pelaksanaan", value: "3,5 jam" },
   ],
   routes: {
     detail: eventBaseRoute,
@@ -322,7 +323,7 @@ export const aiCoCreationLabEvent = {
       eyebrow: "Ambil bagian",
       title: "Pilih peranmu dalam proses co-creation.",
       description:
-        "Pendaftaran adalah tahap aplikasi dan tidak berarti penerimaan otomatis. Status pembukaan akan diperbarui setelah jadwal program dikonfirmasi.",
+        "Pendaftaran adalah tahap aplikasi dan tidak berarti penerimaan otomatis. Status pembukaan akan diperbarui setelah kesiapan pendaftaran selesai.",
     },
   },
   problem:
@@ -370,7 +371,7 @@ export const aiCoCreationLabEvent = {
     {
       id: "student",
       label: "Mahasiswa problem solver",
-      target: 16,
+      target: 20,
       unit: "orang",
       description:
         "Berkolaborasi dalam peran problem framing, AI workflow, quality and ethics, serta dokumentasi.",
@@ -378,7 +379,7 @@ export const aiCoCreationLabEvent = {
     {
       id: "umkm",
       label: "UMKM challenge partner",
-      target: 4,
+      target: 5,
       unit: "usaha",
       description:
         "Membawa kebutuhan usaha untuk divalidasi, diuji, dan dipantau bersama tim.",
@@ -410,67 +411,25 @@ export const aiCoCreationLabEvent = {
   },
   criteria: {
     student: [
-      "Bersedia mengikuti rangkaian kegiatan sesuai jadwal yang akan dikonfirmasi.",
+      "Bersedia mengikuti rangkaian kegiatan pada 10 Agustus 2026 pukul 13.00–16.30 WITA.",
       "Bersedia bekerja dalam tim dan berinteraksi langsung dengan pelaku UMKM.",
       "Menjelaskan pengalaman AI, kemampuan utama, pilihan peran, dan ketersediaan perangkat secara jujur.",
       "Berkomitmen menjaga privasi serta memverifikasi hasil yang dibantu AI.",
     ],
     umkm: [
       "Memiliki proses usaha berulang atau kebutuhan yang ingin divalidasi bersama.",
-      "Bersedia mengikuti kegiatan penuh sesuai jadwal yang akan dikonfirmasi.",
+      "Bersedia mengikuti kegiatan penuh pada 10 Agustus 2026 pukul 13.00–16.30 WITA.",
       "Bersedia mencoba hasil dan mengikuti monitoring setelah kegiatan.",
       "Tidak membagikan identitas pelanggan, data transaksi rahasia, nomor rekening, atau informasi sensitif lainnya.",
     ],
   },
   rundown: [
     {
-      id: "opening",
-      time: "13.00–13.10",
-      title: "Pembukaan dan pre-assessment",
+      id: "main-session",
+      time: "13.00–16.30",
+      title: "Bootcamp dan AI co-creation",
       description:
-        "Orientasi singkat dan pengukuran awal pemahaman peserta.",
-    },
-    {
-      id: "bootcamp",
-      time: "13.10–13.35",
-      title: "Bootcamp AI dan responsible AI",
-      description:
-        "Pengantar penggunaan AI yang relevan, aman, dan dapat diverifikasi.",
-    },
-    {
-      id: "challenge",
-      time: "13.35–13.45",
-      title: "Penyampaian challenge UMKM",
-      description:
-        "Challenge partner menjelaskan konteks kebutuhan yang telah divalidasi.",
-    },
-    {
-      id: "co-creation",
-      time: "13.45–14.40",
-      title: "AI co-creation session",
-      description:
-        "Tim menyusun dan mencoba workflow atau prototype sederhana.",
-    },
-    {
-      id: "testing",
-      time: "14.40–15.00",
-      title: "Testing dan handover",
-      description:
-        "UMKM mencoba hasil dan tim menyampaikan panduan penggunaan.",
-    },
-    {
-      id: "demo",
-      time: "15.00–15.20",
-      title: "Demo empat tim",
-      description:
-        "Setiap tim mempresentasikan pendekatan, batasan, dan hasil uji.",
-    },
-    {
-      id: "closing",
-      time: "15.20–15.30",
-      title: "Post-assessment dan penutupan",
-      description:
-        "Pengukuran akhir, umpan balik, dan penjelasan langkah monitoring.",
+        "Rangkaian pembelajaran, perumusan masalah, co-creation, pengujian, dan penutupan. Pembagian waktu setiap sesi akan diumumkan setelah agenda final.",
     },
   ],
   partners: [
@@ -528,4 +487,3 @@ export const approvedEventPartners: readonly EventPartner[] =
 export function getEventBySlug(slug: string): EventConfig | undefined {
   return eventBySlug[slug];
 }
-

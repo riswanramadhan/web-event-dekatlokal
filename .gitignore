@@ -30,6 +30,7 @@ Thumbs.db
 # generated hosting artifacts
 /.open-next
 /.vinext
+/.wrangler
 /*.tgz
 /*.tar.gz
 

@@ -8,7 +8,7 @@ import { featuredEvent } from "@/data/events";
 export const metadata: Metadata = {
   title: "Event",
   description:
-    "Temukan event aktif dan perjalanan program yang dikelola melalui DekatLokal Event.",
+    "Temukan informasi event dan jalur pendaftaran yang tersedia melalui DekatEvent.",
   alternates: {
     canonical: "/events",
   },

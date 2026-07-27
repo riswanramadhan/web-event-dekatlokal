@@ -1,8 +1,7 @@
-import { ArrowUpRight, Mail } from "lucide-react";
+import { Globe2, Mail, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
 import { BrandLockup } from "@/components/brand/brand-lockup";
-import { platform } from "@/data/platform";
 
 const platformLinks = [
   { label: "Beranda", href: "/" },
@@ -13,9 +12,7 @@ const platformLinks = [
 
 const eventLinks = [
   { label: "AI Co-Creation Lab", href: "/ai-co-creation-lab-makassar" },
-  { label: "Perjalanan project", href: "/ai-co-creation-lab-makassar/journey" },
-  { label: "Challenges", href: "/ai-co-creation-lab-makassar/challenges" },
-  { label: "Laporan dampak", href: "/ai-co-creation-lab-makassar/impact" },
+  { label: "Informasi pendaftaran", href: "/ai-co-creation-lab-makassar/register" },
 ] as const;
 
 const footerLinkClass =
@@ -25,11 +22,11 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-slate-200 bg-white">
       <div className="page-container">
-        <div className="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.45fr_1fr_1fr_1fr] lg:py-16">
+        <div className="grid gap-10 py-12 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.9fr_1fr_1.15fr] lg:py-16">
           <div className="sm:col-span-2 lg:col-span-1">
             <BrandLockup />
             <p className="mt-4 max-w-sm text-sm leading-7 text-slate-600">
-              Kelola acara, hubungkan peserta, dan dokumentasikan dampak dalam satu rumah digital.
+              Informasi acara dan pendaftaran lokal yang lebih mudah diakses.
             </p>
           </div>
 
@@ -71,23 +68,26 @@ export function SiteFooter() {
               rel="noopener noreferrer"
               className={`${footerLinkClass} mt-3 gap-2`}
             >
+              <Globe2 className="h-4 w-4 text-brand" aria-hidden="true" />
               Kunjungi dekatlokal.com
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
             </a>
-            {platform.contact.email ? (
-              <a
-                href={`mailto:${platform.contact.email}`}
-                className={`${footerLinkClass} gap-2`}
-              >
-                <Mail className="h-4 w-4 text-brand" aria-hidden="true" />
-                {platform.contact.email}
-              </a>
-            ) : (
-              <p className="mt-1 flex min-h-10 items-center gap-2 text-sm leading-6 text-slate-500">
-                <Mail className="h-4 w-4 text-brand" aria-hidden="true" />
-                {platform.contact.statusLabel}
-              </p>
-            )}
+            <a
+              href="mailto:hello@dekatlokal.com"
+              className={`${footerLinkClass} gap-2`}
+            >
+              <Mail className="h-4 w-4 text-brand" aria-hidden="true" />
+              hello@dekatlokal.com
+            </a>
+            <a
+              href="https://wa.me/6289516335023"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${footerLinkClass} gap-2`}
+              aria-label="Hubungi DekatLokal melalui WhatsApp di 0895 1633 5023"
+            >
+              <MessageCircle className="h-4 w-4 text-brand" aria-hidden="true" />
+              0895 1633 5023
+            </a>
           </div>
         </div>
 

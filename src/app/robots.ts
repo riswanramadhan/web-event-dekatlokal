@@ -9,7 +9,14 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/api/",
+      disallow: [
+        "/api/",
+        "/ai-co-creation-lab-makassar/journey",
+        "/ai-co-creation-lab-makassar/challenges",
+        "/ai-co-creation-lab-makassar/teams",
+        "/ai-co-creation-lab-makassar/documentation",
+        "/ai-co-creation-lab-makassar/impact",
+      ],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
     host: siteUrl,

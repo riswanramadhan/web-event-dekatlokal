@@ -50,18 +50,18 @@ export interface PlatformConfig {
 }
 
 export const platform = {
-  name: "DekatLokal Event",
+  name: "DekatEvent.",
   owner: "DekatLokal",
   tagline: "Kelola Acara, Hubungkan Peserta, Ukur Dampaknya.",
   description:
-    "Platform event untuk komunitas, organisasi mahasiswa, UMKM, dan program sosial—mulai dari halaman acara dan pendaftaran hingga dokumentasi dan laporan dampak.",
+    "Platform event DekatLokal untuk menemukan informasi acara dan mendaftar melalui alur yang jelas, aman, dan ramah perangkat mobile.",
   vision:
     "Menjadi platform event lokal yang membantu penyelenggara membangun pengalaman, dokumentasi, dan dampak yang terukur.",
   primaryDomain: "event.dekatlokal.com",
   primaryColor: "#0255F5",
   mainSite: {
     href: "https://dekatlokal.com",
-    label: "Kunjungi DekatLokal",
+    label: "Kunjungi dekatlokal.com",
   },
   navigation: [
     { label: "Beranda", href: "/" },
@@ -83,22 +83,6 @@ export const platform = {
       title: "Pendaftaran yang terstruktur",
       description:
         "Jalur aplikasi dapat disesuaikan dengan peran peserta tanpa menampilkan data pribadi ke publik.",
-      status: "available",
-      statusLabel: "Tersedia pada MVP",
-    },
-    {
-      id: "journey",
-      title: "Perjalanan dan bukti project",
-      description:
-        "Setiap aktivitas memiliki URL khusus agar progres, output, dan bukti dapat ditinjau secara runtut.",
-      status: "available",
-      statusLabel: "Tersedia pada MVP",
-    },
-    {
-      id: "impact",
-      title: "Laporan dampak yang jujur",
-      description:
-        "Target dan hasil aktual dipisahkan sehingga perkembangan program dapat dibaca tanpa klaim berlebihan.",
       status: "available",
       statusLabel: "Tersedia pada MVP",
     },
@@ -146,23 +130,22 @@ export const platform = {
     },
   ],
   contact: {
-    email: null,
-    whatsapp: null,
-    status: "not_configured",
-    statusLabel: "Kontak penyelenggara belum dikonfigurasi",
+    email: "hello@dekatlokal.com",
+    whatsapp: "0895 1633 5023",
+    status: "configured",
+    statusLabel: "Kontak penyelenggara aktif",
   },
   footer: {
     description:
-      "Platform event untuk menghubungkan peserta, mengelola perjalanan kegiatan, dan melaporkan dampak.",
+      "Platform event DekatLokal untuk informasi acara dan pendaftaran yang lebih mudah diakses.",
     links: [
       { label: "Event", href: "/events" },
       { label: "Privasi", href: "/privacy" },
       { label: "Ketentuan", href: "/terms" },
-      { label: "DekatLokal", href: "https://dekatlokal.com" },
+      { label: "Kunjungi dekatlokal.com", href: "https://dekatlokal.com" },
     ],
     attribution: "Powered by DekatLokal",
   },
 } as const satisfies PlatformConfig;
 
 export const platformConfig = platform;
-

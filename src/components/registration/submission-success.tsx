@@ -15,7 +15,6 @@ type SubmissionSuccessProps = {
   submissionCode?: string;
   category?: "Mahasiswa" | "UMKM";
   eventPath: string;
-  journeyPath: string;
   registerPath: string;
 };
 
@@ -39,7 +38,6 @@ export function SubmissionSuccess({
   submissionCode,
   category,
   eventPath,
-  journeyPath,
   registerPath,
 }: SubmissionSuccessProps) {
   const [copyStatus, setCopyStatus] = useState<
@@ -168,19 +166,13 @@ export function SubmissionSuccess({
         </ol>
       </div>
 
-      <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+      <div className="mt-8 flex justify-center">
         <Link
           href={eventPath}
           className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-brand px-6 text-sm font-semibold text-white transition hover:bg-brand-600"
         >
           <Home className="h-4 w-4" aria-hidden="true" />
           Kembali ke event
-        </Link>
-        <Link
-          href={journeyPath}
-          className="inline-flex min-h-12 items-center justify-center rounded-full border border-brand-200 bg-white px-6 text-sm font-semibold text-brand transition hover:bg-brand-50"
-        >
-          Lihat perjalanan project
         </Link>
       </div>
     </section>

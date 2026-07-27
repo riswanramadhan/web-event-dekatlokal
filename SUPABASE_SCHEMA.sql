@@ -152,13 +152,13 @@ insert into public.events (
 values (
   'ai-co-creation-lab-makassar',
   'AI Co-Creation Lab Makassar',
-  'Kolaborasi 16 mahasiswa dan 4 UMKM untuk menciptakan solusi berbantuan AI bagi kebutuhan usaha yang nyata.',
+  'Kolaborasi 20 mahasiswa dan 5 UMKM untuk menciptakan solusi berbantuan AI bagi kebutuhan usaha yang nyata.',
   'draft',
   false,
-  20,
+  25,
   jsonb_build_object(
-    'target_students', 16,
-    'target_umkm', 4,
+    'target_students', 20,
+    'target_umkm', 5,
     'target_teams', 4,
     'target_solutions', 4
   )

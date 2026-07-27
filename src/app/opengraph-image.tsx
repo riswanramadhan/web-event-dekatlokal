@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "DekatLokal Event — Kelola Acara, Hubungkan Peserta, Ukur Dampaknya";
+export const alt = "DekatEvent. — AI Co-Creation Lab Makassar";
 export const size = {
   width: 1200,
   height: 630,
@@ -59,10 +59,10 @@ export default function OpenGraphImage() {
                 width: "58px",
               }}
             >
-              ↗
+              DE
             </div>
-            <div style={{ display: "flex", fontSize: "28px", fontWeight: 700 }}>
-              DekatLokal <span style={{ color: "#B7CFFC", marginLeft: "8px" }}>Event</span>
+            <div style={{ display: "flex", fontSize: "28px", fontWeight: 400 }}>
+              DekatEvent.
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -88,7 +88,7 @@ export default function OpenGraphImage() {
                 marginTop: "20px",
               }}
             >
-              Kelola Acara. Hubungkan Peserta. Ukur Dampaknya.
+              From AI Users to Local Problem Solvers.
             </div>
           </div>
         </div>
@@ -126,8 +126,8 @@ export default function OpenGraphImage() {
               width: "188px",
             }}
           >
-            <span style={{ display: "flex", fontSize: "58px", fontWeight: 800 }}>16+4</span>
-            <span style={{ display: "flex", fontSize: "17px", fontWeight: 700 }}>mahasiswa × UMKM</span>
+            <span style={{ display: "flex", fontSize: "58px", fontWeight: 800 }}>20+5</span>
+            <span style={{ display: "flex", fontSize: "17px", fontWeight: 700 }}>mahasiswa + UMKM</span>
           </div>
         </div>
       </div>

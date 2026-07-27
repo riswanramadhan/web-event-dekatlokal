@@ -1,8 +1,8 @@
-# DekatLokal Event
+# DekatEvent.
 
-DekatLokal Event adalah MVP platform event untuk halaman acara, pendaftaran, perjalanan program, dokumentasi, dan laporan dampak. Event pertama adalah **AI Co-Creation Lab Makassar** dengan tagline **From AI Users to Local Problem Solvers**.
+DekatEvent. adalah MVP platform event dari DekatLokal untuk informasi acara dan pendaftaran. Event pertama adalah **AI Co-Creation Lab Makassar** dengan tagline **From AI Users to Local Problem Solvers**.
 
-Angka 16 mahasiswa, 4 UMKM, 4 tim, dan 4 solusi adalah **target program**, bukan capaian aktual. Tanggal, lokasi, partner, peserta, evidence, testimoni, dan dampak aktual harus tetap memakai placeholder atau status yang jujur sampai datanya disetujui.
+Kuota bootcamp adalah **20 mahasiswa dan 5 UMKM**. Angka tim, solusi, peserta hadir, evidence, testimoni, dan dampak aktual tetap dibedakan sebagai target atau data aktual; data yang belum tersedia tidak boleh direkayasa.
 
 ## Lingkup MVP
 
@@ -10,8 +10,7 @@ Angka 16 mahasiswa, 4 UMKM, 4 tim, dan 4 solusi adalah **target program**, bukan
 - Landing page AI Co-Creation Lab Makassar.
 - Pendaftaran mahasiswa dan UMKM melalui server.
 - Penyimpanan pendaftaran di Supabase.
-- Journey GEP Week 1–4 dengan URL unik per aktivitas.
-- Halaman challenge, tim, dokumentasi, dan dampak.
+- URL privat GEP Week 1–4 yang hanya dapat dibuka melalui tautan langsung.
 - Halaman privasi, ketentuan, metadata, sitemap, dan robots.
 
 MVP belum mencakup payment, marketplace tiket, akun peserta, dashboard organizer, QR check-in, sertifikat, form builder, atau multi-tenant authentication.
@@ -22,6 +21,7 @@ MVP belum mencakup payment, marketplace tiket, akun peserta, dashboard organizer
 - TypeScript strict.
 - Tailwind CSS.
 - AOS dan Framer Motion untuk motion ringan dengan dukungan reduced-motion.
+- OpenNext Cloudflare adapter untuk artefak runtime Sites.
 - Supabase Postgres untuk data pendaftaran.
 - Zod untuk validasi input eksternal.
 - `next/font`, `next/image`, dan Lucide untuk aset antarmuka.
@@ -86,6 +86,7 @@ Gunakan nama variable persis seperti [`.env.example`](.env.example). Jangan pern
 | `npm run lint` | Memeriksa aturan lint. |
 | `npm run typecheck` | Menjalankan TypeScript tanpa emit. |
 | `npm run build` | Membuat production build. |
+| `npm run build:open-next` | Membuat artefak OpenNext untuk Sites/Cloudflare runtime. |
 | `npm run start` | Menjalankan production build secara lokal. |
 
 Jalankan lint, typecheck, dan build sebelum rilis. Dokumen ini tidak menyatakan hasil eksekusi perintah tersebut; hasil akhir dicatat terpisah dalam implementation summary.
@@ -102,13 +103,10 @@ Jalankan lint, typecheck, dan build sebelum rilis. Dokumen ini tidak menyatakan 
 /ai-co-creation-lab-makassar/register/student
 /ai-co-creation-lab-makassar/register/umkm
 /ai-co-creation-lab-makassar/register/success
-/ai-co-creation-lab-makassar/journey
 /ai-co-creation-lab-makassar/journey/[activitySlug]
-/ai-co-creation-lab-makassar/challenges
-/ai-co-creation-lab-makassar/teams
-/ai-co-creation-lab-makassar/documentation
-/ai-co-creation-lab-makassar/impact
 ```
+
+Index Journey serta halaman challenge, tim, dokumentasi, dan impact tidak dibuka sebagai rute publik. Activity Week 1–4 tetap tersedia melalui URL langsung, memakai `noindex`, dan tidak dimasukkan ke sitemap maupun navigasi.
 
 ## Mengubah konten
 

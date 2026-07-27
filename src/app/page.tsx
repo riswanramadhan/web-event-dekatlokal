@@ -22,7 +22,7 @@ import { platform } from "@/data/platform";
 
 export const metadata: Metadata = {
   title: {
-    absolute: "DekatLokal Event — Kelola Acara, Hubungkan Peserta, Ukur Dampaknya",
+    absolute: "DekatEvent. — Event Lokal dari DekatLokal",
   },
   description: platform.description,
   alternates: {
@@ -52,11 +52,7 @@ export default function PlatformHomePage() {
         />
         <div className="page-container relative grid min-h-[42rem] items-center gap-12 py-16 lg:grid-cols-[1.06fr_0.94fr] lg:py-24">
           <Reveal className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white/90">
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              Satu rumah digital untuk acara lokal
-            </div>
-            <p className="mt-7 text-lg font-semibold text-brand-100">{platform.name}</p>
+            <p className="text-lg font-medium text-brand-100">{platform.name}</p>
             <h1 className="mt-3 text-balance text-4xl font-semibold leading-[1.04] tracking-[-0.06em] sm:text-5xl lg:text-[4.35rem]">
               {platform.tagline}
             </h1>
@@ -85,7 +81,7 @@ export default function PlatformHomePage() {
               </span>
               <span className="inline-flex items-center gap-2">
                 <FileCheck2 className="h-4 w-4 text-brand-100" aria-hidden="true" />
-                Target dan dampak aktual dipisahkan
+                Informasi acara ditampilkan secara jujur
               </span>
             </div>
           </Reveal>
@@ -101,9 +97,9 @@ export default function PlatformHomePage() {
           <span className="hidden h-1 w-1 rounded-full bg-brand sm:block" aria-hidden="true" />
           <span>Pendaftaran</span>
           <span className="hidden h-1 w-1 rounded-full bg-brand sm:block" aria-hidden="true" />
-          <span>Journey & evidence</span>
+          <span>Agenda terarah</span>
           <span className="hidden h-1 w-1 rounded-full bg-brand sm:block" aria-hidden="true" />
-          <span>Laporan dampak</span>
+          <span>Kontak jelas</span>
         </div>
       </section>
 
@@ -117,7 +113,7 @@ export default function PlatformHomePage() {
                   Kolaborasi lokal, <span className="text-brand">hasil yang dapat ditelusuri.</span>
                 </>
               }
-              description="Event pertama menjadi proof of concept: satu halaman yang menghubungkan konteks program, aplikasi peserta, perjalanan project, dan pengukuran."
+              description="Event pertama menjadi proof of concept: satu halaman yang menghubungkan konteks program, informasi penting, dan aplikasi peserta."
             />
             <div className="mt-7 rounded-3xl border border-brand-100 bg-brand-50 p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand-700">
@@ -150,7 +146,7 @@ export default function PlatformHomePage() {
                 Event tidak berhenti di <span className="text-brand">formulir pendaftaran.</span>
               </>
             }
-            description="DekatLokal Event menyatukan hal yang biasanya tersebar di banyak tools, sambil tetap jujur tentang fitur yang belum tersedia."
+            description="DekatEvent. menyatukan informasi dan pendaftaran yang biasanya tersebar di banyak tools, sambil tetap jujur tentang fitur yang belum tersedia."
             align="center"
           />
           <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -215,7 +211,7 @@ export default function PlatformHomePage() {
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-100">Mulai dari event pertama</p>
             <h2 className="mt-4 text-balance text-3xl font-semibold leading-tight tracking-[-0.045em] sm:text-4xl">
-              Lihat bagaimana satu event dibangun dari kebutuhan hingga rencana dampak.
+              Temukan informasi inti event dan pilih jalur pendaftaran yang sesuai.
             </h2>
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:mt-0 lg:shrink-0">

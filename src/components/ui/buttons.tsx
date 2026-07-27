@@ -12,7 +12,7 @@ type ButtonLinkProps = {
 };
 
 const shared =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-55 sm:px-6";
+  "button-loop inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-55 sm:px-6";
 
 export function PrimaryButton({
   href,

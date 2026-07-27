@@ -88,7 +88,11 @@ export default function RegistrationHubPage() {
             <div className="mt-4 sm:mt-0">
               <h2
                 id="registration-availability-title"
-                className="font-semibold text-ink"
+                className={`font-semibold text-ink ${
+                  submissionsAvailable
+                    ? ""
+                    : "status-attention inline-flex rounded-full px-2 py-1"
+                }`}
               >
                 {submissionsAvailable
                   ? "Pendaftaran tersedia"

@@ -104,7 +104,6 @@ export default async function RegistrationSuccessPage({
             submissionCode={submission.submissionCode}
             category={submission.category}
             eventPath={event.routes.detail}
-            journeyPath={event.routes.journey}
             registerPath={event.routes.register}
           />
         </div>

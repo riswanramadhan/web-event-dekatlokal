@@ -23,16 +23,16 @@ const geistMono = Geist_Mono({
 });
 
 const description =
-  "Platform event untuk komunitas, organisasi mahasiswa, UMKM, dan program sosial—mulai dari halaman acara hingga laporan dampak.";
+  "Platform event DekatLokal untuk informasi acara dan pendaftaran yang jelas, aman, dan ramah perangkat mobile.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "DekatLokal Event",
-    template: "%s | DekatLokal Event",
+    default: "DekatEvent.",
+    template: "%s | DekatEvent.",
   },
   description,
-  applicationName: "DekatLokal Event",
+  applicationName: "DekatEvent.",
   authors: [{ name: "DekatLokal", url: "https://dekatlokal.com" }],
   creator: "DekatLokal",
   publisher: "DekatLokal",
@@ -43,21 +43,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "id_ID",
     url: "/",
-    siteName: "DekatLokal Event",
-    title: "DekatLokal Event",
+    siteName: "DekatEvent.",
+    title: "DekatEvent.",
     description,
     images: [
       {
         url: "/opengraph-image",
         width: 1200,
         height: 630,
-        alt: "DekatLokal Event",
+        alt: "DekatEvent.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "DekatLokal Event",
+    title: "DekatEvent.",
     description,
     images: ["/opengraph-image"],
   },

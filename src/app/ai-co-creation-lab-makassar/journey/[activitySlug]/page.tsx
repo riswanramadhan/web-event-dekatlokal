@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import {
-  ArrowLeft,
-  ArrowRight,
   CalendarClock,
   CheckCircle2,
   ChevronRight,
@@ -12,7 +10,6 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { EventSubnav } from "@/components/event/event-subnav";
 import { ActivityViewTracker } from "@/components/journey/activity-view-tracker";
 import { CopyProgressButton } from "@/components/journey/copy-progress-button";
 import { EvidenceLink } from "@/components/journey/evidence-link";
@@ -22,7 +19,6 @@ import { aiCoCreationLabEvent as event } from "@/data/events";
 import {
   JOURNEY_ACTIVITY_SLUGS,
   getJourneyActivity,
-  getJourneyNavigation,
   journeyStatusLabels,
 } from "@/data/gep-journey";
 
@@ -71,6 +67,10 @@ export async function generateMetadata({
       description: activity.shortDescription,
       url: activity.route,
     },
+    robots: {
+      index: false,
+      follow: false,
+    },
   };
 }
 
@@ -82,7 +82,6 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
     notFound();
   }
 
-  const navigation = getJourneyNavigation(activity.slug);
   const StatusIcon = statusIcons[activity.status];
 
   return (
@@ -103,9 +102,7 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
                 <ChevronRight className="h-3.5 w-3.5" />
               </li>
               <li>
-                <Link href={event.routes.journey} className="rounded hover:text-brand">
-                  Journey
-                </Link>
+                <span>Aktivitas program</span>
               </li>
               <li aria-hidden="true">
                 <ChevronRight className="h-3.5 w-3.5" />
@@ -139,9 +136,7 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
         </div>
       </section>
 
-      <EventSubnav />
-
-      <div className="page-container py-12 sm:py-16 lg:grid lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start lg:gap-12 lg:py-20">
+      <div className="page-container max-w-5xl py-12 sm:py-16 lg:py-20">
         <div className="space-y-8">
           <section
             aria-labelledby="progress-heading"
@@ -239,49 +234,6 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
           </section>
         </div>
 
-        <aside className="mt-8 lg:sticky lg:top-28 lg:mt-0">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-              Navigasi aktivitas
-            </p>
-            <div className="mt-4 space-y-3">
-              {navigation.previous ? (
-                <Link
-                  href={navigation.previous.route}
-                  className="group block rounded-2xl border border-slate-200 p-4 hover:border-brand-200 hover:bg-brand-50"
-                >
-                  <span className="flex items-center gap-2 text-xs font-semibold text-brand">
-                    <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-                    Sebelumnya
-                  </span>
-                  <span className="mt-2 block text-sm font-semibold leading-6 text-ink">
-                    {navigation.previous.title}
-                  </span>
-                </Link>
-              ) : null}
-              {navigation.next ? (
-                <Link
-                  href={navigation.next.route}
-                  className="group block rounded-2xl border border-slate-200 p-4 hover:border-brand-200 hover:bg-brand-50"
-                >
-                  <span className="flex items-center gap-2 text-xs font-semibold text-brand">
-                    Berikutnya
-                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </span>
-                  <span className="mt-2 block text-sm font-semibold leading-6 text-ink">
-                    {navigation.next.title}
-                  </span>
-                </Link>
-              ) : null}
-            </div>
-            <Link
-              href={event.routes.journey}
-              className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-brand-50 px-4 text-sm font-semibold text-brand hover:bg-brand-100"
-            >
-              Kembali ke semua aktivitas
-            </Link>
-          </div>
-        </aside>
       </div>
     </>
   );

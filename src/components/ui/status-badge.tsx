@@ -16,9 +16,16 @@ export function EventStatusBadge({
   children: React.ReactNode;
   tone?: StatusTone;
 }) {
+  const drawsAttention =
+    typeof children === "string" &&
+    (children === "Dalam Persiapan" ||
+      children === "Pendaftaran Belum Dibuka");
+
   return (
     <span
-      className={`inline-flex min-h-8 items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${tones[tone]}`}
+      className={`inline-flex min-h-8 items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold ${tones[tone]} ${
+        drawsAttention ? "status-attention" : ""
+      }`}
     >
       <Circle className="h-2.5 w-2.5 fill-current" aria-hidden="true" />
       {children}

@@ -49,7 +49,7 @@ export const impactMetrics = [
     label: "Mahasiswa terlibat",
     description: "Jumlah mahasiswa yang benar-benar mengikuti kegiatan.",
     category: "participation",
-    target: 16,
+    target: 20,
     actual: null,
     unit: "orang",
     status: "not_measured",
@@ -62,7 +62,7 @@ export const impactMetrics = [
     label: "UMKM terlibat",
     description: "Jumlah UMKM yang benar-benar mengikuti co-creation.",
     category: "participation",
-    target: 4,
+    target: 5,
     actual: null,
     unit: "usaha",
     status: "not_measured",
@@ -159,7 +159,7 @@ export const impactMetrics = [
     description:
       "Jumlah UMKM yang dapat menjalankan langkah utama dengan pendampingan.",
     category: "adoption",
-    target: 4,
+    target: 5,
     actual: null,
     unit: "usaha",
     status: "not_measured",
@@ -341,4 +341,3 @@ export function calculateAchievementRate(
 
   return Math.round((metric.actual / metric.target) * 100);
 }
-

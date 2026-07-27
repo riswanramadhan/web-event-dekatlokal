@@ -6,6 +6,7 @@ Domain target proyek adalah `event.dekatlokal.com`. Domain tersebut adalah targe
 
 - Dependency terpasang dengan npm.
 - `npm run lint`, `npm run typecheck`, dan `npm run build` dijalankan pada revision yang akan dirilis.
+- `npm run build:open-next` menghasilkan `.open-next/worker.js` untuk runtime Sites.
 - [`SUPABASE_SCHEMA.sql`](../SUPABASE_SCHEMA.sql) sudah diterapkan pada project Supabase environment tujuan.
 - Status row event dan typed config sudah selaras.
 - Tanggal, venue, partner, evidence, dan impact tetap jujur.
@@ -61,6 +62,11 @@ Repository memiliki `.openai/hosting.json` yang mengikat workspace ke project ho
 
 Jika deployment dikelola oleh automation terhubung, ikuti status dan akses yang diberikan provider. Jangan mengedit file hosting untuk mencoba mengubah URL.
 
+Project ini memakai `@opennextjs/cloudflare` karena Server Actions dan halaman
+success dinamis tidak dapat diterbitkan sebagai static export. Konfigurasi ada
+di `open-next.config.ts` dan `wrangler.jsonc`; hasil build `.open-next` tetap
+diabaikan Git dan dikemas sebagai artefak deployment dari commit yang sama.
+
 ## Deployment melalui Vercel
 
 Jika Vercel dipilih sebagai hosting provider:
@@ -97,8 +103,9 @@ Jangan menghapus record DNS lama yang tidak terkait. Verifikasi target dan host 
 Lakukan pemeriksaan berikut pada URL yang benar-benar diterbitkan:
 
 - `/`, `/events`, `/privacy`, dan `/terms`;
-- landing event dan seluruh subhalaman event;
+- landing event dan seluruh halaman pendaftaran;
 - satu activity journey valid dan satu slug tidak valid;
+- pastikan index Journey, challenge, tim, dokumentasi, dan impact mengembalikan 404;
 - sitemap, robots, favicon, canonical, Open Graph, dan heading;
 - layout pada lebar mobile 360–430 px, tablet, dan desktop;
 - keyboard navigation, visible focus, label form, dan error announcement;
@@ -109,7 +116,8 @@ Lakukan pemeriksaan berikut pada URL yang benar-benar diterbitkan:
 - tidak ada record registrasi yang dapat dibaca secara anonim;
 - tidak ada secret atau payload pendaftaran pada browser bundle/log.
 
-Jika tanggal atau lokasi belum final, pastikan Event JSON-LD tidak dirender.
+Pastikan Event JSON-LD memuat tanggal, waktu WITA, dan venue yang sudah
+dikonfirmasi tanpa mengarang alamat jalan.
 
 ## Membuka pendaftaran production
 

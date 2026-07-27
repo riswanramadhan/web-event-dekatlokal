@@ -79,6 +79,11 @@ Export `approvedEventPartners` diturunkan dari `partners[].approved`. Partner ya
 
 Setiap aktivitas harus mempertahankan slug yang stabil karena URL dapat dipakai sebagai evidence di luar situs.
 
+Index Journey tidak dibuka sebagai halaman publik. URL aktivitas hanya dibagikan
+secara langsung kepada audiens yang memerlukannya, tidak dimasukkan ke navbar
+atau sitemap, dan memakai metadata `noindex`. Jangan menambahkan kembali
+previous/next navigation atau tautan ke index tanpa keputusan produk baru.
+
 Status yang tersedia:
 
 ```text

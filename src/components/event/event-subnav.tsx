@@ -2,11 +2,7 @@ import Link from "next/link";
 
 const links = [
   { label: "Ringkasan", href: "/ai-co-creation-lab-makassar" },
-  { label: "Journey", href: "/ai-co-creation-lab-makassar/journey" },
-  { label: "Challenges", href: "/ai-co-creation-lab-makassar/challenges" },
-  { label: "Tim", href: "/ai-co-creation-lab-makassar/teams" },
-  { label: "Dokumentasi", href: "/ai-co-creation-lab-makassar/documentation" },
-  { label: "Dampak", href: "/ai-co-creation-lab-makassar/impact" },
+  { label: "Pendaftaran", href: "/ai-co-creation-lab-makassar/register" },
 ] as const;
 
 export function EventSubnav() {
