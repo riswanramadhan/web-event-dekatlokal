@@ -20,9 +20,9 @@ export const STUDENT_AI_EXPERIENCE_VALUES = [
 
 export const STUDENT_AI_EXPERIENCE_OPTIONS = [
   { value: "never", label: "Belum pernah menggunakan AI" },
-  { value: "beginner", label: "Pemula — baru mencoba beberapa kali" },
-  { value: "intermediate", label: "Menengah — cukup rutin menggunakan AI" },
-  { value: "advanced", label: "Mahir — pernah membuat workflow berbantuan AI" },
+  { value: "beginner", label: "Pemula, baru mencoba beberapa kali" },
+  { value: "intermediate", label: "Menengah, cukup rutin menggunakan AI" },
+  { value: "advanced", label: "Mahir, pernah membuat alur kerja berbantuan AI" },
 ] as const;
 
 export const STUDENT_SKILL_VALUES = [
@@ -46,7 +46,7 @@ export const STUDENT_SKILL_OPTIONS = [
   { value: "visual_design", label: "Desain visual" },
   { value: "data_analysis", label: "Analisis data" },
   { value: "prompt_engineering", label: "Prompt engineering" },
-  { value: "automation", label: "Otomasi/no-code" },
+  { value: "automation", label: "Otomasi tanpa kode" },
   { value: "documentation", label: "Dokumentasi" },
   { value: "other", label: "Kemampuan lainnya" },
 ] as const;

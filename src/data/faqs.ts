@@ -15,9 +15,9 @@ export interface FaqItem {
 export const faqs = [
   {
     id: "about-program",
-    question: "Apa itu AI Co-Creation Lab Makassar?",
+    question: "Apa itu AI Co Creation Lab Makassar?",
     answer:
-      "AI Co-Creation Lab Makassar adalah program kolaborasi satu hari yang mempertemukan mahasiswa dan pelaku UMKM untuk merancang, menguji, dan menyerahkan solusi berbantuan AI yang sederhana berdasarkan kebutuhan usaha nyata.",
+      "AI Co Creation Lab Makassar adalah program kolaborasi satu hari yang mempertemukan mahasiswa dan pelaku UMKM untuk merancang, menguji, dan menyerahkan solusi sederhana berdasarkan kebutuhan usaha nyata.",
     category: "program",
   },
   {
@@ -31,7 +31,7 @@ export const faqs = [
     id: "event-date-location",
     question: "Kapan dan di mana kegiatan berlangsung?",
     answer:
-      "Kegiatan berlangsung pada 10 Agustus 2026 pukul 13.00–16.30 WITA di Balai Besar Pelatihan Komunikasi dan Digital Makassar (KOMDIGI).",
+      "Kegiatan berlangsung pada 10 Agustus 2026 pukul 13.00 sampai 16.30 WITA di Balai Besar Pelatihan Komunikasi dan Digital Makassar (KOMDIGI).",
     category: "program",
   },
   {
@@ -73,14 +73,14 @@ export const faqs = [
     id: "umkm-ai-experience",
     question: "Apakah UMKM harus sudah memahami AI?",
     answer:
-      "Tidak harus. Program dirancang agar kebutuhan dijelaskan dengan bahasa usaha sehari-hari dan solusi dapat dicoba melalui perangkat yang tersedia.",
+      "Tidak harus. Program dirancang agar kebutuhan dijelaskan dengan bahasa usaha sehari hari dan solusi dapat dicoba melalui perangkat yang tersedia.",
     category: "umkm",
   },
   {
     id: "sensitive-data",
     question: "Data apa yang tidak boleh dibagikan?",
     answer:
-      "Jangan memasukkan nomor rekening, identitas pelanggan, data transaksi rahasia, kredensial akun, atau informasi sensitif lainnya pada formulir maupun bahan co-creation.",
+      "Jangan memasukkan nomor rekening, identitas pelanggan, data transaksi rahasia, kredensial akun, atau informasi sensitif lainnya pada formulir maupun bahan co creation.",
     category: "privacy",
   },
   {

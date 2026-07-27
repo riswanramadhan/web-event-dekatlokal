@@ -1,10 +1,10 @@
 import {
-  Building2,
-  CheckCheck,
-  Lightbulb,
-  Smartphone,
-  UsersRound,
-} from "lucide-react";
+  Building,
+  DoubleCheck,
+  Group,
+  LightBulb,
+  SmartphoneDevice,
+} from "iconoir-react";
 
 export function CoCreationVisual() {
   return (
@@ -28,25 +28,27 @@ export function CoCreationVisual() {
 
         <div className="mt-6 grid grid-cols-[1fr_auto_1fr] items-stretch gap-2 sm:gap-3">
           <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
-            <span className="grid h-9 w-9 place-items-center rounded-2xl bg-white text-brand">
-              <Building2 className="h-4.5 w-4.5" aria-hidden="true" />
-            </span>
+            <Building
+              className="h-5 w-5 text-brand"
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
             <p className="mt-3 text-xs font-semibold text-ink sm:text-sm">Kebutuhan UMKM</p>
             <p className="mt-1 text-[0.68rem] leading-5 text-slate-500">Masalah nyata, konteks usaha</p>
           </div>
 
           <div className="flex flex-col items-center justify-center gap-2" aria-hidden="true">
             <span className="h-full w-px bg-brand-100" />
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-brand text-white">
-              <Lightbulb className="h-4 w-4" />
-            </span>
+            <LightBulb className="h-5 w-5 shrink-0 text-brand" strokeWidth={1.75} />
             <span className="h-full w-px bg-brand-100" />
           </div>
 
           <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
-            <span className="grid h-9 w-9 place-items-center rounded-2xl bg-white text-brand">
-              <UsersRound className="h-4.5 w-4.5" aria-hidden="true" />
-            </span>
+            <Group
+              className="h-5 w-5 text-brand"
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
             <p className="mt-3 text-xs font-semibold text-ink sm:text-sm">Tim mahasiswa</p>
             <p className="mt-1 text-[0.68rem] leading-5 text-slate-500">4 peran saling melengkapi</p>
           </div>
@@ -55,9 +57,11 @@ export function CoCreationVisual() {
         <div className="mt-3 rounded-3xl bg-brand p-4 text-white sm:p-5">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white/14">
-                <Smartphone className="h-5 w-5" aria-hidden="true" />
-              </span>
+              <SmartphoneDevice
+                className="h-5 w-5 shrink-0 text-white"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
               <div>
                 <p className="text-sm font-semibold">Solusi siap diuji</p>
                 <p className="mt-0.5 text-[0.68rem] leading-5 text-white/70">
@@ -65,7 +69,11 @@ export function CoCreationVisual() {
                 </p>
               </div>
             </div>
-            <CheckCheck className="h-5 w-5 shrink-0 text-white" aria-hidden="true" />
+            <DoubleCheck
+              className="h-5 w-5 shrink-0 text-white"
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
           </div>
         </div>
 

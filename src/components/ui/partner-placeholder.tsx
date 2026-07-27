@@ -1,4 +1,4 @@
-import { Building2 } from "lucide-react";
+import { Building } from "iconoir-react";
 
 import { EventStatusBadge } from "@/components/ui/status-badge";
 
@@ -20,9 +20,11 @@ export function PartnerLogoPlaceholder({
       <div>
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{label}</p>
         <div className="mt-5 flex items-center gap-3">
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-brand">
-            <Building2 className="h-5 w-5" aria-hidden="true" />
-          </span>
+          <Building
+            className="h-5 w-5 shrink-0 text-brand"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
           <h3 className="font-semibold text-ink">{approved ? name : "Mitra dalam proses konfirmasi"}</h3>
         </div>
       </div>

@@ -3,11 +3,11 @@
 import {
   ArrowLeft,
   Check,
-  CheckCircle2,
-  ClipboardCopy,
+  CheckCircle,
+  Copy,
+  FileNotFound,
   Home,
-  SearchX,
-} from "lucide-react";
+} from "iconoir-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -69,9 +69,11 @@ export function SubmissionSuccess({
         aria-labelledby="missing-code-title"
         className="mx-auto max-w-2xl rounded-[2rem] border border-amber-200 bg-white p-6 text-center shadow-card sm:p-10"
       >
-        <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-amber-50 text-amber-800">
-          <SearchX className="h-7 w-7" aria-hidden="true" />
-        </span>
+        <FileNotFound
+          className="mx-auto h-8 w-8 text-amber-800"
+          strokeWidth={1.75}
+          aria-hidden="true"
+        />
         <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-amber-800">
           Kode tidak tersedia
         </p>
@@ -111,9 +113,11 @@ export function SubmissionSuccess({
       aria-labelledby="registration-success-title"
       className="mx-auto max-w-2xl rounded-[2rem] border border-emerald-200 bg-white p-6 text-center shadow-card sm:p-10"
     >
-      <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-emerald-50 text-emerald-700">
-        <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
-      </span>
+      <CheckCircle
+        className="mx-auto h-8 w-8 text-emerald-700"
+        strokeWidth={1.75}
+        aria-hidden="true"
+      />
       <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
         Pendaftaran berhasil dikirim
       </p>
@@ -144,7 +148,7 @@ export function SubmissionSuccess({
           {copyStatus === "copied" ? (
             <Check className="h-4 w-4" aria-hidden="true" />
           ) : (
-            <ClipboardCopy className="h-4 w-4" aria-hidden="true" />
+            <Copy className="h-4 w-4" aria-hidden="true" />
           )}
           {copyStatus === "copied" ? "Kode tersalin" : "Salin kode"}
         </button>

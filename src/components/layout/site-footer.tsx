@@ -1,7 +1,9 @@
-import { Globe2, Mail, MessageCircle } from "lucide-react";
+import { SiWhatsapp } from "@icons-pack/react-simple-icons";
+import { Globe, Mail } from "iconoir-react";
 import Link from "next/link";
 
 import { BrandLockup } from "@/components/brand/brand-lockup";
+import { ActiveLink } from "@/components/navigation/active-link";
 
 const platformLinks = [
   { label: "Beranda", href: "/" },
@@ -11,12 +13,12 @@ const platformLinks = [
 ] as const;
 
 const eventLinks = [
-  { label: "AI Co-Creation Lab", href: "/ai-co-creation-lab-makassar" },
+  { label: "AI Co Creation Lab", href: "/ai-co-creation-lab-makassar" },
   { label: "Informasi pendaftaran", href: "/ai-co-creation-lab-makassar/register" },
 ] as const;
 
 const footerLinkClass =
-  "inline-flex min-h-10 items-center rounded-md text-sm leading-6 text-slate-600 transition-colors hover:text-brand";
+  "inline-flex min-h-11 items-center rounded-md text-sm leading-6 text-slate-600 transition-colors hover:text-brand";
 
 export function SiteFooter() {
   return (
@@ -37,9 +39,14 @@ export function SiteFooter() {
             <ul className="mt-3">
               {platformLinks.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className={footerLinkClass}>
+                  <ActiveLink
+                    href={item.href}
+                    match={item.href === "/" ? "exact" : "prefix"}
+                    className={footerLinkClass}
+                    activeClassName="font-semibold text-brand underline decoration-2 underline-offset-4"
+                  >
                     {item.label}
-                  </Link>
+                  </ActiveLink>
                 </li>
               ))}
             </ul>
@@ -60,7 +67,7 @@ export function SiteFooter() {
             </ul>
           </nav>
 
-          <div>
+          <div className="flex flex-col items-start">
             <h2 className="text-sm font-semibold text-ink">DekatLokal</h2>
             <a
               href="https://dekatlokal.com"
@@ -68,14 +75,22 @@ export function SiteFooter() {
               rel="noopener noreferrer"
               className={`${footerLinkClass} mt-3 gap-2`}
             >
-              <Globe2 className="h-4 w-4 text-brand" aria-hidden="true" />
+              <Globe
+                className="h-4 w-4 text-brand"
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
               Kunjungi dekatlokal.com
             </a>
             <a
               href="mailto:hello@dekatlokal.com"
               className={`${footerLinkClass} gap-2`}
             >
-              <Mail className="h-4 w-4 text-brand" aria-hidden="true" />
+              <Mail
+                className="h-4 w-4 text-brand"
+                strokeWidth={1.8}
+                aria-hidden="true"
+              />
               hello@dekatlokal.com
             </a>
             <a
@@ -85,7 +100,11 @@ export function SiteFooter() {
               className={`${footerLinkClass} gap-2`}
               aria-label="Hubungi DekatLokal melalui WhatsApp di 0895 1633 5023"
             >
-              <MessageCircle className="h-4 w-4 text-brand" aria-hidden="true" />
+              <SiWhatsapp
+                className="h-4 w-4 text-brand"
+                color="currentColor"
+                aria-hidden="true"
+              />
               0895 1633 5023
             </a>
           </div>

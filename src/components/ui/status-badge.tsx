@@ -1,4 +1,4 @@
-import { Circle } from "lucide-react";
+import { Circle } from "iconoir-react";
 
 type StatusTone = "blue" | "green" | "amber" | "neutral";
 

@@ -47,9 +47,9 @@ export const impactMetrics = [
   {
     id: "students-involved",
     label: "Mahasiswa terlibat",
-    description: "Jumlah mahasiswa yang benar-benar mengikuti kegiatan.",
+    description: "Jumlah mahasiswa yang hadir dan mengikuti kegiatan.",
     category: "participation",
-    target: 20,
+    target: 16,
     actual: null,
     unit: "orang",
     status: "not_measured",
@@ -60,9 +60,9 @@ export const impactMetrics = [
   {
     id: "umkm-involved",
     label: "UMKM terlibat",
-    description: "Jumlah UMKM yang benar-benar mengikuti co-creation.",
+    description: "Jumlah UMKM yang hadir dan mengikuti co creation.",
     category: "participation",
-    target: 5,
+    target: 4,
     actual: null,
     unit: "usaha",
     status: "not_measured",
@@ -112,9 +112,9 @@ export const impactMetrics = [
   },
   {
     id: "student-pre-test",
-    label: "Skor pre-test mahasiswa",
+    label: "Skor tes awal mahasiswa",
     description:
-      "Nilai awal pemahaman peserta sebelum bootcamp dan co-creation.",
+      "Nilai awal pemahaman peserta sebelum bootcamp dan co creation.",
     category: "learning",
     target: null,
     actual: null,
@@ -126,9 +126,9 @@ export const impactMetrics = [
   },
   {
     id: "student-post-test",
-    label: "Skor post-test mahasiswa",
+    label: "Skor tes akhir mahasiswa",
     description:
-      "Nilai pemahaman peserta setelah bootcamp dan co-creation.",
+      "Nilai pemahaman peserta setelah bootcamp dan co creation.",
     category: "learning",
     target: null,
     actual: null,
@@ -143,14 +143,14 @@ export const impactMetrics = [
     id: "students-improved",
     label: "Mahasiswa dengan peningkatan pemahaman",
     description:
-      "Jumlah mahasiswa dengan skor post-test lebih tinggi daripada pre-test.",
+      "Jumlah mahasiswa dengan skor tes akhir lebih tinggi daripada tes awal.",
     category: "learning",
     target: 12,
     actual: null,
     unit: "orang",
     status: "not_measured",
     statusLabel: "Belum Diukur",
-    measurementMethod: "Perbandingan skor pre-test dan post-test per peserta.",
+    measurementMethod: "Perbandingan skor tes awal dan tes akhir per peserta.",
     measuredAt: null,
   },
   {
@@ -159,7 +159,7 @@ export const impactMetrics = [
     description:
       "Jumlah UMKM yang dapat menjalankan langkah utama dengan pendampingan.",
     category: "adoption",
-    target: 5,
+    target: 4,
     actual: null,
     unit: "usaha",
     status: "not_measured",
@@ -200,7 +200,7 @@ export const impactMetrics = [
     id: "volunteers-involved",
     label: "Relawan terlibat",
     description:
-      "Jumlah relawan yang benar-benar membantu pelaksanaan kegiatan.",
+      "Jumlah relawan yang aktif membantu pelaksanaan kegiatan.",
     category: "network",
     target: null,
     actual: null,
@@ -229,13 +229,13 @@ export const impactMetrics = [
 export const impactMeasurementPlan = [
   {
     id: "pre-post-assessment",
-    title: "Pre-test dan post-test mahasiswa",
+    title: "Tes awal dan tes akhir mahasiswa",
     timing: "Sebelum bootcamp dan pada akhir kegiatan",
     method:
       "Gunakan indikator yang sama untuk membandingkan pemahaman awal dan akhir.",
     indicators: [
-      "Skor pre-test.",
-      "Skor post-test.",
+      "Skor tes awal.",
+      "Skor tes akhir.",
       "Jumlah mahasiswa dengan peningkatan skor.",
     ],
     status: "not_measured",
@@ -244,7 +244,7 @@ export const impactMeasurementPlan = [
   {
     id: "output-completion",
     title: "Kelengkapan workflow atau prototype",
-    timing: "Saat co-creation dan sebelum demo",
+    timing: "Saat co creation dan sebelum demo",
     method:
       "Periksa bahwa output dapat dijelaskan, memiliki batas penggunaan, dan disertai panduan.",
     indicators: [

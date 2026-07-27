@@ -1,10 +1,10 @@
 import {
   ArrowLeft,
-  CheckCircle2,
-  Info,
+  CheckCircle,
+  InfoCircle,
   ShieldAlert,
-  Store,
-} from "lucide-react";
+  Shop,
+} from "iconoir-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -16,7 +16,7 @@ import { UmkmRegistrationForm } from "./umkm-registration-form";
 
 const title = "Pendaftaran UMKM";
 const description =
-  "Daftar sebagai UMKM challenge partner untuk AI Co-Creation Lab Makassar dan ceritakan kebutuhan usaha yang ingin divalidasi bersama.";
+  "Daftar sebagai UMKM challenge partner untuk AI Co Creation Lab Makassar dan ceritakan kebutuhan usaha yang ingin divalidasi bersama.";
 
 export const metadata: Metadata = {
   title,
@@ -73,9 +73,11 @@ export default function UmkmRegistrationPage() {
             className="space-y-4 lg:sticky lg:top-28"
           >
             <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-card">
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-brand">
-                <Store className="h-5 w-5" aria-hidden="true" />
-              </span>
+              <Shop
+                className="h-7 w-7 text-brand"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
               <p className="mt-5 text-xs font-semibold uppercase tracking-[0.14em] text-brand">
                 Target program
               </p>
@@ -89,7 +91,7 @@ export default function UmkmRegistrationPage() {
 
             <div className="rounded-[1.75rem] border border-slate-200 bg-white p-6">
               <div className="flex items-center gap-2">
-                <Info className="h-4 w-4 text-brand" aria-hidden="true" />
+                <InfoCircle className="h-4 w-4 text-brand" aria-hidden="true" />
                 <h2 className="font-semibold text-ink">
                   Kriteria jalur UMKM
                 </h2>
@@ -100,7 +102,7 @@ export default function UmkmRegistrationPage() {
                     key={criterion}
                     className="flex gap-2.5 text-xs leading-6 text-slate-600"
                   >
-                    <CheckCircle2
+                    <CheckCircle
                       className="mt-1 h-4 w-4 shrink-0 text-brand"
                       aria-hidden="true"
                     />

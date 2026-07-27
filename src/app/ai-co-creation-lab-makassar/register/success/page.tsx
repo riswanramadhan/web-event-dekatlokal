@@ -1,14 +1,13 @@
-import { ChevronRight } from "lucide-react";
+import { NavArrowRight } from "iconoir-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { EventSubnav } from "@/components/event/event-subnav";
 import { SubmissionSuccess } from "@/components/registration/submission-success";
 import { aiCoCreationLabEvent as event } from "@/data/events";
 
 const title = "Konfirmasi Pendaftaran";
 const description =
-  "Konfirmasi pengiriman aplikasi AI Co-Creation Lab Makassar.";
+  "Konfirmasi pengiriman aplikasi AI Co Creation Lab Makassar.";
 const submissionCodePattern =
   /^AICL-(STU|UMK)-[23456789ABCDEFGHJKLMNPQRSTUVWXYZ]{6}$/;
 
@@ -68,11 +67,11 @@ export default async function RegistrationSuccessPage({
                   href={event.routes.detail}
                   className="rounded text-slate-600 hover:text-brand"
                 >
-                  AI Co-Creation Lab
+                  AI Co Creation Lab Makassar
                 </Link>
               </li>
               <li aria-hidden="true">
-                <ChevronRight className="h-3.5 w-3.5" />
+                <NavArrowRight className="h-3.5 w-3.5" />
               </li>
               <li>
                 <Link
@@ -83,7 +82,7 @@ export default async function RegistrationSuccessPage({
                 </Link>
               </li>
               <li aria-hidden="true">
-                <ChevronRight className="h-3.5 w-3.5" />
+                <NavArrowRight className="h-3.5 w-3.5" />
               </li>
               <li aria-current="page" className="text-slate-700">
                 Konfirmasi
@@ -92,8 +91,6 @@ export default async function RegistrationSuccessPage({
           </nav>
         </div>
       </div>
-      <EventSubnav />
-
       <main className="relative overflow-hidden bg-surface py-12 sm:py-16 lg:py-20">
         <div
           className="dot-grid absolute inset-y-0 right-0 w-1/2 opacity-35"

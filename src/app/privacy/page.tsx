@@ -7,7 +7,7 @@ import {
 } from "@/data/platform";
 
 const pageDescription =
-  "Kebijakan pemrosesan data pendaftaran, dokumentasi, akses, penyimpanan, koreksi, dan penghapusan pada DekatLokal Event.";
+  "DekatEvent mengatur pemrosesan data pendaftaran, dokumentasi, akses, penyimpanan, koreksi, dan penghapusan melalui kebijakan ini.";
 
 const contact: PlatformContact = platformConfig.contact;
 
@@ -150,7 +150,7 @@ const sections = [
           pada tahap MVP dan akan dicantumkan ketika prosedur operasionalnya final.
         </p>
         <p>
-          Kami menerapkan pembatasan akses dan pemrosesan server-side untuk
+          Kami menerapkan pembatasan akses dan pemrosesan di server untuk
           pendaftaran. Namun, tidak ada sistem digital yang sepenuhnya bebas risiko.
           Pendaftar tetap perlu membatasi jawaban pada informasi yang diminta.
         </p>

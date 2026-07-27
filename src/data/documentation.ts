@@ -64,7 +64,7 @@ export const documentationCategories = [
     id: "implementation",
     label: "Implementasi",
     description:
-      "Bukti bootcamp, proses co-creation, testing, dan handover saat kegiatan.",
+      "Bukti bootcamp, proses co creation, testing, dan handover saat kegiatan.",
     status: "empty",
     statusLabel: "Belum Tersedia",
     driveUrl: null,
@@ -120,4 +120,3 @@ export function getDocumentationCategory(
 ): DocumentationCategory | undefined {
   return documentationCategories.find((category) => category.id === id);
 }
-

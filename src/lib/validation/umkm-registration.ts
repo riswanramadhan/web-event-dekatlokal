@@ -42,8 +42,8 @@ export const UMKM_YEARS_IN_BUSINESS_VALUES = [
 
 export const UMKM_YEARS_IN_BUSINESS_OPTIONS = [
   { value: "less_than_1", label: "Kurang dari 1 tahun" },
-  { value: "1_to_3", label: "1–3 tahun" },
-  { value: "4_to_6", label: "4–6 tahun" },
+  { value: "1_to_3", label: "1 sampai 3 tahun" },
+  { value: "4_to_6", label: "4 sampai 6 tahun" },
   { value: "more_than_6", label: "Lebih dari 6 tahun" },
 ] as const;
 
@@ -71,7 +71,7 @@ export const UMKM_AI_USAGE_VALUES = [
 export const UMKM_AI_USAGE_OPTIONS = [
   { value: "never", label: "Belum pernah menggunakan AI" },
   { value: "tried", label: "Pernah mencoba satu atau dua kali" },
-  { value: "sometimes", label: "Kadang-kadang menggunakan AI" },
+  { value: "sometimes", label: "Sesekali menggunakan AI" },
   { value: "routine", label: "Sudah rutin menggunakan AI" },
 ] as const;
 

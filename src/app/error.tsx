@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { Refresh } from "iconoir-react";
 
 export default function GlobalError({
   reset,
@@ -22,7 +22,7 @@ export default function GlobalError({
         onClick={reset}
         className="mx-auto mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-brand px-6 font-semibold text-white hover:bg-brand-600"
       >
-        <RotateCcw className="h-4 w-4" aria-hidden="true" />
+        <Refresh className="h-4 w-4" aria-hidden="true" />
         Coba lagi
       </button>
     </section>

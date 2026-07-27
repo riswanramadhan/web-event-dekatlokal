@@ -1,8 +1,7 @@
-import { ChevronRight } from "lucide-react";
+import { NavArrowRight } from "iconoir-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { EventSubnav } from "@/components/event/event-subnav";
 import { EventStatusBadge } from "@/components/ui/status-badge";
 
 type EventPageHeroProps = {
@@ -21,8 +20,7 @@ export function EventPageHero({
   actions,
 }: EventPageHeroProps) {
   return (
-    <>
-      <section className="relative overflow-hidden bg-surface py-12 sm:py-16 lg:py-20">
+    <section className="relative overflow-hidden bg-surface py-12 sm:py-16 lg:py-20">
         <div className="dot-grid absolute inset-y-0 right-0 w-1/2 opacity-45" aria-hidden="true" />
         <div className="page-container relative">
           <nav aria-label="Breadcrumb" className="mb-7">
@@ -33,14 +31,17 @@ export function EventPageHero({
                 </Link>
               </li>
               <li aria-hidden="true">
-                <ChevronRight className="h-3.5 w-3.5" />
+                <NavArrowRight
+                  className="h-3.5 w-3.5"
+                  strokeWidth={1.8}
+                />
               </li>
               <li>
                 <Link
                   href="/ai-co-creation-lab-makassar"
                   className="rounded text-slate-600 hover:text-brand"
                 >
-                  AI Co-Creation Lab
+                  AI Co Creation Lab
                 </Link>
               </li>
             </ol>
@@ -58,7 +59,5 @@ export function EventPageHero({
           </div>
         </div>
       </section>
-      <EventSubnav />
-    </>
   );
 }

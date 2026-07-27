@@ -80,7 +80,7 @@ function createPlannedTeam(slot: number): CollaborationTeam {
     slot,
     temporaryName: `Tim ${slotLabel}`,
     name: null,
-    displayName: `Tim ${slotLabel} — nama sementara`,
+    displayName: `Tim ${slotLabel}, nama sementara`,
     status: "planned",
     statusLabel: "Dalam Perencanaan",
     roles: openTeamRoles.map((role) => ({ ...role })),
@@ -106,4 +106,3 @@ export const teamSlots = teams;
 export function getTeamById(id: string): CollaborationTeam | undefined {
   return teams.find((team) => team.id === id);
 }
-

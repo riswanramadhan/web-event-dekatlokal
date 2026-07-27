@@ -121,7 +121,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Mengenali nilai, kekuatan, area pengembangan, dan peran kepemimpinan dalam mini project.",
     progressDescription:
-      "Aktivitas ini direncanakan untuk menyusun profil kepemimpinan personal yang menjelaskan nilai utama, kekuatan, area pengembangan, dan kontribusi yang ingin dibawa dalam AI Co-Creation Lab Makassar. Hasil belum ditandai selesai dan bukti belum dipublikasikan.",
+      "Aktivitas ini direncanakan untuk menyusun profil kepemimpinan personal yang menjelaskan nilai utama, kekuatan, area pengembangan, dan kontribusi yang ingin dibawa dalam AI Co Creation Lab Makassar. Hasil belum ditandai selesai dan bukti belum dipublikasikan.",
     output: [
       "Ringkasan nilai dan kekuatan personal.",
       "Area pengembangan kepemimpinan.",
@@ -140,7 +140,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Merumuskan narasi kepemimpinan yang autentik dan relevan dengan kontribusi project.",
     progressDescription:
-      "Aktivitas ini direncanakan untuk merumuskan leadership branding yang menghubungkan identitas personal, komitmen pada problem solving, dan peran sebagai penggerak kolaborasi mahasiswa–UMKM. Narasi final dan bukti publikasi belum tersedia.",
+      "Aktivitas ini direncanakan untuk merumuskan leadership branding yang menghubungkan identitas personal, komitmen pada problem solving, dan peran sebagai penggerak kolaborasi mahasiswa dan UMKM. Narasi final dan bukti publikasi belum tersedia.",
     output: [
       "Pernyataan leadership branding.",
       "Pesan utama kontribusi sosial.",
@@ -198,7 +198,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menyusun konsep awal program, pengguna, nilai, aktivitas, output, dan indikator dampak.",
     progressDescription:
-      "Konsep awal AI Co-Creation Lab Makassar disusun dengan kuota 20 mahasiswa dan 5 UMKM. Peserta direncanakan merancang solusi AI sederhana berdasarkan permasalahan nyata melalui bootcamp dan co-creation selama satu hari. Canvas masih dapat berubah mengikuti hasil validasi dan partnership.",
+      "Konsep awal AI Co Creation Lab Makassar disusun dengan kuota 16 mahasiswa dan 4 UMKM. Peserta direncanakan merancang solusi sederhana berdasarkan permasalahan nyata melalui bootcamp dan co creation selama satu hari. Canvas masih dapat berubah mengikuti hasil validasi dan partnership.",
     output: [
       "Rumusan masalah dan sasaran.",
       "Value proposition program.",
@@ -259,7 +259,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menyampaikan masalah, rancangan program, kebutuhan dukungan, dan ukuran keberhasilan secara ringkas.",
     progressDescription:
-      "Pitch mini project akan disusun setelah temuan validasi cukup untuk mendukung narasi masalah. Materi direncanakan menjelaskan konteks, konsep AI Co-Creation Lab, batas lingkup satu hari, target, kebutuhan partnership, risiko, dan rencana pengukuran tanpa mengklaim hasil yang belum terjadi.",
+      "Pitch mini project akan disusun setelah temuan validasi cukup untuk mendukung narasi masalah. Materi direncanakan menjelaskan konteks, konsep AI Co Creation Lab Makassar, batas lingkup satu hari, target, kebutuhan partnership, risiko, dan rencana pengukuran tanpa mengklaim hasil yang belum terjadi.",
     output: [
       "Pitch deck mini project.",
       "Narasi pitch singkat.",
@@ -279,7 +279,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Mengubah konsep menjadi urutan kerja, penanggung jawab, kebutuhan, risiko, dan titik keputusan.",
     progressDescription:
-      "Action plan final akan disusun setelah problem validation dan pembicaraan partnership. Rencana akan memuat persiapan peserta, validasi challenge, pembagian tim, bootcamp, co-creation, testing, handover, dokumentasi, dan monitoring. Tanggal final serta penanggung jawab belum dipublikasikan.",
+      "Action plan final akan disusun setelah problem validation dan pembicaraan partnership. Rencana akan memuat persiapan peserta, validasi challenge, pembagian tim, bootcamp, co creation, testing, handover, dokumentasi, dan monitoring. Tanggal final serta penanggung jawab belum dipublikasikan.",
     output: [
       "Timeline kerja.",
       "Pembagian peran dan penanggung jawab.",
@@ -357,9 +357,9 @@ const journeyActivityDefinitions = [
     week: 3,
     title: "Pelaksanaan Mini Project",
     shortDescription:
-      "Menjalankan bootcamp, co-creation, testing, demo, dan handover sesuai batas lingkup.",
+      "Menjalankan bootcamp, co creation, testing, demo, dan handover sesuai batas lingkup.",
     progressDescription:
-      "Pelaksanaan AI Co-Creation Lab Makassar belum berlangsung. Pada tahap implementasi, empat tim yang direncanakan akan bekerja bersama challenge partner untuk membuat solusi sederhana, melakukan verifikasi, menguji langkah utama, dan menyerahkan panduan penggunaan.",
+      "Pelaksanaan AI Co Creation Lab Makassar belum berlangsung. Pada tahap implementasi, empat tim yang direncanakan akan bekerja bersama challenge partner untuk membuat solusi sederhana, melakukan verifikasi, menguji langkah utama, dan menyerahkan panduan penggunaan.",
     output: [
       "Catatan pelaksanaan.",
       "Workflow atau prototype per tim.",
@@ -440,10 +440,10 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Membandingkan target dengan data aktual melalui metode yang telah ditetapkan.",
     progressDescription:
-      "Pengukuran dampak belum dilakukan. Rencana mencakup kehadiran, pembentukan tim, penyelesaian dan testing solusi, pre-test dan post-test mahasiswa, kemampuan UMKM mencoba, penggunaan ulang, kepuasan, serta testimoni yang memiliki persetujuan publikasi.",
+      "Pengukuran dampak belum dilakukan. Rencana mencakup kehadiran, pembentukan tim, penyelesaian dan testing solusi, tes awal dan tes akhir mahasiswa, kemampuan UMKM mencoba, penggunaan ulang, kepuasan, serta testimoni yang memiliki persetujuan publikasi.",
     output: [
       "Data target dan aktual yang dipisahkan.",
-      "Perbandingan pre-test dan post-test.",
+      "Perbandingan tes awal dan tes akhir.",
       "Rekap testing dan penggunaan ulang.",
       "Catatan keterbatasan pengukuran.",
       "Ringkasan dampak terverifikasi.",

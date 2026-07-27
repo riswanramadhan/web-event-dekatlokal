@@ -1,13 +1,14 @@
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle } from "iconoir-react";
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
+
+type IconType = typeof ArrowRight;
 
 type RegistrationRoleCardProps = {
   title: string;
   subtitle: string;
   description: string;
   href: string;
-  icon: LucideIcon;
+  icon: IconType;
   highlights: readonly string[];
   cta: string;
 };
@@ -24,9 +25,11 @@ export function RegistrationRoleCard({
   return (
     <article className="flex h-full flex-col rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8">
       <div className="flex items-center gap-4">
-        <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-brand">
-          <Icon className="h-5.5 w-5.5" aria-hidden="true" />
-        </span>
+        <Icon
+          className="h-6 w-6 shrink-0 text-brand"
+          strokeWidth={1.75}
+          aria-hidden="true"
+        />
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-brand">{subtitle}</p>
           <h2 className="mt-1 text-2xl font-semibold tracking-[-0.035em] text-ink">{title}</h2>
@@ -36,7 +39,7 @@ export function RegistrationRoleCard({
       <ul className="mt-6 space-y-3">
         {highlights.map((highlight) => (
           <li key={highlight} className="flex gap-2.5 text-sm leading-6 text-slate-700">
-            <CheckCircle2 className="mt-1 h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+            <CheckCircle className="mt-1 h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
             {highlight}
           </li>
         ))}

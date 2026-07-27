@@ -1,12 +1,14 @@
-import { ArrowLeft, Compass } from "lucide-react";
+import { ArrowLeft, Compass } from "iconoir-react";
 import Link from "next/link";
 
 export default function NotFound() {
   return (
     <section className="page-container py-24 text-center sm:py-32">
-      <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-brand-50 text-brand">
-        <Compass className="h-6 w-6" aria-hidden="true" />
-      </span>
+      <Compass
+        className="mx-auto h-8 w-8 text-brand"
+        strokeWidth={1.75}
+        aria-hidden="true"
+      />
       <p className="mt-6 font-mono text-sm font-semibold text-brand">404</p>
       <h1 className="mt-3 text-4xl font-semibold tracking-[-0.045em] text-ink">
         Halaman tidak ditemukan

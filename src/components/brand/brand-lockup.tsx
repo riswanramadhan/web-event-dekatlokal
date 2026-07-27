@@ -9,7 +9,7 @@ export function BrandLockup({ inverse = false }: BrandLockupProps) {
   return (
     <Link
       href="/"
-      aria-label="DekatEvent., kembali ke beranda"
+      aria-label="DekatEvent, kembali ke beranda"
       className="inline-flex min-h-11 items-center gap-2 rounded-lg focus-visible:outline-none"
     >
       <Image
@@ -21,11 +21,10 @@ export function BrandLockup({ inverse = false }: BrandLockupProps) {
         className="h-9 w-9"
       />
       <span
-        className={`text-[1.05rem] font-normal tracking-[-0.035em] sm:text-[1.1rem] ${
-          inverse ? "text-white" : "text-brand"
-        }`}
+        className="inline-flex text-[1.05rem] font-medium tracking-[-0.045em] sm:text-[1.1rem]"
       >
-        DekatEvent.
+        <span className={inverse ? "text-brand-100" : "text-brand"}>Dekat</span>
+        <span className={inverse ? "text-white" : "text-ink"}>Event</span>
       </span>
     </Link>
   );

@@ -8,7 +8,7 @@ import {
 } from "@/data/platform";
 
 const pageDescription =
-  "Ketentuan penggunaan DekatLokal Event untuk aplikasi peserta, seleksi, partisipasi, informasi acara, dan penggunaan platform.";
+  "Ketentuan penggunaan DekatEvent untuk aplikasi peserta, seleksi, partisipasi, informasi acara, dan penggunaan platform.";
 
 const contact: PlatformContact = platformConfig.contact;
 
@@ -144,14 +144,14 @@ const sections = [
           Pengguna tidak boleh mengklaim dukungan, afiliasi, pendanaan, atau
           representasi dari {platformConfig.owner}, penyelenggara, maupun calon mitra
           tanpa izin. Logo dan materi merek tidak boleh dipasang ulang atau diubah
-          seolah-olah merupakan dukungan resmi.
+          sehingga terkesan sebagai dukungan resmi.
         </p>
       </>
     ),
   },
   {
     id: "hasil-ai",
-    title: "Hasil co-creation dan AI",
+    title: "Hasil co creation dan AI",
     content: (
       <>
         <p>
@@ -194,7 +194,7 @@ const sections = [
           Penyelenggara berupaya menjaga informasi dan layanan tetap layak digunakan,
           tetapi tidak menjamin platform selalu bebas gangguan atau setiap aplikasi
           diterima. Peserta tetap bertanggung jawab atas keputusan perjalanan,
-          perangkat, barang pribadi, serta penggunaan hasil co-creation setelah
+          perangkat, barang pribadi, serta penggunaan hasil co creation setelah
           kegiatan.
         </p>
         <p>

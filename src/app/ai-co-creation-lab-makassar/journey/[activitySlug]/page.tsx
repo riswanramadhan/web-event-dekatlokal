@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import {
-  CalendarClock,
-  CheckCircle2,
-  ChevronRight,
-  CircleDashed,
-  Lightbulb,
-  ListChecks,
-} from "lucide-react";
+  CheckCircle,
+  Circle,
+  Clock,
+  LightBulb,
+  NavArrowRight,
+  TaskList,
+} from "iconoir-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -36,10 +36,10 @@ const statusTones = {
 } as const;
 
 const statusIcons = {
-  planned: CircleDashed,
-  in_progress: CalendarClock,
-  completed: CheckCircle2,
-  published: CheckCircle2,
+  planned: Circle,
+  in_progress: Clock,
+  completed: CheckCircle,
+  published: CheckCircle,
 } as const;
 
 export function generateStaticParams() {
@@ -63,7 +63,7 @@ export async function generateMetadata({
       canonical: activity.route,
     },
     openGraph: {
-      title: `${activity.title} — ${event.title}`,
+      title: `${activity.title} | ${event.title}`,
       description: activity.shortDescription,
       url: activity.route,
     },
@@ -95,17 +95,17 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
             <ol className="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500">
               <li>
                 <Link href={event.route} className="rounded hover:text-brand">
-                  AI Co-Creation Lab
+                  AI Co Creation Lab Makassar
                 </Link>
               </li>
               <li aria-hidden="true">
-                <ChevronRight className="h-3.5 w-3.5" />
+                <NavArrowRight className="h-3.5 w-3.5" />
               </li>
               <li>
                 <span>Aktivitas program</span>
               </li>
               <li aria-hidden="true">
-                <ChevronRight className="h-3.5 w-3.5" />
+                <NavArrowRight className="h-3.5 w-3.5" />
               </li>
               <li aria-current="page" className="text-slate-700">
                 {activity.title}
@@ -119,7 +119,13 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
                 Week {activity.week}
               </span>
               <EventStatusBadge tone={statusTones[activity.status]}>
-                <StatusIcon className="h-3 w-3" aria-hidden="true" />
+                <StatusIcon
+                  className="h-3 w-3"
+                  strokeDasharray={
+                    activity.status === "planned" ? "3 3" : undefined
+                  }
+                  aria-hidden="true"
+                />
                 {journeyStatusLabels[activity.status]}
               </EventStatusBadge>
             </div>
@@ -166,9 +172,11 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
             className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8"
           >
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-brand-50 text-brand">
-                <ListChecks className="h-4.5 w-4.5" aria-hidden="true" />
-              </span>
+              <TaskList
+                className="h-6 w-6 shrink-0 text-brand"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
               <h2 id="outputs-heading" className="text-2xl font-semibold tracking-[-0.035em] text-ink">
                 Output yang disiapkan
               </h2>
@@ -179,7 +187,7 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
                   key={output}
                   className="flex gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-700"
                 >
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+                  <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
                   {output}
                 </li>
               ))}
@@ -221,9 +229,11 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
             className="rounded-[2rem] bg-brand p-6 text-white sm:p-8"
           >
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white/14">
-                <Lightbulb className="h-4.5 w-4.5" aria-hidden="true" />
-              </span>
+              <LightBulb
+                className="h-6 w-6 shrink-0"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
               <h2 id="insight-heading" className="text-2xl font-semibold tracking-[-0.035em]">
                 Leadership insight
               </h2>

@@ -1,8 +1,8 @@
-import { ArrowUpRight, CalendarDays, House } from "lucide-react";
+import { ArrowUpRight, Calendar, HomeSimple } from "iconoir-react";
 import Link from "next/link";
 
 import { BrandLockup } from "@/components/brand/brand-lockup";
-import { MobileNavigation } from "@/components/layout/mobile-navigation";
+import { ActiveLink } from "@/components/navigation/active-link";
 
 const navigation = [
   { href: "/", label: "Beranda", icon: "home" },
@@ -10,39 +10,56 @@ const navigation = [
 ] as const;
 
 const navLinkClass =
-  "inline-flex min-h-11 items-center gap-2 rounded-full border border-transparent px-4 text-sm font-medium text-slate-700 transition-[color,background-color,border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-brand-100 hover:bg-brand-50 hover:text-brand";
+  "relative inline-flex min-h-11 items-center gap-2 px-3 text-sm font-medium text-slate-600 transition-colors after:absolute after:bottom-1.5 after:left-1/2 after:h-0.5 after:w-5 after:-translate-x-1/2 after:scale-x-0 after:rounded-full after:bg-brand after:transition-transform hover:text-brand";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 py-3 sm:py-4">
+    <header className="sticky top-0 z-50 hidden py-3 md:block">
       <div className="page-container">
         <nav
           aria-label="Navigasi utama"
-          className="relative flex min-h-16 items-center justify-between rounded-full border border-white/90 bg-white/82 px-3 shadow-[0_14px_42px_rgba(1,34,98,0.12)] backdrop-blur-2xl sm:px-4"
+          className="grid min-h-16 grid-cols-[1fr_auto_1fr] items-center rounded-[1.2rem] border border-slate-200 bg-white px-4 shadow-[0_12px_32px_rgba(1,34,98,0.08)]"
         >
-          <BrandLockup />
-
-          <div className="hidden items-center gap-2 md:flex">
-            {navigation.map((item) => {
-              const Icon = item.icon === "home" ? House : CalendarDays;
-
-              return (
-                <Link key={item.href} href={item.href} className={navLinkClass}>
-                  <Icon className="h-4 w-4" aria-hidden="true" />
-                  {item.label}
-                </Link>
-              );
-            })}
-            <Link
-              href="/ai-co-creation-lab-makassar"
-              className="button-loop inline-flex min-h-11 items-center gap-2 rounded-full border border-brand bg-brand px-5 text-sm font-semibold text-white shadow-[0_8px_22px_rgba(2,85,245,0.2)] transition-[transform,background-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-brand-600 hover:shadow-[0_12px_26px_rgba(2,85,245,0.28)]"
-            >
-              Lihat Event
-              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
+          <div className="justify-self-start">
+            <BrandLockup />
           </div>
 
-          <MobileNavigation items={navigation} />
+          <div className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50/70 px-1.5 shadow-[inset_0_1px_2px_rgba(1,34,98,0.06)]">
+            {navigation.map((item) => {
+              const Icon = item.icon === "home" ? HomeSimple : Calendar;
+
+              return (
+                <ActiveLink
+                  key={item.href}
+                  href={item.href}
+                  match={item.href === "/events" ? "event" : "exact"}
+                  className={navLinkClass}
+                  activeClassName="font-semibold text-brand after:scale-x-100"
+                >
+                  <Icon
+                    className="h-[1.05rem] w-[1.05rem]"
+                    strokeWidth={1.8}
+                    aria-hidden="true"
+                  />
+                  {item.label}
+                </ActiveLink>
+              );
+            })}
+          </div>
+
+          <div className="justify-self-end">
+            <Link
+              href="/ai-co-creation-lab-makassar/register"
+              className="button-loop inline-flex min-h-11 items-center gap-2 rounded-full border border-brand bg-brand px-5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(2,85,245,0.18)] transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-brand-600"
+            >
+              Ikut Program
+              <ArrowUpRight
+                className="h-4 w-4"
+                strokeWidth={1.9}
+                aria-hidden="true"
+              />
+            </Link>
+          </div>
         </nav>
       </div>
     </header>

@@ -50,7 +50,7 @@ export interface PlatformConfig {
 }
 
 export const platform = {
-  name: "DekatEvent.",
+  name: "DekatEvent",
   owner: "DekatLokal",
   tagline: "Kelola Acara, Hubungkan Peserta, Ukur Dampaknya.",
   description:

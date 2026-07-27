@@ -1,15 +1,15 @@
 import {
-  CalendarCheck2,
+  CalendarCheck,
   ClipboardCheck,
-  MailCheck,
-  UsersRound,
-} from "lucide-react";
+  Group,
+  MailIn,
+} from "iconoir-react";
 
 const steps = [
-  { label: "Informasi acara", icon: CalendarCheck2, state: "live" },
-  { label: "Pilih jalur", icon: UsersRound, state: "ready" },
+  { label: "Informasi acara", icon: CalendarCheck, state: "live" },
+  { label: "Pilih jalur", icon: Group, state: "ready" },
   { label: "Kirim aplikasi", icon: ClipboardCheck, state: "ready" },
-  { label: "Terima konfirmasi", icon: MailCheck, state: "ready" },
+  { label: "Terima konfirmasi", icon: MailIn, state: "ready" },
 ] as const;
 
 export function PlatformFlowVisual() {
@@ -44,13 +44,13 @@ export function PlatformFlowVisual() {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span
-                    className={`grid h-10 w-10 place-items-center rounded-2xl ${
-                      index === 0 ? "bg-white/14 text-white" : "bg-white text-brand"
+                  <Icon
+                    className={`h-5 w-5 shrink-0 ${
+                      index === 0 ? "text-white" : "text-brand"
                     }`}
-                  >
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
+                    strokeWidth={1.75}
+                    aria-hidden="true"
+                  />
                   <span
                     className={`font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] ${
                       index === 0 ? "text-white/72" : "text-slate-400"

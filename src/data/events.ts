@@ -96,6 +96,15 @@ export interface EventConfig {
   readonly registrationOpen: boolean;
   readonly registrationStatus: RegistrationStatus;
   readonly registrationStatusLabel: string;
+  readonly fee: {
+    readonly amount: 0;
+    readonly currency: "IDR";
+    readonly displayValue: "Gratis";
+  };
+  readonly capacity: {
+    readonly total: number;
+    readonly statusLabel: string;
+  };
   readonly date: {
     readonly value: string | null;
     readonly displayValue: string;
@@ -175,17 +184,26 @@ export const aiCoCreationLabEvent = {
   id: "ai-co-creation-lab-makassar",
   slug: "ai-co-creation-lab-makassar",
   route: eventBaseRoute,
-  title: "AI Co-Creation Lab Makassar",
+  title: "AI Co Creation Lab Makassar",
   tagline: "From AI Users to Local Problem Solvers",
   description:
-    "Program kolaborasi satu hari yang mempertemukan 20 mahasiswa dan 5 pelaku UMKM untuk merancang serta menguji solusi berbantuan AI berdasarkan kebutuhan usaha yang nyata.",
+    "Program praktik satu hari yang mempertemukan 16 mahasiswa dan 4 UMKM untuk membuat solusi digital dari tantangan usaha yang nyata.",
   featuredSummary:
-    "20 mahasiswa dan 5 UMKM berkolaborasi menciptakan solusi berbantuan AI untuk kebutuhan usaha yang nyata.",
+    "16 mahasiswa dan 4 UMKM duduk bareng, membahas masalah usaha yang real, lalu membuat solusi digital yang bisa langsung dicoba.",
   status: "draft",
   statusLabel: "Dalam Persiapan",
   registrationOpen: false,
   registrationStatus: "not_open",
   registrationStatusLabel: "Pendaftaran Belum Dibuka",
+  fee: {
+    amount: 0,
+    currency: "IDR",
+    displayValue: "Gratis",
+  },
+  capacity: {
+    total: 20,
+    statusLabel: "Kuota terbatas",
+  },
   date: {
     value: "2026-08-10",
     displayValue: "10 Agustus 2026",
@@ -208,22 +226,22 @@ export const aiCoCreationLabEvent = {
     startTime: "13.00",
     endTime: "16.30",
     timezone: "WITA",
-    displayTime: "13.00–16.30 WITA",
+    displayTime: "13.00 sampai 16.30 WITA",
     durationMinutes: 210,
-    format: "Bootcamp dan co-creation",
+    format: "Bootcamp dan co creation",
   },
   heroMetrics: [
     {
       id: "students",
       label: "Mahasiswa",
-      target: 20,
+      target: 16,
       unit: "orang",
       kind: "target",
     },
     {
       id: "umkm",
       label: "UMKM",
-      target: 5,
+      target: 4,
       unit: "usaha",
       kind: "target",
     },
@@ -261,7 +279,7 @@ export const aiCoCreationLabEvent = {
   registrationRoles: [
     {
       role: "student",
-      title: "Mahasiswa — Problem Solver",
+      title: "Mahasiswa, Problem Solver",
       shortTitle: "Mahasiswa",
       description:
         "Ceritakan kemampuan, pengalaman AI, perangkat, dan peran yang paling sesuai untuk berkolaborasi dengan UMKM.",
@@ -270,7 +288,7 @@ export const aiCoCreationLabEvent = {
     },
     {
       role: "umkm",
-      title: "UMKM — Challenge Partner",
+      title: "UMKM, Challenge Partner",
       shortTitle: "UMKM",
       description:
         "Ceritakan proses usaha yang berulang atau masalah yang ingin dibantu melalui AI.",
@@ -287,7 +305,7 @@ export const aiCoCreationLabEvent = {
       eyebrow: "Mengapa program ini penting",
       title: "Teknologi menjadi berarti ketika menjawab kebutuhan nyata.",
       description:
-        "AI Co-Creation Lab membangun jembatan antara akses teknologi yang dimiliki mahasiswa dan kebutuhan praktis yang dihadapi pelaku UMKM.",
+        "AI Co Creation Lab Makassar mempertemukan akses teknologi mahasiswa dengan kebutuhan praktis pelaku UMKM.",
     },
     problem: {
       eyebrow: "Masalah yang dijawab",
@@ -305,13 +323,13 @@ export const aiCoCreationLabEvent = {
       eyebrow: "Alur kegiatan",
       title: "Enam tahap dari validasi hingga monitoring.",
       description:
-        "Kebutuhan dan kemampuan dipetakan sebelum kegiatan agar waktu co-creation dapat dipakai untuk membangun hasil yang relevan dan aman.",
+        "Kebutuhan dan kemampuan dipetakan sebelum kegiatan agar waktu kolaborasi dapat dipakai untuk membuat hasil yang relevan dan aman.",
     },
     participantComposition: {
       eyebrow: "Komposisi peserta",
       title: "Kolaborasi mahasiswa dan challenge partner UMKM.",
       description:
-        "Target program adalah empat tim lintas peran yang masing-masing berfokus pada satu kebutuhan usaha.",
+        "Target program terdiri atas empat tim lintas peran. Setiap tim berfokus pada satu kebutuhan usaha.",
     },
     partnership: {
       eyebrow: "Kolaborasi",
@@ -321,7 +339,7 @@ export const aiCoCreationLabEvent = {
     },
     registrationCta: {
       eyebrow: "Ambil bagian",
-      title: "Pilih peranmu dalam proses co-creation.",
+      title: "Pilih peranmu dalam proses co creation.",
       description:
         "Pendaftaran adalah tahap aplikasi dan tidak berarti penerimaan otomatis. Status pembukaan akan diperbarui setelah kesiapan pendaftaran selesai.",
     },
@@ -329,7 +347,7 @@ export const aiCoCreationLabEvent = {
   problem:
     "Mahasiswa telah menggunakan AI untuk berbagai kebutuhan, tetapi belum semuanya memiliki pengalaman mengubah teknologi tersebut menjadi solusi bagi pengguna nyata. Pada sisi lain, pelaku UMKM memiliki permasalahan usaha yang dapat dibantu AI, tetapi terkendala perangkat, waktu, literasi, atau pendampingan.",
   solution:
-    "AI Co-Creation Lab mempertemukan mahasiswa dan UMKM dalam empat tim. Setiap tim memahami satu masalah, menyusun workflow atau prototype sederhana, menguji hasil bersama UMKM, lalu menyerahkan panduan yang dapat digunakan kembali melalui smartphone.",
+    "AI Co Creation Lab Makassar mempertemukan mahasiswa dan UMKM dalam empat tim. Setiap tim memahami satu masalah, menyusun alur kerja atau prototype sederhana, menguji hasil bersama UMKM, lalu menyerahkan panduan yang dapat digunakan kembali melalui smartphone.",
   importantLimitation:
     "Program tidak menjanjikan pembangunan aplikasi kompleks dalam satu hari. Target kegiatan adalah solusi AI sederhana, relevan, aman, dapat diuji, dan dapat digunakan ulang.",
   howItWorks: [
@@ -352,7 +370,7 @@ export const aiCoCreationLabEvent = {
     },
     {
       id: "co-creation",
-      title: "Co-creation",
+      title: "Co creation",
       description:
         "Setiap tim merancang solusi bersama challenge partner.",
     },
@@ -371,7 +389,7 @@ export const aiCoCreationLabEvent = {
     {
       id: "student",
       label: "Mahasiswa problem solver",
-      target: 20,
+      target: 16,
       unit: "orang",
       description:
         "Berkolaborasi dalam peran problem framing, AI workflow, quality and ethics, serta dokumentasi.",
@@ -379,7 +397,7 @@ export const aiCoCreationLabEvent = {
     {
       id: "umkm",
       label: "UMKM challenge partner",
-      target: 5,
+      target: 4,
       unit: "usaha",
       description:
         "Membawa kebutuhan usaha untuk divalidasi, diuji, dan dipantau bersama tim.",
@@ -411,14 +429,14 @@ export const aiCoCreationLabEvent = {
   },
   criteria: {
     student: [
-      "Bersedia mengikuti rangkaian kegiatan pada 10 Agustus 2026 pukul 13.00–16.30 WITA.",
+      "Bersedia mengikuti rangkaian kegiatan pada 10 Agustus 2026 pukul 13.00 sampai 16.30 WITA.",
       "Bersedia bekerja dalam tim dan berinteraksi langsung dengan pelaku UMKM.",
       "Menjelaskan pengalaman AI, kemampuan utama, pilihan peran, dan ketersediaan perangkat secara jujur.",
       "Berkomitmen menjaga privasi serta memverifikasi hasil yang dibantu AI.",
     ],
     umkm: [
       "Memiliki proses usaha berulang atau kebutuhan yang ingin divalidasi bersama.",
-      "Bersedia mengikuti kegiatan penuh pada 10 Agustus 2026 pukul 13.00–16.30 WITA.",
+      "Bersedia mengikuti kegiatan penuh pada 10 Agustus 2026 pukul 13.00 sampai 16.30 WITA.",
       "Bersedia mencoba hasil dan mengikuti monitoring setelah kegiatan.",
       "Tidak membagikan identitas pelanggan, data transaksi rahasia, nomor rekening, atau informasi sensitif lainnya.",
     ],
@@ -426,10 +444,10 @@ export const aiCoCreationLabEvent = {
   rundown: [
     {
       id: "main-session",
-      time: "13.00–16.30",
-      title: "Bootcamp dan AI co-creation",
+      time: "13.00 sampai 16.30",
+      title: "Bootcamp dan co creation",
       description:
-        "Rangkaian pembelajaran, perumusan masalah, co-creation, pengujian, dan penutupan. Pembagian waktu setiap sesi akan diumumkan setelah agenda final.",
+        "Rangkaian pembelajaran, perumusan masalah, co creation, pengujian, dan penutupan. Pembagian waktu setiap sesi akan diumumkan setelah agenda final.",
     },
   ],
   partners: [

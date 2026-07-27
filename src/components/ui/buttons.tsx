@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "iconoir-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 

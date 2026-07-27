@@ -135,7 +135,7 @@ export function UmkmRegistrationForm({
         ) : state.status === "idle" ? (
           <FormNotice>
             Semua isian bertanda bintang wajib dilengkapi. Gunakan bahasa
-            sehari-hari—Anda tidak perlu memahami istilah teknis AI untuk
+            sehari hari. Anda tidak perlu memahami istilah teknis AI untuk
             mendaftar.
           </FormNotice>
         ) : (

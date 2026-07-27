@@ -1,4 +1,4 @@
-import { Activity, CircleDashed, ClipboardCheck } from "lucide-react";
+import { Activity, Circle, ClipboardCheck } from "iconoir-react";
 
 export type ImpactMetricView = {
   label: string;
@@ -28,13 +28,20 @@ export function TargetActualMetric({ metric }: { metric: ImpactMetricView }) {
   return (
     <article className="flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-card sm:p-6">
       <div className="flex items-start justify-between gap-4">
-        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand">
-          {metric.actual === null ? (
-            <CircleDashed className="h-4.5 w-4.5" aria-hidden="true" />
-          ) : (
-            <Activity className="h-4.5 w-4.5" aria-hidden="true" />
-          )}
-        </span>
+        {metric.actual === null ? (
+          <Circle
+            className="h-5 w-5 shrink-0 text-brand"
+            strokeWidth={1.75}
+            strokeDasharray="3 3"
+            aria-hidden="true"
+          />
+        ) : (
+          <Activity
+            className="h-5 w-5 shrink-0 text-brand"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+        )}
         <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[0.68rem] font-semibold text-slate-600">
           {metric.statusLabel ?? statusLabels[metric.status]}
         </span>
@@ -93,6 +100,7 @@ export function TargetActualMetric({ metric }: { metric: ImpactMetricView }) {
         <div className="mt-4 flex gap-2.5 rounded-2xl bg-slate-50 p-3.5">
           <ClipboardCheck
             className="mt-0.5 h-4 w-4 shrink-0 text-brand"
+            strokeWidth={1.75}
             aria-hidden="true"
           />
           <p className="text-xs leading-5 text-slate-600">

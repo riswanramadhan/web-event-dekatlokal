@@ -1,10 +1,10 @@
 import {
   ArrowLeft,
-  Clock3,
+  Clock,
   GraduationCap,
   ShieldCheck,
-  Store,
-} from "lucide-react";
+  Shop,
+} from "iconoir-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -15,7 +15,7 @@ import { isSupabaseAdminConfigured } from "@/lib/supabase/admin";
 
 const title = "Pilih Jalur Pendaftaran";
 const description =
-  "Pilih peran sebagai mahasiswa problem solver atau UMKM challenge partner dalam AI Co-Creation Lab Makassar.";
+  "Pilih peran sebagai mahasiswa problem solver atau UMKM challenge partner dalam AI Co Creation Lab Makassar.";
 
 export const metadata: Metadata = {
   title,
@@ -48,7 +48,7 @@ export default function RegistrationHubPage() {
     <>
       <EventPageHero
         eyebrow="Portal pendaftaran"
-        title="Pilih peran dalam AI Co-Creation Lab."
+        title="Pilih peran dalam AI Co Creation Lab Makassar."
         description="Mahasiswa dan pelaku UMKM berkolaborasi dari dua peran yang berbeda. Pilih jalur yang paling sesuai dengan kontribusi Anda."
         status={event.registrationStatusLabel}
         actions={
@@ -73,16 +73,22 @@ export default function RegistrationHubPage() {
             }`}
           >
             <span
-              className={`grid h-11 w-11 shrink-0 place-items-center rounded-2xl ${
-                submissionsAvailable
-                  ? "bg-emerald-100 text-emerald-700"
-                  : "bg-amber-100 text-amber-800"
+              className={`block shrink-0 ${
+                submissionsAvailable ? "text-emerald-700" : "text-amber-800"
               }`}
             >
               {submissionsAvailable ? (
-                <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+                <ShieldCheck
+                  className="h-7 w-7"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
               ) : (
-                <Clock3 className="h-5 w-5" aria-hidden="true" />
+                <Clock
+                  className="h-7 w-7"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
               )}
             </span>
             <div className="mt-4 sm:mt-0">
@@ -146,7 +152,7 @@ export default function RegistrationHubPage() {
                 subtitle="Challenge Partner"
                 description={event.registrationRoles[1].description}
                 href={event.routes.registerUmkm}
-                icon={Store}
+                icon={Shop}
                 highlights={[
                   "Membawa kebutuhan usaha yang nyata.",
                   "Menguji solusi bersama tim mahasiswa.",
@@ -166,9 +172,11 @@ export default function RegistrationHubPage() {
             className="mt-8 grid gap-5 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-card sm:p-8 lg:grid-cols-[0.8fr_1.2fr]"
           >
             <div>
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-brand-50 text-brand">
-                <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-              </span>
+              <ShieldCheck
+                className="h-7 w-7 text-brand"
+                strokeWidth={1.75}
+                aria-hidden="true"
+              />
               <h2
                 id="registration-process-title"
                 className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-ink"

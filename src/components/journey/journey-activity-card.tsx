@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarClock, CheckCircle2, CircleDashed } from "lucide-react";
+import { ArrowRight, CheckCircle, Circle, Clock } from "iconoir-react";
 import Link from "next/link";
 
 import { EventStatusBadge } from "@/components/ui/status-badge";
@@ -12,10 +12,10 @@ export type JourneyCardActivity = {
 };
 
 const statusConfig = {
-  planned: { label: "Direncanakan", tone: "neutral" as const, icon: CircleDashed },
-  in_progress: { label: "Dalam Proses", tone: "amber" as const, icon: CalendarClock },
-  completed: { label: "Selesai", tone: "green" as const, icon: CheckCircle2 },
-  published: { label: "Dipublikasikan", tone: "blue" as const, icon: CheckCircle2 },
+  planned: { label: "Direncanakan", tone: "neutral" as const, icon: Circle },
+  in_progress: { label: "Dalam Proses", tone: "amber" as const, icon: Clock },
+  completed: { label: "Selesai", tone: "green" as const, icon: CheckCircle },
+  published: { label: "Dipublikasikan", tone: "blue" as const, icon: CheckCircle },
 };
 
 export function JourneyActivityCard({
@@ -35,7 +35,11 @@ export function JourneyActivityCard({
           {String(index + 1).padStart(2, "0")}
         </span>
         <EventStatusBadge tone={status.tone}>
-          <StatusIcon className="h-3 w-3" aria-hidden="true" />
+          <StatusIcon
+            className="h-3 w-3"
+            strokeDasharray={activity.status === "planned" ? "3 3" : undefined}
+            aria-hidden="true"
+          />
           {status.label}
         </EventStatusBadge>
       </div>
