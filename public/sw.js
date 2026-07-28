@@ -1,17 +1,37 @@
-const CACHE_NAME = "dekatevent-static-v1";
-const OFFLINE_URL = "/offline.html";
+const CACHE_NAME = "dekatevent-static-v2";
+const OFFLINE_SOURCE_URL = "/offline.html";
+const OFFLINE_CACHE_KEY = "/offline";
 const STATIC_ASSETS = [
-  OFFLINE_URL,
   "/dekatlokal-mark.png",
   "/icons/dekatevent-192.png",
   "/icons/dekatevent-512.png",
 ];
 
+async function cacheOfflinePage(cache) {
+  const response = await fetch(OFFLINE_SOURCE_URL, { cache: "reload" });
+
+  if (!response.ok) {
+    throw new Error("Offline page could not be cached.");
+  }
+
+  const offlineResponse = new Response(await response.text(), {
+    status: 200,
+    headers: {
+      "Cache-Control": "no-cache",
+      "Content-Type": "text/html; charset=utf-8",
+    },
+  });
+
+  await cache.put(OFFLINE_CACHE_KEY, offlineResponse);
+}
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE_NAME)
-      .then((cache) => cache.addAll(STATIC_ASSETS))
+      .then((cache) =>
+        Promise.all([cache.addAll(STATIC_ASSETS), cacheOfflinePage(cache)]),
+      )
       .then(() => self.skipWaiting()),
   );
 });
@@ -39,7 +59,19 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === "navigate") {
-    event.respondWith(fetch(request).catch(() => caches.match(OFFLINE_URL)));
+    event.respondWith(
+      fetch(request).catch(async () => {
+        const offlineResponse = await caches.match(OFFLINE_CACHE_KEY);
+
+        return (
+          offlineResponse ??
+          new Response("DekatEvent sedang offline.", {
+            status: 503,
+            headers: { "Content-Type": "text/plain; charset=utf-8" },
+          })
+        );
+      }),
+    );
     return;
   }
 
