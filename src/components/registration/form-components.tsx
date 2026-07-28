@@ -860,6 +860,9 @@ export function ConsentField({
   error?: string;
   required?: boolean;
 }) {
+  const descriptionId = description ? `${name}-description` : undefined;
+  const errorId = error ? `${name}-error` : undefined;
+
   return (
     <div>
       <label className="group flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition focus-within:ring-4 focus-within:ring-brand-100 has-[:checked]:border-brand-200 has-[:checked]:bg-brand-50/70">
@@ -870,18 +873,29 @@ export function ConsentField({
           value="true"
           required={required}
           aria-invalid={Boolean(error)}
-          aria-describedby={error ? `${name}-error` : undefined}
+          aria-describedby={
+            [descriptionId, errorId].filter(Boolean).join(" ") || undefined
+          }
           className="mt-1 h-4 w-4 shrink-0 accent-brand"
         />
         <span>
           <span className="block text-sm font-medium leading-6 text-ink">{label}</span>
           {description ? (
-            <span className="mt-1 block text-xs leading-5 text-slate-500">{description}</span>
+            <span
+              id={descriptionId}
+              className="mt-1 block text-xs leading-5 text-slate-500"
+            >
+              {description}
+            </span>
           ) : null}
         </span>
       </label>
       {error ? (
-        <p id={`${name}-error`} role="alert" className="mt-2 text-xs font-medium text-red-700">
+        <p
+          id={errorId}
+          role="alert"
+          className="mt-2 text-xs font-medium text-red-700"
+        >
           {error}
         </p>
       ) : null}
@@ -929,7 +943,7 @@ export function SubmitButton({
       type="submit"
       disabled={disabled || pending}
       aria-disabled={disabled || pending}
-      className="inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-3.5 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(2,85,245,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600 disabled:cursor-not-allowed disabled:translate-y-0 disabled:bg-slate-400 disabled:shadow-none sm:w-auto"
+      className="button-loop inline-flex min-h-13 w-fit max-w-full self-center items-center justify-center gap-2 rounded-full bg-brand px-5 py-3.5 text-center text-sm font-semibold text-white shadow-[0_14px_32px_rgba(2,85,245,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600 disabled:cursor-not-allowed disabled:translate-y-0 disabled:bg-slate-400 disabled:shadow-none sm:self-auto sm:px-6"
     >
       {pending ? (
         <RefreshDouble

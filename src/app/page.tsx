@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     absolute: "DekatEvent | Event Lokal dari DekatLokal",
   },
   description:
-    "Temukan program lokal yang mempertemukan mahasiswa dan UMKM untuk mengerjakan tantangan usaha yang nyata.",
+    "Temukan program lokal yang mempertemukan mahasiswa dan UMKM untuk meracik solusi AI dari tantangan usaha yang nyata.",
   alternates: {
     canonical: "/",
   },
@@ -76,19 +76,19 @@ export default function PlatformHomePage() {
           aria-hidden="true"
         />
         <div className="page-container relative flex min-h-[calc(100svh-5rem)] flex-col items-center justify-center py-16 text-center sm:py-20 lg:py-24">
-          <Reveal className="mx-auto flex max-w-4xl flex-col items-center">
+          <div className="mx-auto flex max-w-4xl flex-col items-center">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand sm:text-sm">
               AI Co Creation Lab Makassar
             </p>
             <h1 className="mt-5 max-w-4xl text-balance text-4xl font-semibold leading-[1.08] tracking-[-0.055em] text-ink sm:text-5xl lg:text-[4.5rem]">
-              Bukan cuma pakai AI. Saatnya bikin sesuatu yang kepakai.
+              AI bukan cuma buat nanya. Saatnya dipakai bantu usaha lokal.
             </h1>
             <p className="mt-6 max-w-2xl text-balance text-base leading-8 text-slate-600 sm:text-lg">
-              16 mahasiswa dan 4 UMKM bakal duduk bareng, ngebahas masalah
-              usaha yang real, lalu build solusi digital yang bisa langsung
-              dicoba.
+              {participantComposition} bakal satu meja, bongkar masalah usaha
+              yang real, lalu ngeracik solusi digital yang simpel dan bisa
+              langsung dicoba.
             </p>
-            <div className="mt-8 flex w-full max-w-sm flex-col justify-center gap-3 sm:max-w-none sm:flex-row">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <PrimaryButton href={featuredEvent.route}>
                 Lihat Event
               </PrimaryButton>
@@ -97,9 +97,9 @@ export default function PlatformHomePage() {
               </SecondaryButton>
             </div>
             <p className="mt-6 text-sm font-medium text-slate-700">
-              Belajar boleh. Bikin dampak nyata, itu targetnya.
+              Datang bawa rasa penasaran. Pulang bawa karya yang kepakai.
             </p>
-          </Reveal>
+          </div>
 
           <dl className="mt-12 grid w-full max-w-6xl gap-3 text-left sm:grid-cols-2 lg:grid-cols-5">
             {heroFacts.map(({ label, value, detail, Icon }, index) => (

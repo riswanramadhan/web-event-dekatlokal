@@ -1,10 +1,24 @@
 export default function Loading() {
   return (
-    <div className="page-container py-24" role="status" aria-live="polite">
-      <div className="max-w-3xl animate-pulse">
-        <div className="h-4 w-32 rounded-full bg-brand-100" />
-        <div className="mt-6 h-12 w-full rounded-2xl bg-slate-200" />
-        <div className="mt-4 h-5 w-3/4 rounded-full bg-slate-100" />
+    <div
+      className="page-container flex min-h-[58svh] items-center justify-center py-20"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div className="flex max-w-sm flex-col items-center text-center">
+        <div className="page-loader-orbit" aria-hidden="true">
+          <span className="page-loader-core" />
+          <span className="page-loader-dot page-loader-dot-one" />
+          <span className="page-loader-dot page-loader-dot-two" />
+          <span className="page-loader-dot page-loader-dot-three" />
+        </div>
+        <p className="mt-6 text-sm font-semibold text-ink">
+          Sebentar, lagi nyiapin halamannya
+        </p>
+        <p className="mt-2 text-xs leading-5 text-slate-500">
+          Biar tampilannya tetap rapi sampai ke layar kamu.
+        </p>
       </div>
       <span className="sr-only">Memuat halaman…</span>
     </div>

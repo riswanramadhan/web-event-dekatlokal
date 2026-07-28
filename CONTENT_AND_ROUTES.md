@@ -36,22 +36,23 @@ From AI Users to Local Problem Solvers
 
 ### Indonesian description
 
-Program kolaborasi satu hari yang mempertemukan 16 mahasiswa dan 4 pelaku UMKM untuk merancang dan menguji 4 solusi berbantuan AI berdasarkan kebutuhan usaha yang nyata.
+Program kolaborasi satu hari yang mempertemukan 20 mahasiswa dan 5 pelaku UMKM untuk merancang dan menguji solusi berbantuan AI berdasarkan kebutuhan usaha yang nyata.
 
 ### Key metrics
 
-- 16 mahasiswa
-- 4 UMKM
+- 20 mahasiswa
+- 5 UMKM
 - 4 tim
 - 4 solusi AI
 - 1 kegiatan utama
-- 2,5 jam pelaksanaan
+- 3,5 jam pelaksanaan
 
 ### Main activity time
 
-13.00–15.30 WITA
+13.00 sampai 16.30 WITA
 
-Tanggal dan lokasi wajib menggunakan placeholder config sampai benar-benar ditetapkan.
+Tanggal 10 Agustus 2026 dan lokasi Balai Besar Pelatihan Komunikasi dan
+Digital Makassar (KOMDIGI) telah dikonfirmasi oleh pemilik proyek.
 
 ---
 
@@ -104,7 +105,7 @@ Suggested hero:
 
 **AI Co-Creation Lab Makassar**
 
-16 mahasiswa dan 4 UMKM berkolaborasi menciptakan solusi berbantuan AI untuk kebutuhan usaha yang nyata.
+20 mahasiswa dan 5 UMKM berkolaborasi menciptakan solusi berbantuan AI untuk kebutuhan usaha yang nyata.
 
 Primary CTA:
 
@@ -158,13 +159,7 @@ Program tidak menjanjikan pembangunan aplikasi kompleks dalam satu hari. Target 
 
 | Waktu | Aktivitas |
 |---|---|
-| 13.00–13.10 | Pembukaan dan pre-assessment |
-| 13.10–13.35 | Bootcamp AI dan responsible AI |
-| 13.35–13.45 | Penyampaian challenge UMKM |
-| 13.45–14.40 | AI co-creation session |
-| 14.40–15.00 | Testing dan handover |
-| 15.00–15.20 | Demo empat tim |
-| 15.20–15.30 | Post-assessment dan penutupan |
+| 13.00 sampai 16.30 WITA | Bootcamp dan co creation. Pembagian waktu setiap sesi akan diumumkan setelah agenda final. |
 
 ---
 
@@ -353,7 +348,7 @@ Observasi awal menunjukkan adanya kesenjangan antara mahasiswa yang memiliki aks
 
 ### Project Canvas
 
-Konsep awal AI Co-Creation Lab Makassar disusun dengan melibatkan 16 mahasiswa dan 4 UMKM dalam empat tim. Setiap tim akan merancang satu solusi AI sederhana berdasarkan permasalahan nyata melalui bootcamp dan co-creation selama satu hari.
+Konsep awal AI Co-Creation Lab Makassar disusun dengan melibatkan 20 mahasiswa dan 5 UMKM. Peserta akan merancang solusi AI sederhana berdasarkan permasalahan nyata melalui bootcamp dan co-creation selama satu hari.
 
 Do not mark these as completed until the user changes status.
 
@@ -370,18 +365,42 @@ Initial partner state:
 
 Do not show official logos unless approved.
 
+### Sponsorship invitation
+
+Tampilkan ajakan sponsorship di atas `Our Supporting Ecosystem`. Sebelum
+sponsor aktif dikonfirmasi, gunakan placeholder jujur bertuliskan
+`Your Brand` dengan ikon netral. Jangan menampilkan nama atau logo sponsor
+yang belum dikonfirmasi.
+
+### Our Supporting Ecosystem
+
+Deskripsi ringkas:
+
+`AI Co-Creation Lab Makassar tumbuh dari kolaborasi talenta muda, UMKM,
+institusi, perusahaan, komunitas, dan pihak yang peduli pada digitalisasi
+usaha lokal.`
+
+Logo sumber telah diberikan pemilik untuk ditampilkan dalam konteks supporting
+ecosystem. Website memakai turunan WebP pada
+`public/logo-ecosystem/optimized/`. Tampilkan logo sebagai rail horizontal yang
+bergerak tenang dari kanan ke kiri. Susun Danantara, Rumah BUMN, dan BRI
+sebagai satu kelompok visual yang berdekatan. Rail harus dapat dijeda melalui
+hover atau fokus dan menjadi statis ketika reduced motion aktif. Penggunaan
+logo tidak boleh diperluas menjadi klaim sponsorship berbayar tanpa konfirmasi
+terpisah.
+
 ---
 
 ## 14. Impact targets
 
 | Metric | Target | Actual initial |
 |---|---:|---|
-| Mahasiswa | 16 | null |
-| UMKM | 4 | null |
+| Mahasiswa | 20 | null |
+| UMKM | 5 | null |
 | Tim | 4 | null |
 | Solusi | 4 | null |
 | Solusi diuji | 4 | null |
-| UMKM mampu mencoba | 4 | null |
+| UMKM mampu mencoba | 5 | null |
 | UMKM menggunakan ulang | 3 | null |
 | Mahasiswa meningkat | 12 | null |
 

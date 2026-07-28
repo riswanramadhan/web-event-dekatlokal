@@ -94,6 +94,20 @@ const requiredBoolean = (message: string) =>
 
 const optionalBoolean = z.preprocess(normalizeBoolean, z.boolean());
 
+function normalizeInstagramUsername(value: unknown): unknown {
+  const normalized = normalizeSingleLine(value);
+
+  if (typeof normalized !== "string") {
+    return normalized;
+  }
+
+  const username = normalized.startsWith("@")
+    ? normalized.slice(1)
+    : normalized;
+
+  return username.toLocaleLowerCase("en-US");
+}
+
 export const studentRegistrationSchema = z
   .object({
     fullName: safeSingleLine("Nama lengkap", 2, 120),
@@ -124,6 +138,17 @@ export const studentRegistrationSchema = z
         .max(14, "Semester maksimal 14."),
     ),
     city: safeSingleLine("Kota domisili", 2, 100),
+    instagramUsername: z.preprocess(
+      normalizeInstagramUsername,
+      z
+        .string({ error: "Username Instagram wajib diisi." })
+        .min(1, "Username Instagram wajib diisi.")
+        .max(30, "Username Instagram maksimal 30 karakter.")
+        .regex(
+          /^(?!.*\.\.)(?!.*\.$)[a-z0-9._]+$/,
+          "Gunakan username Instagram yang valid, tanpa spasi.",
+        ),
+    ),
     aiExperience: z.preprocess(
       normalizeSingleLine,
       z.enum(STUDENT_AI_EXPERIENCE_VALUES, {
@@ -162,6 +187,9 @@ export const studentRegistrationSchema = z
       "Persetujuan pemrosesan data wajib diberikan.",
     ),
     consentDocumentation: optionalBoolean,
+    instagramFollowConfirmed: requiredBoolean(
+      "Konfirmasi bahwa Anda sudah follow @dekatlokal dan @edukasilokal.",
+    ),
     company: z.preprocess(
       (value) => normalizeSingleLine(value) || "",
       z.literal("", { error: "Permintaan tidak dapat diproses." }),

@@ -72,6 +72,7 @@ Aturan:
 - Set `approved: true` hanya setelah ada persetujuan yang dapat dipertanggungjawabkan.
 - Tambahkan logo hanya jika penggunaan aset sudah diizinkan.
 - Jangan menyatakan sponsorship atau dukungan hanya karena organisasi disebut dalam konteks program atau network mapping.
+- Simpan file sumber di `source-assets/`, lalu gunakan turunan WebP dari `public/event-brand/` atau `public/logo-ecosystem/optimized/` pada typed config.
 
 Export `approvedEventPartners` diturunkan dari `partners[].approved`. Partner yang belum disetujui boleh tampil hanya sebagai status/placeholder yang jujur, bukan dalam daftar logo partner aktif.
 
@@ -148,7 +149,7 @@ Target dan actual adalah dua data berbeda:
 ```ts
 {
   label: "Mahasiswa terlibat",
-  target: 16,
+  target: 20,
   actual: null,
   unit: "orang",
   status: "not_measured",

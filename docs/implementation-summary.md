@@ -1,29 +1,39 @@
-# Ringkasan Implementasi DekatEvent. MVP
+# Ringkasan Implementasi DekatEvent MVP
 
-Tanggal verifikasi: 27 Juli 2026  
-Event utama: AI Co-Creation Lab Makassar  
+Tanggal verifikasi: 29 Juli 2026
+Event utama: AI Co Creation Lab Makassar
 Domain target: `event.dekatlokal.com`
 
 ## Hasil
 
-DekatEvent. dibangun dengan Next.js App Router, React, dan TypeScript strict.
+DekatEvent dibangun dengan Next.js App Router, React, dan TypeScript strict.
 Revisi terakhir memusatkan pengalaman pada informasi event dan pendaftaran:
 
-- navbar floating white-glass yang mobile-first;
-- landing event ringkas dengan hero tepat satu viewport desktop;
-- foto representatif mahasiswa dan pelaku UMKM Indonesia dalam co-creation;
-- pendaftaran mahasiswa dan UMKM melalui Server Actions;
-- activity GEP Week 1–4 yang hanya dapat dibuka melalui URL langsung;
-- privacy, terms, metadata, sitemap, robots, dan Open Graph.
+- wordmark DekatEvent dan navbar desktop floating white glass;
+- homepage center dengan informasi event sebagai item mandiri;
+- detail event ringkas dengan hero satu viewport desktop;
+- dock mobile melayang dengan CTA tengah menuju registrasi mahasiswa;
+- bottom sheet mobile yang mendukung click outside, Escape, focus trap, dan
+  focus restore;
+- loading state, route transition, AOS, dan Framer Motion yang menghormati
+  `prefers-reduced-motion`;
+- sponsorship invitation `Your Brand` yang tidak mengarang sponsor aktif;
+- rail `Our Supporting Ecosystem` yang bergerak dari kanan ke kiri, dapat
+  dijeda, dan menempatkan Danantara, Rumah BUMN, serta BRI sebagai satu trio;
+- logo event serta sembilan logo ecosystem dalam WebP teroptimasi;
+- banner informasi program pada seluruh jalur pendaftaran;
+- field Instagram mahasiswa dan konfirmasi wajib follow `@dekatlokal` serta
+  `@edukasilokal`, tanpa upload bukti;
+- privacy, terms, metadata, PWA, sitemap, robots, dan Open Graph.
 
-Tanggal event dikonfirmasi pada 10 Agustus 2026, pukul 13.00–16.30 WITA, di
-Balai Besar Pelatihan Komunikasi dan Digital Makassar (KOMDIGI). Kuota
-bootcamp adalah 20 mahasiswa dan 5 UMKM. Alamat jalan tidak ditambahkan karena
-belum diberikan.
+Tanggal event dikonfirmasi pada 10 Agustus 2026, pukul 13.00 sampai 16.30 WITA,
+di Balai Besar Pelatihan Komunikasi dan Digital Makassar (KOMDIGI). Target
+program adalah 20 mahasiswa dan 5 UMKM, total 25 peserta. Alamat jalan tidak
+ditambahkan karena belum diberikan.
 
-Motion memakai AOS dan Framer Motion. Status persiapan berkedip, CTA memiliki
-sheen animation berulang saat hover/focus, dan seluruh animasi menghormati
-`prefers-reduced-motion`.
+Aset asli disimpan di `source-assets/`. Website hanya mereferensikan turunan
+WebP pada `public/event-brand/` dan `public/logo-ecosystem/optimized/` agar
+payload publik tetap ringan.
 
 ## Rute
 
@@ -40,11 +50,11 @@ Rute publik utama:
 - `/ai-co-creation-lab-makassar/register/success`
 
 Sebanyak 19 activity URL di
-`/ai-co-creation-lab-makassar/journey/[activitySlug]` dibangun statis tetapi
-tidak ditampilkan di navbar, sitemap, index Journey, atau previous/next UI.
-Activity memakai `noindex` dan hanya dibuka melalui tautan langsung.
+`/ai-co-creation-lab-makassar/journey/[activitySlug]` tetap dapat dibuka
+melalui tautan langsung. Activity memakai `noindex` dan tidak ditampilkan pada
+navbar, sitemap, index Journey, atau previous dan next UI.
 
-Route berikut sudah dihapus dari source production dan mengembalikan 404:
+Rute berikut mengembalikan 404:
 
 - `/ai-co-creation-lab-makassar/journey`
 - `/ai-co-creation-lab-makassar/challenges`
@@ -54,76 +64,72 @@ Route berikut sudah dihapus dari source production dan mengembalikan 404:
 
 ## Database dan pendaftaran
 
-- Schema berada di `SUPABASE_SCHEMA.sql`.
+- Schema tetap berada di `SUPABASE_SCHEMA.sql`.
 - Seed event menyimpan target 25 partisipan: 20 mahasiswa dan 5 UMKM.
-- Row event menjadi otoritas server untuk status buka/tutup pendaftaran.
-- Registrasi mahasiswa dan UMKM memiliki unique index untuk mencegah duplikasi.
-- RLS aktif; role `anon` dan `authenticated` tidak dapat membaca atau menulis
-  registrations.
-- Mutation menggunakan Server Actions dan service-role client server-only.
-- Input divalidasi dengan Zod, dipangkas, dinormalisasi, dan dibatasi.
-- WhatsApp/email dinormalisasi; consent dan honeypot diwajibkan.
+- Row event menjadi otoritas server untuk status buka atau tutup pendaftaran.
+- RLS aktif dan public read maupun anonymous insert tidak tersedia.
+- Mutation menggunakan Server Actions dan service role client server only.
+- Input divalidasi, dipangkas, dinormalisasi, dan dibatasi dengan Zod.
+- Username Instagram dinormalisasi dan disimpan di metadata JSONB.
+- Konfirmasi follow diwajibkan di UI dan server, tanpa menyimpan upload bukti.
+- WhatsApp serta email dinormalisasi; consent dan honeypot tetap berlaku.
 - Turnstile didukung secara opsional.
-- Kode pendaftaran dibuat secara kriptografis tanpa PII.
+- Payload PII tidak dicatat pada log, analytics, atau URL.
 
 Live insert Supabase belum diuji karena credential production dan event row
-belum disediakan. Tanpa environment tersebut, situs tetap render dan
-pendaftaran tetap berada dalam state tertutup yang aman.
+belum disediakan. Tanpa environment tersebut, formulir tetap dapat ditinjau
+dan tombol submit berada dalam state tertutup yang aman.
 
-## Keamanan dan integritas konten
+## Integritas konten
 
-- `SUPABASE_SERVICE_ROLE_KEY` tidak masuk bundle browser.
-- Tidak ada anonymous insert atau public read registrations.
-- Payload pendaftaran tidak dicatat ke log, analytics, atau URL.
-- Halaman success hanya menerima kode tervalidasi.
-- Event JSON-LD memakai tanggal, waktu WITA, nama venue, dan kota yang sudah
-  dikonfirmasi tanpa mengarang alamat jalan.
-- Partner dan logo pihak ketiga tidak ditampilkan sebagai partner aktif tanpa
-  `approved: true`.
-- Visual hero diberi disclosure sebagai gambar representatif, bukan dokumentasi
-  pelaksanaan.
-- Target program selalu dibedakan dari capaian aktual.
+- Target program dibedakan dari capaian aktual.
+- Event JSON LD memakai tanggal, waktu WITA, venue, dan kota yang dikonfirmasi.
+- Alamat jalan, peserta aktual, testimonial, dan dampak aktual tidak dikarang.
+- Logo ecosystem ditampilkan berdasarkan aset yang diberikan pemilik, dengan
+  disclaimer bahwa daftar tersebut bukan daftar sponsor acara.
+- Sponsorship tetap berupa ajakan `Your Brand` sampai sponsor aktif
+  dikonfirmasi.
 
 ## Verifikasi
 
-Seluruh pemeriksaan berikut lulus pada 27 Juli 2026:
+Pemeriksaan final:
 
 ```text
-npm run lint              PASS — tanpa warning/error
-npm run typecheck         PASS
-npm run build             PASS — 36 halaman dihasilkan
-npm run build:open-next   PASS — .open-next/worker.js dihasilkan
-npm audit --omit=dev      PASS — 0 production vulnerabilities
-wrangler deploy --dry-run PASS — bundle 2.37 MiB gzip
+npm run lint                                      PASS
+npm run typecheck                                 PASS
+npm run build                                     PASS
+npm run build:open-next                           PASS
+npm audit --registry=https://registry.npmjs.org
+  --omit=dev --audit-level=high                    PASS, 0 vulnerability
+wrangler deploy --dry-run                         PASS
 ```
 
-Smoke test production memeriksa 21 route dan seluruh assertion lulus, termasuk:
+OpenNext menghasilkan worker self contained sebesar 8.359.314 byte. Pemeriksa
+bundle memastikan tidak ada executable bare `require`, relative runtime
+import, atau development file logger.
 
-- lima route tersembunyi mengembalikan 404;
-- activity valid 200 dan slug tidak valid 404;
-- activity tidak memiliki arah ke index/previous/next;
-- sitemap dan robots tidak mengekspos activity;
-- Event JSON-LD memiliki start/end time dan venue;
-- state missing Supabase environment tertangani;
-- kode submission valid terlihat;
-- service-role value tidak muncul pada HTML.
+Browser QA menjalankan 145 assertion pada lebar 320, 375, 430, 768, 1024, dan
+1440 piksel:
 
-Visual QA menggunakan mobile `390 × 844` dan desktop `1440 × 900`. Hasilnya:
-
-- tidak ada horizontal overflow atau console error;
-- navbar glass, brand, menu mobile, dan touch target tampil benar;
-- menu mobile berada di dalam viewport;
-- foto hero termuat;
-- hero event desktop berakhir tepat pada batas viewport;
-- tidak ada link UI menuju halaman tersembunyi.
+- tidak ada horizontal overflow;
+- tidak ada console error, page error, hydration error, atau request gagal;
+- dock, center CTA, bottom sheet, Escape, serta focus restore berfungsi;
+- CTA mobile memakai natural width;
+- detail tanggal, waktu, lokasi, biaya, dan kuota tersusun vertikal;
+- 20 mahasiswa, 5 UMKM, dan total 25 tampil konsisten;
+- sponsorship berada di atas ecosystem;
+- sembilan logo tampil, trio BUMN berdekatan, dan rail bergerak ke kiri;
+- Instagram dan konfirmasi follow wajib tersedia tanpa file upload;
+- route utama 200, lima route tersembunyi 404, dan direct activity 200;
+- manifest, service worker, offline fallback, serta ikon PWA tersedia;
+- reduced motion menonaktifkan motion yang tidak diperlukan.
 
 ## Hal yang perlu diisi pemilik
 
 - alamat jalan venue bila ingin ditampilkan;
 - status pembukaan registrasi pada typed config dan row Supabase;
 - credential Supabase production;
-- partner/logo yang sudah disetujui;
-- tautan activity Week 1–4 yang akan dibagikan ke audiens terkait;
+- sponsor aktif hanya setelah persetujuan;
 - evidence dan status activity yang faktual;
 - Turnstile keys bila proteksi bot diaktifkan;
 - DNS untuk `event.dekatlokal.com`.
@@ -131,10 +137,5 @@ Visual QA menggunakan mobile `390 × 844` dan desktop `1440 × 900`. Hasilnya:
 ## Batasan MVP
 
 MVP belum mencakup payment, marketplace tiket, akun peserta, organizer
-dashboard, QR check-in, sertifikat, form builder, atau multi-tenant auth.
+dashboard, QR check in, sertifikat, form builder, atau multi tenant auth.
 Pengelola membaca registrations melalui Supabase Dashboard.
-
-Audit lengkap yang menyertakan development tooling masih melaporkan advisory
-transitive pada rantai ESLint/OpenNext. Dependency produksi aplikasi bersih;
-perbaikan otomatis npm meminta major upgrade yang belum kompatibel dan tidak
-diterapkan secara paksa.

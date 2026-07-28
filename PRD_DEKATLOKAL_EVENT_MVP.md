@@ -21,12 +21,12 @@ MVP pertama digunakan untuk menyelenggarakan dan mendokumentasikan **AI Co-Creat
 
 Event ini mempertemukan:
 
-- 16 mahasiswa;
-- 4 pelaku UMKM;
+- 20 mahasiswa;
+- 5 pelaku UMKM;
 - 4 tim kolaborasi;
 - 4 masalah usaha nyata;
 - 4 solusi berbantuan AI;
-- 1 kegiatan utama selama 2,5 jam.
+- 1 kegiatan utama selama 3,5 jam.
 
 MVP harus dapat digunakan sebagai:
 
@@ -300,13 +300,16 @@ Landing page AI Co-Creation Lab harus menampilkan:
 - deskripsi;
 - problem;
 - solusi;
-- angka utama: 16, 4, 4, 4;
+- angka utama: 20, 5, 4, 4;
 - manfaat mahasiswa;
 - manfaat UMKM;
 - cara kerja;
 - rundown;
 - kriteria peserta;
 - partner section;
+- sponsorship invitation yang jujur tanpa mengarang sponsor aktif;
+- section `Our Supporting Ecosystem` dengan logo yang telah disetujui pemilik
+  dalam rail horizontal kanan ke kiri yang menghormati reduced motion;
 - FAQ;
 - CTA pendaftaran;
 - footer powered by DekatLokal.
@@ -508,6 +511,10 @@ Minimum:
 - reduced-motion consideration;
 - image alt text;
 - buttons bukan clickable div.
+
+Logo event dan logo ecosystem yang telah diberikan langsung oleh pemilik
+boleh digunakan sebagai aset resmi pada halaman event. Penempatannya tetap
+harus menjaga keterbacaan, performa, dan konteks klaim yang jujur.
 
 ## FR-14 Responsive design
 
@@ -807,8 +814,8 @@ Jangan membuat website hanya fokus pada desain event. Journey leadership adalah 
 
 ### Event target
 
-- target 16 mahasiswa;
-- target 4 UMKM;
+- target 20 mahasiswa;
+- target 5 UMKM;
 - target 4 tim;
 - target 4 solusi.
 

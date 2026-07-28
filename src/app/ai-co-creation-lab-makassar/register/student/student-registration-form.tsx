@@ -132,9 +132,9 @@ export function StudentRegistrationForm({
           <FormNotice tone="warning">{unavailableMessage}</FormNotice>
         ) : state.status === "idle" ? (
           <FormNotice>
-            Semua isian bertanda bintang wajib dilengkapi. Jawaban akan
-            digunakan untuk memetakan komposisi tim, bukan untuk menilai
-            kemampuan secara otomatis.
+            Isi yang bertanda bintang sampai tuntas, ya. Jawabanmu dipakai
+            untuk menyusun tim yang paling pas, bukan untuk mencari siapa yang
+            kelihatan paling jago.
           </FormNotice>
         ) : (
           <FormNotice tone={feedbackTone}>
@@ -211,6 +211,30 @@ export function StudentRegistrationForm({
             placeholder="0812 3456 7890"
             helper="Gunakan nomor aktif. Format 08…, 628…, atau +628… akan dinormalisasi."
             error={firstError(state.fieldErrors, "whatsapp")}
+          />
+        </FormField>
+
+        <FormField
+          label="Username Instagram"
+          name="instagramUsername"
+          required
+          helper="Boleh ditulis dengan atau tanpa @. Pastikan akunnya aktif dan bisa dikenali."
+          error={firstError(state.fieldErrors, "instagramUsername")}
+        >
+          <TextInput
+            name="instagramUsername"
+            type="text"
+            autoCapitalize="none"
+            autoCorrect="off"
+            autoComplete="off"
+            spellCheck={false}
+            minLength={1}
+            maxLength={31}
+            pattern="@?[A-Za-z0-9._]+"
+            required
+            placeholder="@namakamu"
+            helper="Boleh ditulis dengan atau tanpa @. Pastikan akunnya aktif dan bisa dikenali."
+            error={firstError(state.fieldErrors, "instagramUsername")}
           />
         </FormField>
 
@@ -418,6 +442,25 @@ export function StudentRegistrationForm({
             }
             description="Pendaftaran adalah tahap aplikasi dan belum berarti diterima sebagai peserta."
             error={firstError(state.fieldErrors, "attendanceCommitment")}
+          />
+
+          <ConsentField
+            name="instagramFollowConfirmed"
+            required
+            label={
+              <>
+                Saya sudah follow Instagram{" "}
+                <span className="font-semibold text-brand">@dekatlokal</span>{" "}
+                dan{" "}
+                <span className="font-semibold text-brand">@edukasilokal</span>
+                . <span className="text-brand">(wajib)</span>
+              </>
+            }
+            description="Tidak perlu upload screenshot. Cukup centang dengan jujur."
+            error={firstError(
+              state.fieldErrors,
+              "instagramFollowConfirmed",
+            )}
           />
 
           <ConsentField

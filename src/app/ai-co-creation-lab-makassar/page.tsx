@@ -12,10 +12,21 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Reveal } from "@/components/motion/reveal";
+import { EventEcosystem } from "@/components/event/event-ecosystem";
 import { EventStatusBadge } from "@/components/ui/status-badge";
 import { aiCoCreationLabEvent as event } from "@/data/events";
 import { buildEventJsonLd } from "@/lib/event-json-ld";
+
+const studentTarget = event.participantComposition.find(
+  (participant) => participant.id === "student",
+)?.target;
+const umkmTarget = event.participantComposition.find(
+  (participant) => participant.id === "umkm",
+)?.target;
+const participantComposition =
+  studentTarget !== undefined && umkmTarget !== undefined
+    ? `${studentTarget} mahasiswa dan ${umkmTarget} UMKM`
+    : "Komposisi peserta akan diumumkan";
 
 export const metadata: Metadata = {
   title: event.title,
@@ -67,7 +78,7 @@ const eventDetails = [
   {
     label: "Kuota peserta",
     value: `${event.capacity.total} peserta`,
-    description: `16 mahasiswa dan 4 UMKM. ${event.capacity.statusLabel}.`,
+    description: `${participantComposition}. ${event.capacity.statusLabel}.`,
     icon: Group,
   },
 ] as const;
@@ -113,7 +124,7 @@ export default function EventLandingPage() {
           aria-hidden="true"
         />
         <div className="page-container relative grid gap-9 py-12 sm:py-16 lg:min-h-[calc(100svh-5.5rem)] lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-14 lg:py-12">
-          <Reveal className="min-w-0">
+          <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <EventStatusBadge tone="neutral">
                 {event.statusLabel}
@@ -130,18 +141,18 @@ export default function EventLandingPage() {
               AI Co Creation Lab <span className="text-brand">Makassar</span>
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-              Bukan cuma pakai AI. Di sini mahasiswa dan UMKM duduk bareng,
-              membahas masalah usaha yang real, lalu membuat sesuatu yang bisa
+              {participantComposition} bakal satu meja, bongkar masalah usaha
+              yang real, lalu ngeracik solusi AI yang simpel, aman, dan bisa
               langsung dicoba.
             </p>
             <p className="mt-3 text-sm font-medium text-slate-800">
-              Belajar boleh. Bikin dampak nyata, itu targetnya.
+              Datang bawa rasa penasaran. Pulang bawa karya yang kepakai.
             </p>
 
-            <div className="mt-8 grid gap-3 sm:flex sm:flex-wrap">
+            <div className="mt-8 grid justify-items-center gap-3 sm:flex sm:flex-wrap sm:justify-start">
               <Link
                 href={event.routes.registerStudent}
-                className="event-cta inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-brand px-6 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(2,85,245,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-600"
+                className="event-cta inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(2,85,245,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:px-6"
               >
                 Daftar sebagai Mahasiswa
                 <ArrowRight
@@ -152,13 +163,13 @@ export default function EventLandingPage() {
               </Link>
               <Link
                 href={event.routes.registerUmkm}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-6 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50"
+                className="inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-5 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 sm:px-6"
               >
                 Daftar sebagai UMKM
               </Link>
               <a
                 href="#alur-kegiatan"
-                className="inline-flex min-h-12 items-center justify-center rounded-full px-4 text-sm font-semibold text-slate-700 underline decoration-brand-200 decoration-2 underline-offset-4 transition hover:text-brand hover:decoration-brand"
+                className="inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full px-4 text-sm font-semibold text-slate-700 underline decoration-brand-200 decoration-2 underline-offset-4 transition hover:text-brand hover:decoration-brand"
               >
                 Lihat Alur Kegiatan
               </a>
@@ -167,9 +178,9 @@ export default function EventLandingPage() {
               Pendaftaran adalah tahap aplikasi. Peserta terpilih akan
               dikonfirmasi melalui kontak yang diberikan.
             </p>
-          </Reveal>
+          </div>
 
-          <Reveal delay={0.1} className="min-w-0">
+          <div className="min-w-0">
             <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] border border-slate-200 bg-slate-100 shadow-[0_22px_55px_rgba(1,34,98,0.12)] sm:aspect-[16/11]">
               <Image
                 src="/aicl-cocreation-indonesia.webp"
@@ -179,8 +190,18 @@ export default function EventLandingPage() {
                 sizes="(max-width: 1023px) 100vw, 46vw"
                 className="object-cover"
               />
+              <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/70 bg-white/95 p-3 shadow-[0_12px_30px_rgba(1,34,98,0.16)] backdrop-blur-sm sm:inset-x-auto sm:bottom-5 sm:left-5 sm:w-[78%] sm:max-w-[23rem] sm:p-4">
+                <Image
+                  src={event.branding.logo.src}
+                  alt={event.branding.logo.alt}
+                  width={event.branding.logo.width}
+                  height={event.branding.logo.height}
+                  sizes="(max-width: 639px) calc(100vw - 4rem), 23rem"
+                  className="h-auto w-full"
+                />
+              </div>
             </div>
-          </Reveal>
+          </div>
         </div>
       </section>
 
@@ -292,6 +313,11 @@ export default function EventLandingPage() {
         </div>
       </section>
 
+      <EventEcosystem
+        sponsorship={event.sponsorship}
+        supportingEcosystem={event.supportingEcosystem}
+      />
+
       <section className="px-4 pb-16 sm:px-6 sm:pb-20 lg:px-12">
         <div className="mx-auto max-w-[74rem] rounded-[1.75rem] border border-brand-200 bg-brand px-6 py-10 text-white sm:px-10 lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-12">
           <div className="max-w-2xl">
@@ -306,16 +332,16 @@ export default function EventLandingPage() {
               tantangan usaha yang nyata. Pilih jalur yang paling sesuai.
             </p>
           </div>
-          <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:mt-0 lg:shrink-0">
+          <div className="mt-7 grid justify-items-center gap-3 sm:grid-cols-2 sm:justify-items-stretch lg:mt-0 lg:shrink-0">
             <Link
               href={event.routes.registerStudent}
-              className="event-cta inline-flex min-h-12 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-brand transition hover:bg-brand-50"
+              className="event-cta inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-brand transition hover:bg-brand-50 sm:w-auto"
             >
               Daftar Mahasiswa
             </Link>
             <Link
               href={event.routes.registerUmkm}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/45 px-5 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10"
+              className="inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full border border-white/45 px-5 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10 sm:w-auto"
             >
               Daftar UMKM
             </Link>

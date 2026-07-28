@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { EventPageHero } from "@/components/event/page-hero";
+import { RegistrationProgramBanner } from "@/components/registration/registration-program-banner";
 import { RegistrationRoleCard } from "@/components/registration/registration-role-card";
 import { aiCoCreationLabEvent as event } from "@/data/events";
 import { isSupabaseAdminConfigured } from "@/lib/supabase/admin";
@@ -48,8 +49,8 @@ export default function RegistrationHubPage() {
     <>
       <EventPageHero
         eyebrow="Portal pendaftaran"
-        title="Pilih peran dalam AI Co Creation Lab Makassar."
-        description="Mahasiswa dan pelaku UMKM berkolaborasi dari dua peran yang berbeda. Pilih jalur yang paling sesuai dengan kontribusi Anda."
+        title="Mau ikut dari sisi mana?"
+        description="Datang sebagai mahasiswa problem solver atau UMKM challenge partner. Dua jalur, satu meja kolaborasi, dan satu tujuan: bikin solusi yang benar benar kepakai."
         status={event.registrationStatusLabel}
         actions={
           <Link
@@ -62,8 +63,12 @@ export default function RegistrationHubPage() {
         }
       />
 
-      <main className="bg-surface py-12 sm:py-16 lg:py-20">
+      <div className="bg-surface py-12 sm:py-16 lg:py-20">
         <div className="page-container">
+          <div className="mb-8">
+            <RegistrationProgramBanner />
+          </div>
+
           <section
             aria-labelledby="registration-availability-title"
             className={`mb-8 rounded-[1.75rem] border p-5 sm:flex sm:items-start sm:gap-4 sm:p-6 ${
@@ -113,18 +118,18 @@ export default function RegistrationHubPage() {
           <section aria-labelledby="registration-path-title">
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-                Dua jalur kolaborasi
+                Pilih role kamu
               </p>
               <h2
                 id="registration-path-title"
                 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-ink sm:text-4xl"
               >
-                Temukan jalur yang paling sesuai.
+                Ambil jalur yang paling nyambung sama kontribusimu.
               </h2>
               <p className="mt-4 text-base leading-8 text-slate-600">
-                Setiap pendaftaran akan ditinjau untuk menyusun komposisi tim
-                dan challenge yang relevan. Mengirim aplikasi belum berarti
-                otomatis diterima.
+                Semua aplikasi tetap kami review supaya komposisi tim dan
+                tantangannya pas. Jadi, isi dengan jujur dan tunjukkan versi
+                terbaikmu tanpa perlu terdengar sempurna.
               </p>
             </div>
 
@@ -136,9 +141,9 @@ export default function RegistrationHubPage() {
                 href={event.routes.registerStudent}
                 icon={GraduationCap}
                 highlights={[
-                  "Memetakan masalah dan kebutuhan pengguna.",
-                  "Menyusun workflow atau prototype berbantuan AI.",
-                  "Berkolaborasi dan mendokumentasikan proses.",
+                  "Ngobrol langsung dan memetakan kebutuhan pengguna.",
+                  "Merancang workflow atau prototype berbantuan AI.",
+                  "Kerja bareng sambil membangun bahan portofolio.",
                 ]}
                 cta={
                   submissionsAvailable
@@ -154,9 +159,9 @@ export default function RegistrationHubPage() {
                 href={event.routes.registerUmkm}
                 icon={Shop}
                 highlights={[
-                  "Membawa kebutuhan usaha yang nyata.",
-                  "Menguji solusi bersama tim mahasiswa.",
-                  "Mengikuti handover dan monitoring penggunaan.",
+                  "Bawa satu kebutuhan usaha yang benar benar terasa.",
+                  "Coba solusi bareng tim mahasiswa.",
+                  "Dapat panduan dan lanjut ke proses monitoring.",
                 ]}
                 cta={
                   submissionsAvailable
@@ -181,7 +186,7 @@ export default function RegistrationHubPage() {
                 id="registration-process-title"
                 className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-ink"
               >
-                Apa yang terjadi setelah mendaftar?
+                Habis submit, lanjut apa?
               </h2>
             </div>
             <ol className="grid gap-4 sm:grid-cols-3">
@@ -190,19 +195,19 @@ export default function RegistrationHubPage() {
                   number: "01",
                   title: "Kirim aplikasi",
                   description:
-                    "Lengkapi jalur yang sesuai dan simpan kode pendaftaran.",
+                    "Isi jalur yang sesuai lalu simpan kode pendaftaranmu.",
                 },
                 {
                   number: "02",
                   title: "Proses seleksi",
                   description:
-                    "Tim meninjau kebutuhan, kemampuan, perangkat, dan komitmen.",
+                    "Kami cek kebutuhan, kemampuan, perangkat, dan komitmenmu.",
                 },
                 {
                   number: "03",
                   title: "Konfirmasi",
                   description:
-                    "Peserta terpilih dihubungi melalui email atau WhatsApp.",
+                    "Kalau terpilih, kamu kami hubungi lewat email atau WhatsApp.",
                 },
               ].map((step) => (
                 <li
@@ -235,7 +240,7 @@ export default function RegistrationHubPage() {
             .
           </aside>
         </div>
-      </main>
+      </div>
     </>
   );
 }

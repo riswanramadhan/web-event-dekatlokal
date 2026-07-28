@@ -91,7 +91,7 @@ export default async function RegistrationSuccessPage({
           </nav>
         </div>
       </div>
-      <main className="relative overflow-hidden bg-surface py-12 sm:py-16 lg:py-20">
+      <div className="relative overflow-hidden bg-surface py-12 sm:py-16 lg:py-20">
         <div
           className="dot-grid absolute inset-y-0 right-0 w-1/2 opacity-35"
           aria-hidden="true"
@@ -104,7 +104,7 @@ export default async function RegistrationSuccessPage({
             registerPath={event.routes.register}
           />
         </div>
-      </main>
+      </div>
     </>
   );
 }

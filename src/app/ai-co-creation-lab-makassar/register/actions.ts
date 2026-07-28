@@ -414,6 +414,7 @@ function studentCandidate(formData: FormData) {
     studyProgram: getFormDataString(formData, "studyProgram"),
     semester: getFormDataString(formData, "semester"),
     city: getFormDataString(formData, "city"),
+    instagramUsername: getFormDataString(formData, "instagramUsername"),
     aiExperience: getFormDataString(formData, "aiExperience"),
     skills: getFormDataStrings(formData, "skills"),
     preferredRoles: getFormDataStrings(formData, "preferredRoles"),
@@ -428,6 +429,10 @@ function studentCandidate(formData: FormData) {
     consentDocumentation: getFormDataString(
       formData,
       "consentDocumentation",
+    ),
+    instagramFollowConfirmed: getFormDataString(
+      formData,
+      "instagramFollowConfirmed",
     ),
     company: getFormDataString(formData, "company"),
   };
@@ -474,6 +479,7 @@ function studentRow(data: StudentRegistrationData): Record<string, unknown> {
       study_program: data.studyProgram,
       semester: data.semester,
       city: data.city,
+      instagram_username: data.instagramUsername,
       ai_experience: data.aiExperience,
       skills: data.skills,
       preferred_roles: data.preferredRoles,
@@ -481,6 +487,8 @@ function studentRow(data: StudentRegistrationData): Record<string, unknown> {
       project_experience: data.projectExperience,
       motivation: data.motivation,
       attendance_commitment: data.attendanceCommitment,
+      instagram_follow_confirmed: data.instagramFollowConfirmed,
+      instagram_accounts_followed: ["dekatlokal", "edukasilokal"],
     },
     consent_privacy: data.consentPrivacy,
     consent_documentation: data.consentDocumentation,

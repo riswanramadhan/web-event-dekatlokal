@@ -271,7 +271,7 @@ Event unggulan:
 
 ```text
 AI Co-Creation Lab Makassar
-16 mahasiswa dan 4 UMKM berkolaborasi menciptakan solusi berbantuan AI untuk kebutuhan usaha yang nyata.
+20 mahasiswa dan 5 UMKM berkolaborasi menciptakan solusi berbantuan AI untuk kebutuhan usaha yang nyata.
 ```
 
 Future features yang belum aktif harus diberi label `Segera Hadir`, bukan dibuat seolah-olah sudah bekerja.
@@ -282,8 +282,8 @@ Buat landing page lengkap dan polished.
 
 Hero metrics:
 
-- 16 Mahasiswa
-- 4 UMKM
+- 20 Mahasiswa
+- 5 UMKM
 - 4 Tim
 - 4 Solusi AI
 

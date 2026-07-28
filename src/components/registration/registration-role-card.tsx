@@ -46,7 +46,7 @@ export function RegistrationRoleCard({
       </ul>
       <Link
         href={href}
-        className="mt-8 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand-600"
+        className="button-loop mt-8 inline-flex min-h-12 w-fit max-w-full self-center items-center justify-center gap-2 rounded-full bg-brand px-5 text-center text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand-600"
       >
         {cta}
         <ArrowRight className="h-4 w-4" aria-hidden="true" />

@@ -27,6 +27,7 @@ type EventCardProps = {
     | "fee"
     | "capacity"
     | "participantComposition"
+    | "branding"
   >;
   image: {
     src: string;
@@ -115,6 +116,16 @@ export function EventCard({
             <EventStatusBadge tone="neutral">
               {event.registrationStatusLabel}
             </EventStatusBadge>
+          </div>
+          <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/70 bg-white/95 p-3 shadow-[0_12px_30px_rgba(1,34,98,0.16)] backdrop-blur-sm sm:inset-x-auto sm:bottom-5 sm:left-5 sm:w-[80%] sm:max-w-[21rem] sm:p-4">
+            <Image
+              src={event.branding.logo.src}
+              alt={event.branding.logo.alt}
+              width={event.branding.logo.width}
+              height={event.branding.logo.height}
+              sizes="(max-width: 639px) calc(100vw - 4rem), 21rem"
+              className="h-auto w-full"
+            />
           </div>
         </div>
 

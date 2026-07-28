@@ -68,6 +68,21 @@ export interface EventPartner {
   readonly fallbackLabel: string;
 }
 
+export interface EventImageAsset {
+  readonly src: string;
+  readonly alt: string;
+  readonly width: number;
+  readonly height: number;
+}
+
+export interface EventEcosystemMember {
+  readonly id: string;
+  readonly name: string;
+  readonly approvedForDisplay: true;
+  readonly cluster: "main" | "bumn";
+  readonly logo: EventImageAsset;
+}
+
 export interface EventRegistrationOption {
   readonly role: RegistrationRole;
   readonly title: string;
@@ -91,6 +106,9 @@ export interface EventConfig {
   readonly tagline: string;
   readonly description: string;
   readonly featuredSummary: string;
+  readonly branding: {
+    readonly logo: EventImageAsset;
+  };
   readonly status: EventStatus;
   readonly statusLabel: string;
   readonly registrationOpen: boolean;
@@ -148,6 +166,15 @@ export interface EventConfig {
     readonly partnership: EventLandingSection;
     readonly registrationCta: EventLandingSection;
   };
+  readonly sponsorship: EventLandingSection & {
+    readonly placeholderLabel: "Your Brand";
+    readonly ctaLabel: string;
+    readonly ctaHref: `mailto:${string}`;
+  };
+  readonly supportingEcosystem: EventLandingSection & {
+    readonly disclaimer: string;
+    readonly members: readonly EventEcosystemMember[];
+  };
   readonly problem: string;
   readonly solution: string;
   readonly importantLimitation: string;
@@ -187,9 +214,17 @@ export const aiCoCreationLabEvent = {
   title: "AI Co Creation Lab Makassar",
   tagline: "From AI Users to Local Problem Solvers",
   description:
-    "Program praktik satu hari yang mempertemukan 16 mahasiswa dan 4 UMKM untuk membuat solusi digital dari tantangan usaha yang nyata.",
+    "Program praktik satu hari yang mempertemukan 20 mahasiswa dan 5 UMKM untuk meracik solusi AI yang simpel, aman, dan relevan bagi kebutuhan usaha nyata.",
   featuredSummary:
-    "16 mahasiswa dan 4 UMKM duduk bareng, membahas masalah usaha yang real, lalu membuat solusi digital yang bisa langsung dicoba.",
+    "20 mahasiswa dan 5 UMKM satu meja, bongkar masalah usaha yang real, lalu bikin solusi AI yang bisa langsung dicoba.",
+  branding: {
+    logo: {
+      src: "/event-brand/ai-co-creation-lab-makassar.webp",
+      alt: "Logo AI Co Creation Lab Makassar, From AI Users to Local Problem Solvers",
+      width: 1000,
+      height: 268,
+    },
+  },
   status: "draft",
   statusLabel: "Dalam Persiapan",
   registrationOpen: false,
@@ -201,7 +236,7 @@ export const aiCoCreationLabEvent = {
     displayValue: "Gratis",
   },
   capacity: {
-    total: 20,
+    total: 25,
     statusLabel: "Kuota terbatas",
   },
   date: {
@@ -234,14 +269,14 @@ export const aiCoCreationLabEvent = {
     {
       id: "students",
       label: "Mahasiswa",
-      target: 16,
+      target: 20,
       unit: "orang",
       kind: "target",
     },
     {
       id: "umkm",
       label: "UMKM",
-      target: 4,
+      target: 5,
       unit: "usaha",
       kind: "target",
     },
@@ -303,21 +338,21 @@ export const aiCoCreationLabEvent = {
   landingSections: {
     whyItMatters: {
       eyebrow: "Mengapa program ini penting",
-      title: "Teknologi menjadi berarti ketika menjawab kebutuhan nyata.",
+      title: "AI makin seru kalau hasilnya benar benar kepakai.",
       description:
-        "AI Co Creation Lab Makassar mempertemukan akses teknologi mahasiswa dengan kebutuhan praktis pelaku UMKM.",
+        "Di sini, rasa penasaran mahasiswa bertemu langsung dengan tantangan harian pelaku UMKM.",
     },
     problem: {
       eyebrow: "Masalah yang dijawab",
-      title: "Akses AI dan kebutuhan usaha belum selalu bertemu.",
+      title: "Akses AI ada. Masalah usaha juga ada. Keduanya perlu satu meja.",
       description:
-        "Mahasiswa membutuhkan pengalaman menyelesaikan masalah pengguna nyata, sementara pelaku UMKM dapat terkendala perangkat, waktu, literasi, atau pendampingan.",
+        "Mahasiswa butuh pengalaman memecahkan masalah nyata, sementara UMKM butuh solusi yang praktis, mudah dipahami, dan tidak bikin tambah ribet.",
     },
     concept: {
       eyebrow: "Konsep program",
-      title: "Belajar, merancang, menguji, lalu menyerahkan.",
+      title: "Dengar masalahnya, bikin bareng, lalu tes sampai kepakai.",
       description:
-        "Empat tim akan memahami satu kebutuhan UMKM, membuat workflow atau prototype sederhana, mengujinya bersama, dan menyiapkan panduan penggunaan melalui smartphone.",
+        "Setiap tim memahami kebutuhan UMKM, membuat alur kerja atau prototype sederhana, mengujinya bersama, lalu menyiapkan panduan yang ramah smartphone.",
     },
     eventFlow: {
       eyebrow: "Alur kegiatan",
@@ -327,9 +362,9 @@ export const aiCoCreationLabEvent = {
     },
     participantComposition: {
       eyebrow: "Komposisi peserta",
-      title: "Kolaborasi mahasiswa dan challenge partner UMKM.",
+      title: "20 mahasiswa, 5 UMKM, dan banyak ide yang siap diuji.",
       description:
-        "Target program terdiri atas empat tim lintas peran. Setiap tim berfokus pada satu kebutuhan usaha.",
+        "Peserta bekerja lintas peran dengan fokus pada kebutuhan usaha yang nyata, terukur, dan aman untuk dikerjakan.",
     },
     partnership: {
       eyebrow: "Kolaborasi",
@@ -339,15 +374,143 @@ export const aiCoCreationLabEvent = {
     },
     registrationCta: {
       eyebrow: "Ambil bagian",
-      title: "Pilih peranmu dalam proses co creation.",
+      title: "Pilih peranmu, lalu bawa energi terbaikmu.",
       description:
         "Pendaftaran adalah tahap aplikasi dan tidak berarti penerimaan otomatis. Status pembukaan akan diperbarui setelah kesiapan pendaftaran selesai.",
     },
   },
+  sponsorship: {
+    eyebrow: "Sponsorship",
+    title: "Biar ide bagus ini bisa jalan lebih jauh, brand kamu bisa ikut ambil bagian.",
+    description:
+      "Dukung ruang belajar dan co creation bagi mahasiswa serta UMKM lokal melalui kontribusi yang relevan dan transparan.",
+    placeholderLabel: "Your Brand",
+    ctaLabel: "Jadi Supporting Partner",
+    ctaHref:
+      "mailto:hello@dekatlokal.com?subject=Kolaborasi%20AI%20Co%20Creation%20Lab%20Makassar",
+  },
+  supportingEcosystem: {
+    eyebrow: "Our Supporting Ecosystem",
+    title: "Banyak pihak, satu semangat untuk tumbuh bareng.",
+    description:
+      "AI Co Creation Lab Makassar tumbuh dari kolaborasi mahasiswa, UMKM, institusi, perusahaan, dan komunitas yang peduli pada talenta muda serta digitalisasi usaha lokal.",
+    disclaimer:
+      "Logo ditampilkan sebagai bagian dari ecosystem program dan konteks kolaborasi, bukan sebagai daftar sponsor acara.",
+    members: [
+      {
+        id: "dekatlokal",
+        name: "DekatLokal",
+        approvedForDisplay: true,
+        cluster: "main",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-dekatlokal.webp",
+          alt: "Logo DekatLokal",
+          width: 900,
+          height: 372,
+        },
+      },
+      {
+        id: "bakti-nusa",
+        name: "BAKTI NUSA",
+        approvedForDisplay: true,
+        cluster: "main",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-baktinusa.webp",
+          alt: "Logo BAKTI NUSA",
+          width: 900,
+          height: 372,
+        },
+      },
+      {
+        id: "dompet-dhuafa",
+        name: "Dompet Dhuafa",
+        approvedForDisplay: true,
+        cluster: "main",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-dompetdhuafa.webp",
+          alt: "Logo Dompet Dhuafa",
+          width: 900,
+          height: 372,
+        },
+      },
+      {
+        id: "komdigi-makassar",
+        name: "KOMDIGI Makassar",
+        approvedForDisplay: true,
+        cluster: "main",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-komdigimakassar.webp",
+          alt: "Logo KOMDIGI Makassar",
+          width: 900,
+          height: 372,
+        },
+      },
+      {
+        id: "informatika-unhas",
+        name: "Departemen Teknik Informatika Universitas Hasanuddin",
+        approvedForDisplay: true,
+        cluster: "main",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-informatikaunhas.webp",
+          alt: "Logo Departemen Teknik Informatika Universitas Hasanuddin",
+          width: 520,
+          height: 520,
+        },
+      },
+      {
+        id: "great-edunesia",
+        name: "GREAT Edunesia",
+        approvedForDisplay: true,
+        cluster: "main",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-great.webp",
+          alt: "Logo GREAT Edunesia",
+          width: 900,
+          height: 372,
+        },
+      },
+      {
+        id: "danantara-indonesia",
+        name: "Danantara Indonesia",
+        approvedForDisplay: true,
+        cluster: "bumn",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-danantara.webp",
+          alt: "Logo Danantara Indonesia",
+          width: 900,
+          height: 372,
+        },
+      },
+      {
+        id: "rumah-bumn-makassar",
+        name: "Rumah BUMN Makassar",
+        approvedForDisplay: true,
+        cluster: "bumn",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-rumahbumn.webp",
+          alt: "Logo Rumah BUMN Makassar",
+          width: 900,
+          height: 372,
+        },
+      },
+      {
+        id: "bri",
+        name: "Bank Rakyat Indonesia",
+        approvedForDisplay: true,
+        cluster: "bumn",
+        logo: {
+          src: "/logo-ecosystem/optimized/logo-bri.webp",
+          alt: "Logo Bank Rakyat Indonesia",
+          width: 900,
+          height: 372,
+        },
+      },
+    ],
+  },
   problem:
     "Mahasiswa telah menggunakan AI untuk berbagai kebutuhan, tetapi belum semuanya memiliki pengalaman mengubah teknologi tersebut menjadi solusi bagi pengguna nyata. Pada sisi lain, pelaku UMKM memiliki permasalahan usaha yang dapat dibantu AI, tetapi terkendala perangkat, waktu, literasi, atau pendampingan.",
   solution:
-    "AI Co Creation Lab Makassar mempertemukan mahasiswa dan UMKM dalam empat tim. Setiap tim memahami satu masalah, menyusun alur kerja atau prototype sederhana, menguji hasil bersama UMKM, lalu menyerahkan panduan yang dapat digunakan kembali melalui smartphone.",
+    "AI Co Creation Lab Makassar mempertemukan mahasiswa dan UMKM dalam tim kolaborasi. Setiap tim memahami satu masalah, menyusun alur kerja atau prototype sederhana, menguji hasil bersama UMKM, lalu menyerahkan panduan yang dapat digunakan kembali melalui smartphone.",
   importantLimitation:
     "Program tidak menjanjikan pembangunan aplikasi kompleks dalam satu hari. Target kegiatan adalah solusi AI sederhana, relevan, aman, dapat diuji, dan dapat digunakan ulang.",
   howItWorks: [
@@ -389,7 +552,7 @@ export const aiCoCreationLabEvent = {
     {
       id: "student",
       label: "Mahasiswa problem solver",
-      target: 16,
+      target: 20,
       unit: "orang",
       description:
         "Berkolaborasi dalam peran problem framing, AI workflow, quality and ethics, serta dokumentasi.",
@@ -397,7 +560,7 @@ export const aiCoCreationLabEvent = {
     {
       id: "umkm",
       label: "UMKM challenge partner",
-      target: 4,
+      target: 5,
       unit: "usaha",
       description:
         "Membawa kebutuhan usaha untuk divalidasi, diuji, dan dipantau bersama tim.",

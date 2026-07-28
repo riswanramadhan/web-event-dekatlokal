@@ -21,6 +21,12 @@ File utama yang ditinjau:
 
 Source produksi harus dibangun mandiri di `src` dan tidak boleh mengimpor runtime dari folder referensi.
 
+Untuk pola informasi event, audit juga membandingkan susunan ringkas pada
+`https://luma.com/` dan daftar event `https://www.ted.com/tedx/events`.
+Yang diambil hanya prinsip urutan informasi: nama event, status, waktu, lokasi,
+kapasitas, lalu CTA yang langsung. Branding, aset, copy, dan komposisi visual
+tetap dibangun khusus untuk DekatEvent.
+
 ## Temuan visual
 
 ### Typography

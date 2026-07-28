@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { MobileBottomNavigation } from "@/components/layout/mobile-bottom-navigation";
 import { AnimationProvider } from "@/components/motion/animation-provider";
+import { RouteTransition } from "@/components/motion/route-transition";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { getSiteUrl } from "@/lib/site";
 
@@ -92,8 +93,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${poppins.variable} ${geistMono.variable}`}>
-      <body className="flex min-h-screen flex-col pb-[calc(4.75rem+env(safe-area-inset-bottom))] antialiased md:pb-0">
+      <body className="flex min-h-screen flex-col overflow-x-clip pb-[calc(6.1rem+env(safe-area-inset-bottom))] antialiased md:pb-0">
         <AnimationProvider />
+        <RouteTransition />
         <ServiceWorkerRegistration />
         <a
           href="#main-content"

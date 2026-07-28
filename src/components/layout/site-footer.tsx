@@ -110,7 +110,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-slate-200 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col items-center gap-2 border-t border-slate-200 py-6 text-center text-sm text-slate-500 sm:flex-row sm:justify-between sm:text-left">
           <p>© {new Date().getFullYear()} DekatLokal. Built for Local Growth.</p>
           <p>Powered by DekatLokal</p>
         </div>

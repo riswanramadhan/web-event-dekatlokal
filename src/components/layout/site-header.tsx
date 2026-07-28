@@ -18,7 +18,7 @@ export function SiteHeader() {
       <div className="page-container">
         <nav
           aria-label="Navigasi utama"
-          className="grid min-h-16 grid-cols-[1fr_auto_1fr] items-center rounded-[1.2rem] border border-slate-200 bg-white px-4 shadow-[0_12px_32px_rgba(1,34,98,0.08)]"
+          className="grid min-h-16 grid-cols-[1fr_auto_1fr] items-center rounded-[1.2rem] border border-white/90 bg-white/90 px-4 shadow-[0_12px_32px_rgba(1,34,98,0.08)] backdrop-blur-xl"
         >
           <div className="justify-self-start">
             <BrandLockup />
