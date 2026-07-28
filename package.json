@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "build:open-next": "npm run build && node scripts/patch-opennext-runtime.mjs && opennextjs-cloudflare build --skipNextBuild",
+    "build": "npm run typecheck && next build",
+    "build:open-next": "npm run build && node scripts/patch-opennext-runtime.mjs && opennextjs-cloudflare build --skipNextBuild && wrangler deploy --dry-run --outdir .open-next/.wrangler-bundle && node scripts/finalize-opennext-runtime.mjs",
     "start": "next start",
     "lint": "eslint src --max-warnings=0",
     "typecheck": "tsc --noEmit"
