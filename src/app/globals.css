@@ -603,3 +603,127 @@ html:not(.aos-ready) [data-aos] {
       0 0;
   }
 }
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: auto;
+    margin: 14mm;
+  }
+
+  html:has(.progress-report),
+  body:has(.progress-report) {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  body:has(.progress-report) {
+    min-height: 0;
+    padding: 0 !important;
+    background-image: none !important;
+    animation: none !important;
+  }
+
+  body:has(.progress-report) > header,
+  body:has(.progress-report) > footer,
+  body:has(.progress-report) > nav[aria-label="Navigasi bawah"],
+  body:has(.progress-report) > a[href="#main-content"],
+  body:has(.progress-report) > button[aria-label="Tutup menu lainnya"],
+  body:has(.progress-report) > [role="dialog"],
+  body:has(.progress-report) > [role="status"],
+  body:has(.progress-report) .route-progress-track,
+  body:has(.progress-report) .route-loader-card,
+  .progress-report .report-actions,
+  .progress-report .report-action,
+  .progress-report [data-report-action],
+  .progress-report .print-hidden,
+  .progress-report .report-decoration {
+    display: none !important;
+  }
+
+  body:has(.progress-report) > main,
+  body:has(.progress-report) .route-page-enter,
+  .progress-report {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #ffffff !important;
+    animation: none !important;
+  }
+
+  .progress-report,
+  .progress-report * {
+    box-shadow: none !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .progress-report [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .progress-report .print-only {
+    display: block !important;
+  }
+
+  .progress-report .report-section,
+  .progress-report .report-card,
+  .progress-report [data-report-section],
+  .progress-report blockquote,
+  .progress-report figure,
+  .progress-report li,
+  .progress-report tr {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  .progress-report h1,
+  .progress-report h2,
+  .progress-report h3,
+  .progress-report h4 {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+
+  .progress-report p,
+  .progress-report li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  .progress-report .report-table-wrapper,
+  .progress-report [data-report-table] {
+    overflow: visible !important;
+  }
+
+  .progress-report table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: auto;
+    border-collapse: collapse;
+    font-size: 9pt;
+  }
+
+  .progress-report thead {
+    display: table-header-group;
+  }
+
+  .progress-report th,
+  .progress-report td {
+    padding: 0.42rem 0.5rem !important;
+    border-color: #cbd5e1 !important;
+    overflow-wrap: anywhere;
+    white-space: normal !important;
+    color: #111827 !important;
+  }
+
+  .progress-report a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}
