@@ -1,15 +1,13 @@
 "use server";
 
-import { createHash, timingSafeEqual } from "node:crypto";
-
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 import {
-  ADMIN_SESSION_COOKIE,
-  SESSION_MAX_AGE_SECONDS,
-  createSessionToken,
-} from "@/lib/admin/session";
+  createSupabaseServerClient,
+  isAdminUser,
+  recordAuditEvent,
+} from "@/lib/admin/auth";
 import {
   checkRateLimit,
   getClientIp,
@@ -19,36 +17,38 @@ import {
 const LOGIN_ATTEMPT_LIMIT = 5;
 const LOGIN_WINDOW_SECONDS = 15 * 60;
 
+/**
+ * One message for every failure mode (unknown email, wrong password, valid
+ * account that is not an administrator). Distinct messages would let an
+ * attacker enumerate which addresses have admin access.
+ */
+const GENERIC_FAILURE = "Email atau password salah.";
+
+const credentialsSchema = z.object({
+  email: z.string().trim().toLowerCase().email().max(254),
+  password: z.string().min(1).max(200),
+});
+
 export type LoginActionState = {
   status: "idle" | "error";
   message: string;
 };
 
-function safeCompare(a: string, b: string): boolean {
-  const hashA = createHash("sha256").update(a).digest();
-  const hashB = createHash("sha256").update(b).digest();
-  return timingSafeEqual(hashA, hashB);
-}
-
 export async function loginAction(
   _prevState: LoginActionState,
   formData: FormData,
 ): Promise<LoginActionState> {
-  const adminPassword = process.env.ADMIN_PASSWORD?.trim();
-  const sessionSecretConfigured = Boolean(
-    process.env.ADMIN_SESSION_SECRET?.trim(),
-  );
+  const supabase = await createSupabaseServerClient();
 
-  if (!adminPassword || !sessionSecretConfigured) {
+  if (!supabase) {
     return {
       status: "error",
       message:
-        "Admin belum dikonfigurasi. Set ADMIN_PASSWORD dan ADMIN_SESSION_SECRET di environment.",
+        "Supabase belum dikonfigurasi. Lengkapi NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.",
     };
   }
 
-  // Throttle before comparing so a brute-force attempt cannot run unbounded
-  // against a single shared password.
+  // Throttle first so credential stuffing cannot run unbounded.
   const rateLimitKey = `admin-login:${await getClientIp()}`;
   const rateLimit = checkRateLimit(
     rateLimitKey,
@@ -65,36 +65,34 @@ export async function loginAction(
     };
   }
 
-  // Not trimmed: a password may legitimately contain leading/trailing spaces.
-  const password = String(formData.get("password") ?? "");
+  const credentials = credentialsSchema.safeParse({
+    email: formData.get("email"),
+    password: formData.get("password"),
+  });
 
-  if (!password) {
-    return { status: "error", message: "Password wajib diisi." };
+  if (!credentials.success) {
+    return { status: "error", message: GENERIC_FAILURE };
   }
 
-  if (!safeCompare(password, adminPassword)) {
-    return { status: "error", message: "Password salah." };
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: credentials.data.email,
+    password: credentials.data.password,
+  });
+
+  if (error || !data.user) {
+    return { status: "error", message: GENERIC_FAILURE };
+  }
+
+  // Authenticated is not authorized. A valid Supabase account only reaches the
+  // panel when it is on the admin allowlist; otherwise drop the session that
+  // signInWithPassword just established.
+  if (!(await isAdminUser(data.user.id))) {
+    await supabase.auth.signOut();
+    return { status: "error", message: GENERIC_FAILURE };
   }
 
   resetRateLimit(rateLimitKey);
-
-  const token = await createSessionToken();
-
-  if (!token) {
-    return {
-      status: "error",
-      message: "Gagal membuat sesi. Periksa ADMIN_SESSION_SECRET.",
-    };
-  }
-
-  const cookieStore = await cookies();
-  cookieStore.set(ADMIN_SESSION_COOKIE, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: SESSION_MAX_AGE_SECONDS,
-    path: "/",
-  });
+  await recordAuditEvent("login", data.user.email ?? credentials.data.email);
 
   redirect("/admin");
 }

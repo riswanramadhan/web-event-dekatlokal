@@ -1,35 +1,96 @@
+import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin/session";
-
 const LOGIN_PATH = "/admin/login";
+
+function readPublicEnvironment() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const publishableKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY?.trim();
+
+  if (!url || !publishableKey) {
+    return null;
+  }
+
+  return { url, publishableKey };
+}
 
 export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Exact match only: a prefix check would also let "/admin/login-anything"
   // bypass the session gate.
-  if (pathname === LOGIN_PATH || pathname === `${LOGIN_PATH}/`) {
-    return NextResponse.next();
+  const isLoginRoute =
+    pathname === LOGIN_PATH || pathname === `${LOGIN_PATH}/`;
+
+  const environment = readPublicEnvironment();
+
+  // Without credentials nothing can be verified. Fail closed for the panel and
+  // let the login page render its own configuration notice.
+  if (!environment) {
+    return isLoginRoute
+      ? NextResponse.next()
+      : NextResponse.redirect(new URL(LOGIN_PATH, request.url));
   }
 
-  const token = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-  const isValid = await verifySessionToken(token);
+  // This response accumulates refreshed auth cookies and must be the object
+  // that is ultimately returned, otherwise the refreshed session is dropped.
+  let response = NextResponse.next({ request });
 
-  if (!isValid) {
-    const response = NextResponse.redirect(new URL(LOGIN_PATH, request.url));
+  const supabase = createServerClient(
+    environment.url,
+    environment.publishableKey,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          for (const { name, value } of cookiesToSet) {
+            request.cookies.set(name, value);
+          }
 
-    // Drop an expired or tampered cookie so the browser stops resending it.
-    if (token) {
-      response.cookies.delete(ADMIN_SESSION_COOKIE);
+          response = NextResponse.next({ request });
+
+          for (const { name, value, options } of cookiesToSet) {
+            response.cookies.set(name, value, options);
+          }
+        },
+      },
+    },
+  );
+
+  // getUser() validates the token with the auth server and refreshes it when
+  // needed. getSession() must not be used here: it trusts the cookie contents
+  // without verification.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (isLoginRoute) {
+    // Already signed in: skip the login form. Authorization is still enforced
+    // by the dashboard layout, so a non-admin lands back here.
+    if (user) {
+      return NextResponse.redirect(new URL("/admin", request.url));
     }
 
     return response;
   }
 
-  // Cache and indexing headers for the admin area are set in next.config.ts
-  // so they also cover the login page, which never reaches this branch.
-  return NextResponse.next();
+  if (!user) {
+    const redirectResponse = NextResponse.redirect(
+      new URL(LOGIN_PATH, request.url),
+    );
+
+    // Preserve any cookie clearing performed during the failed refresh.
+    for (const cookie of response.cookies.getAll()) {
+      redirectResponse.cookies.set(cookie);
+    }
+
+    return redirectResponse;
+  }
+
+  return response;
 }
 
 export const config = {

@@ -23,17 +23,27 @@ export function LoginForm() {
   );
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form action={formAction} className="space-y-5">
       {state.status === "error" ? (
         <FormNotice tone="error">{state.message}</FormNotice>
       ) : null}
 
-      <FormField label="Password admin" name="password" required>
+      <FormField label="Email" name="email" required>
+        <TextInput
+          name="email"
+          type="email"
+          autoComplete="username"
+          placeholder="admin@email.com"
+          autoFocus
+          required
+        />
+      </FormField>
+
+      <FormField label="Password" name="password" required>
         <TextInput
           name="password"
           type="password"
           autoComplete="current-password"
-          autoFocus
           required
         />
       </FormField>
