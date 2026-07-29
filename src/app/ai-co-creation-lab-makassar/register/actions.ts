@@ -3,12 +3,19 @@
 import "server-only";
 
 import { randomInt } from "node:crypto";
+
+import { headers } from "next/headers";
 import { z, type ZodError } from "zod";
 
 import {
   getFormDataString,
   getFormDataStrings,
 } from "@/lib/registration/normalizers";
+import {
+  checkRateLimit,
+  getClientIp,
+  hashIp,
+} from "@/lib/security/rate-limit";
 import type {
   RegistrationActionState,
   RegistrationType,
@@ -27,6 +34,9 @@ const DEFAULT_EVENT_SLUG = "ai-co-creation-lab-makassar";
 const SUBMISSION_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 const SUBMISSION_CODE_LENGTH = 6;
 const MAX_INSERT_ATTEMPTS = 4;
+const SUBMIT_ATTEMPT_LIMIT = 5;
+const SUBMIT_WINDOW_SECONDS = 10 * 60;
+const USER_AGENT_MAX_LENGTH = 400;
 
 const eventSlugSchema = z
   .string()
@@ -264,6 +274,47 @@ async function validateTurnstile(
       message: "Verifikasi keamanan sedang bermasalah. Silakan coba kembali.",
     };
   }
+}
+
+/**
+ * Abuse-forensics context stored alongside each row. The IP is hashed, never
+ * stored raw, so the data set stays minimal if it is ever exported.
+ */
+async function readRequestContext(): Promise<Record<string, unknown>> {
+  try {
+    const headerList = await headers();
+    const userAgent = headerList.get("user-agent")?.trim();
+
+    return {
+      ip_hash: hashIp(await getClientIp()),
+      user_agent: userAgent
+        ? userAgent.slice(0, USER_AGENT_MAX_LENGTH)
+        : null,
+    };
+  } catch {
+    return { ip_hash: null, user_agent: null };
+  }
+}
+
+async function enforceSubmissionRateLimit(
+  type: RegistrationType,
+): Promise<RegistrationActionState | null> {
+  const rateLimit = checkRateLimit(
+    `register:${type}:${await getClientIp()}`,
+    SUBMIT_ATTEMPT_LIMIT,
+    SUBMIT_WINDOW_SECONDS,
+  );
+
+  if (rateLimit.allowed) {
+    return null;
+  }
+
+  const retryAfterMinutes = Math.ceil(rateLimit.retryAfterSeconds / 60);
+
+  return {
+    status: "error",
+    message: `Terlalu banyak percobaan pengiriman. Silakan coba lagi dalam ${retryAfterMinutes} menit.`,
+  };
 }
 
 function generateSubmissionCode(type: RegistrationType): string {
@@ -525,6 +576,12 @@ export async function submitStudentRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
+  const rateLimited = await enforceSubmissionRateLimit("student");
+
+  if (rateLimited) {
+    return rateLimited;
+  }
+
   const parsed = studentRegistrationSchema.safeParse(
     studentCandidate(formData),
   );
@@ -545,17 +602,22 @@ export async function submitStudentRegistration(
     return event.state;
   }
 
-  return insertRegistration(
-    event.eventId,
-    "student",
-    studentRow(parsed.data),
-  );
+  return insertRegistration(event.eventId, "student", {
+    ...studentRow(parsed.data),
+    ...(await readRequestContext()),
+  });
 }
 
 export async function submitUmkmRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
+  const rateLimited = await enforceSubmissionRateLimit("umkm");
+
+  if (rateLimited) {
+    return rateLimited;
+  }
+
   const parsed = umkmRegistrationSchema.safeParse(umkmCandidate(formData));
 
   if (!parsed.success) {
@@ -574,5 +636,8 @@ export async function submitUmkmRegistration(
     return event.state;
   }
 
-  return insertRegistration(event.eventId, "umkm", umkmRow(parsed.data));
+  return insertRegistration(event.eventId, "umkm", {
+    ...umkmRow(parsed.data),
+    ...(await readRequestContext()),
+  });
 }

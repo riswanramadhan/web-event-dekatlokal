@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Poppins } from "next/font/google";
 
-import { SiteFooter } from "@/components/layout/site-footer";
-import { SiteHeader } from "@/components/layout/site-header";
-import { MobileBottomNavigation } from "@/components/layout/mobile-bottom-navigation";
+import { ChromeGate } from "@/components/layout/chrome-gate";
 import { AnimationProvider } from "@/components/motion/animation-provider";
 import { RouteTransition } from "@/components/motion/route-transition";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
@@ -93,7 +91,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`${poppins.variable} ${geistMono.variable}`}>
-      <body className="flex min-h-screen flex-col overflow-x-clip pb-[calc(6.1rem+env(safe-area-inset-bottom))] antialiased md:pb-0">
+      <body className="flex min-h-screen flex-col overflow-x-clip antialiased">
         <AnimationProvider />
         <RouteTransition />
         <ServiceWorkerRegistration />
@@ -103,12 +101,7 @@ export default function RootLayout({
         >
           Lewati ke konten
         </a>
-        <SiteHeader />
-        <main id="main-content" className="flex-1">
-          {children}
-        </main>
-        <SiteFooter />
-        <MobileBottomNavigation />
+        <ChromeGate>{children}</ChromeGate>
       </body>
     </html>
   );
