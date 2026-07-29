@@ -1,13 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { requireAdmin } from "@/lib/admin/auth";
+import {
+  Avatar,
+  Card,
+  PageHeader,
+  StatCard,
+  StatusBadge,
+  TypeBadge,
+} from "@/components/admin/ui";
 import { EmptyState } from "@/components/ui/empty-state";
-import { EventStatusBadge } from "@/components/ui/status-badge";
+import { requireAdmin } from "@/lib/admin/auth";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
+import { RegistrationFilters } from "./registration-filters";
+
 export const metadata: Metadata = {
-  title: "Dashboard Pendaftar",
+  title: "Daftar Pendaftar",
   robots: { index: false, follow: false },
 };
 
@@ -48,11 +57,6 @@ type RegistrationRow = {
   events: EmbeddedEvent | EmbeddedEvent[] | null;
 };
 
-function eventTitle(events: RegistrationRow["events"]): string {
-  const event = Array.isArray(events) ? events[0] : events;
-  return event?.title ?? "-";
-}
-
 function isRegistrationType(value: unknown): value is RegistrationType {
   return REGISTRATION_TYPES.includes(value as RegistrationType);
 }
@@ -61,27 +65,9 @@ function isRegistrationStatus(value: unknown): value is RegistrationStatus {
   return REGISTRATION_STATUSES.includes(value as RegistrationStatus);
 }
 
-function statusTone(
-  status: RegistrationStatus,
-): "blue" | "green" | "amber" | "neutral" {
-  if (
-    status === "accepted" ||
-    status === "confirmed" ||
-    status === "attended" ||
-    status === "completed"
-  ) {
-    return "green";
-  }
-
-  if (status === "under_review" || status === "shortlisted") {
-    return "amber";
-  }
-
-  if (status === "rejected" || status === "withdrawn") {
-    return "neutral";
-  }
-
-  return "blue";
+function eventTitle(events: RegistrationRow["events"]): string {
+  const event = Array.isArray(events) ? events[0] : events;
+  return event?.title ?? "-";
 }
 
 function formatDate(value: string): string {
@@ -104,11 +90,20 @@ function buildQueryString(params: Record<string, string | undefined>): string {
   return queryString ? `?${queryString}` : "";
 }
 
+/**
+ * Escapes PostgREST reserved characters before interpolating user input into
+ * an `or(...)` filter, so a search term cannot alter the filter structure.
+ */
+function escapeFilterValue(value: string): string {
+  return value.replace(/[(),*\\"]/g, " ").trim();
+}
+
 type AdminDashboardPageProps = {
   searchParams: Promise<{
     type?: string;
     status?: string;
     page?: string;
+    q?: string;
   }>;
 };
 
@@ -126,16 +121,21 @@ export default async function AdminDashboardPage({
   const statusFilter = isRegistrationStatus(resolvedSearchParams.status)
     ? resolvedSearchParams.status
     : undefined;
+  const rawQuery = (resolvedSearchParams.q ?? "").slice(0, 120);
+  const searchQuery = escapeFilterValue(rawQuery);
   const currentPage = Math.max(1, Number(resolvedSearchParams.page) || 1);
 
   const supabase = getSupabaseAdminClient();
 
   if (!supabase) {
     return (
-      <EmptyState
-        title="Supabase belum dikonfigurasi"
-        description="Isi NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY di environment untuk melihat data pendaftar."
-      />
+      <>
+        <PageHeader title="Daftar Pendaftar" />
+        <EmptyState
+          title="Supabase belum dikonfigurasi"
+          description="Isi NEXT_PUBLIC_SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY di environment untuk melihat data pendaftar."
+        />
+      </>
     );
   }
 
@@ -159,171 +159,226 @@ export default async function AdminDashboardPage({
     query = query.eq("status", statusFilter);
   }
 
-  const { data, count, error } = await query.returns<RegistrationRow[]>();
+  if (searchQuery) {
+    query = query.or(
+      [
+        `full_name.ilike.%${searchQuery}%`,
+        `email.ilike.%${searchQuery}%`,
+        `whatsapp.ilike.%${searchQuery}%`,
+        `submission_code.ilike.%${searchQuery}%`,
+      ].join(","),
+    );
+  }
+
+  const [listResult, totalsResult] = await Promise.all([
+    query.returns<RegistrationRow[]>(),
+    supabase
+      .from("registrations")
+      .select("registration_type")
+      .returns<{ registration_type: RegistrationType }[]>(),
+  ]);
+
+  const { data, count, error } = listResult;
 
   if (error) {
-    return <EmptyState title="Gagal memuat data" description={error.message} />;
+    return (
+      <>
+        <PageHeader title="Daftar Pendaftar" />
+        <EmptyState title="Gagal memuat data" description={error.message} />
+      </>
+    );
   }
 
   const registrations = data ?? [];
   const totalCount = count ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const hasFilters = Boolean(typeFilter || statusFilter || rawQuery);
+
+  const allRows = totalsResult.data ?? [];
+  const totalAll = allRows.length;
+  const totalStudent = allRows.filter(
+    (row) => row.registration_type === "student",
+  ).length;
+  const totalUmkm = allRows.filter(
+    (row) => row.registration_type === "umkm",
+  ).length;
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold text-ink">Daftar Pendaftar</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          {totalCount} pendaftar{typeFilter || statusFilter ? " (terfilter)" : ""}
-        </p>
+    <>
+      <PageHeader
+        title="Daftar Pendaftar"
+        description="Data peserta yang sudah mengirim formulir pendaftaran."
+      />
+
+      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+        <StatCard label="Total pendaftar" value={totalAll} tone="brand" />
+        <StatCard label="Mahasiswa" value={totalStudent} />
+        <StatCard label="UMKM" value={totalUmkm} />
       </div>
 
-      <form
-        method="get"
-        className="flex flex-wrap items-end gap-4 rounded-2xl border border-slate-200 bg-white p-4"
-      >
-        <div>
-          <label htmlFor="type" className="block text-xs font-semibold text-slate-600">
-            Tipe
-          </label>
-          <select
-            id="type"
-            name="type"
-            defaultValue={typeFilter ?? ""}
-            className="mt-1 min-h-10 rounded-xl border border-slate-300 px-3 text-sm text-ink"
-          >
-            <option value="">Semua</option>
-            {REGISTRATION_TYPES.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label htmlFor="status" className="block text-xs font-semibold text-slate-600">
-            Status
-          </label>
-          <select
-            id="status"
-            name="status"
-            defaultValue={statusFilter ?? ""}
-            className="mt-1 min-h-10 rounded-xl border border-slate-300 px-3 text-sm text-ink"
-          >
-            <option value="">Semua</option>
-            {REGISTRATION_STATUSES.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          className="min-h-10 rounded-full bg-brand px-5 text-sm font-semibold text-white transition hover:bg-brand-600"
-        >
-          Terapkan
-        </button>
-      </form>
+      <div className="mb-4">
+        <RegistrationFilters
+          type={typeFilter ?? ""}
+          status={statusFilter ?? ""}
+          query={rawQuery}
+          hasFilters={hasFilters}
+        />
+      </div>
 
       {registrations.length === 0 ? (
         <EmptyState
-          title="Belum ada pendaftar"
-          description="Belum ada data yang cocok dengan filter ini."
+          title={hasFilters ? "Tidak ada hasil" : "Belum ada pendaftar"}
+          description={
+            hasFilters
+              ? "Tidak ada data yang cocok dengan filter atau kata kunci ini."
+              : "Data akan muncul di sini setelah ada yang mengirim formulir."
+          }
         />
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white">
-          <table className="w-full min-w-[840px] text-left text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-              <tr>
-                <th className="px-4 py-3">Tanggal</th>
-                <th className="px-4 py-3">Event</th>
-                <th className="px-4 py-3">Tipe</th>
-                <th className="px-4 py-3">Nama</th>
-                <th className="px-4 py-3">Kontak</th>
-                <th className="px-4 py-3">Institusi/Usaha</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Kode</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {registrations.map((registration) => (
-                <tr key={registration.id}>
-                  <td className="whitespace-nowrap px-4 py-3 text-slate-600">
-                    {formatDate(registration.created_at)}
-                  </td>
-                  <td className="px-4 py-3 text-ink">
-                    {eventTitle(registration.events)}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">
-                    {registration.registration_type}
-                  </td>
-                  <td className="px-4 py-3 font-medium text-ink">
-                    {registration.full_name}
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">
-                    <div>{registration.email ?? "-"}</div>
-                    <div>{registration.whatsapp}</div>
-                  </td>
-                  <td className="px-4 py-3 text-slate-600">
-                    {registration.institution_name ??
-                      registration.business_name ??
-                      "-"}
-                  </td>
-                  <td className="px-4 py-3">
-                    <EventStatusBadge tone={statusTone(registration.status)}>
-                      {registration.status}
-                    </EventStatusBadge>
-                  </td>
-                  <td className="px-4 py-3 font-mono text-xs text-slate-500">
-                    {registration.submission_code}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <RegistrationTable registrations={registrations} />
       )}
 
       {totalPages > 1 ? (
-        <div className="flex items-center justify-between text-sm text-slate-600">
-          <Link
+        <nav
+          aria-label="Navigasi halaman"
+          className="mt-5 flex items-center justify-between gap-3 text-sm"
+        >
+          <PaginationLink
             href={`/admin${buildQueryString({
               type: typeFilter,
               status: statusFilter,
+              q: rawQuery || undefined,
               page: currentPage > 1 ? String(currentPage - 1) : undefined,
             })}`}
-            aria-disabled={currentPage <= 1}
-            className={`rounded-full border border-slate-200 px-4 py-2 ${
-              currentPage <= 1
-                ? "pointer-events-none opacity-40"
-                : "hover:border-brand-200 hover:text-brand"
-            }`}
+            disabled={currentPage <= 1}
           >
             Sebelumnya
-          </Link>
-          <span>
+          </PaginationLink>
+
+          <span className="text-slate-500">
             Halaman {currentPage} dari {totalPages}
+            <span className="text-slate-400"> · {totalCount} data</span>
           </span>
-          <Link
+
+          <PaginationLink
             href={`/admin${buildQueryString({
               type: typeFilter,
               status: statusFilter,
+              q: rawQuery || undefined,
               page: String(currentPage + 1),
             })}`}
-            aria-disabled={currentPage >= totalPages}
-            className={`rounded-full border border-slate-200 px-4 py-2 ${
-              currentPage >= totalPages
-                ? "pointer-events-none opacity-40"
-                : "hover:border-brand-200 hover:text-brand"
-            }`}
+            disabled={currentPage >= totalPages}
           >
             Berikutnya
-          </Link>
-        </div>
+          </PaginationLink>
+        </nav>
       ) : null}
-    </div>
+    </>
+  );
+}
+
+function RegistrationTable({
+  registrations,
+}: {
+  registrations: RegistrationRow[];
+}) {
+  return (
+    <Card>
+      {/* Negative margins let the table span the card's padding while the
+          card itself keeps its rounded corners. */}
+      <div className="-mx-5 -my-5 overflow-x-auto">
+        <table className="w-full min-w-[860px] text-left text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
+              <th className="px-5 py-3 font-medium">Pendaftar</th>
+              <th className="px-5 py-3 font-medium">Tipe</th>
+              <th className="px-5 py-3 font-medium">Kontak</th>
+              <th className="px-5 py-3 font-medium">Institusi / Usaha</th>
+              <th className="px-5 py-3 font-medium">Status</th>
+              <th className="px-5 py-3 font-medium">Waktu</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {registrations.map((registration) => (
+              <tr
+                key={registration.id}
+                className="transition hover:bg-slate-50/70"
+              >
+                <td className="px-5 py-3.5">
+                  <div className="flex items-center gap-3">
+                    <Avatar name={registration.full_name} />
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-ink">
+                        {registration.full_name}
+                      </p>
+                      <p className="font-mono text-xs text-slate-400">
+                        {registration.submission_code}
+                      </p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-5 py-3.5">
+                  <TypeBadge type={registration.registration_type} />
+                </td>
+                <td className="px-5 py-3.5">
+                  <p className="truncate text-slate-700">
+                    {registration.email ?? "—"}
+                  </p>
+                  <p className="font-mono text-xs text-slate-400">
+                    {registration.whatsapp}
+                  </p>
+                </td>
+                <td className="px-5 py-3.5">
+                  <p className="truncate text-slate-700">
+                    {registration.institution_name ??
+                      registration.business_name ??
+                      "—"}
+                  </p>
+                  <p className="truncate text-xs text-slate-400">
+                    {eventTitle(registration.events)}
+                  </p>
+                </td>
+                <td className="px-5 py-3.5">
+                  <StatusBadge status={registration.status} />
+                </td>
+                <td className="whitespace-nowrap px-5 py-3.5 text-xs text-slate-500">
+                  {formatDate(registration.created_at)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
+
+function PaginationLink({
+  href,
+  disabled,
+  children,
+}: {
+  href: string;
+  disabled: boolean;
+  children: React.ReactNode;
+}) {
+  if (disabled) {
+    return (
+      <span
+        aria-disabled="true"
+        className="rounded-xl border border-slate-200 px-4 py-2 text-slate-300"
+      >
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <Link
+      href={href}
+      className="rounded-xl border border-slate-200 bg-white px-4 py-2 font-medium text-slate-600 transition hover:border-brand-200 hover:text-brand"
+    >
+      {children}
+    </Link>
   );
 }

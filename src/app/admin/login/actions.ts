@@ -50,7 +50,7 @@ export async function loginAction(
 
   // Throttle first so credential stuffing cannot run unbounded.
   const rateLimitKey = `admin-login:${await getClientIp()}`;
-  const rateLimit = checkRateLimit(
+  const rateLimit = await checkRateLimit(
     rateLimitKey,
     LOGIN_ATTEMPT_LIMIT,
     LOGIN_WINDOW_SECONDS,
@@ -91,7 +91,7 @@ export async function loginAction(
     return { status: "error", message: GENERIC_FAILURE };
   }
 
-  resetRateLimit(rateLimitKey);
+  await resetRateLimit(rateLimitKey);
   await recordAuditEvent("login", data.user.email ?? credentials.data.email);
 
   redirect("/admin");

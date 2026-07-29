@@ -1,3 +1,4 @@
+import { getRegistrationState } from "@/lib/event/registration-state";
 import {
   ArrowRight,
   Calendar,
@@ -106,7 +107,8 @@ const conciseFlow = [
 
 const iconClassName = "h-6 w-6 shrink-0 text-brand";
 
-export default function EventLandingPage() {
+export default async function EventLandingPage() {
+  const registration = await getRegistrationState();
   const eventJsonLd = buildEventJsonLd(event);
 
   return (
@@ -130,7 +132,7 @@ export default function EventLandingPage() {
                 {event.statusLabel}
               </EventStatusBadge>
               <EventStatusBadge tone="amber">
-                {event.registrationStatusLabel}
+                {registration.statusLabel}
               </EventStatusBadge>
             </div>
 

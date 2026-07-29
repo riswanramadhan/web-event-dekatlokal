@@ -4,79 +4,78 @@ import { createHash } from "node:crypto";
 
 import { headers } from "next/headers";
 
+import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+
 /**
- * In-memory fixed-window rate limiter.
+ * Shared rate limiter backed by Postgres.
  *
- * Scope and limits: state lives in the process, so it protects a single
- * server instance only. Multi-instance deployments need a shared store
- * (Redis/Upstash) to be effective. It is intentionally kept dependency-free
- * because the current deployment target is a single standalone Node server.
+ * An in-process Map cannot work on Vercel: every serverless instance would
+ * keep its own counter and a cold start would reset it, so an attacker only
+ * needs to spread requests across instances. The counter therefore lives in
+ * the database, incremented atomically by public.consume_rate_limit().
  */
-type Bucket = {
-  count: number;
-  resetAt: number;
-};
-
-const buckets = new Map<string, Bucket>();
-const MAX_TRACKED_KEYS = 5_000;
-
-function pruneExpired(now: number): void {
-  for (const [key, bucket] of buckets) {
-    if (bucket.resetAt <= now) {
-      buckets.delete(key);
-    }
-  }
-}
-
 export type RateLimitResult = {
   allowed: boolean;
   retryAfterSeconds: number;
 };
 
-export function checkRateLimit(
+const ALLOWED: RateLimitResult = { allowed: true, retryAfterSeconds: 0 };
+
+export async function checkRateLimit(
   key: string,
   limit: number,
   windowSeconds: number,
-): RateLimitResult {
-  const now = Date.now();
-  const bucket = buckets.get(key);
+): Promise<RateLimitResult> {
+  const supabase = getSupabaseAdminClient();
 
-  if (!bucket || bucket.resetAt <= now) {
-    // Opportunistic cleanup so an attacker cycling keys cannot grow the map
-    // without bound.
-    if (buckets.size >= MAX_TRACKED_KEYS) {
-      pruneExpired(now);
+  if (!supabase) {
+    return ALLOWED;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .rpc("consume_rate_limit", {
+        p_key: key,
+        p_limit: limit,
+        p_window_seconds: windowSeconds,
+      })
+      .single<{ allowed: boolean; retry_after_seconds: number }>();
+
+    if (error || !data) {
+      // Fail open: a limiter outage must not lock legitimate users out of
+      // registration. The honeypot, validation and auth checks still apply.
+      return ALLOWED;
     }
 
-    buckets.set(key, { count: 1, resetAt: now + windowSeconds * 1_000 });
-    return { allowed: true, retryAfterSeconds: 0 };
-  }
-
-  if (bucket.count >= limit) {
     return {
-      allowed: false,
-      retryAfterSeconds: Math.max(
-        1,
-        Math.ceil((bucket.resetAt - now) / 1_000),
-      ),
+      allowed: data.allowed,
+      retryAfterSeconds: data.retry_after_seconds ?? 0,
     };
+  } catch {
+    return ALLOWED;
+  }
+}
+
+/**
+ * Clears a bucket so a successful action stops consuming quota.
+ */
+export async function resetRateLimit(key: string): Promise<void> {
+  const supabase = getSupabaseAdminClient();
+
+  if (!supabase) {
+    return;
   }
 
-  bucket.count += 1;
-  return { allowed: true, retryAfterSeconds: 0 };
+  try {
+    await supabase.from("rate_limits").delete().eq("key", key);
+  } catch {
+    // Non-critical: the window will expire on its own.
+  }
 }
 
 /**
- * Clears a bucket so a successful action does not keep consuming quota.
- */
-export function resetRateLimit(key: string): void {
-  buckets.delete(key);
-}
-
-/**
- * Best-effort client IP from proxy headers. Only the left-most entry of
- * x-forwarded-for is meaningful, and it is spoofable unless a trusted proxy
- * overwrites it, so treat this as abuse mitigation rather than identity.
+ * Best-effort client IP from proxy headers. On Vercel, x-forwarded-for is set
+ * by the platform edge, so the left-most entry is the real client address.
  */
 export async function getClientIp(): Promise<string> {
   const headerList = await headers();

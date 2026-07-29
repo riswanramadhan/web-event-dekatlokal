@@ -8,8 +8,13 @@ const nextConfig: NextConfig = {
     // `npm run build` performs the strict check before Next starts its worker.
     ignoreBuildErrors: true,
   },
-  output: "standalone",
+  // No `output: "standalone"`: that bundle format is for self-hosted Node or
+  // Docker. Vercel builds its own serverless output, and forcing standalone
+  // there only produces a redundant bundle. Set it again if this ever moves
+  // back to a self-managed server.
   images: {
+    // Kept unoptimized so builds stay portable and image transforms are not
+    // billed. Remove this to use Vercel's image optimization.
     unoptimized: true,
   },
   poweredByHeader: false,
