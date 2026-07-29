@@ -16,12 +16,10 @@ export function ChromeGate({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
 
+  // The admin shell renders its own <main>, so this branch must not add a
+  // second one.
   if (isAdminRoute) {
-    return (
-      <main id="main-content" className="flex-1">
-        {children}
-      </main>
-    );
+    return <div className="flex flex-1 flex-col">{children}</div>;
   }
 
   return (

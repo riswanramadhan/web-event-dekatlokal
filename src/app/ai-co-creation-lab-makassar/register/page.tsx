@@ -12,6 +12,7 @@ import { EventPageHero } from "@/components/event/page-hero";
 import { RegistrationProgramBanner } from "@/components/registration/registration-program-banner";
 import { RegistrationRoleCard } from "@/components/registration/registration-role-card";
 import { aiCoCreationLabEvent as event } from "@/data/events";
+import { getRegistrationState } from "@/lib/event/registration-state";
 import { isSupabaseAdminConfigured } from "@/lib/supabase/admin";
 
 const title = "Pilih Jalur Pendaftaran";
@@ -31,13 +32,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RegistrationHubPage() {
+export default async function RegistrationHubPage() {
+  const registration = await getRegistrationState();
   const environmentConfigured = isSupabaseAdminConfigured();
-  const submissionsAvailable =
-    event.registrationOpen && environmentConfigured;
+  const submissionsAvailable = registration.isOpen && environmentConfigured;
   const showConfigurationDetails = process.env.NODE_ENV !== "production";
 
-  const availabilityMessage = !event.registrationOpen
+  const availabilityMessage = !registration.isOpen
     ? "Pendaftaran belum dibuka. Anda tetap dapat melihat formulir sebagai pratinjau, tetapi tombol kirim masih dinonaktifkan."
     : !environmentConfigured && showConfigurationDetails
       ? "Pendaftaran belum terhubung ke Supabase. Lengkapi environment server sebelum menguji pengiriman."
@@ -51,7 +52,7 @@ export default function RegistrationHubPage() {
         eyebrow="Portal pendaftaran"
         title="Mau ikut dari sisi mana?"
         description="Datang sebagai mahasiswa problem solver atau UMKM challenge partner. Dua jalur, satu meja kolaborasi, dan satu tujuan: bikin solusi yang benar benar kepakai."
-        status={event.registrationStatusLabel}
+        status={registration.statusLabel}
         actions={
           <Link
             href={event.routes.detail}
@@ -107,7 +108,7 @@ export default function RegistrationHubPage() {
               >
                 {submissionsAvailable
                   ? "Pendaftaran tersedia"
-                  : event.registrationStatusLabel}
+                  : registration.statusLabel}
               </h2>
               <p className="mt-1 text-sm leading-7 text-slate-700">
                 {availabilityMessage}

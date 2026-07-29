@@ -11,6 +11,7 @@ import { EventCard } from "@/components/event/event-card";
 import { Reveal } from "@/components/motion/reveal";
 import { PrimaryButton, SecondaryButton } from "@/components/ui/buttons";
 import { featuredEvent } from "@/data/events";
+import { getRegistrationState } from "@/lib/event/registration-state";
 
 const studentTarget = featuredEvent.participantComposition.find(
   (participant) => participant.id === "student",
@@ -67,7 +68,8 @@ const heroFacts = [
   },
 ] as const;
 
-export default function PlatformHomePage() {
+export default async function PlatformHomePage() {
+  const registration = await getRegistrationState();
   return (
     <>
       <section className="relative isolate overflow-hidden border-b border-slate-200/80">
@@ -141,6 +143,8 @@ export default function PlatformHomePage() {
           </Reveal>
           <EventCard
             event={featuredEvent}
+            registrationOpen={registration.isOpen}
+            registrationStatusLabel={registration.statusLabel}
             image={{
               src: "/aicl-cocreation-indonesia.webp",
               alt: "Mahasiswa dan pelaku UMKM Indonesia berdiskusi di meja kerja",

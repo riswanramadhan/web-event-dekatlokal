@@ -13,14 +13,16 @@ import { EventStatusBadge } from "@/components/ui/status-badge";
 import type { EventConfig } from "@/data/events";
 
 type EventCardProps = {
+  // Registration state is passed in rather than read from the event config:
+  // it lives in the database so it can be toggled from the admin panel.
+  registrationOpen: boolean;
+  registrationStatusLabel: string;
   event: Pick<
     EventConfig,
     | "title"
     | "description"
     | "route"
     | "routes"
-    | "registrationOpen"
-    | "registrationStatusLabel"
     | "date"
     | "mainActivity"
     | "location"
@@ -39,6 +41,8 @@ type EventCardProps = {
 export function EventCard({
   event,
   image,
+  registrationOpen,
+  registrationStatusLabel,
   featured = false,
 }: EventCardProps) {
   const studentTarget = event.participantComposition.find(
@@ -114,7 +118,7 @@ export function EventCard({
           />
           <div className="absolute left-4 top-4 sm:left-5 sm:top-5">
             <EventStatusBadge tone="neutral">
-              {event.registrationStatusLabel}
+              {registrationStatusLabel}
             </EventStatusBadge>
           </div>
           <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/70 bg-white/95 p-3 shadow-[0_12px_30px_rgba(1,34,98,0.16)] backdrop-blur-sm sm:inset-x-auto sm:bottom-5 sm:left-5 sm:w-[80%] sm:max-w-[21rem] sm:p-4">
@@ -169,7 +173,7 @@ export function EventCard({
               Lihat Detail
               <NavArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
-            {event.registrationOpen ? (
+            {registrationOpen ? (
               <Link
                 href={event.routes.register}
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-6 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50"

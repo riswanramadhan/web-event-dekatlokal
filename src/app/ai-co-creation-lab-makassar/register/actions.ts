@@ -299,7 +299,7 @@ async function readRequestContext(): Promise<Record<string, unknown>> {
 async function enforceSubmissionRateLimit(
   type: RegistrationType,
 ): Promise<RegistrationActionState | null> {
-  const rateLimit = checkRateLimit(
+  const rateLimit = await checkRateLimit(
     `register:${type}:${await getClientIp()}`,
     SUBMIT_ATTEMPT_LIMIT,
     SUBMIT_WINDOW_SECONDS,

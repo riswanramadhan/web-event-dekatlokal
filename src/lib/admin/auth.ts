@@ -159,7 +159,12 @@ export async function requireAdmin(): Promise<AdminIdentity> {
   return admin;
 }
 
-export type AdminAuditAction = "login" | "create_admin" | "delete_admin";
+export type AdminAuditAction =
+  | "login"
+  | "create_admin"
+  | "delete_admin"
+  | "open_registration"
+  | "close_registration";
 
 /**
  * Best-effort audit logging: a failure here must never block the action the
