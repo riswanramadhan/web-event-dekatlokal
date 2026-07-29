@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@icons-pack/react-simple-icons": "^13.13.0",
+    "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.110.8",
     "aos": "^2.3.4",
     "framer-motion": "^12.42.2",

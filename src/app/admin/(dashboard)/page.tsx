@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { requireAdmin } from "@/lib/admin/auth";
 import { EmptyState } from "@/components/ui/empty-state";
 import { EventStatusBadge } from "@/components/ui/status-badge";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -114,6 +115,10 @@ type AdminDashboardPageProps = {
 export default async function AdminDashboardPage({
   searchParams,
 }: AdminDashboardPageProps) {
+  // Re-checked per page rather than relying only on the layout: client-side
+  // navigation can render a page without re-executing an unchanged layout.
+  await requireAdmin();
+
   const resolvedSearchParams = await searchParams;
   const typeFilter = isRegistrationType(resolvedSearchParams.type)
     ? resolvedSearchParams.type

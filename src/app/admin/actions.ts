@@ -1,12 +1,17 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import { ADMIN_SESSION_COOKIE } from "@/lib/admin/session";
+import { createSupabaseServerClient } from "@/lib/admin/auth";
 
 export async function logoutAction() {
-  const cookieStore = await cookies();
-  cookieStore.delete(ADMIN_SESSION_COOKIE);
+  const supabase = await createSupabaseServerClient();
+
+  if (supabase) {
+    // Revokes the refresh token server-side, so a copied cookie stops working
+    // immediately rather than staying valid until it expires.
+    await supabase.auth.signOut();
+  }
+
   redirect("/admin/login");
 }

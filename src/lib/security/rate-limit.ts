@@ -94,6 +94,10 @@ export async function getClientIp(): Promise<string> {
 }
 
 export function hashIp(ip: string): string {
-  const salt = process.env.ADMIN_SESSION_SECRET?.trim() ?? "";
+  // Salted so stored hashes cannot be reversed by hashing the IPv4 space.
+  // The service role key is reused as the salt because it is always present
+  // wherever a registration can actually be written, which avoids adding
+  // another secret that could be left unset and silently weaken the hash.
+  const salt = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ?? "";
   return createHash("sha256").update(`${salt}:${ip}`).digest("hex").slice(0, 32);
 }
