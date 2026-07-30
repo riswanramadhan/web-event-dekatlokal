@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 import {
+  getFormDataString,
+  getFormDataStrings,
   hasUnsafeText,
   normalizeBoolean,
   normalizeEmail,
@@ -204,3 +206,40 @@ export type StudentRegistrationInput = z.input<
 export type StudentRegistrationData = z.output<
   typeof studentRegistrationSchema
 >;
+
+/**
+ * Reads raw field values out of a FormData the same way for both the Server
+ * Action and the client-side pre-submit check, so the two can never disagree
+ * about what a given form actually contains.
+ */
+export function buildStudentRegistrationCandidate(
+  formData: FormData,
+): Record<string, unknown> {
+  return {
+    fullName: getFormDataString(formData, "fullName"),
+    email: getFormDataString(formData, "email"),
+    whatsapp: getFormDataString(formData, "whatsapp"),
+    university: getFormDataString(formData, "university"),
+    studyProgram: getFormDataString(formData, "studyProgram"),
+    semester: getFormDataString(formData, "semester"),
+    city: getFormDataString(formData, "city"),
+    instagramUsername: getFormDataString(formData, "instagramUsername"),
+    aiExperience: getFormDataString(formData, "aiExperience"),
+    skills: getFormDataStrings(formData, "skills"),
+    preferredRoles: getFormDataStrings(formData, "preferredRoles"),
+    hasLaptop: getFormDataString(formData, "hasLaptop"),
+    projectExperience: getFormDataString(formData, "projectExperience"),
+    motivation: getFormDataString(formData, "motivation"),
+    attendanceCommitment: getFormDataString(formData, "attendanceCommitment"),
+    consentPrivacy: getFormDataString(formData, "consentPrivacy"),
+    consentDocumentation: getFormDataString(
+      formData,
+      "consentDocumentation",
+    ),
+    instagramFollowConfirmed: getFormDataString(
+      formData,
+      "instagramFollowConfirmed",
+    ),
+    company: getFormDataString(formData, "company"),
+  };
+}

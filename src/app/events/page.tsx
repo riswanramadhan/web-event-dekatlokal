@@ -4,6 +4,7 @@ import { CalendarPlus } from "iconoir-react";
 import { EventCard } from "@/components/event/event-card";
 import { EventStatusBadge } from "@/components/ui/status-badge";
 import { featuredEvent } from "@/data/events";
+import { getRegistrationState } from "@/lib/event/registration-state";
 
 export const metadata: Metadata = {
   title: "Event",
@@ -14,7 +15,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const registration = await getRegistrationState();
   return (
     <>
       <section className="border-b border-slate-200 bg-surface py-16 sm:py-20">
@@ -35,6 +37,8 @@ export default function EventsPage() {
         <div className="page-container grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
           <EventCard
             event={featuredEvent}
+            registrationOpen={registration.isOpen}
+            registrationStatusLabel={registration.statusLabel}
             image={{
               src: "/aicl-cocreation-indonesia.webp",
               alt: "Mahasiswa dan pelaku UMKM Indonesia berdiskusi di meja kerja",

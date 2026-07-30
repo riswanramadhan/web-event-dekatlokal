@@ -3,22 +3,28 @@
 import "server-only";
 
 import { randomInt } from "node:crypto";
+
+import { headers } from "next/headers";
 import { z, type ZodError } from "zod";
 
+import { getFormDataString } from "@/lib/registration/normalizers";
 import {
-  getFormDataString,
-  getFormDataStrings,
-} from "@/lib/registration/normalizers";
+  checkRateLimit,
+  getClientIp,
+  hashIp,
+} from "@/lib/security/rate-limit";
 import type {
   RegistrationActionState,
   RegistrationType,
 } from "@/lib/registration/result";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
+  buildStudentRegistrationCandidate,
   studentRegistrationSchema,
   type StudentRegistrationData,
 } from "@/lib/validation/student-registration";
 import {
+  buildUmkmRegistrationCandidate,
   umkmRegistrationSchema,
   type UmkmRegistrationData,
 } from "@/lib/validation/umkm-registration";
@@ -27,6 +33,9 @@ const DEFAULT_EVENT_SLUG = "ai-co-creation-lab-makassar";
 const SUBMISSION_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 const SUBMISSION_CODE_LENGTH = 6;
 const MAX_INSERT_ATTEMPTS = 4;
+const SUBMIT_ATTEMPT_LIMIT = 5;
+const SUBMIT_WINDOW_SECONDS = 10 * 60;
+const USER_AGENT_MAX_LENGTH = 400;
 
 const eventSlugSchema = z
   .string()
@@ -266,6 +275,47 @@ async function validateTurnstile(
   }
 }
 
+/**
+ * Abuse-forensics context stored alongside each row. The IP is hashed, never
+ * stored raw, so the data set stays minimal if it is ever exported.
+ */
+async function readRequestContext(): Promise<Record<string, unknown>> {
+  try {
+    const headerList = await headers();
+    const userAgent = headerList.get("user-agent")?.trim();
+
+    return {
+      ip_hash: hashIp(await getClientIp()),
+      user_agent: userAgent
+        ? userAgent.slice(0, USER_AGENT_MAX_LENGTH)
+        : null,
+    };
+  } catch {
+    return { ip_hash: null, user_agent: null };
+  }
+}
+
+async function enforceSubmissionRateLimit(
+  type: RegistrationType,
+): Promise<RegistrationActionState | null> {
+  const rateLimit = await checkRateLimit(
+    `register:${type}:${await getClientIp()}`,
+    SUBMIT_ATTEMPT_LIMIT,
+    SUBMIT_WINDOW_SECONDS,
+  );
+
+  if (rateLimit.allowed) {
+    return null;
+  }
+
+  const retryAfterMinutes = Math.ceil(rateLimit.retryAfterSeconds / 60);
+
+  return {
+    status: "error",
+    message: `Terlalu banyak percobaan pengiriman. Silakan coba lagi dalam ${retryAfterMinutes} menit.`,
+  };
+}
+
 function generateSubmissionCode(type: RegistrationType): string {
   const prefix = type === "student" ? "AICL-STU" : "AICL-UMK";
   let randomPart = "";
@@ -405,68 +455,6 @@ async function insertRegistration(
   };
 }
 
-function studentCandidate(formData: FormData) {
-  return {
-    fullName: getFormDataString(formData, "fullName"),
-    email: getFormDataString(formData, "email"),
-    whatsapp: getFormDataString(formData, "whatsapp"),
-    university: getFormDataString(formData, "university"),
-    studyProgram: getFormDataString(formData, "studyProgram"),
-    semester: getFormDataString(formData, "semester"),
-    city: getFormDataString(formData, "city"),
-    instagramUsername: getFormDataString(formData, "instagramUsername"),
-    aiExperience: getFormDataString(formData, "aiExperience"),
-    skills: getFormDataStrings(formData, "skills"),
-    preferredRoles: getFormDataStrings(formData, "preferredRoles"),
-    hasLaptop: getFormDataString(formData, "hasLaptop"),
-    projectExperience: getFormDataString(formData, "projectExperience"),
-    motivation: getFormDataString(formData, "motivation"),
-    attendanceCommitment: getFormDataString(
-      formData,
-      "attendanceCommitment",
-    ),
-    consentPrivacy: getFormDataString(formData, "consentPrivacy"),
-    consentDocumentation: getFormDataString(
-      formData,
-      "consentDocumentation",
-    ),
-    instagramFollowConfirmed: getFormDataString(
-      formData,
-      "instagramFollowConfirmed",
-    ),
-    company: getFormDataString(formData, "company"),
-  };
-}
-
-function umkmCandidate(formData: FormData) {
-  return {
-    ownerName: getFormDataString(formData, "ownerName"),
-    businessName: getFormDataString(formData, "businessName"),
-    email: getFormDataString(formData, "email"),
-    whatsapp: getFormDataString(formData, "whatsapp"),
-    businessCategory: getFormDataString(formData, "businessCategory"),
-    businessLocation: getFormDataString(formData, "businessLocation"),
-    socialMediaUrl: getFormDataString(formData, "socialMediaUrl"),
-    yearsInBusiness: getFormDataString(formData, "yearsInBusiness"),
-    availableDevices: getFormDataStrings(formData, "availableDevices"),
-    aiUsage: getFormDataString(formData, "aiUsage"),
-    repetitiveProblem: getFormDataString(formData, "repetitiveProblem"),
-    desiredHelp: getFormDataString(formData, "desiredHelp"),
-    availableAssets: getFormDataStrings(formData, "availableAssets"),
-    attendanceCommitment: getFormDataString(
-      formData,
-      "attendanceCommitment",
-    ),
-    consentPrivacy: getFormDataString(formData, "consentPrivacy"),
-    consentDocumentation: getFormDataString(
-      formData,
-      "consentDocumentation",
-    ),
-    consentMonitoring: getFormDataString(formData, "consentMonitoring"),
-    company: getFormDataString(formData, "company"),
-  };
-}
-
 function studentRow(data: StudentRegistrationData): Record<string, unknown> {
   return {
     full_name: data.fullName,
@@ -525,12 +513,21 @@ export async function submitStudentRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
+  // Validation runs before the rate limiter so that ordinary form mistakes do
+  // not consume quota. A long form is easy to get wrong several times, and
+  // shared NAT (campus or office) means one bucket can cover many people.
   const parsed = studentRegistrationSchema.safeParse(
-    studentCandidate(formData),
+    buildStudentRegistrationCandidate(formData),
   );
 
   if (!parsed.success) {
     return validationFailure(parsed.error);
+  }
+
+  const rateLimited = await enforceSubmissionRateLimit("student");
+
+  if (rateLimited) {
+    return rateLimited;
   }
 
   const turnstileFailure = await validateTurnstile(formData);
@@ -545,21 +542,29 @@ export async function submitStudentRegistration(
     return event.state;
   }
 
-  return insertRegistration(
-    event.eventId,
-    "student",
-    studentRow(parsed.data),
-  );
+  return insertRegistration(event.eventId, "student", {
+    ...studentRow(parsed.data),
+    ...(await readRequestContext()),
+  });
 }
 
 export async function submitUmkmRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
-  const parsed = umkmRegistrationSchema.safeParse(umkmCandidate(formData));
+  // Validation first, then quota — see the note in submitStudentRegistration.
+  const parsed = umkmRegistrationSchema.safeParse(
+    buildUmkmRegistrationCandidate(formData),
+  );
 
   if (!parsed.success) {
     return validationFailure(parsed.error);
+  }
+
+  const rateLimited = await enforceSubmissionRateLimit("umkm");
+
+  if (rateLimited) {
+    return rateLimited;
   }
 
   const turnstileFailure = await validateTurnstile(formData);
@@ -574,5 +579,8 @@ export async function submitUmkmRegistration(
     return event.state;
   }
 
-  return insertRegistration(event.eventId, "umkm", umkmRow(parsed.data));
+  return insertRegistration(event.eventId, "umkm", {
+    ...umkmRow(parsed.data),
+    ...(await readRequestContext()),
+  });
 }

@@ -720,25 +720,61 @@ export function TextArea({
   name,
   error,
   helper,
+  minLength,
+  maxLength,
+  defaultValue,
+  onChange,
   ...props
 }: TextareaHTMLAttributes<HTMLTextAreaElement> & {
   name: string;
   error?: string;
   helper?: string;
 }) {
+  // Tracked purely for the counter below; the field itself stays uncontrolled
+  // so callers don't have to manage its value.
+  const [length, setLength] = useState(
+    typeof defaultValue === "string" ? defaultValue.length : 0,
+  );
+  const numericMinLength = typeof minLength === "number" ? minLength : undefined;
+  const numericMaxLength = typeof maxLength === "number" ? maxLength : undefined;
+  const belowMinimum =
+    numericMinLength !== undefined && length > 0 && length < numericMinLength;
+
   return (
-    <textarea
-      id={name}
-      name={name}
-      className={`${controlClass} min-h-32 resize-y`}
-      aria-invalid={Boolean(error)}
-      aria-describedby={
-        [helper ? `${name}-helper` : "", error ? `${name}-error` : ""]
-          .filter(Boolean)
-          .join(" ") || undefined
-      }
-      {...props}
-    />
+    <div>
+      <textarea
+        id={name}
+        name={name}
+        minLength={minLength}
+        maxLength={maxLength}
+        defaultValue={defaultValue}
+        className={`${controlClass} min-h-32 resize-y`}
+        aria-invalid={Boolean(error)}
+        aria-describedby={
+          [helper ? `${name}-helper` : "", error ? `${name}-error` : ""]
+            .filter(Boolean)
+            .join(" ") || undefined
+        }
+        onChange={(event) => {
+          setLength(event.currentTarget.value.length);
+          onChange?.(event);
+        }}
+        {...props}
+      />
+      {numericMaxLength !== undefined ? (
+        <p
+          className={`mt-1.5 text-right text-xs tabular-nums ${
+            belowMinimum ? "font-medium text-amber-600" : "text-slate-400"
+          }`}
+        >
+          {belowMinimum
+            ? `Minimal ${numericMinLength} karakter (kurang ${
+                numericMinLength - length
+              })`
+            : `${length}/${numericMaxLength} karakter`}
+        </p>
+      ) : null}
+    </div>
   );
 }
 
@@ -755,6 +791,7 @@ export function MultiSelectField({
   helper,
   error,
   required,
+  onValuesChange,
 }: {
   legend: string;
   name: string;
@@ -762,6 +799,7 @@ export function MultiSelectField({
   helper?: string;
   error?: string;
   required?: boolean;
+  onValuesChange?: (values: string[]) => void;
 }) {
   const helperId = helper ? `${name}-helper` : undefined;
   const errorId = error ? `${name}-error` : undefined;
@@ -772,18 +810,16 @@ export function MultiSelectField({
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     const value = event.currentTarget.value;
     const checked = event.currentTarget.checked;
+    const next = new Set(selectedValues);
 
-    setSelectedValues((current) => {
-      const next = new Set(current);
+    if (checked) {
+      next.add(value);
+    } else {
+      next.delete(value);
+    }
 
-      if (checked) {
-        next.add(value);
-      } else {
-        next.delete(value);
-      }
-
-      return next;
-    });
+    setSelectedValues(next);
+    onValuesChange?.([...next]);
   }
 
   return (
@@ -853,12 +889,14 @@ export function ConsentField({
   description,
   error,
   required,
+  onCheckedChange,
 }: {
   name: string;
   label: ReactNode;
   description?: string;
   error?: string;
   required?: boolean;
+  onCheckedChange?: (checked: boolean) => void;
 }) {
   const descriptionId = description ? `${name}-description` : undefined;
   const errorId = error ? `${name}-error` : undefined;
@@ -876,6 +914,7 @@ export function ConsentField({
           aria-describedby={
             [descriptionId, errorId].filter(Boolean).join(" ") || undefined
           }
+          onChange={(event) => onCheckedChange?.(event.currentTarget.checked)}
           className="mt-1 h-4 w-4 shrink-0 accent-brand"
         />
         <span>

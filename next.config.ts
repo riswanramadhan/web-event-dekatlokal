@@ -8,12 +8,41 @@ const nextConfig: NextConfig = {
     // `npm run build` performs the strict check before Next starts its worker.
     ignoreBuildErrors: true,
   },
-  output: "standalone",
+  // No `output: "standalone"`: that bundle format is for self-hosted Node or
+  // Docker. Vercel builds its own serverless output, and forcing standalone
+  // there only produces a redundant bundle. Set it again if this ever moves
+  // back to a self-managed server.
   images: {
+    // Kept unoptimized so builds stay portable and image transforms are not
+    // billed. Remove this to use Vercel's image optimization.
     unoptimized: true,
   },
   poweredByHeader: false,
   reactStrictMode: true,
+  async headers() {
+    return [
+      {
+        // Admin pages render registrant personal data. Keep them out of
+        // search indexes and stop the URL leaking via the Referer header.
+        //
+        // Cache-Control is deliberately not set here: Next.js manages it for
+        // dynamic App Router routes and emits "no-cache, must-revalidate",
+        // which already forces revalidation against the auth gate on every
+        // reuse. A value set here would be silently overridden.
+        source: "/admin/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "no-referrer",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

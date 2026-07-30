@@ -10,6 +10,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       disallow: [
+        "/admin",
         "/api/",
         "/ai-co-creation-lab-makassar/journey",
         "/ai-co-creation-lab-makassar/challenges",

@@ -23,12 +23,15 @@ import {
 import { TurnstileWidget } from "@/components/registration/turnstile-widget";
 import { trackEvent } from "@/lib/analytics";
 import { initialRegistrationActionState } from "@/lib/registration/result";
+import { useRegistrationFormValidation } from "@/lib/registration/use-registration-form-validation";
 import {
+  buildUmkmRegistrationCandidate,
   UMKM_AI_USAGE_OPTIONS,
   UMKM_AVAILABLE_ASSET_OPTIONS,
   UMKM_BUSINESS_CATEGORY_OPTIONS,
   UMKM_DEVICE_OPTIONS,
   UMKM_YEARS_IN_BUSINESS_OPTIONS,
+  umkmRegistrationSchema,
 } from "@/lib/validation/umkm-registration";
 
 import { submitUmkmRegistration } from "../actions";
@@ -65,13 +68,24 @@ export function UmkmRegistrationForm({
   const submittedTrackingRef = useRef(false);
   const submissionsEnabled = registrationOpen && environmentConfigured;
 
+  // Client-side mirror of the server's Zod schema: gives instant per-field
+  // feedback and blocks obviously-invalid submissions before they leave the
+  // browser. The server re-validates with the identical schema regardless,
+  // so this can only improve latency, never let anything bad through.
+  const registrationForm = useRegistrationFormValidation(
+    umkmRegistrationSchema,
+    buildUmkmRegistrationCandidate,
+  );
+  const { syncServerFieldErrors } = registrationForm;
+
   useEffect(() => {
     if (state.status === "idle" || state.status === "success") {
       return;
     }
 
     feedbackRef.current?.focus();
-  }, [state]);
+    syncServerFieldErrors(state.fieldErrors);
+  }, [state, syncServerFieldErrors]);
 
   useEffect(() => {
     if (state.status !== "success" || !state.submissionCode) {
@@ -105,6 +119,12 @@ export function UmkmRegistrationForm({
     startedTrackingRef.current = true;
   }
 
+  function handleFormSubmit(event: React.FormEvent<HTMLFormElement>) {
+    if (!registrationForm.validateBeforeSubmit(event.currentTarget)) {
+      event.preventDefault();
+    }
+  }
+
   const unavailableMessage = !registrationOpen
     ? "Pendaftaran UMKM belum dibuka. Formulir ini ditampilkan sebagai pratinjau dan belum dapat dikirim."
     : showConfigurationDetails
@@ -121,8 +141,10 @@ export function UmkmRegistrationForm({
   return (
     <form
       action={formAction}
+      onSubmit={handleFormSubmit}
       onFocusCapture={handleFormFocus}
       className="space-y-5"
+      noValidate
     >
       <div
         ref={feedbackRef}
@@ -132,6 +154,10 @@ export function UmkmRegistrationForm({
       >
         {!submissionsEnabled ? (
           <FormNotice tone="warning">{unavailableMessage}</FormNotice>
+        ) : registrationForm.blockedMessage ? (
+          <FormNotice tone="error">
+            {registrationForm.blockedMessage}
+          </FormNotice>
         ) : state.status === "idle" ? (
           <FormNotice>
             Semua isian bertanda bintang wajib dilengkapi. Gunakan bahasa
@@ -161,7 +187,10 @@ export function UmkmRegistrationForm({
           label="Nama pemilik atau penanggung jawab"
           name="ownerName"
           required
-          error={firstError(state.fieldErrors, "ownerName")}
+          error={registrationForm.getFieldError(
+            "ownerName",
+            firstError(state.fieldErrors, "ownerName"),
+          )}
         >
           <TextInput
             name="ownerName"
@@ -171,7 +200,22 @@ export function UmkmRegistrationForm({
             maxLength={120}
             required
             placeholder="Nama lengkap"
-            error={firstError(state.fieldErrors, "ownerName")}
+            error={registrationForm.getFieldError(
+              "ownerName",
+              firstError(state.fieldErrors, "ownerName"),
+            )}
+            onBlur={(event) =>
+              registrationForm.touchAndValidate(
+                "ownerName",
+                event.currentTarget.value,
+              )
+            }
+            onChange={(event) =>
+              registrationForm.liveRevalidateIfTouched(
+                "ownerName",
+                event.currentTarget.value,
+              )
+            }
           />
         </FormField>
 
@@ -179,7 +223,10 @@ export function UmkmRegistrationForm({
           label="Nama usaha"
           name="businessName"
           required
-          error={firstError(state.fieldErrors, "businessName")}
+          error={registrationForm.getFieldError(
+            "businessName",
+            firstError(state.fieldErrors, "businessName"),
+          )}
         >
           <TextInput
             name="businessName"
@@ -189,7 +236,22 @@ export function UmkmRegistrationForm({
             maxLength={120}
             required
             placeholder="Nama usaha atau merek"
-            error={firstError(state.fieldErrors, "businessName")}
+            error={registrationForm.getFieldError(
+              "businessName",
+              firstError(state.fieldErrors, "businessName"),
+            )}
+            onBlur={(event) =>
+              registrationForm.touchAndValidate(
+                "businessName",
+                event.currentTarget.value,
+              )
+            }
+            onChange={(event) =>
+              registrationForm.liveRevalidateIfTouched(
+                "businessName",
+                event.currentTarget.value,
+              )
+            }
           />
         </FormField>
 
@@ -197,7 +259,10 @@ export function UmkmRegistrationForm({
           label="Email aktif"
           name="email"
           helper="Opsional. Informasi utama juga dapat disampaikan melalui WhatsApp."
-          error={firstError(state.fieldErrors, "email")}
+          error={registrationForm.getFieldError(
+            "email",
+            firstError(state.fieldErrors, "email"),
+          )}
         >
           <TextInput
             name="email"
@@ -207,7 +272,22 @@ export function UmkmRegistrationForm({
             maxLength={254}
             placeholder="nama@email.com (opsional)"
             helper="Opsional. Informasi utama juga dapat disampaikan melalui WhatsApp."
-            error={firstError(state.fieldErrors, "email")}
+            error={registrationForm.getFieldError(
+              "email",
+              firstError(state.fieldErrors, "email"),
+            )}
+            onBlur={(event) =>
+              registrationForm.touchAndValidate(
+                "email",
+                event.currentTarget.value,
+              )
+            }
+            onChange={(event) =>
+              registrationForm.liveRevalidateIfTouched(
+                "email",
+                event.currentTarget.value,
+              )
+            }
           />
         </FormField>
 
@@ -216,7 +296,10 @@ export function UmkmRegistrationForm({
           name="whatsapp"
           required
           helper="Format 08…, 628…, atau +628… akan dinormalisasi."
-          error={firstError(state.fieldErrors, "whatsapp")}
+          error={registrationForm.getFieldError(
+            "whatsapp",
+            firstError(state.fieldErrors, "whatsapp"),
+          )}
         >
           <TextInput
             name="whatsapp"
@@ -228,7 +311,22 @@ export function UmkmRegistrationForm({
             required
             placeholder="0812 3456 7890"
             helper="Format 08…, 628…, atau +628… akan dinormalisasi."
-            error={firstError(state.fieldErrors, "whatsapp")}
+            error={registrationForm.getFieldError(
+              "whatsapp",
+              firstError(state.fieldErrors, "whatsapp"),
+            )}
+            onBlur={(event) =>
+              registrationForm.touchAndValidate(
+                "whatsapp",
+                event.currentTarget.value,
+              )
+            }
+            onChange={(event) =>
+              registrationForm.liveRevalidateIfTouched(
+                "whatsapp",
+                event.currentTarget.value,
+              )
+            }
           />
         </FormField>
       </FormSection>
@@ -242,13 +340,25 @@ export function UmkmRegistrationForm({
           label="Kategori usaha"
           name="businessCategory"
           required
-          error={firstError(state.fieldErrors, "businessCategory")}
+          error={registrationForm.getFieldError(
+            "businessCategory",
+            firstError(state.fieldErrors, "businessCategory"),
+          )}
         >
           <SelectInput
             name="businessCategory"
             defaultValue=""
             required
-            error={firstError(state.fieldErrors, "businessCategory")}
+            error={registrationForm.getFieldError(
+              "businessCategory",
+              firstError(state.fieldErrors, "businessCategory"),
+            )}
+            onChange={(event) =>
+              registrationForm.touchAndValidate(
+                "businessCategory",
+                event.currentTarget.value,
+              )
+            }
           >
             <option value="" disabled>
               Pilih kategori usaha
@@ -265,13 +375,25 @@ export function UmkmRegistrationForm({
           label="Lama usaha berjalan"
           name="yearsInBusiness"
           required
-          error={firstError(state.fieldErrors, "yearsInBusiness")}
+          error={registrationForm.getFieldError(
+            "yearsInBusiness",
+            firstError(state.fieldErrors, "yearsInBusiness"),
+          )}
         >
           <SelectInput
             name="yearsInBusiness"
             defaultValue=""
             required
-            error={firstError(state.fieldErrors, "yearsInBusiness")}
+            error={registrationForm.getFieldError(
+              "yearsInBusiness",
+              firstError(state.fieldErrors, "yearsInBusiness"),
+            )}
+            onChange={(event) =>
+              registrationForm.touchAndValidate(
+                "yearsInBusiness",
+                event.currentTarget.value,
+              )
+            }
           >
             <option value="" disabled>
               Pilih lama usaha
@@ -289,7 +411,10 @@ export function UmkmRegistrationForm({
           name="businessLocation"
           required
           helper="Cukup tulis kecamatan/kota. Tidak perlu alamat rumah lengkap."
-          error={firstError(state.fieldErrors, "businessLocation")}
+          error={registrationForm.getFieldError(
+            "businessLocation",
+            firstError(state.fieldErrors, "businessLocation"),
+          )}
         >
           <TextInput
             name="businessLocation"
@@ -300,7 +425,22 @@ export function UmkmRegistrationForm({
             required
             placeholder="Contoh: Panakkukang, Makassar"
             helper="Cukup tulis kecamatan/kota. Tidak perlu alamat rumah lengkap."
-            error={firstError(state.fieldErrors, "businessLocation")}
+            error={registrationForm.getFieldError(
+              "businessLocation",
+              firstError(state.fieldErrors, "businessLocation"),
+            )}
+            onBlur={(event) =>
+              registrationForm.touchAndValidate(
+                "businessLocation",
+                event.currentTarget.value,
+              )
+            }
+            onChange={(event) =>
+              registrationForm.liveRevalidateIfTouched(
+                "businessLocation",
+                event.currentTarget.value,
+              )
+            }
           />
         </FormField>
 
@@ -308,7 +448,10 @@ export function UmkmRegistrationForm({
           label="Instagram atau kanal digital"
           name="socialMediaUrl"
           helper="Opsional. Masukkan URL lengkap yang dapat dibuka publik."
-          error={firstError(state.fieldErrors, "socialMediaUrl")}
+          error={registrationForm.getFieldError(
+            "socialMediaUrl",
+            firstError(state.fieldErrors, "socialMediaUrl"),
+          )}
         >
           <TextInput
             name="socialMediaUrl"
@@ -318,7 +461,22 @@ export function UmkmRegistrationForm({
             maxLength={300}
             placeholder="https://instagram.com/namausaha"
             helper="Opsional. Masukkan URL lengkap yang dapat dibuka publik."
-            error={firstError(state.fieldErrors, "socialMediaUrl")}
+            error={registrationForm.getFieldError(
+              "socialMediaUrl",
+              firstError(state.fieldErrors, "socialMediaUrl"),
+            )}
+            onBlur={(event) =>
+              registrationForm.touchAndValidate(
+                "socialMediaUrl",
+                event.currentTarget.value,
+              )
+            }
+            onChange={(event) =>
+              registrationForm.liveRevalidateIfTouched(
+                "socialMediaUrl",
+                event.currentTarget.value,
+              )
+            }
           />
         </FormField>
 
@@ -327,8 +485,14 @@ export function UmkmRegistrationForm({
           name="availableDevices"
           options={UMKM_DEVICE_OPTIONS}
           helper="Pilih semua perangkat yang dapat digunakan saat atau setelah kegiatan."
-          error={firstError(state.fieldErrors, "availableDevices")}
+          error={registrationForm.getFieldError(
+            "availableDevices",
+            firstError(state.fieldErrors, "availableDevices"),
+          )}
           required
+          onValuesChange={(values) =>
+            registrationForm.touchAndValidate("availableDevices", values)
+          }
         />
       </FormSection>
 
@@ -343,14 +507,26 @@ export function UmkmRegistrationForm({
           required
           className="sm:col-span-2"
           helper="Belum pernah menggunakan AI tidak mengurangi kesempatan untuk dipilih."
-          error={firstError(state.fieldErrors, "aiUsage")}
+          error={registrationForm.getFieldError(
+            "aiUsage",
+            firstError(state.fieldErrors, "aiUsage"),
+          )}
         >
           <SelectInput
             name="aiUsage"
             defaultValue=""
             required
             helper="Belum pernah menggunakan AI tidak mengurangi kesempatan untuk dipilih."
-            error={firstError(state.fieldErrors, "aiUsage")}
+            error={registrationForm.getFieldError(
+              "aiUsage",
+              firstError(state.fieldErrors, "aiUsage"),
+            )}
+            onChange={(event) =>
+              registrationForm.touchAndValidate(
+                "aiUsage",
+                event.currentTarget.value,
+              )
+            }
           >
             <option value="" disabled>
               Pilih pengalaman penggunaan
@@ -369,7 +545,10 @@ export function UmkmRegistrationForm({
           required
           className="sm:col-span-2"
           helper="Contoh: membuat caption setiap hari, membalas pertanyaan yang sama, atau memperbarui deskripsi produk."
-          error={firstError(state.fieldErrors, "repetitiveProblem")}
+          error={registrationForm.getFieldError(
+            "repetitiveProblem",
+            firstError(state.fieldErrors, "repetitiveProblem"),
+          )}
         >
           <TextArea
             name="repetitiveProblem"
@@ -378,7 +557,22 @@ export function UmkmRegistrationForm({
             required
             placeholder="Ceritakan prosesnya, seberapa sering terjadi, dan mengapa terasa sulit…"
             helper="Contoh: membuat caption setiap hari, membalas pertanyaan yang sama, atau memperbarui deskripsi produk."
-            error={firstError(state.fieldErrors, "repetitiveProblem")}
+            error={registrationForm.getFieldError(
+              "repetitiveProblem",
+              firstError(state.fieldErrors, "repetitiveProblem"),
+            )}
+            onBlur={(event) =>
+              registrationForm.touchAndValidate(
+                "repetitiveProblem",
+                event.currentTarget.value,
+              )
+            }
+            onChange={(event) =>
+              registrationForm.liveRevalidateIfTouched(
+                "repetitiveProblem",
+                event.currentTarget.value,
+              )
+            }
           />
         </FormField>
 
@@ -388,7 +582,10 @@ export function UmkmRegistrationForm({
           required
           className="sm:col-span-2"
           helper="Tidak perlu menentukan aplikasi atau teknologi. Fokus pada hasil yang ingin menjadi lebih mudah."
-          error={firstError(state.fieldErrors, "desiredHelp")}
+          error={registrationForm.getFieldError(
+            "desiredHelp",
+            firstError(state.fieldErrors, "desiredHelp"),
+          )}
         >
           <TextArea
             name="desiredHelp"
@@ -397,7 +594,22 @@ export function UmkmRegistrationForm({
             required
             placeholder="Contoh: ingin memiliki cara yang lebih cepat untuk menyiapkan ide dan jadwal konten…"
             helper="Tidak perlu menentukan aplikasi atau teknologi. Fokus pada hasil yang ingin menjadi lebih mudah."
-            error={firstError(state.fieldErrors, "desiredHelp")}
+            error={registrationForm.getFieldError(
+              "desiredHelp",
+              firstError(state.fieldErrors, "desiredHelp"),
+            )}
+            onBlur={(event) =>
+              registrationForm.touchAndValidate(
+                "desiredHelp",
+                event.currentTarget.value,
+              )
+            }
+            onChange={(event) =>
+              registrationForm.liveRevalidateIfTouched(
+                "desiredHelp",
+                event.currentTarget.value,
+              )
+            }
           />
         </FormField>
 
@@ -406,8 +618,14 @@ export function UmkmRegistrationForm({
           name="availableAssets"
           options={UMKM_AVAILABLE_ASSET_OPTIONS}
           helper="Pilih yang tersedia saat ini. Jangan unggah atau menuliskan data sensitif di formulir ini."
-          error={firstError(state.fieldErrors, "availableAssets")}
+          error={registrationForm.getFieldError(
+            "availableAssets",
+            firstError(state.fieldErrors, "availableAssets"),
+          )}
           required
+          onValuesChange={(values) =>
+            registrationForm.touchAndValidate("availableAssets", values)
+          }
         />
 
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-6 text-amber-950 sm:col-span-2">
@@ -433,7 +651,16 @@ export function UmkmRegistrationForm({
               </>
             }
             description="Pendaftaran adalah tahap aplikasi dan belum berarti dipilih sebagai challenge partner."
-            error={firstError(state.fieldErrors, "attendanceCommitment")}
+            error={registrationForm.getFieldError(
+              "attendanceCommitment",
+              firstError(state.fieldErrors, "attendanceCommitment"),
+            )}
+            onCheckedChange={(checked) =>
+              registrationForm.touchAndValidate(
+                "attendanceCommitment",
+                checked,
+              )
+            }
           />
 
           <ConsentField
@@ -446,7 +673,13 @@ export function UmkmRegistrationForm({
               </>
             }
             description="Monitoring digunakan untuk memahami apakah solusi dapat dicoba dan digunakan kembali."
-            error={firstError(state.fieldErrors, "consentMonitoring")}
+            error={registrationForm.getFieldError(
+              "consentMonitoring",
+              firstError(state.fieldErrors, "consentMonitoring"),
+            )}
+            onCheckedChange={(checked) =>
+              registrationForm.touchAndValidate("consentMonitoring", checked)
+            }
           />
 
           <ConsentField
@@ -460,14 +693,29 @@ export function UmkmRegistrationForm({
               </>
             }
             description="Data tidak ditampilkan kepada publik dan tidak digunakan untuk penjualan."
-            error={firstError(state.fieldErrors, "consentPrivacy")}
+            error={registrationForm.getFieldError(
+              "consentPrivacy",
+              firstError(state.fieldErrors, "consentPrivacy"),
+            )}
+            onCheckedChange={(checked) =>
+              registrationForm.touchAndValidate("consentPrivacy", checked)
+            }
           />
 
           <ConsentField
             name="consentDocumentation"
             label="Saya bersedia muncul dalam dokumentasi kegiatan."
             description="Opsional. Persetujuan ini dapat dikomunikasikan kembali kepada penyelenggara."
-            error={firstError(state.fieldErrors, "consentDocumentation")}
+            error={registrationForm.getFieldError(
+              "consentDocumentation",
+              firstError(state.fieldErrors, "consentDocumentation"),
+            )}
+            onCheckedChange={(checked) =>
+              registrationForm.touchAndValidate(
+                "consentDocumentation",
+                checked,
+              )
+            }
           />
 
           <p className="px-1 text-xs leading-6 text-slate-500">

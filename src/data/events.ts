@@ -111,9 +111,9 @@ export interface EventConfig {
   };
   readonly status: EventStatus;
   readonly statusLabel: string;
-  readonly registrationOpen: boolean;
-  readonly registrationStatus: RegistrationStatus;
-  readonly registrationStatusLabel: string;
+  // Registration open/closed state deliberately lives in the database
+  // (public.events) so it can be toggled from the admin panel without a
+  // deploy. Read it with getRegistrationState() in src/lib/event.
   readonly fee: {
     readonly amount: 0;
     readonly currency: "IDR";
@@ -225,11 +225,8 @@ export const aiCoCreationLabEvent = {
       height: 268,
     },
   },
-  status: "draft",
-  statusLabel: "Dalam Persiapan",
-  registrationOpen: false,
-  registrationStatus: "not_open",
-  registrationStatusLabel: "Pendaftaran Belum Dibuka",
+  status: "registration_open",
+  statusLabel: "Pendaftaran Dibuka",
   fee: {
     amount: 0,
     currency: "IDR",

@@ -1,3 +1,4 @@
+import { getRegistrationState } from "@/lib/event/registration-state";
 import {
   ArrowLeft,
   CheckCircle,
@@ -36,7 +37,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function StudentRegistrationPage() {
+export default async function StudentRegistrationPage() {
+  const registration = await getRegistrationState();
   const environmentConfigured = isSupabaseAdminConfigured();
   const configuredTurnstileSiteKey =
     process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
@@ -51,7 +53,7 @@ export default function StudentRegistrationPage() {
         eyebrow="Jalur mahasiswa"
         title="Bikin AI jadi pengalaman nyata, bukan cuma tab di browser."
         description="Ceritakan skill, pengalaman, perangkat, dan role yang paling kamu banget. Kamu tidak harus jago dulu untuk mulai bikin solusi bareng UMKM."
-        status={event.registrationStatusLabel}
+        status={registration.statusLabel}
         actions={
           <Link
             href={event.routes.register}
@@ -70,7 +72,7 @@ export default function StudentRegistrationPage() {
           <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10">
             <StudentRegistrationForm
               environmentConfigured={environmentConfigured}
-              registrationOpen={event.registrationOpen}
+              registrationOpen={registration.isOpen}
               showConfigurationDetails={process.env.NODE_ENV !== "production"}
               successPath={event.routes.registrationSuccess}
               turnstileSiteKey={turnstileSiteKey}
