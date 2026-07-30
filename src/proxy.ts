@@ -68,12 +68,14 @@ export default async function proxy(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   if (isLoginRoute) {
-    // Already signed in: skip the login form. Authorization is still enforced
-    // by the dashboard layout, so a non-admin lands back here.
-    if (user) {
-      return NextResponse.redirect(new URL("/admin", request.url));
-    }
-
+    // Deliberately no "already signed in, skip the login form" redirect here.
+    //
+    // Being signed in does not imply being an administrator: authorization
+    // comes from the admin_users allowlist, which is checked in the dashboard
+    // layout. Redirecting an authenticated non-admin to /admin would bounce
+    // them straight back to this route, producing an endless redirect loop.
+    // That state is reachable in practice, for example when an admin row is
+    // removed while its Supabase account still holds a valid session.
     return response;
   }
 

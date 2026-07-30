@@ -21,15 +21,45 @@ export type RateLimitResult = {
 
 const ALLOWED: RateLimitResult = { allowed: true, retryAfterSeconds: 0 };
 
+const OUTAGE_RETRY_SECONDS = 60;
+
+export type RateLimitOptions = {
+  /**
+   * What to do when the limiter itself cannot be reached.
+   *
+   * "open" suits the public registration form, where validation, the honeypot
+   * and the duplicate constraints still apply, and locking real applicants out
+   * would be worse than letting a burst through.
+   *
+   * "closed" is required wherever the limiter is the ONLY control — notably
+   * admin login, where failing open would silently remove all brute-force
+   * protection (for example if the consume_rate_limit migration was never
+   * applied).
+   */
+  onError?: "open" | "closed";
+};
+
 export async function checkRateLimit(
   key: string,
   limit: number,
   windowSeconds: number,
+  options: RateLimitOptions = {},
 ): Promise<RateLimitResult> {
+  const failClosed = options.onError === "closed";
+
+  const onOutage = (reason: string): RateLimitResult => {
+    // Surfaced in server logs so a silent limiter outage is noticeable.
+    console.error(`[rate-limit] unavailable for "${key}": ${reason}`);
+
+    return failClosed
+      ? { allowed: false, retryAfterSeconds: OUTAGE_RETRY_SECONDS }
+      : ALLOWED;
+  };
+
   const supabase = getSupabaseAdminClient();
 
   if (!supabase) {
-    return ALLOWED;
+    return onOutage("Supabase not configured");
   }
 
   try {
@@ -42,17 +72,15 @@ export async function checkRateLimit(
       .single<{ allowed: boolean; retry_after_seconds: number }>();
 
     if (error || !data) {
-      // Fail open: a limiter outage must not lock legitimate users out of
-      // registration. The honeypot, validation and auth checks still apply.
-      return ALLOWED;
+      return onOutage(error?.message ?? "empty response");
     }
 
     return {
       allowed: data.allowed,
       retryAfterSeconds: data.retry_after_seconds ?? 0,
     };
-  } catch {
-    return ALLOWED;
+  } catch (cause) {
+    return onOutage(cause instanceof Error ? cause.message : "unknown error");
   }
 }
 
@@ -74,22 +102,75 @@ export async function resetRateLimit(key: string): Promise<void> {
 }
 
 /**
- * Best-effort client IP from proxy headers. On Vercel, x-forwarded-for is set
- * by the platform edge, so the left-most entry is the real client address.
+ * Name of the header to trust for the client IP, or null when the platform is
+ * unknown.
+ *
+ * A header is only trustworthy if the infrastructure in front of the app
+ * always overwrites it. `cf-connecting-ip` qualifies ONLY when Cloudflare
+ * actually fronts the request: on a Vercel-only deployment nothing sets or
+ * strips it, so a client could send it and choose its own rate-limit bucket.
+ * It therefore has to be opted into explicitly rather than always preferred.
+ */
+function getTrustedIpHeader(): string | null {
+  const configured = process.env.TRUSTED_IP_HEADER?.trim().toLowerCase();
+
+  if (configured) {
+    return configured;
+  }
+
+  // Set automatically on Vercel. x-vercel-forwarded-for is injected by their
+  // proxy and cannot be forged by the client.
+  if (process.env.VERCEL) {
+    return "x-vercel-forwarded-for";
+  }
+
+  return null;
+}
+
+/**
+ * Client IP used to bucket rate limits.
+ *
+ * Never uses the LEFT-most `x-forwarded-for` entry: proxies append to that
+ * header, so the left-most value is whatever the client sent. An attacker
+ * rotating it would get a fresh bucket per request and bypass the limiter
+ * completely. The right-most entry is the one added by the nearest trusted
+ * proxy, so client-supplied values are ignored.
  */
 export async function getClientIp(): Promise<string> {
   const headerList = await headers();
-  const forwardedFor = headerList.get("x-forwarded-for");
+  const trustedHeader = getTrustedIpHeader();
 
-  if (forwardedFor) {
-    const first = forwardedFor.split(",")[0]?.trim();
+  if (trustedHeader) {
+    const value = headerList.get(trustedHeader)?.trim();
 
-    if (first) {
-      return first;
+    if (value) {
+      // Platform headers may themselves be a list; the first entry is the
+      // client as seen by the platform.
+      return value.split(",")[0]?.trim() || "unknown";
     }
   }
 
-  return headerList.get("x-real-ip")?.trim() || "unknown";
+  const forwardedFor = headerList.get("x-forwarded-for");
+
+  if (forwardedFor) {
+    const hops = forwardedFor
+      .split(",")
+      .map((hop) => hop.trim())
+      .filter(Boolean);
+    const nearest = hops.at(-1);
+
+    if (nearest) {
+      return nearest;
+    }
+  }
+
+  const realIp = headerList.get("x-real-ip")?.trim();
+
+  if (realIp) {
+    return realIp;
+  }
+
+  return "unknown";
 }
 
 export function hashIp(ip: string): string {

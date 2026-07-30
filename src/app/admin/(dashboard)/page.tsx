@@ -11,6 +11,7 @@ import {
 } from "@/components/admin/ui";
 import { EmptyState } from "@/components/ui/empty-state";
 import { requireAdmin } from "@/lib/admin/auth";
+import { getEventSlug } from "@/lib/event/registration-state";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
 import { RegistrationFilters } from "./registration-filters";
@@ -91,11 +92,19 @@ function buildQueryString(params: Record<string, string | undefined>): string {
 }
 
 /**
- * Escapes PostgREST reserved characters before interpolating user input into
- * an `or(...)` filter, so a search term cannot alter the filter structure.
+ * Escapes user input before interpolating it into a PostgREST `or(...)` filter.
+ *
+ * Two separate concerns:
+ *  - `( ) , * \ "` are structural in the or() grammar, so they are removed to
+ *    stop a search term altering the filter itself.
+ *  - `%` and `_` are LIKE wildcards. Left as-is, a search for "%" matches every
+ *    row and forces a sequential scan, so they are escaped to literals.
  */
 function escapeFilterValue(value: string): string {
-  return value.replace(/[(),*\\"]/g, " ").trim();
+  return value
+    .replace(/[(),*\\"]/g, " ")
+    .replace(/[%_]/g, (match) => `\\${match}`)
+    .trim();
 }
 
 type AdminDashboardPageProps = {
@@ -123,7 +132,13 @@ export default async function AdminDashboardPage({
     : undefined;
   const rawQuery = (resolvedSearchParams.q ?? "").slice(0, 120);
   const searchQuery = escapeFilterValue(rawQuery);
-  const currentPage = Math.max(1, Number(resolvedSearchParams.page) || 1);
+  // Floored and bounded: a non-integer like ?page=1.5 would produce a
+  // fractional .range() that PostgREST rejects, and ?page=1e400 would be
+  // Infinity.
+  const parsedPage = Number(resolvedSearchParams.page);
+  const currentPage = Number.isFinite(parsedPage)
+    ? Math.min(Math.max(1, Math.floor(parsedPage)), 100_000)
+    : 1;
 
   const supabase = getSupabaseAdminClient();
 
@@ -139,6 +154,30 @@ export default async function AdminDashboardPage({
     );
   }
 
+  // Everything on this page is scoped to the event being managed, matching the
+  // registration write path and the open/close toggle. Without this, adding a
+  // second event row would silently mix registrants together and make the
+  // totals wrong.
+  const eventSlug = getEventSlug();
+  const { data: eventRow } = await supabase
+    .from("events")
+    .select("id")
+    .eq("slug", eventSlug)
+    .maybeSingle<{ id: string }>();
+
+  if (!eventRow) {
+    return (
+      <>
+        <PageHeader title="Daftar Pendaftar" />
+        <EmptyState
+          title="Event tidak ditemukan"
+          description={`Tidak ada event dengan slug "${eventSlug}" di database. Periksa REGISTRATION_EVENT_SLUG dan pastikan SUPABASE_SCHEMA.sql sudah dijalankan.`}
+        />
+      </>
+    );
+  }
+
+  const eventId = eventRow.id;
   const from = (currentPage - 1) * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
@@ -148,6 +187,7 @@ export default async function AdminDashboardPage({
       "id, created_at, registration_type, status, submission_code, full_name, email, whatsapp, institution_name, business_name, events(slug, title)",
       { count: "exact" },
     )
+    .eq("event_id", eventId)
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -170,12 +210,29 @@ export default async function AdminDashboardPage({
     );
   }
 
-  const [listResult, totalsResult] = await Promise.all([
+  // Totals come from head-only count queries rather than fetching every row
+  // and measuring the array: PostgREST caps a plain select at 1000 rows, so
+  // counting client-side would silently under-report once the event grows.
+  const countAll = supabase
+    .from("registrations")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", eventId);
+  const countStudent = supabase
+    .from("registrations")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", eventId)
+    .eq("registration_type", "student");
+  const countUmkm = supabase
+    .from("registrations")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", eventId)
+    .eq("registration_type", "umkm");
+
+  const [listResult, allResult, studentResult, umkmResult] = await Promise.all([
     query.returns<RegistrationRow[]>(),
-    supabase
-      .from("registrations")
-      .select("registration_type")
-      .returns<{ registration_type: RegistrationType }[]>(),
+    countAll,
+    countStudent,
+    countUmkm,
   ]);
 
   const { data, count, error } = listResult;
@@ -194,14 +251,9 @@ export default async function AdminDashboardPage({
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const hasFilters = Boolean(typeFilter || statusFilter || rawQuery);
 
-  const allRows = totalsResult.data ?? [];
-  const totalAll = allRows.length;
-  const totalStudent = allRows.filter(
-    (row) => row.registration_type === "student",
-  ).length;
-  const totalUmkm = allRows.filter(
-    (row) => row.registration_type === "umkm",
-  ).length;
+  const totalAll = allResult.count ?? 0;
+  const totalStudent = studentResult.count ?? 0;
+  const totalUmkm = umkmResult.count ?? 0;
 
   return (
     <>
