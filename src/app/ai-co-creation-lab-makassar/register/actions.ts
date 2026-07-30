@@ -7,10 +7,7 @@ import { randomInt } from "node:crypto";
 import { headers } from "next/headers";
 import { z, type ZodError } from "zod";
 
-import {
-  getFormDataString,
-  getFormDataStrings,
-} from "@/lib/registration/normalizers";
+import { getFormDataString } from "@/lib/registration/normalizers";
 import {
   checkRateLimit,
   getClientIp,
@@ -22,10 +19,12 @@ import type {
 } from "@/lib/registration/result";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import {
+  buildStudentRegistrationCandidate,
   studentRegistrationSchema,
   type StudentRegistrationData,
 } from "@/lib/validation/student-registration";
 import {
+  buildUmkmRegistrationCandidate,
   umkmRegistrationSchema,
   type UmkmRegistrationData,
 } from "@/lib/validation/umkm-registration";
@@ -456,68 +455,6 @@ async function insertRegistration(
   };
 }
 
-function studentCandidate(formData: FormData) {
-  return {
-    fullName: getFormDataString(formData, "fullName"),
-    email: getFormDataString(formData, "email"),
-    whatsapp: getFormDataString(formData, "whatsapp"),
-    university: getFormDataString(formData, "university"),
-    studyProgram: getFormDataString(formData, "studyProgram"),
-    semester: getFormDataString(formData, "semester"),
-    city: getFormDataString(formData, "city"),
-    instagramUsername: getFormDataString(formData, "instagramUsername"),
-    aiExperience: getFormDataString(formData, "aiExperience"),
-    skills: getFormDataStrings(formData, "skills"),
-    preferredRoles: getFormDataStrings(formData, "preferredRoles"),
-    hasLaptop: getFormDataString(formData, "hasLaptop"),
-    projectExperience: getFormDataString(formData, "projectExperience"),
-    motivation: getFormDataString(formData, "motivation"),
-    attendanceCommitment: getFormDataString(
-      formData,
-      "attendanceCommitment",
-    ),
-    consentPrivacy: getFormDataString(formData, "consentPrivacy"),
-    consentDocumentation: getFormDataString(
-      formData,
-      "consentDocumentation",
-    ),
-    instagramFollowConfirmed: getFormDataString(
-      formData,
-      "instagramFollowConfirmed",
-    ),
-    company: getFormDataString(formData, "company"),
-  };
-}
-
-function umkmCandidate(formData: FormData) {
-  return {
-    ownerName: getFormDataString(formData, "ownerName"),
-    businessName: getFormDataString(formData, "businessName"),
-    email: getFormDataString(formData, "email"),
-    whatsapp: getFormDataString(formData, "whatsapp"),
-    businessCategory: getFormDataString(formData, "businessCategory"),
-    businessLocation: getFormDataString(formData, "businessLocation"),
-    socialMediaUrl: getFormDataString(formData, "socialMediaUrl"),
-    yearsInBusiness: getFormDataString(formData, "yearsInBusiness"),
-    availableDevices: getFormDataStrings(formData, "availableDevices"),
-    aiUsage: getFormDataString(formData, "aiUsage"),
-    repetitiveProblem: getFormDataString(formData, "repetitiveProblem"),
-    desiredHelp: getFormDataString(formData, "desiredHelp"),
-    availableAssets: getFormDataStrings(formData, "availableAssets"),
-    attendanceCommitment: getFormDataString(
-      formData,
-      "attendanceCommitment",
-    ),
-    consentPrivacy: getFormDataString(formData, "consentPrivacy"),
-    consentDocumentation: getFormDataString(
-      formData,
-      "consentDocumentation",
-    ),
-    consentMonitoring: getFormDataString(formData, "consentMonitoring"),
-    company: getFormDataString(formData, "company"),
-  };
-}
-
 function studentRow(data: StudentRegistrationData): Record<string, unknown> {
   return {
     full_name: data.fullName,
@@ -580,7 +517,7 @@ export async function submitStudentRegistration(
   // not consume quota. A long form is easy to get wrong several times, and
   // shared NAT (campus or office) means one bucket can cover many people.
   const parsed = studentRegistrationSchema.safeParse(
-    studentCandidate(formData),
+    buildStudentRegistrationCandidate(formData),
   );
 
   if (!parsed.success) {
@@ -616,7 +553,9 @@ export async function submitUmkmRegistration(
   formData: FormData,
 ): Promise<RegistrationActionState> {
   // Validation first, then quota — see the note in submitStudentRegistration.
-  const parsed = umkmRegistrationSchema.safeParse(umkmCandidate(formData));
+  const parsed = umkmRegistrationSchema.safeParse(
+    buildUmkmRegistrationCandidate(formData),
+  );
 
   if (!parsed.success) {
     return validationFailure(parsed.error);

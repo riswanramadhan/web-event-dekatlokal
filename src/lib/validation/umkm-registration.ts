@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 import {
+  getFormDataString,
+  getFormDataStrings,
   hasUnsafeText,
   normalizeBoolean,
   normalizeEmail,
@@ -235,3 +237,36 @@ export const umkmRegistrationSchema = z
 export type UmkmRegistrationInput = z.input<typeof umkmRegistrationSchema>;
 
 export type UmkmRegistrationData = z.output<typeof umkmRegistrationSchema>;
+
+/**
+ * Reads raw field values out of a FormData the same way for both the Server
+ * Action and the client-side pre-submit check, so the two can never disagree
+ * about what a given form actually contains.
+ */
+export function buildUmkmRegistrationCandidate(
+  formData: FormData,
+): Record<string, unknown> {
+  return {
+    ownerName: getFormDataString(formData, "ownerName"),
+    businessName: getFormDataString(formData, "businessName"),
+    email: getFormDataString(formData, "email"),
+    whatsapp: getFormDataString(formData, "whatsapp"),
+    businessCategory: getFormDataString(formData, "businessCategory"),
+    businessLocation: getFormDataString(formData, "businessLocation"),
+    socialMediaUrl: getFormDataString(formData, "socialMediaUrl"),
+    yearsInBusiness: getFormDataString(formData, "yearsInBusiness"),
+    availableDevices: getFormDataStrings(formData, "availableDevices"),
+    aiUsage: getFormDataString(formData, "aiUsage"),
+    repetitiveProblem: getFormDataString(formData, "repetitiveProblem"),
+    desiredHelp: getFormDataString(formData, "desiredHelp"),
+    availableAssets: getFormDataStrings(formData, "availableAssets"),
+    attendanceCommitment: getFormDataString(formData, "attendanceCommitment"),
+    consentPrivacy: getFormDataString(formData, "consentPrivacy"),
+    consentDocumentation: getFormDataString(
+      formData,
+      "consentDocumentation",
+    ),
+    consentMonitoring: getFormDataString(formData, "consentMonitoring"),
+    company: getFormDataString(formData, "company"),
+  };
+}
