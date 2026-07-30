@@ -1,3 +1,11 @@
+import {
+  miniProjectCanvasPdf,
+  miniProjectTimeline,
+  updatedMiniProjectProgressDescription,
+} from "@/data/mini-project-canvas-content";
+import type { MiniProjectTimelineItem } from "@/data/mini-project-canvas-content";
+import { sponsorshipSupportCategories } from "@/data/sponsorship-support";
+
 export const GEP_WEEK_ONE_REPORT_SLUGS = [
   "leadership-network-mapping",
   "identifikasi-masalah-sosial",
@@ -46,6 +54,10 @@ export type ReportBlock =
         readonly label: string;
         readonly value: string;
       }[];
+    }
+  | {
+      readonly type: "project-timeline";
+      readonly items: readonly MiniProjectTimelineItem[];
     };
 
 export interface ReportSection {
@@ -71,6 +83,10 @@ export interface GepWeekOneReport {
   readonly updatedAt: string;
   readonly updatedAtIso: string;
   readonly route: string;
+  readonly download?: {
+    readonly href: string;
+    readonly label: string;
+  };
   readonly sections: readonly ReportSection[];
   readonly leadershipReflection: {
     readonly quote: string;
@@ -294,31 +310,10 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
               "Potensi kontribusi",
             ],
             rows: [
-              [
-                "Main Impact Partner",
-                "Seluruh kebutuhan program",
-                "Pembiayaan atau dukungan penuh kegiatan",
-              ],
-              [
-                "Apparel Partner",
-                "30 baju event",
-                "Produk, subsidi produksi atau pembayaran vendor",
-              ],
-              [
-                "Identity Partner",
-                "30 lanyard dan ID card",
-                "Produksi identitas peserta",
-              ],
-              [
-                "Merchandise Partner",
-                "30 participant kits",
-                "Produk, voucher atau merchandise",
-              ],
-              [
-                "Food & Beverage Partner",
-                "Lunch dan snack box",
-                "Konsumsi peserta",
-              ],
+              ...sponsorshipSupportCategories.map(
+                ({ reportTitle, need, contribution }) =>
+                  [reportTitle, need, contribution] as const,
+              ),
               [
                 "Technology Partner",
                 "Akses perangkat atau layanan digital",
@@ -947,6 +942,7 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
     updatedAt: "30 Juli 2026",
     updatedAtIso: "2026-07-30",
     route: "/ai-co-creation-lab-makassar/progress/mini-project-canvas",
+    download: miniProjectCanvasPdf,
     sections: [
       {
         id: "project-identity",
@@ -1443,40 +1439,8 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
         title: "11. Timeline",
         blocks: [
           {
-            type: "table",
-            headers: ["Periode", "Fokus", "Aktivitas utama"],
-            rows: [
-              [
-                "25–31 Juli 2026",
-                "Discover",
-                "Leadership profile, network mapping, identifikasi masalah dan project canvas",
-              ],
-              [
-                "1–7 Agustus 2026",
-                "Connect and Validate",
-                "Wawancara, validasi, partnership, registrasi, seleksi dan action plan",
-              ],
-              [
-                "8–9 Agustus 2026",
-                "Final Preparation",
-                "Matching, requirement, starter kit, briefing dan technical preparation",
-              ],
-              [
-                "10 Agustus 2026",
-                "Lead the Action",
-                "Bootcamp, co-creation, development, testing, demo dan handover",
-              ],
-              [
-                "11–17 Agustus 2026",
-                "Refinement and Monitoring",
-                "Perbaikan, panduan, monitoring H+3 dan H+7",
-              ],
-              [
-                "18–25 Agustus 2026",
-                "Impact and Reflection",
-                "Impact measurement, reflection, sustainability plan dan final presentation",
-              ],
-            ],
+            type: "project-timeline",
+            items: miniProjectTimeline,
           },
         ],
       },
@@ -1568,8 +1532,7 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
       "sustainability plan;",
       "risks and mitigation.",
     ],
-    progressDescription:
-      "Mini Project Canvas AI Co-Creation Lab Makassar telah disusun dengan memuat problem, solusi, stakeholder dan partnership, output, outcome, indikator dampak, risiko, sustainability plan, serta timeline. Project dirancang untuk mempertemukan 20 mahasiswa dan 5 UMKM dalam lima tim yang mengembangkan lima prototype sistem digital melalui AI-assisted development. Konsep awal ini akan disempurnakan berdasarkan wawancara stakeholder, proses partnership, dan masukan reviewer pada Pekan 2.",
+    progressDescription: updatedMiniProjectProgressDescription,
     progressUrl:
       "https://event.dekatlokal.com/ai-co-creation-lab-makassar/progress/mini-project-canvas",
     evidence: [],

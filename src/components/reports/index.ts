@@ -11,8 +11,15 @@ export {
   ProgressReportBreadcrumb,
   ProgressReportHeader,
   ProgressReportPage,
+  ReportDownloadLink,
   ReportOutputList,
   ReportSection,
   ResponsiveReportTable,
   StatusBadge,
 } from "./progress-report";
+export {
+  ProjectTimeline,
+  ProjectTimelineItem,
+  TimelineOverview,
+  TimelineStatusBadge,
+} from "./project-timeline";

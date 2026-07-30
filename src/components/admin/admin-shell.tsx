@@ -117,13 +117,10 @@ export function AdminShell({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
-  // Close the drawer whenever the route changes, so a tap on a nav item does
-  // not leave the overlay covering the page it just opened.
-  useEffect(() => {
-    setDrawerOpen(false);
-  }, [pathname]);
+  const [drawerOpenedAtPath, setDrawerOpenedAtPath] = useState<string | null>(
+    null,
+  );
+  const drawerOpen = drawerOpenedAtPath === pathname;
 
   useEffect(() => {
     if (!drawerOpen) {
@@ -132,7 +129,7 @@ export function AdminShell({
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setDrawerOpen(false);
+        setDrawerOpenedAtPath(null);
       }
     }
 
@@ -165,7 +162,7 @@ export function AdminShell({
           <button
             type="button"
             aria-label="Tutup menu"
-            onClick={() => setDrawerOpen(false)}
+            onClick={() => setDrawerOpenedAtPath(null)}
             className="absolute inset-0 h-full w-full cursor-default bg-slate-950/40 backdrop-blur-[2px]"
           />
           <div
@@ -176,7 +173,7 @@ export function AdminShell({
           >
             <button
               type="button"
-              onClick={() => setDrawerOpen(false)}
+              onClick={() => setDrawerOpenedAtPath(null)}
               aria-label="Tutup menu"
               className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full text-slate-500 transition hover:bg-slate-100"
             >
@@ -187,7 +184,7 @@ export function AdminShell({
               adminEmail={adminEmail}
               registrationToggle={registrationToggle}
               logoutForm={logoutForm}
-              onNavigate={() => setDrawerOpen(false)}
+              onNavigate={() => setDrawerOpenedAtPath(null)}
             />
           </div>
         </div>
@@ -198,7 +195,7 @@ export function AdminShell({
         <header className="sticky top-0 z-[60] flex items-center gap-3 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur lg:hidden">
           <button
             type="button"
-            onClick={() => setDrawerOpen(true)}
+            onClick={() => setDrawerOpenedAtPath(pathname)}
             aria-label="Buka menu"
             className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 text-slate-600 transition hover:bg-slate-50"
           >
