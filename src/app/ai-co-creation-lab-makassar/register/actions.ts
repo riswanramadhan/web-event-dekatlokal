@@ -576,18 +576,21 @@ export async function submitStudentRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
-  const rateLimited = await enforceSubmissionRateLimit("student");
-
-  if (rateLimited) {
-    return rateLimited;
-  }
-
+  // Validation runs before the rate limiter so that ordinary form mistakes do
+  // not consume quota. A long form is easy to get wrong several times, and
+  // shared NAT (campus or office) means one bucket can cover many people.
   const parsed = studentRegistrationSchema.safeParse(
     studentCandidate(formData),
   );
 
   if (!parsed.success) {
     return validationFailure(parsed.error);
+  }
+
+  const rateLimited = await enforceSubmissionRateLimit("student");
+
+  if (rateLimited) {
+    return rateLimited;
   }
 
   const turnstileFailure = await validateTurnstile(formData);
@@ -612,16 +615,17 @@ export async function submitUmkmRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
-  const rateLimited = await enforceSubmissionRateLimit("umkm");
-
-  if (rateLimited) {
-    return rateLimited;
-  }
-
+  // Validation first, then quota — see the note in submitStudentRegistration.
   const parsed = umkmRegistrationSchema.safeParse(umkmCandidate(formData));
 
   if (!parsed.success) {
     return validationFailure(parsed.error);
+  }
+
+  const rateLimited = await enforceSubmissionRateLimit("umkm");
+
+  if (rateLimited) {
+    return rateLimited;
   }
 
   const turnstileFailure = await validateTurnstile(formData);

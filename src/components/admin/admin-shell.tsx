@@ -4,6 +4,7 @@ import { Group, LogOut, Menu, ShieldCheck, Xmark } from "iconoir-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { useFormStatus } from "react-dom";
 
 const NAV_ITEMS = [
   {
@@ -217,12 +218,14 @@ export function AdminShell({
 }
 
 export function LogoutButton() {
-  const [pending, setPending] = useState(false);
+  // Pending state must come from useFormStatus, not from local state set in
+  // onClick. Disabling a submit button inside its own click handler makes the
+  // browser cancel the submission, so the form action never runs.
+  const { pending } = useFormStatus();
 
   return (
     <button
       type="submit"
-      onClick={() => setPending(true)}
       disabled={pending}
       className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700 disabled:opacity-60"
     >

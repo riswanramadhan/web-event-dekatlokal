@@ -54,6 +54,10 @@ export async function loginAction(
     rateLimitKey,
     LOGIN_ATTEMPT_LIMIT,
     LOGIN_WINDOW_SECONDS,
+    // Fail closed: this limiter is the only brute-force control on login, so a
+    // limiter outage must block attempts rather than silently allow unlimited
+    // password guessing.
+    { onError: "closed" },
   );
 
   if (!rateLimit.allowed) {
@@ -80,6 +84,9 @@ export async function loginAction(
   });
 
   if (error || !data.user) {
+    // Recorded so credential stuffing is visible in the audit trail. The
+    // response to the user stays generic.
+    await recordAuditEvent("login_failed", credentials.data.email);
     return { status: "error", message: GENERIC_FAILURE };
   }
 
@@ -88,6 +95,7 @@ export async function loginAction(
   // signInWithPassword just established.
   if (!(await isAdminUser(data.user.id))) {
     await supabase.auth.signOut();
+    await recordAuditEvent("login_failed", credentials.data.email);
     return { status: "error", message: GENERIC_FAILURE };
   }
 

@@ -161,6 +161,7 @@ export async function requireAdmin(): Promise<AdminIdentity> {
 
 export type AdminAuditAction =
   | "login"
+  | "login_failed"
   | "create_admin"
   | "delete_admin"
   | "open_registration"

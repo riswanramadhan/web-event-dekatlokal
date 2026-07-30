@@ -67,6 +67,9 @@ export async function createAdminAction(
     });
 
   let userId = created?.user?.id;
+  // Tracks whether an existing login was promoted instead of a new one being
+  // created, so the confirmation message can say which password now applies.
+  let promotedExistingAccount = false;
 
   if (createError) {
     // The address may already exist in auth.users (for example created from
@@ -82,6 +85,7 @@ export async function createAdminAction(
     }
 
     userId = existing;
+    promotedExistingAccount = true;
   }
 
   if (!userId) {
@@ -109,9 +113,14 @@ export async function createAdminAction(
   await recordAuditEvent("create_admin", actor.email, email);
   revalidatePath("/admin/users");
 
+  // When an existing login was promoted, the password typed in this form was
+  // never applied. Saying so prevents handing out a password that will not
+  // work, without silently resetting an account's existing credentials.
   return {
     status: "success",
-    message: `Admin ${email} berhasil ditambahkan.`,
+    message: promotedExistingAccount
+      ? `${email} sudah punya akun login sebelumnya, jadi sekarang diberi akses admin dengan password lamanya. Password yang Anda isi TIDAK dipakai — kalau perlu diganti, lakukan dari Supabase Dashboard.`
+      : `Admin ${email} berhasil ditambahkan.`,
   };
 }
 
@@ -143,64 +152,63 @@ export async function deleteAdminAction(
     };
   }
 
-  const { count, error: countError } = await supabase
-    .from("admin_users")
-    .select("user_id", { count: "exact", head: true });
+  // Counting and then deleting as two statements is a race: two admins
+  // removing each other simultaneously would both pass a "more than one left"
+  // check and empty the allowlist, locking everyone out. This RPC performs the
+  // check and the delete in a single locked statement.
+  const { data: deleted, error: deleteAdminError } = await supabase
+    .rpc("delete_admin_guarded", { p_user_id: userId.data })
+    .maybeSingle<{ deleted_email: string }>();
 
-  if (countError) {
-    return { status: "error", message: "Gagal memeriksa jumlah admin." };
-  }
+  if (deleteAdminError) {
+    // PGRST202 = the function does not exist, i.e. the migration that creates
+    // it has not been applied yet. Say so instead of surfacing raw PostgREST
+    // text that gives the operator nothing to act on.
+    if (deleteAdminError.code === "PGRST202") {
+      return {
+        status: "error",
+        message:
+          "Fungsi hapus admin belum tersedia di database. Jalankan SUPABASE_MIGRATION_03.sql di Supabase SQL Editor terlebih dahulu.",
+      };
+    }
 
-  // Guards against deleting the final administrator, which would leave the
-  // panel permanently unreachable without manual SQL.
-  if ((count ?? 0) <= 1) {
     return {
       status: "error",
-      message: "Tidak dapat menghapus admin terakhir.",
+      message: `Gagal menghapus admin: ${deleteAdminError.message}`,
     };
   }
 
-  const { data: target, error: lookupError } = await supabase
-    .from("admin_users")
-    .select("email")
-    .eq("user_id", userId.data)
-    .maybeSingle();
-
-  if (lookupError || !target) {
-    return { status: "error", message: "Admin tersebut tidak ditemukan." };
-  }
-
-  const { error: revokeError } = await supabase
-    .from("admin_users")
-    .delete()
-    .eq("user_id", userId.data);
-
-  if (revokeError) {
+  // No row returned means the guard refused: either the last admin, or the id
+  // was not on the allowlist.
+  if (!deleted?.deleted_email) {
     return {
       status: "error",
-      message: `Gagal mencabut akses admin: ${revokeError.message}`,
+      message:
+        "Tidak dapat menghapus admin tersebut. Pastikan masih ada admin lain yang tersisa.",
     };
   }
 
-  // Access is revoked above; deleting the auth account also ends any session
-  // the removed administrator still holds.
+  const targetEmail = deleted.deleted_email;
+
+  // Access is already revoked above; deleting the auth account also ends any
+  // session the removed administrator still holds.
   const { error: deleteError } = await supabase.auth.admin.deleteUser(
     userId.data,
   );
 
-  await recordAuditEvent("delete_admin", actor.email, target.email);
+  await recordAuditEvent("delete_admin", actor.email, targetEmail);
   revalidatePath("/admin/users");
 
   if (deleteError) {
     return {
       status: "success",
-      message: `Akses admin ${target.email} dicabut, tetapi akun login gagal dihapus: ${deleteError.message}`,
+      message: `Akses admin ${targetEmail} dicabut, tetapi akun login gagal dihapus: ${deleteError.message}`,
     };
   }
 
   return {
     status: "success",
-    message: `Admin ${target.email} berhasil dihapus.`,
+    message: `Admin ${targetEmail} berhasil dihapus.`,
   };
 }
 
