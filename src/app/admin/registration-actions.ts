@@ -4,10 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 import { recordAuditEvent, requireAdmin } from "@/lib/admin/auth";
-import {
-  revalidateRegistrationState,
-  setRegistrationOpen,
-} from "@/lib/event/registration-state";
+import { setRegistrationOpen } from "@/lib/event/registration-state";
 
 export type RegistrationToggleState = {
   status: "idle" | "success" | "error";
@@ -42,9 +39,8 @@ export async function toggleRegistrationAction(
     actor.email,
   );
 
-  // Drop the cached copy used by the public pages, then refresh the admin
-  // views so the control reflects the new state straight away.
-  revalidateRegistrationState();
+  // Public pages read the current state per request; only the admin layout
+  // needs an explicit refresh after this write.
   revalidatePath("/admin", "layout");
 
   return {

@@ -162,6 +162,10 @@ Baseline deployment setelah seluruh acceptance lulus:
 Next.js 16 `proxy.ts` memakai runtime Node yang belum didukung adapter
 OpenNext Cloudflare. Auth gate karena itu memakai konvensi `middleware.ts`
 yang tetap didukung untuk Edge; logika session dan matcher admin tidak berubah.
+OpenNext memakai incremental cache berbasis Workers Static Assets untuk seed
+halaman SSG, termasuk tiga report. Status pendaftaran tidak disimpan di cache
+read-only tersebut: helper memanggil `connection()` dan membaca Supabase per
+request agar perubahan admin tetap langsung terlihat.
 Pembaruan dokumentasi ini dikirim pada version Sites berikutnya, sedangkan
 nomor version live final dicatat pada handoff.
 
