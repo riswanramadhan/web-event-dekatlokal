@@ -131,6 +131,8 @@ dependency, responsive behavior, dan accessibility.
 - `npm run typecheck`: **LULUS**.
 - `npm run build`: **LULUS**, 21 static pages termasuk route proposal dan
   tiga report.
+- `npm run build:open-next`: **LULUS**, termasuk Wrangler dry-run dan worker
+  mandiri berukuran 11.558.815 byte.
 - Exact data overlay: **LULUS**, 10/10 timeline dan 24/24 proposal pages.
 - Primary production browser QA: **126/126 LULUS**.
 - Independent Mini Project runtime QA: **100/100 LULUS**, zero console,
@@ -145,9 +147,23 @@ drawer tetap sama dan tidak menambah scope produk.
 
 ## Deployment
 
-Source freeze, OpenNext packaging, deployment privat, production URL, dan
-worker error check dilakukan sesudah seluruh acceptance di atas lulus. Bukti
-deployment final dicatat pada pembaruan dokumen pascadeploy dan handoff.
+Baseline deployment setelah seluruh acceptance lulus:
+
+- source commit aplikasi: `faf1f73eaafe67f771be5677f8006631efcc006f`;
+- Sites version: **9**;
+- deployment status: **succeeded**;
+- production URL:
+  `https://dekatlokal-event-aicl-makassar.riswancipa.chatgpt.site`;
+- access: **owner-only**, satu allowed user dan tanpa allowed group;
+- unauthenticated production request: **401**, sesuai access policy;
+- visual production screenshot: **LULUS**;
+- recent production worker errors: **0**.
+
+Next.js 16 `proxy.ts` memakai runtime Node yang belum didukung adapter
+OpenNext Cloudflare. Auth gate karena itu memakai konvensi `middleware.ts`
+yang tetap didukung untuk Edge; logika session dan matcher admin tidak berubah.
+Pembaruan dokumentasi ini dikirim pada version Sites berikutnya, sedangkan
+nomor version live final dicatat pada handoff.
 
 ## Keterbatasan yang harus dilaporkan
 
