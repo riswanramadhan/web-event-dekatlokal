@@ -17,13 +17,20 @@ function isModifiedClick(event: MouseEvent) {
   );
 }
 
+function currentLocationKey() {
+  return `${window.location.pathname}${window.location.search}`;
+}
+
 export function RouteTransition() {
   const pathname = usePathname();
   const shouldReduceMotion = useReducedMotion();
   const [isNavigating, setIsNavigating] = useState(false);
   const timeoutRef = useRef<number | null>(null);
+  const lastLocationRef = useRef<string | null>(null);
 
   useEffect(() => {
+    lastLocationRef.current = currentLocationKey();
+
     const finishNavigation = () => {
       if (timeoutRef.current) {
         window.clearTimeout(timeoutRef.current);
@@ -79,10 +86,17 @@ export function RouteTransition() {
         destination.search !== current.search;
 
       if (!routeChanged) return;
+      lastLocationRef.current = `${destination.pathname}${destination.search}`;
       startNavigation();
     };
 
-    const handleHistoryNavigation = () => startNavigation();
+    const handleHistoryNavigation = () => {
+      const nextLocation = currentLocationKey();
+      if (nextLocation === lastLocationRef.current) return;
+
+      lastLocationRef.current = nextLocation;
+      startNavigation();
+    };
     const handlePageShow = () => setIsNavigating(false);
 
     document.addEventListener("click", handleDocumentClick, true);
