@@ -168,6 +168,8 @@ export interface EventConfig {
   };
   readonly sponsorship: EventLandingSection & {
     readonly placeholderLabel: "Your Brand";
+    readonly proposalCtaLabel: string;
+    readonly proposalCtaHref: `/${string}`;
     readonly ctaLabel: string;
     readonly ctaHref: `mailto:${string}`;
   };
@@ -382,6 +384,9 @@ export const aiCoCreationLabEvent = {
     description:
       "Dukung ruang belajar dan co creation bagi mahasiswa serta UMKM lokal melalui kontribusi yang relevan dan transparan.",
     placeholderLabel: "Your Brand",
+    proposalCtaLabel: "Lihat Proposal Sponsorship",
+    proposalCtaHref:
+      "/ai-co-creation-lab-makassar/sponsorship-proposal",
     ctaLabel: "Jadi Supporting Partner",
     ctaHref:
       "mailto:hello@dekatlokal.com?subject=Kolaborasi%20AI%20Co%20Creation%20Lab%20Makassar",

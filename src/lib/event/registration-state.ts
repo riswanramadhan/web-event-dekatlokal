@@ -1,10 +1,8 @@
 import "server-only";
 
-import { unstable_cache, updateTag } from "next/cache";
+import { connection } from "next/server";
 
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
-
-export const REGISTRATION_STATE_TAG = "event-registration-state";
 
 const DEFAULT_EVENT_SLUG = "ai-co-creation-lab-makassar";
 
@@ -66,20 +64,13 @@ async function fetchRegistrationState(
 }
 
 /**
- * Cached read used by the public pages. The cache keeps those pages fast
- * instead of querying on every visit; the admin toggle calls
- * revalidateRegistrationState() so a change is reflected immediately.
+ * Public pages read the current value per request. `connection()` keeps those
+ * pages out of the read-only build cache used for static OpenNext routes, so an
+ * admin toggle is reflected without waiting for a new deployment.
  */
 export async function getRegistrationState(): Promise<RegistrationState> {
-  const slug = getEventSlug();
-
-  const cached = unstable_cache(
-    () => fetchRegistrationState(slug),
-    ["registration-state", slug],
-    { tags: [REGISTRATION_STATE_TAG], revalidate: 300 },
-  );
-
-  return cached();
+  await connection();
+  return fetchRegistrationState(getEventSlug());
 }
 
 /**
@@ -88,15 +79,6 @@ export async function getRegistrationState(): Promise<RegistrationState> {
  */
 export async function getRegistrationStateFresh(): Promise<RegistrationState> {
   return fetchRegistrationState(getEventSlug());
-}
-
-/**
- * Must be called from a Server Action. updateTag (rather than revalidateTag)
- * gives read-your-own-writes semantics, so the admin sees the new state on the
- * very next render instead of a stale cached one.
- */
-export function revalidateRegistrationState(): void {
-  updateTag(REGISTRATION_STATE_TAG);
 }
 
 export type SetRegistrationResult =

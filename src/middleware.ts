@@ -15,7 +15,10 @@ function readPublicEnvironment() {
   return { url, publishableKey };
 }
 
-export default async function proxy(request: NextRequest) {
+// Next.js 16 Proxy is Node-only, while the OpenNext Cloudflare adapter
+// requires the network boundary to use the Edge runtime. This auth gate uses
+// Web APIs only, so the supported middleware convention keeps it portable.
+export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Exact match only: a prefix check would also let "/admin/login-anything"

@@ -1,5 +1,6 @@
-import { ArrowUpRight, Building } from "iconoir-react";
+import { ArrowRight, ArrowUpRight, Building } from "iconoir-react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { Reveal } from "@/components/motion/reveal";
 import type { EventConfig } from "@/data/events";
@@ -49,17 +50,30 @@ export function EventEcosystem({
                 <p className="mt-4 max-w-xl text-sm leading-7 text-white/80 sm:text-base">
                   {sponsorship.description}
                 </p>
-                <a
-                  href={sponsorship.ctaHref}
-                  className="button-loop mt-7 inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-brand shadow-[0_12px_28px_rgba(0,31,92,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-50 sm:px-6"
-                >
-                  {sponsorship.ctaLabel}
-                  <ArrowUpRight
-                    className="h-4 w-4 shrink-0"
-                    strokeWidth={1.8}
-                    aria-hidden="true"
-                  />
-                </a>
+                <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap">
+                  <Link
+                    href={sponsorship.proposalCtaHref}
+                    className="button-loop inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-brand shadow-[0_12px_28px_rgba(0,31,92,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-50 sm:px-6"
+                  >
+                    {sponsorship.proposalCtaLabel}
+                    <ArrowRight
+                      className="h-4 w-4 shrink-0"
+                      strokeWidth={1.8}
+                      aria-hidden="true"
+                    />
+                  </Link>
+                  <a
+                    href={sponsorship.ctaHref}
+                    className="inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full border border-white/45 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-white hover:bg-white/10 sm:px-6"
+                  >
+                    {sponsorship.ctaLabel}
+                    <ArrowUpRight
+                      className="h-4 w-4 shrink-0"
+                      strokeWidth={1.8}
+                      aria-hidden="true"
+                    />
+                  </a>
+                </div>
               </div>
 
               <div className="mt-8 flex min-h-40 items-center justify-center rounded-[1.4rem] border border-dashed border-white/45 bg-white/10 p-6 text-center backdrop-blur-sm lg:mt-0">

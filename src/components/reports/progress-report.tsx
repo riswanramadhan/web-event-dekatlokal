@@ -4,6 +4,7 @@ import {
   Calendar,
   CheckCircle,
   Circle,
+  Download,
   EmptyPage,
   Link as LinkIcon,
   NavArrowRight,
@@ -23,6 +24,7 @@ import {
   CopyReportLinkButton,
   PrintReportButton,
 } from "./report-actions";
+import { ProjectTimeline } from "./project-timeline";
 
 const eventRoute = "/ai-co-creation-lab-makassar";
 const evidenceEmptyMessage =
@@ -133,6 +135,8 @@ function ReportPrintStyles() {
 
         .report-card,
         .report-section,
+        .project-timeline-overview,
+        .project-timeline-item,
         .report-section h2,
         .report-section h3,
         .report-section blockquote,
@@ -345,11 +349,38 @@ export function ProgressReportHeader({
 
           <div className="report-actions report-no-print mt-8 flex max-w-5xl flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-start">
             <CopyReportLinkButton url={report.progressUrl} />
+            {report.download ? (
+              <ReportDownloadLink
+                href={report.download.href}
+                label={report.download.label}
+              />
+            ) : null}
             <PrintReportButton />
           </div>
         </div>
       </div>
     </header>
+  );
+}
+
+export function ReportDownloadLink({
+  href,
+  label,
+}: {
+  href: string;
+  label: string;
+}) {
+  return (
+    <a
+      href={href}
+      download
+      aria-label={label}
+      className="report-action inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand shadow-[0_8px_22px_rgba(1,34,98,0.06)] transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 hover:shadow-[0_12px_26px_rgba(1,34,98,0.1)] active:translate-y-0 sm:w-auto"
+      data-report-action
+    >
+      <Download className="h-4 w-4 shrink-0" aria-hidden="true" />
+      <span>{label}</span>
+    </a>
   );
 }
 
@@ -522,6 +553,9 @@ function ReportBlockView({
           ))}
         </dl>
       );
+
+    case "project-timeline":
+      return <ProjectTimeline items={block.items} />;
   }
 }
 
