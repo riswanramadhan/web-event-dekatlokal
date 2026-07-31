@@ -50,7 +50,7 @@ export function EventEcosystem({
                 <p className="mt-4 max-w-xl text-sm leading-7 text-white/80 sm:text-base">
                   {sponsorship.description}
                 </p>
-                <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap">
+                <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap">
                   <Link
                     href={sponsorship.proposalCtaHref}
                     className="button-loop inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-brand shadow-[0_12px_28px_rgba(0,31,92,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-50 sm:px-6"

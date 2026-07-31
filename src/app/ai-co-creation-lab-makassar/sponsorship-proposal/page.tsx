@@ -1,9 +1,9 @@
+import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import {
   ArrowLeft,
   ArrowRight,
   Book,
   Group,
-  Mail,
   Shop,
   Star,
   StatsReport,
@@ -87,7 +87,7 @@ export default function SponsorshipProposalPage() {
               {sponsorshipProposalContent.hero.description}
             </p>
 
-            <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap">
+            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap">
               <a
                 href="#proposal-flipbook"
                 className="button-loop inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(2,85,245,0.22)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:px-6"
@@ -101,12 +101,14 @@ export default function SponsorshipProposalPage() {
               </a>
               <a
                 href={sponsorshipProposalContent.contact.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-5 py-3 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 sm:px-6"
               >
                 {sponsorshipProposalContent.hero.secondaryCta}
-                <Mail
+                <SiWhatsapp
                   className="h-4 w-4"
-                  strokeWidth={1.8}
+                  color="currentColor"
                   aria-hidden="true"
                 />
               </a>
@@ -296,12 +298,14 @@ export default function SponsorshipProposalPage() {
           </div>
           <a
             href={sponsorshipProposalContent.contact.href}
+            target="_blank"
+            rel="noopener noreferrer"
             className="button-loop mt-7 inline-flex min-h-12 w-fit max-w-full shrink-0 items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-brand shadow-[0_12px_28px_rgba(0,31,92,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-50 sm:px-6 lg:mt-0"
           >
             {sponsorshipProposalContent.contact.cta}
-            <Mail
+            <SiWhatsapp
               className="h-4 w-4"
-              strokeWidth={1.8}
+              color="currentColor"
               aria-hidden="true"
             />
           </a>
