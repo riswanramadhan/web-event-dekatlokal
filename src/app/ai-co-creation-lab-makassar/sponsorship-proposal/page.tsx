@@ -156,6 +156,29 @@ export default function SponsorshipProposalPage() {
       </section>
 
       <section
+        id="proposal-flipbook"
+        aria-labelledby="proposal-flipbook-title"
+        className="scroll-mt-28 border-y border-slate-200 bg-white py-14 sm:py-20"
+      >
+        <div className="page-container">
+          <Reveal>
+            <SectionHeading
+              id="proposal-flipbook-title"
+              eyebrow={sponsorshipProposalContent.flipbook.eyebrow}
+              title={sponsorshipProposalContent.flipbook.title}
+              description={sponsorshipProposalContent.flipbook.description}
+              align="center"
+            />
+          </Reveal>
+
+          <div className="mx-auto mt-10 max-w-[74rem] overflow-hidden rounded-[1.75rem] border border-slate-200 bg-slate-50/75 p-3 shadow-[0_18px_48px_rgba(1,34,98,0.07)] sm:p-6 lg:p-10">
+            <SponsorshipFlipbookLoader />
+          </div>
+        </div>
+      </section>
+
+
+      <section
         aria-labelledby="partnership-value-title"
         className="border-b border-slate-200 bg-white py-14 sm:py-20"
       >
@@ -257,28 +280,6 @@ export default function SponsorshipProposalPage() {
                 </Reveal>
               ),
             )}
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="proposal-flipbook"
-        aria-labelledby="proposal-flipbook-title"
-        className="scroll-mt-28 border-y border-slate-200 bg-white py-14 sm:py-20"
-      >
-        <div className="page-container">
-          <Reveal>
-            <SectionHeading
-              id="proposal-flipbook-title"
-              eyebrow={sponsorshipProposalContent.flipbook.eyebrow}
-              title={sponsorshipProposalContent.flipbook.title}
-              description={sponsorshipProposalContent.flipbook.description}
-              align="center"
-            />
-          </Reveal>
-
-          <div className="mx-auto mt-10 max-w-[74rem] overflow-hidden rounded-[1.75rem] border border-slate-200 bg-slate-50/75 p-3 shadow-[0_18px_48px_rgba(1,34,98,0.07)] sm:p-6 lg:p-10">
-            <SponsorshipFlipbookLoader />
           </div>
         </div>
       </section>
