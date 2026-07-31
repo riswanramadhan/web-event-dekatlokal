@@ -2,7 +2,6 @@ import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import {
   ArrowLeft,
   ArrowRight,
-  Book,
   Group,
   Shop,
   Star,
@@ -57,11 +56,11 @@ export default function SponsorshipProposalPage() {
         className="relative overflow-hidden border-b border-brand-100 bg-white"
       >
         <div
-          className="dot-grid pointer-events-none absolute inset-y-0 right-0 w-[56%] opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent_88%)]"
+          className="dot-grid pointer-events-none absolute inset-y-0 right-0 w-1/2 opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent_88%)]"
           aria-hidden="true"
         />
-        <div className="page-container relative grid gap-10 py-12 sm:py-16 lg:min-h-[40rem] lg:grid-cols-[1.08fr_0.92fr] lg:items-center lg:gap-16 lg:py-20">
-          <div className="min-w-0">
+        <div className="page-container relative py-12 sm:py-16 lg:py-24">
+          <div className="max-w-3xl">
             <Link
               href={eventRoute}
               className="inline-flex min-h-11 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-[0_8px_22px_rgba(1,34,98,0.05)] transition hover:border-brand-200 hover:bg-brand-50 hover:text-brand"
@@ -79,11 +78,11 @@ export default function SponsorshipProposalPage() {
             </p>
             <h1
               id="sponsorship-proposal-title"
-              className="mt-4 max-w-4xl text-balance text-[2.5rem] font-semibold leading-[1.04] tracking-[-0.058em] text-ink sm:text-5xl lg:text-[3.7rem]"
+              className="mt-4 text-balance text-[2.5rem] font-semibold leading-[1.04] tracking-[-0.058em] text-ink sm:text-5xl lg:text-[3.7rem]"
             >
               {sponsorshipProposalContent.hero.title}
             </h1>
-            <p className="mt-6 max-w-3xl text-base leading-8 text-slate-600 sm:text-lg">
+            <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
               {sponsorshipProposalContent.hero.description}
             </p>
 
@@ -112,44 +111,6 @@ export default function SponsorshipProposalPage() {
                   aria-hidden="true"
                 />
               </a>
-            </div>
-          </div>
-
-          <div className="mx-auto w-full max-w-[27rem] lg:justify-self-end">
-            <div className="relative aspect-[210/297] overflow-hidden rounded-[1.5rem] border border-brand-700 bg-brand p-7 text-white shadow-[0_24px_58px_rgba(2,85,245,0.22)] sm:p-9">
-              <div
-                className="hero-grid pointer-events-none absolute inset-0 opacity-45"
-                aria-hidden="true"
-              />
-              <div className="relative flex h-full flex-col">
-                <p className="text-sm font-semibold">
-                  {sponsorshipProposalContent.cover.brand}
-                </p>
-                <div className="mt-auto">
-                  <p className="font-mono text-[0.68rem] font-semibold uppercase leading-5 tracking-[0.16em] text-brand-100">
-                    {sponsorshipProposalContent.cover.documentType}
-                  </p>
-                  <p className="mt-5 text-3xl font-semibold leading-[1.08] tracking-[-0.05em] sm:text-4xl">
-                    {sponsorshipProposalContent.cover.eventTitle}
-                  </p>
-                  <p className="mt-4 text-sm leading-7 text-white/75">
-                    {sponsorshipProposalContent.cover.tagline}
-                  </p>
-                </div>
-                <div className="mt-auto flex items-center justify-between border-t border-white/25 pt-5">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-white/80">
-                    <Book
-                      className="h-4 w-4"
-                      strokeWidth={1.7}
-                      aria-hidden="true"
-                    />
-                    {sponsorshipProposalMeta.totalPages} halaman
-                  </div>
-                  <span className="font-mono text-[0.62rem] text-white/65">
-                    event.dekatlokal.com
-                  </span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
