@@ -1,3 +1,4 @@
+import { Check, Xmark } from "iconoir-react";
 import type { ReactNode } from "react";
 
 export function PageHeader({
@@ -148,7 +149,13 @@ export function StatusBadge({ status }: { status: string }) {
  * Initials avatar. Purely decorative, so it is hidden from assistive tech —
  * the adjacent name already conveys the identity.
  */
-export function Avatar({ name }: { name: string }) {
+export function Avatar({
+  name,
+  size = "sm",
+}: {
+  name: string;
+  size?: "sm" | "lg";
+}) {
   const initials = name
     .trim()
     .split(/\s+/)
@@ -156,12 +163,96 @@ export function Avatar({ name }: { name: string }) {
     .map((part) => part[0]?.toUpperCase() ?? "")
     .join("");
 
+  const sizeClass =
+    size === "lg" ? "h-14 w-14 text-lg" : "h-9 w-9 text-xs";
+
   return (
     <span
       aria-hidden="true"
-      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-50 text-xs font-semibold text-brand"
+      className={`grid shrink-0 place-items-center rounded-full bg-brand-50 font-semibold text-brand ${sizeClass}`}
     >
       {initials || "?"}
+    </span>
+  );
+}
+
+/**
+ * A single label/value pair inside a <dl>. Used throughout the registrant
+ * detail view so every field reads consistently regardless of section.
+ */
+export function DetailField({
+  label,
+  value,
+  className = "",
+}: {
+  label: string;
+  value: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        {label}
+      </dt>
+      <dd className="mt-1 text-sm leading-6 text-ink">{value || "—"}</dd>
+    </div>
+  );
+}
+
+/**
+ * Renders a long free-text answer (motivation, project experience, etc.)
+ * with line breaks preserved, since these come from a <textarea>.
+ */
+export function DetailText({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        {label}
+      </dt>
+      <dd className="mt-1.5 whitespace-pre-wrap text-sm leading-7 text-slate-700">
+        {value || "—"}
+      </dd>
+    </div>
+  );
+}
+
+export function TagList({ items }: { items: string[] }) {
+  if (items.length === 0) {
+    return <span className="text-sm text-slate-400">—</span>;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {items.map((item) => (
+        <span
+          key={item}
+          className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700"
+        >
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+export function BooleanIndicator({
+  value,
+  trueLabel = "Ya",
+  falseLabel = "Tidak",
+}: {
+  value: boolean;
+  trueLabel?: string;
+  falseLabel?: string;
+}) {
+  return value ? (
+    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700">
+      <Check className="h-4 w-4" aria-hidden="true" />
+      {trueLabel}
+    </span>
+  ) : (
+    <span className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500">
+      <Xmark className="h-4 w-4" aria-hidden="true" />
+      {falseLabel}
     </span>
   );
 }

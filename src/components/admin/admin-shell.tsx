@@ -22,6 +22,13 @@ const NAV_ITEMS = [
 ] as const;
 
 function isActivePath(pathname: string, href: string): boolean {
+  if (href === "/admin") {
+    // The registrant detail view is a sub-page of the list, so it should
+    // keep "Daftar Pendaftar" highlighted (and shown as the mobile title)
+    // rather than falling back to no active item.
+    return pathname === "/admin" || pathname.startsWith("/admin/registrations");
+  }
+
   return pathname === href;
 }
 
@@ -120,10 +127,14 @@ export function AdminShell({
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Close the drawer whenever the route changes, so a tap on a nav item does
-  // not leave the overlay covering the page it just opened.
-  useEffect(() => {
+  // not leave the overlay covering the page it just opened. Adjusted during
+  // render (React's documented pattern for resetting state when a prop
+  // changes) rather than in an effect, which would cost an extra render.
+  const [renderedPathname, setRenderedPathname] = useState(pathname);
+  if (pathname !== renderedPathname) {
+    setRenderedPathname(pathname);
     setDrawerOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!drawerOpen) {
