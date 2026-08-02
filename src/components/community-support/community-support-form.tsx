@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  Check,
-  InfoCircle,
   Lock,
   Page,
   RefreshDouble,
@@ -62,6 +60,7 @@ const successResponseSchema = z.object({
 
 const errorResponseSchema = z.object({
   error: z.string().max(240).optional(),
+  reference: z.string().regex(/^CS-[A-F0-9]{8}$/).optional(),
   field_errors: z
     .record(z.string(), z.array(z.string().max(240)).max(4))
     .optional(),
@@ -72,7 +71,27 @@ const rupiahFormatter = new Intl.NumberFormat("id-ID", {
 });
 
 const genericSubmissionError =
-  "Something went wrong while submitting your support. Please try again.";
+  "Support belum berhasil dikirim. Silakan coba lagi.";
+
+const safeSubmissionErrors = new Set([
+  "We couldn't upload your transfer proof. Please try again.",
+  "File size must be under 5 MB.",
+  "Please upload a JPG, PNG, WebP, or PDF file.",
+  "Too many submission attempts. Please try again later.",
+  "Please check the highlighted fields and try again.",
+  "This form no longer matches an earlier submission. Check your previous confirmation before starting a new submission.",
+  "Layanan community support belum tersambung ke database. Tim DekatLokal perlu memeriksa konfigurasi Supabase.",
+  "Konfirmasi support belum dapat disimpan. Tim DekatLokal perlu memeriksa database.",
+]);
+
+function formatSubmissionError(error?: string, reference?: string) {
+  const message =
+    error && safeSubmissionErrors.has(error)
+      ? error
+      : genericSubmissionError;
+
+  return reference ? `${message} Kode kendala: ${reference}.` : message;
+}
 
 function formatAmountInput(digits: string) {
   if (!digits) {
@@ -454,20 +473,11 @@ export function CommunitySupportForm() {
         if (parsedError.success) {
           mapServerFieldErrors(parsedError.data.field_errors);
 
-          const safeMessage = parsedError.data.error;
-          setFormError(
-            safeMessage ===
-              "We couldn’t upload your transfer proof. Please try again." ||
-              safeMessage === "File size must be under 5 MB." ||
-              safeMessage ===
-                "Please upload a JPG, PNG, WebP, or PDF file." ||
-              safeMessage ===
-                "Too many submission attempts. Please try again later." ||
-              safeMessage ===
-                "This form no longer matches an earlier submission. Check your previous confirmation before starting a new submission."
-              ? safeMessage
-              : genericSubmissionError,
+          const safeMessage = formatSubmissionError(
+            parsedError.data.error,
+            parsedError.data.reference,
           );
+          setFormError(safeMessage);
         } else {
           setFormError(genericSubmissionError);
         }
@@ -490,7 +500,7 @@ export function CommunitySupportForm() {
       window.dispatchEvent(new Event("community-support:submitted"));
     } catch {
       setFormError(
-        "Connection interrupted. Please check your internet and try again.",
+        "Koneksi terputus. Periksa internet Anda lalu coba lagi.",
       );
     } finally {
       window.clearTimeout(timeout);
@@ -541,12 +551,12 @@ export function CommunitySupportForm() {
   return (
     <>
       <form
-      className="mt-10 grid gap-5 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start"
-      onSubmit={handleSubmit}
-      noValidate
-      encType="multipart/form-data"
-    >
-      <div className="space-y-5">
+        className="mx-auto mt-8 max-w-4xl"
+        onSubmit={handleSubmit}
+        noValidate
+        encType="multipart/form-data"
+      >
+        <div className="space-y-5">
         {formError ? (
           <div
             ref={formErrorRef}
@@ -568,8 +578,8 @@ export function CommunitySupportForm() {
 
         <FormPanel
           number="01"
-          title="Your support details"
-          description="Siapa yang support, nominal, dan transfer-nya ke mana."
+          title="Detail support"
+          description="Isi identitas, nominal, dan rekening tujuan."
         >
           <fieldset>
             <legend className="text-sm font-semibold text-ink">
@@ -589,7 +599,7 @@ export function CommunitySupportForm() {
                   className="peer sr-only"
                 />
                 <span className="flex min-h-11 items-center justify-center rounded-xl px-2 text-center text-xs font-semibold text-slate-600 transition peer-checked:bg-white peer-checked:text-brand peer-checked:shadow-sm peer-focus-visible:ring-4 peer-focus-visible:ring-brand-100 sm:text-sm">
-                  Use my name
+                  Gunakan nama
                 </span>
               </label>
               <label className="relative cursor-pointer">
@@ -602,7 +612,7 @@ export function CommunitySupportForm() {
                   className="peer sr-only"
                 />
                 <span className="flex min-h-11 items-center justify-center rounded-xl px-2 text-center text-xs font-semibold text-slate-600 transition peer-checked:bg-white peer-checked:text-brand peer-checked:shadow-sm peer-focus-visible:ring-4 peer-focus-visible:ring-brand-100 sm:text-sm">
-                  Stay anonymous
+                  Anonim
                 </span>
               </label>
             </div>
@@ -633,7 +643,7 @@ export function CommunitySupportForm() {
                   clearFieldError("supporter_name");
                 }}
                 onBlur={() => markTouched("supporter_name")}
-                placeholder="Your full name"
+                placeholder="Nama lengkap"
                 aria-invalid={Boolean(supporterNameError)}
                 aria-describedby={
                   supporterNameError ? "supporter_name-error" : undefined
@@ -758,50 +768,12 @@ export function CommunitySupportForm() {
               {destinationBankError}
             </FieldError>
           </fieldset>
-
-          <div className="mt-6">
-            <div>
-              <label
-                htmlFor="contact"
-                className="block text-sm font-semibold text-ink"
-              >
-                Kontak <span className="font-normal text-slate-600">(optional)</span>
-              </label>
-              <input
-                id="contact"
-                name="contact"
-                type="text"
-                autoComplete="email"
-                maxLength={254}
-                value={contact}
-                onChange={(event) => {
-                  setContact(event.currentTarget.value);
-                  clearFieldError("contact");
-                }}
-                onBlur={() => markTouched("contact")}
-                placeholder="WhatsApp or email — optional"
-                aria-invalid={Boolean(contactError)}
-                aria-describedby={
-                  contactError
-                    ? "contact-helper contact-error"
-                    : "contact-helper"
-                }
-                className={`${inputClass} mt-2`}
-              />
-              <p id="contact-helper" className="mt-2 text-xs leading-5 text-slate-500">
-                Data ini tersimpan privat dan tidak pernah ditampilkan di ticker.
-              </p>
-              <FieldError id="contact-error">
-                {contactError}
-              </FieldError>
-            </div>
-          </div>
         </FormPanel>
 
         <FormPanel
           number="02"
-          title="Proof & message"
-          description="Upload bukti secara private, lalu tinggalkan pesan kalau kamu mau."
+          title="Bukti & kirim support"
+          description="Upload bukti secara privat, konfirmasi data, lalu kirim."
         >
           <div>
             <label
@@ -862,10 +834,10 @@ export function CommunitySupportForm() {
                   />
                 </span>
                 <span className="mt-4 text-sm font-semibold text-ink">
-                  Tap to upload or drop a file here
+                  Pilih atau jatuhkan file di sini
                 </span>
                 <span className="mt-1 text-xs leading-5 text-slate-500">
-                  JPG, PNG, WebP, or PDF · maximum 5 MB
+                  JPG, PNG, WebP, atau PDF · maksimal 5 MB
                 </span>
               </label>
             ) : (
@@ -899,7 +871,7 @@ export function CommunitySupportForm() {
                       {proofFile.name}
                     </p>
                     <p className="mt-1 text-xs text-slate-500">
-                      {formatFileSize(proofFile.size)} · ready to upload
+                      {formatFileSize(proofFile.size)} · siap diunggah
                     </p>
                     <div className="mt-4 flex flex-wrap gap-2">
                       <button
@@ -907,7 +879,7 @@ export function CommunitySupportForm() {
                         onClick={() => fileInputRef.current?.click()}
                         className="inline-flex min-h-11 items-center justify-center rounded-full border border-brand-200 bg-white px-4 text-xs font-semibold text-brand transition hover:border-brand hover:bg-brand-50"
                       >
-                        Replace
+                        Ganti
                       </button>
                       <button
                         type="button"
@@ -915,7 +887,7 @@ export function CommunitySupportForm() {
                         className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700"
                       >
                         <Xmark className="h-4 w-4" aria-hidden="true" />
-                        Remove
+                        Hapus
                       </button>
                     </div>
                   </div>
@@ -941,42 +913,85 @@ export function CommunitySupportForm() {
             <FieldError id="proof_file-error">{proofError}</FieldError>
           </div>
 
-          <div className="mt-7">
-            <label
-              htmlFor="message"
-              className="block text-sm font-semibold text-ink"
-            >
-              Pesan <span className="font-normal text-slate-600">(optional)</span>
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              maxLength={300}
-              value={message}
-              onChange={(event) => {
-                setMessage(event.currentTarget.value);
-                clearFieldError("message");
-              }}
-              onBlur={() => markTouched("message")}
-              placeholder="Leave a short message for the team…"
-              aria-invalid={Boolean(messageError)}
-              aria-describedby={
-                messageError
-                  ? "message-counter message-error"
-                  : "message-counter"
-              }
-              className={`${inputClass} mt-2 min-h-32 resize-y`}
-            />
-            <p
-              id="message-counter"
-              className="mt-1.5 text-right text-xs tabular-nums text-slate-600"
-            >
-              {message.length}/300 karakter
-            </p>
-            <FieldError id="message-error">
-              {messageError}
-            </FieldError>
-          </div>
+          <details className="group mt-6 rounded-2xl border border-slate-200 bg-slate-50">
+            <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand [&::-webkit-details-marker]:hidden">
+              Kontak dan pesan
+              <span className="font-normal text-slate-500">Opsional</span>
+            </summary>
+            <div className="space-y-6 border-t border-slate-200 px-4 py-5">
+              <div>
+                <label
+                  htmlFor="contact"
+                  className="block text-sm font-semibold text-ink"
+                >
+                  WhatsApp atau email
+                </label>
+                <input
+                  id="contact"
+                  name="contact"
+                  type="text"
+                  autoComplete="email"
+                  maxLength={254}
+                  value={contact}
+                  onChange={(event) => {
+                    setContact(event.currentTarget.value);
+                    clearFieldError("contact");
+                  }}
+                  onBlur={() => markTouched("contact")}
+                  placeholder="WhatsApp atau email — opsional"
+                  aria-invalid={Boolean(contactError)}
+                  aria-describedby={
+                    contactError
+                      ? "contact-helper contact-error"
+                      : "contact-helper"
+                  }
+                  className={`${inputClass} mt-2`}
+                />
+                <p
+                  id="contact-helper"
+                  className="mt-2 text-xs leading-5 text-slate-500"
+                >
+                  Tersimpan privat dan tidak pernah ditampilkan di ticker.
+                </p>
+                <FieldError id="contact-error">{contactError}</FieldError>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="message"
+                  className="block text-sm font-semibold text-ink"
+                >
+                  Pesan untuk tim
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  maxLength={300}
+                  value={message}
+                  onChange={(event) => {
+                    setMessage(event.currentTarget.value);
+                    clearFieldError("message");
+                  }}
+                  onBlur={() => markTouched("message")}
+                  placeholder="Tulis pesan singkat — opsional"
+                  aria-invalid={Boolean(messageError)}
+                  aria-describedby={
+                    messageError
+                      ? "message-counter message-error"
+                      : "message-counter"
+                  }
+                  className={`${inputClass} mt-2 min-h-28 resize-y`}
+                />
+                <p
+                  id="message-counter"
+                  className="mt-1.5 text-right text-xs tabular-nums text-slate-600"
+                >
+                  {message.length}/300 karakter
+                </p>
+                <FieldError id="message-error">{messageError}</FieldError>
+              </div>
+            </div>
+          </details>
 
           <div className="mt-6">
             <label
@@ -1012,39 +1027,33 @@ export function CommunitySupportForm() {
               </span>
             </label>
           </div>
-        </FormPanel>
-
-        <FormPanel
-          number="03"
-          title="Final check"
-          description="Pastikan informasi dan file yang dipilih sudah benar sebelum submit."
-        >
-          <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition focus-within:ring-4 focus-within:ring-brand-100 has-[:checked]:border-brand-200 has-[:checked]:bg-brand-50">
-            <input
-              type="checkbox"
-              id="confirmation"
-              name="confirmation"
-              checked={confirmation}
-              required
-              onChange={(event) => {
-                setConfirmation(event.currentTarget.checked);
-                markTouched("confirmation");
-                clearFieldError("confirmation");
-              }}
-              aria-invalid={Boolean(confirmationError)}
-              aria-describedby={
-                confirmationError ? "confirmation-error" : undefined
-              }
-              className="mt-1 h-4 w-4 shrink-0 accent-brand"
-            />
-            <span className="text-sm font-medium leading-6 text-ink">
-              I confirm that the information and transfer proof submitted are
-              correct.
-            </span>
-          </label>
-          <FieldError id="confirmation-error">
-            {confirmationError}
-          </FieldError>
+          <div className="mt-7 border-t border-slate-200 pt-7">
+            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition focus-within:ring-4 focus-within:ring-brand-100 has-[:checked]:border-brand-200 has-[:checked]:bg-brand-50">
+              <input
+                type="checkbox"
+                id="confirmation"
+                name="confirmation"
+                checked={confirmation}
+                required
+                onChange={(event) => {
+                  setConfirmation(event.currentTarget.checked);
+                  markTouched("confirmation");
+                  clearFieldError("confirmation");
+                }}
+                aria-invalid={Boolean(confirmationError)}
+                aria-describedby={
+                  confirmationError ? "confirmation-error" : undefined
+                }
+                className="mt-1 h-4 w-4 shrink-0 accent-brand"
+              />
+              <span className="text-sm font-medium leading-6 text-ink">
+                Saya memastikan informasi dan bukti transfer yang dikirim sudah
+                benar.
+              </span>
+            </label>
+            <FieldError id="confirmation-error">
+              {confirmationError}
+            </FieldError>
 
           <div className="sr-honeypot" aria-hidden="true">
             <label htmlFor="website">Website</label>
@@ -1073,81 +1082,21 @@ export function CommunitySupportForm() {
             ) : (
               <ShieldCheck className="h-4.5 w-4.5" aria-hidden="true" />
             )}
-            {status === "submitting" ? "Submitting…" : "Submit My Support"}
+            {status === "submitting" ? "Mengirim…" : "Kirim Support"}
           </button>
           <p
             className="mt-2 min-h-5 text-center text-xs leading-5 text-slate-500"
             aria-live="polite"
           >
             {status === "submitting"
-              ? "Uploading your private proof and saving the submission."
+              ? "Mengunggah bukti privat dan menyimpan support."
               : canSubmit
-                ? "Ready to submit securely."
+                ? "Popup terima kasih dan CTA WhatsApp muncul langsung setelah berhasil."
                 : "Lengkapi semua field bertanda * untuk mengaktifkan tombol submit."}
           </p>
+          </div>
         </FormPanel>
-      </div>
-
-      <aside className="rounded-[1.75rem] border border-brand-200 bg-brand-50 p-5 lg:sticky lg:top-28 lg:p-6">
-        <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-white text-brand shadow-sm">
-            <InfoCircle
-              className="h-5 w-5"
-              strokeWidth={1.7}
-              aria-hidden="true"
-            />
-          </span>
-          <h3 className="font-semibold text-brand-900">What happens next?</h3>
         </div>
-        <ol className="mt-6 space-y-5">
-          {[
-            {
-              title: "Support tercatat",
-              body: "Form dan bukti transfer disimpan privat begitu submission berhasil.",
-            },
-            {
-              title: "Ucapan terima kasih",
-              body: "Popup sukses dan kode referensi muncul langsung setelah data tersimpan.",
-            },
-            {
-              title: "Kabar via WhatsApp",
-              body: "Gunakan CTA opsional untuk memberi tahu tim bahwa kamu sudah support.",
-            },
-          ].map((step, index) => (
-            <li key={step.title} className="grid grid-cols-[auto_1fr] gap-3">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-brand-200 bg-white font-mono text-[0.65rem] font-semibold text-brand">
-                {index + 1}
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-brand-900">
-                  {step.title}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-brand-900/70">
-                  {step.body}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <div className="mt-6 border-t border-brand-200 pt-5">
-          <p className="flex items-start gap-2 text-xs leading-5 text-brand-900/75">
-            <Check
-              className="mt-0.5 h-4 w-4 shrink-0 text-brand"
-              aria-hidden="true"
-            />
-            Nama tersamarkan dan nominal hanya masuk ticker jika kamu memberi
-            izin secara eksplisit.
-          </p>
-          <p className="mt-3 flex items-start gap-2 text-xs leading-5 text-brand-900/75">
-            <Lock
-              className="mt-0.5 h-4 w-4 shrink-0 text-brand"
-              aria-hidden="true"
-            />
-            Kontak, pesan, bukti, detail bank, dan catatan internal tidak pernah
-            tampil di ticker.
-          </p>
-        </div>
-      </aside>
       </form>
       {submission ? (
         <SupportSubmissionSuccess

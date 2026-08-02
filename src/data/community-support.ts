@@ -12,17 +12,6 @@ export type CommunitySupportBank = {
   };
 };
 
-export type CommunitySupportMetric = {
-  readonly value: string;
-  readonly label: string;
-};
-
-export type CommunitySupportAllocation = {
-  readonly title: string;
-  readonly description: string;
-  readonly icon: "meal" | "identity" | "kit" | "documentation" | "development" | "operations";
-};
-
 export const communitySupportContent = {
   event: {
     name: "AI Co-Creation Lab Makassar",
@@ -32,75 +21,28 @@ export const communitySupportContent = {
       "https://event.dekatlokal.com/ai-co-creation-lab-makassar/sponsorship-proposal",
   },
   hero: {
-    eyebrow: "Community-powered · 10 Agustus 2026",
-    title: "Let’s Build Something Useful, Together.",
+    eyebrow: "Community Support | 10 Agustus 2026",
+    title: "Dukung AI Co-Creation Lab Makassar.",
     description:
-      "AI Co-Creation Lab Makassar dirancang untuk mempertemukan target 20 mahasiswa dan 5 UMKM untuk build 5 solusi digital dari real business problems.",
-    invitation:
-      "Tanggal, venue, dan format programnya sudah disiapkan. Sekarang kami membuka ruang buat teman-teman yang ingin ikut support perjalanan ini.",
-    primaryCta: "Support the Event",
-    secondaryCta: "View Full Proposal",
-    targetLabel: "Target program · planned outcome",
-    metrics: [
-      { value: "20", label: "Students" },
-      { value: "5", label: "Local Businesses" },
-      { value: "5", label: "Digital Prototypes" },
-      { value: "1", label: "Collaborative Lab" },
-    ] satisfies readonly CommunitySupportMetric[],
+      "Bantu kebutuhan pelaksanaan program yang mempertemukan mahasiswa dan UMKM untuk membangun solusi digital dari masalah bisnis nyata.",
+    primaryCta: "Lihat Rekening Support",
+    secondaryCta: "Lihat Proposal",
   },
-  why: {
-    eyebrow: "Why now",
-    title: "Why Community Support?",
-    paragraphs: [
-      "Sebagian brand dan sponsor kami masih dalam proses, sementara hari pelaksanaan semakin dekat.",
-      "Instead of just waiting, kami membuka ruang buat teman, alumni, komunitas, dan siapa pun yang percaya pada program ini untuk ikut terlibat.",
-      "Nggak harus dengan nominal besar. Small support, sharing this page, atau menghubungkan kami dengan partner yang tepat juga sangat berarti.",
-    ],
-    highlight: "Small support. Real collaboration. Useful impact.",
-  },
-  allocations: {
-    eyebrow: "Transparent by design",
-    title: "Your Support Goes Here",
+  supportFocus: {
+    title: "Support untuk kebutuhan inti program",
     description:
-      "Dukungan dipakai untuk kebutuhan pelaksanaan yang langsung membantu peserta dan tim bekerja dengan nyaman.",
+      "Dukungan digunakan langsung untuk membantu peserta dan tim menjalankan sesi kolaborasi dengan baik.",
     items: [
-      {
-        title: "Konsumsi kegiatan",
-        description: "Untuk peserta, UMKM, mentor, dan panitia.",
-        icon: "meal",
-      },
-      {
-        title: "Identitas peserta",
-        description: "ID card, lanyard, dan kebutuhan identitas kegiatan.",
-        icon: "identity",
-      },
-      {
-        title: "Participant kit",
-        description: "Kit dan perlengkapan yang dipakai selama sesi.",
-        icon: "kit",
-      },
-      {
-        title: "Dokumentasi & publikasi",
-        description: "Dokumentasi proses, hasil, dan cerita kolaborasi.",
-        icon: "documentation",
-      },
-      {
-        title: "Development & demo",
-        description: "Kebutuhan teknis untuk membangun dan mendemokan prototype.",
-        icon: "development",
-      },
-      {
-        title: "Operasional dasar",
-        description: "Kebutuhan lapangan agar event berjalan dengan rapi.",
-        icon: "operations",
-      },
-    ] satisfies readonly CommunitySupportAllocation[],
+      "Konsumsi dan kebutuhan peserta",
+      "Participant kit dan perlengkapan sesi",
+      "Dokumentasi, demo, dan operasional teknis",
+    ],
     transparency:
-      "Setelah event selesai, kami akan membagikan dokumentasi, hasil prototype, dan laporan singkat penggunaan dukungan secara transparan untuk teman-teman semua.",
+      "Ringkasan penggunaan dukungan akan dibagikan setelah acara.",
   },
   accounts: {
-    eyebrow: "Transfer details",
-    title: "Choose Where to Send Your Support",
+    eyebrow: "Rekening support",
+    title: "Pilih Rekening Tujuan",
     description:
       "Pilih salah satu rekening resmi di bawah. Nominal support sepenuhnya kamu yang tentukan.",
     warning:
@@ -131,10 +73,10 @@ export const communitySupportContent = {
     ] satisfies readonly CommunitySupportBank[],
   },
   form: {
-    eyebrow: "One last step",
-    title: "Tell Us About Your Support",
+    eyebrow: "Konfirmasi support",
+    title: "Kirim Bukti Support",
     description:
-      "Setelah transfer, isi form singkat ini. Begitu terkirim, support kamu langsung tercatat dan kamu akan menerima reference code.",
+      "Setelah transfer, isi form singkat ini. Begitu tersimpan, popup terima kasih dan CTA WhatsApp langsung muncul.",
   },
 } as const;
 

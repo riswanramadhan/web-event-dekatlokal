@@ -38,9 +38,32 @@ function maskSupporterName(value: string): string {
     .join(" ");
 }
 
-function unavailableResponse() {
+function createIncidentReference(): string {
+  return `CS-${crypto
+    .randomUUID()
+    .replaceAll("-", "")
+    .slice(0, 8)
+    .toUpperCase()}`;
+}
+
+function safeFailureCode(error: unknown): string {
+  if (!error || typeof error !== "object" || !("code" in error)) {
+    return "UNKNOWN";
+  }
+
+  const code = (error as { code?: unknown }).code;
+
+  return typeof code === "string" && /^[A-Z0-9_]{1,24}$/i.test(code)
+    ? code.toUpperCase()
+    : "UNKNOWN";
+}
+
+function unavailableResponse(reference: string) {
   return NextResponse.json(
-    { error: "Community support updates are temporarily unavailable." },
+    {
+      error: "Community support updates are temporarily unavailable.",
+      reference,
+    },
     {
       status: 503,
       headers: { "Cache-Control": "no-store" },
@@ -49,10 +72,17 @@ function unavailableResponse() {
 }
 
 export async function GET() {
+  const reference = createIncidentReference();
   const supabase = getSupabaseAdminClient();
 
   if (!supabase) {
-    return unavailableResponse();
+    console.error("[community-support] social proof unavailable.", {
+      reference,
+      stage: "environment",
+      code: "UNKNOWN",
+      httpStatus: 503,
+    });
+    return unavailableResponse(reference);
   }
 
   try {
@@ -68,13 +98,25 @@ export async function GET() {
       .limit(10);
 
     if (error) {
-      return unavailableResponse();
+      console.error("[community-support] social proof unavailable.", {
+        reference,
+        stage: "query",
+        code: safeFailureCode(error),
+        httpStatus: 503,
+      });
+      return unavailableResponse(reference);
     }
 
     const rows = z.array(supporterRowSchema).max(10).safeParse(data);
 
     if (!rows.success) {
-      return unavailableResponse();
+      console.error("[community-support] social proof unavailable.", {
+        reference,
+        stage: "response_validation",
+        code: "INVALID_SHAPE",
+        httpStatus: 503,
+      });
+      return unavailableResponse(reference);
     }
 
     const response: CommunitySupportSocialProof = {
@@ -88,6 +130,12 @@ export async function GET() {
       headers: { "Cache-Control": "no-store" },
     });
   } catch {
-    return unavailableResponse();
+    console.error("[community-support] social proof unavailable.", {
+      reference,
+      stage: "query",
+      code: "UNKNOWN",
+      httpStatus: 503,
+    });
+    return unavailableResponse(reference);
   }
 }

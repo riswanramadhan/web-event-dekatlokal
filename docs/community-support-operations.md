@@ -12,10 +12,37 @@ tetap privat sebagai catatan internal dan tidak menjadi aset social proof.
 
 Ticker hanya boleh memakai data nyata dari submission bernama yang memberi
 persetujuan tampil secara eksplisit. Nama disamarkan di server dan nominal
-berasal dari laporan supporter. Teks ticker harus menyatakan bahwa seseorang
-“mengirim konfirmasi dukungan”, bukan bahwa pembayaran telah diverifikasi atau
-diterima. Jangan membuat seed nama, nominal, atau dukungan fiktif untuk mengisi
-ticker.
+berasal dari laporan supporter. Copy memakai format
+`P*** N** telah support senilai Rp150.000`; nominal tersebut bukan hasil
+verifikasi bank. Jangan membuat seed nama, nominal, atau dukungan fiktif untuk
+mengisi ticker. Sembunyikan ticker bila belum ada data nyata yang memenuhi
+consent.
+
+## 0. Pemulihan cepat ketika submit selalu gagal
+
+Pesan generik pada submission biasanya berarti aplikasi dapat menjangkau
+Supabase, tetapi tabel community support belum ada atau masih memakai kontrak
+lama. Menjalankan `SUPABASE_SCHEMA.sql` saja tidak cukup karena file tersebut
+hanya menyiapkan event dan registrasi.
+
+1. Pastikan project ref pada Supabase SQL Editor sama dengan project ref dari
+   `NEXT_PUBLIC_SUPABASE_URL` di Vercel **Production**. Jangan menyalin atau
+   menampilkan service-role key ke log atau chat.
+2. Jalankan file read-only
+   [`../supabase/check-community-support.sql`](../supabase/check-community-support.sql).
+3. Jika tabel belum ada, jalankan migration `0000`, `0100`, `0200`, lalu `0300`
+   sesuai urutan di bawah.
+4. Jika tabel lama sudah ada, jangan mengandalkan `CREATE TABLE IF NOT EXISTS`;
+   jalankan `0100`, `0200`, lalu `0300` untuk memperbarui kolom dan constraint.
+5. Jalankan `notify pgrst, 'reload schema';`, lalu periksa bahwa
+   `GET /api/community-support/social-proof` memberi HTTP `200` dengan
+   `{"latest_supporters":[]}` ketika belum ada data.
+
+Vercel Production harus memiliki `NEXT_PUBLIC_SUPABASE_URL`,
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, dan `SUPABASE_SERVICE_ROLE_KEY`.
+Perubahan environment Vercel memerlukan redeploy agar masuk ke runtime baru.
+Kode kendala `CS-XXXXXXXX` pada UI dapat dicocokkan dengan log Vercel tanpa
+mencatat isi form, nama file, proof path, atau data pribadi.
 
 ## 1. Terapkan migration
 
@@ -182,8 +209,9 @@ sebelum response keluar dari server. Kontak, pesan, bank, bukti, waktu,
 reference code, UUID, dan catatan internal tidak boleh masuk response.
 
 Jika belum ada row yang memenuhi syarat atau endpoint tidak tersedia, UI
-menampilkan pesan kampanye netral tanpa nama/nominal rekaan. Ticker memiliki
-kontrol jeda dan menjadi statis saat `prefers-reduced-motion` aktif.
+menyembunyikan ticker tanpa menggantinya dengan ajakan atau data rekaan. Ticker
+memiliki kontrol jeda, sticky pada mobile, dan menjadi statis saat
+`prefers-reduced-motion` aktif.
 
 ## 4. Matriks uji manual
 
@@ -202,7 +230,7 @@ persetujuan.
 | Lebih dari 5 MB | Pilih file lebih besar dari `5,242,880` byte. | Ditolak dengan pesan batas ukuran; tidak ada row atau object baru. |
 | Gangguan jaringan | Aktifkan Offline sebelum submit. | Pesan koneksi tampil, isi form tetap ada, dan tidak ada klaim sukses palsu. |
 | Response terputus setelah submit | Kirim sekali, simulasikan response terputus, lalu retry dari form yang sama. | `request_id` yang sama merekonsiliasi submission pertama; tidak membuat row kedua. |
-| Ticker kosong | Pastikan tidak ada row consented di project uji. | Pesan kampanye netral tampil; tidak ada nama atau nominal dummy. |
+| Ticker kosong | Pastikan tidak ada row consented di project uji. | Ticker tidak dirender; tidak ada ajakan, nama, atau nominal dummy. |
 | Reduced motion | Aktifkan preferensi reduced motion. | Ticker tidak bergerak; konten tetap terbaca dan kontrol jeda tetap dapat diakses. |
 | Direct-link-only | Periksa navbar, footer, sitemap, robots, dan metadata halaman. | Tidak ada link navigasi/sitemap; robots melarang crawl; metadata `noindex`; URL langsung tetap dapat dibuka. |
 

@@ -9,6 +9,7 @@ export type CommunitySupportSubmissionSuccess = {
 export type CommunitySupportApiError = {
   error: string;
   field_errors?: Record<string, string[]>;
+  reference?: string;
 };
 
 export type CommunitySupporterSummary = {

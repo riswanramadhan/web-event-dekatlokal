@@ -46,7 +46,7 @@ export function CommunitySupportTicker() {
         setSupporters(parsed.data.latest_supporters);
       }
     } catch {
-      // Keep the honest campaign fallback when live data is unavailable.
+      // Keep the ticker hidden when live, consented data is unavailable.
     }
   }, []);
 
@@ -65,26 +65,24 @@ export function CommunitySupportTicker() {
 
   const messages = useMemo(
     () =>
-      supporters.length > 0
-        ? supporters.map(
-            (supporter) =>
-              `${supporter.name} mengirim konfirmasi dukungan senilai ${formatRupiah(supporter.amount)}`,
-          )
-        : [
-            "Community support dibuka untuk AI Co-Creation Lab Makassar — jadilah bagian dari kolaborasi ini.",
-          ],
+      supporters.map(
+        (supporter) =>
+          `${supporter.name} telah support senilai ${formatRupiah(supporter.amount)}`,
+      ),
     [supporters],
   );
+
+  if (messages.length === 0) {
+    return null;
+  }
 
   return (
     <aside
       aria-label="Kabar community support terbaru"
-      className="relative z-[60] flex min-h-11 items-center overflow-hidden bg-ink text-white"
+      className="sticky top-0 z-[70] flex min-h-11 items-center overflow-hidden bg-brand text-white md:relative md:top-auto md:z-[60]"
     >
       <p className="sr-only">
-        {supporters.length > 0
-          ? `Kabar dukungan terbaru: ${messages.join(". ")}`
-          : messages[0]}
+        Kabar dukungan terbaru: {messages.join(". ")}
       </p>
       <div
         aria-hidden="true"
@@ -103,7 +101,7 @@ export function CommunitySupportTicker() {
                   key={`${copy}-${index}-${message}`}
                   className="inline-flex items-center gap-2 px-7 text-xs font-semibold tracking-[0.01em] sm:px-10 sm:text-sm"
                 >
-                  <Sparks className="h-4 w-4 text-amber-300" aria-hidden="true" />
+                  <Sparks className="h-4 w-4 text-white/80" aria-hidden="true" />
                   {message}
                 </span>
               ))}
@@ -116,7 +114,7 @@ export function CommunitySupportTicker() {
         onClick={() => setIsPaused((current) => !current)}
         aria-pressed={isPaused}
         aria-label={isPaused ? "Lanjutkan ticker" : "Jeda ticker"}
-        className="grid min-h-11 w-11 shrink-0 place-items-center border-l border-white/20 bg-ink text-white transition hover:bg-brand-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white"
+        className="grid min-h-11 w-11 shrink-0 place-items-center border-l border-white/25 bg-brand-700 text-white transition hover:bg-brand-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white"
       >
         {isPaused ? (
           <Play className="h-4 w-4" aria-hidden="true" />

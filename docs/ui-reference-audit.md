@@ -207,9 +207,9 @@ MVP mempertahankan motion ringan untuk hover/feedback dan tidak bergantung pada 
 Halaman `/community-support` tetap memakai token produksi yang sudah dibangun
 dari audit ini: Poppins, primary blue, container responsif, CTA pill, border
 tipis, radius konsisten, focus-visible, dan motion yang menghormati reduced
-motion. Susunannya sengaja lebih editorial daripada crowdfunding template:
-statistik berupa baris ringkas, kebutuhan dukungan berupa daftar terstruktur,
-dua rekening berupa card fungsional, lalu satu form yang jelas di mobile.
+motion. Alur utamanya sengaja dipadatkan menjadi hero singkat, dua rekening
+tujuan, lalu satu form. Statistik hero, penjelasan panjang, grid alokasi, dan
+sidebar form dihapus agar perhatian pengguna tetap pada tindakan support.
 
 Card rekening memakai aset resmi yang diberikan pemilik di
 `public/bank-logos/` untuk Bank Mandiri dan Bank Syariah Indonesia. Nama bank
@@ -226,21 +226,22 @@ WhatsApp opsional; tidak ada state menunggu verifikasi.
 Ticker tipis ditempatkan di atas navbar khusus halaman ini. Ticker menampilkan
 maksimal 10 submission nyata yang bernama dan memiliki consent eksplisit,
 dengan nama yang disamarkan server-side serta nominal yang dilaporkan
-supporter. Teks memakai frasa “mengirim konfirmasi dukungan” agar tidak
-mengklaim transfer telah diverifikasi. Saat data opt-in belum ada, rail memakai
-pesan kampanye netral tanpa nama atau nominal rekaan. Ticker memiliki tombol
-jeda, berhenti saat hover/focus, dan menjadi statis ketika reduced motion aktif.
+supporter. Copy mengikuti format `P*** N** telah support senilai Rp150.000`;
+nominal tersebut tetap dipahami sebagai informasi yang dikirim supporter,
+bukan hasil verifikasi bank. Saat data opt-in belum ada atau database tidak
+tersedia, ticker disembunyikan sehingga tidak ada nama atau nominal rekaan.
+Ticker memakai latar biru dan teks putih, bergerak dari kanan ke kiri, memiliki
+tombol jeda, berhenti saat hover/focus, menjadi statis ketika reduced motion
+aktif, dan tetap sticky di atas viewport pada mobile.
 
 Section verified progress dihapus. Halaman tidak ditautkan dari navigasi atau
 sitemap, memakai `noindex`, dan diblokir melalui robots agar hanya
 disebarluaskan lewat URL langsung. Pengaturan ini tidak diperlakukan sebagai
 autentikasi.
 
-Angka `5 Digital Prototypes` pada hero diberi konteks **Target program / planned
-outcome**. Ini adalah target kampanye yang disengaja, bukan actual metric,
-sementara sumber canonical MVP lain tetap mencatat target 4 tim/4 solusi sampai
-ada keputusan produk untuk merekonsiliasi keduanya. Tidak ada klaim bahwa lima
-prototype telah selesai.
+Tidak ada target atau actual metric pada halaman support. Ringkasan kebutuhan
+di hero hanya menyebut kategori penggunaan secara umum dan tidak mengklaim
+jumlah peserta, partner, hasil, atau dukungan yang belum memiliki bukti.
 
 ## Boundary implementasi
 

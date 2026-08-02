@@ -134,7 +134,7 @@ export function BankAccountCards({
               <button
                 type="button"
                 onClick={() => copyAccountNumber(bank)}
-                aria-label={`Copy ${bank.name} account number ${bank.accountNumber}`}
+                aria-label={`Salin nomor rekening ${bank.name} ${bank.accountNumber}`}
                 className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-5 py-3 text-sm font-semibold text-brand transition hover:border-brand hover:bg-brand-100"
               >
                 {isCopied ? (
@@ -142,7 +142,7 @@ export function BankAccountCards({
                 ) : (
                   <Copy className="h-4 w-4" aria-hidden="true" />
                 )}
-                {isCopied ? "Copied" : "Copy Account Number"}
+                {isCopied ? "Tersalin" : "Salin Nomor Rekening"}
               </button>
               <p
                 className={`mt-2 min-h-5 text-center text-xs leading-5 ${
@@ -151,10 +151,10 @@ export function BankAccountCards({
                 aria-live="polite"
               >
                 {isCopied
-                  ? `${bank.name} account number copied.`
+                  ? `Nomor rekening ${bank.name} berhasil disalin.`
                   : hasError
                     ? "Belum dapat disalin otomatis. Tekan lama nomor rekening untuk menyalin."
-                    : "Tap once, then paste it in your banking app."}
+                    : "Salin lalu tempel di aplikasi perbankan Anda."}
               </p>
             </article>
           );
@@ -168,7 +168,7 @@ export function BankAccountCards({
           aria-hidden="true"
         />
         <div>
-          <p className="font-semibold">Check before you send</p>
+          <p className="font-semibold">Periksa sebelum transfer</p>
           <p className="mt-1">{communitySupportContent.accounts.warning}</p>
         </div>
       </div>

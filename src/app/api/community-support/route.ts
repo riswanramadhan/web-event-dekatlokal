@@ -47,6 +47,13 @@ type DatabaseError = {
   message?: string;
 };
 
+type SupportFailureStage =
+  | "environment"
+  | "existing_lookup"
+  | "proof_upload"
+  | "insert"
+  | "reconciliation";
+
 type SupportInsertResult =
   | {
       outcome: "success";
@@ -97,6 +104,7 @@ function errorResponse(
   status: number,
   fieldErrors?: Record<string, string[]>,
   headers?: HeadersInit,
+  reference?: string,
 ) {
   return NextResponse.json<CommunitySupportApiError>(
     {
@@ -104,6 +112,7 @@ function errorResponse(
       ...(fieldErrors && Object.keys(fieldErrors).length > 0
         ? { field_errors: fieldErrors }
         : {}),
+      ...(reference ? { reference } : {}),
     },
     {
       status,
@@ -113,6 +122,40 @@ function errorResponse(
       },
     },
   );
+}
+
+function createIncidentReference(): string {
+  return `CS-${crypto
+    .randomUUID()
+    .replaceAll("-", "")
+    .slice(0, 8)
+    .toUpperCase()}`;
+}
+
+function safeFailureCode(error: unknown): string {
+  if (!error || typeof error !== "object" || !("code" in error)) {
+    return "UNKNOWN";
+  }
+
+  const code = (error as { code?: unknown }).code;
+
+  return typeof code === "string" && /^[A-Z0-9_]{1,24}$/i.test(code)
+    ? code.toUpperCase()
+    : "UNKNOWN";
+}
+
+function logSupportFailure(
+  reference: string,
+  stage: SupportFailureStage,
+  error?: unknown,
+  httpStatus = 503,
+) {
+  console.error("[community-support] request failed.", {
+    reference,
+    stage,
+    code: safeFailureCode(error),
+    httpStatus,
+  });
 }
 
 function fileErrorMessage(error: CommunitySupportFileError): string {
@@ -199,6 +242,7 @@ async function findExistingRequest(
   supabase: SupabaseClient,
   data: CommunitySupportFormData,
   file: ValidatedCommunitySupportFile,
+  reference: string,
 ): Promise<ExistingRequestResult> {
   try {
     const { data: row, error } = await supabase
@@ -210,6 +254,7 @@ async function findExistingRequest(
       .maybeSingle<ExistingSupportRow>();
 
     if (error) {
+      logSupportFailure(reference, "existing_lookup", error);
       return { outcome: "unknown" };
     }
 
@@ -245,6 +290,7 @@ async function findExistingRequest(
       },
     };
   } catch {
+    logSupportFailure(reference, "existing_lookup");
     return { outcome: "unknown" };
   }
 }
@@ -253,6 +299,7 @@ async function reconcileUnknownInsert(
   supabase: SupabaseClient,
   data: CommunitySupportFormData,
   objectPath: string,
+  reference: string,
 ): Promise<ReconciliationResult> {
   try {
     const { data: row, error } = await supabase
@@ -262,6 +309,7 @@ async function reconcileUnknownInsert(
       .maybeSingle<{ submission_code: string; status: string }>();
 
     if (error) {
+      logSupportFailure(reference, "reconciliation", error);
       return { outcome: "unknown" };
     }
 
@@ -285,6 +333,7 @@ async function reconcileUnknownInsert(
       },
     };
   } catch {
+    logSupportFailure(reference, "reconciliation");
     return { outcome: "unknown" };
   }
 }
@@ -294,18 +343,25 @@ async function reconcileAmbiguousInsert(
   data: CommunitySupportFormData,
   file: ValidatedCommunitySupportFile,
   objectPath: string,
+  reference: string,
 ): Promise<SupportInsertResult> {
   const byProofPath = await reconcileUnknownInsert(
     supabase,
     data,
     objectPath,
+    reference,
   );
 
   if (byProofPath.outcome === "found") {
     return { outcome: "success", data: byProofPath.data };
   }
 
-  const byRequestId = await findExistingRequest(supabase, data, file);
+  const byRequestId = await findExistingRequest(
+    supabase,
+    data,
+    file,
+    reference,
+  );
 
   if (byRequestId.outcome === "found") {
     return {
@@ -396,6 +452,7 @@ async function insertSupport(
   data: CommunitySupportFormData,
   file: ValidatedCommunitySupportFile,
   objectPath: string,
+  reference: string,
 ): Promise<SupportInsertResult> {
   for (let attempt = 0; attempt < MAX_INSERT_ATTEMPTS; attempt += 1) {
     const submissionCode = generateSubmissionCode();
@@ -440,7 +497,12 @@ async function insertSupport(
       }
 
       if (isRequestIdConflict(error as DatabaseError)) {
-        const existing = await findExistingRequest(supabase, data, file);
+        const existing = await findExistingRequest(
+          supabase,
+          data,
+          file,
+          reference,
+        );
 
         return existing.outcome === "found"
           ? {
@@ -451,17 +513,32 @@ async function insertSupport(
           : { outcome: "unknown" };
       }
 
+      logSupportFailure(reference, "insert", error, status || 503);
+
       if (isDefiniteInsertRejection(status)) {
         return { outcome: "failure" };
       }
 
-      return reconcileAmbiguousInsert(supabase, data, file, objectPath);
+      return reconcileAmbiguousInsert(
+        supabase,
+        data,
+        file,
+        objectPath,
+        reference,
+      );
     } catch {
       // A transport timeout can occur after Postgres committed. Reconcile by
       // the unique proof path. If the read is also inconclusive, preserve the
       // private object: an orphan can be reconciled safely, while deleting it
       // could leave a committed row pointing at a missing proof.
-      return reconcileAmbiguousInsert(supabase, data, file, objectPath);
+      logSupportFailure(reference, "insert");
+      return reconcileAmbiguousInsert(
+        supabase,
+        data,
+        file,
+        objectPath,
+        reference,
+      );
     }
   }
 
@@ -469,6 +546,7 @@ async function insertSupport(
 }
 
 export async function POST(request: Request) {
+  const reference = createIncidentReference();
   const contentType = request.headers.get("content-type") ?? "";
   const contentLengthHeader = request.headers.get("content-length");
   const contentLength = contentLengthHeader
@@ -565,13 +643,21 @@ export async function POST(request: Request) {
   const supabase = getSupabaseAdminClient();
 
   if (!supabase) {
-    return errorResponse(GENERIC_SUBMISSION_ERROR, 503);
+    logSupportFailure(reference, "environment");
+    return errorResponse(
+      "Layanan community support belum tersambung ke database. Tim DekatLokal perlu memeriksa konfigurasi Supabase.",
+      503,
+      undefined,
+      undefined,
+      reference,
+    );
   }
 
   const existingRequest = await findExistingRequest(
     supabase,
     parsed.data,
     fileResult.file,
+    reference,
   );
 
   if (existingRequest.outcome === "found") {
@@ -585,7 +671,13 @@ export async function POST(request: Request) {
   }
 
   if (existingRequest.outcome === "unknown") {
-    return errorResponse(GENERIC_SUBMISSION_ERROR, 503);
+    return errorResponse(
+      "Layanan community support belum tersambung ke database. Tim DekatLokal perlu memeriksa konfigurasi Supabase.",
+      503,
+      undefined,
+      undefined,
+      reference,
+    );
   }
 
   if (existingRequest.outcome === "conflict") {
@@ -607,15 +699,23 @@ export async function POST(request: Request) {
       });
 
     if (uploadError) {
+      logSupportFailure(reference, "proof_upload", uploadError);
       return errorResponse(
-        "We couldn\u2019t upload your transfer proof. Please try again.",
+        "We couldn't upload your transfer proof. Please try again.",
         503,
+        undefined,
+        undefined,
+        reference,
       );
     }
   } catch {
+    logSupportFailure(reference, "proof_upload");
     return errorResponse(
-      "We couldn\u2019t upload your transfer proof. Please try again.",
+      "We couldn't upload your transfer proof. Please try again.",
       503,
+      undefined,
+      undefined,
+      reference,
     );
   }
 
@@ -624,18 +724,29 @@ export async function POST(request: Request) {
     parsed.data,
     fileResult.file,
     objectPath,
+    reference,
   );
 
   if (result.outcome === "failure") {
     await removePrivateProof(supabase, objectPath);
-    return errorResponse(GENERIC_SUBMISSION_ERROR, 503);
+    return errorResponse(
+      "Konfirmasi support belum dapat disimpan. Tim DekatLokal perlu memeriksa database.",
+      503,
+      undefined,
+      undefined,
+      reference,
+    );
   }
 
   if (result.outcome === "unknown") {
-    console.error(
-      "[community-support] database insert outcome is unknown; private proof retained for reconciliation.",
+    logSupportFailure(reference, "reconciliation");
+    return errorResponse(
+      GENERIC_SUBMISSION_ERROR,
+      503,
+      undefined,
+      undefined,
+      reference,
     );
-    return errorResponse(GENERIC_SUBMISSION_ERROR, 503);
   }
 
   if (result.discardUploadedProof) {
