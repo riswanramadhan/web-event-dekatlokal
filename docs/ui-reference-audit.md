@@ -196,11 +196,51 @@ MVP mempertahankan motion ringan untuk hover/feedback dan tidak bergantung pada 
 - Splash screen delapan detik.
 - DekatAI widget dan WhatsApp floating action button.
 - Promo komersial yang tidak berhubungan dengan event.
-- Marquee, orbit visual, animasi rail, dan decorative motion kompleks.
+- Orbit visual dan decorative motion kompleks yang tidak mendukung informasi.
 - Dependency lama seperti `motion/react`, Iconify, Radix, atau shadcn hanya demi menyalin komponen.
 - Gradient, glassmorphism, shimmer, dan decorative blob berlebihan.
 - Logo, foto, testimoni, atau partner dari situs referensi sebagai klaim event.
 - Copy layanan website/UMKM dari produk lama.
+
+## Adaptasi community support
+
+Halaman `/community-support` tetap memakai token produksi yang sudah dibangun
+dari audit ini: Poppins, primary blue, container responsif, CTA pill, border
+tipis, radius konsisten, focus-visible, dan motion yang menghormati reduced
+motion. Susunannya sengaja lebih editorial daripada crowdfunding template:
+statistik berupa baris ringkas, kebutuhan dukungan berupa daftar terstruktur,
+dua rekening berupa card fungsional, lalu satu form yang jelas di mobile.
+
+Card rekening memakai aset resmi yang diberikan pemilik di
+`public/bank-logos/` untuk Bank Mandiri dan Bank Syariah Indonesia. Nama bank
+tetap tertulis sehingga logo bersifat dekoratif dan tidak menjadi satu-satunya
+identifikasi tujuan transfer. CTA proposal selalu mengarah ke
+`https://event.dekatlokal.com/ai-co-creation-lab-makassar/sponsorship-proposal`.
+
+Upload menampilkan status file dan helper privasi, tetapi bukti tidak menjadi
+social proof visual dan tidak memiliki public URL. Form tidak meminta tanggal
+transfer. Begitu submission tersimpan, dialog modal yang dapat diakses dengan
+keyboard langsung menampilkan ucapan terima kasih, reference code, dan CTA
+WhatsApp opsional; tidak ada state menunggu verifikasi.
+
+Ticker tipis ditempatkan di atas navbar khusus halaman ini. Ticker menampilkan
+maksimal 10 submission nyata yang bernama dan memiliki consent eksplisit,
+dengan nama yang disamarkan server-side serta nominal yang dilaporkan
+supporter. Teks memakai frasa “mengirim konfirmasi dukungan” agar tidak
+mengklaim transfer telah diverifikasi. Saat data opt-in belum ada, rail memakai
+pesan kampanye netral tanpa nama atau nominal rekaan. Ticker memiliki tombol
+jeda, berhenti saat hover/focus, dan menjadi statis ketika reduced motion aktif.
+
+Section verified progress dihapus. Halaman tidak ditautkan dari navigasi atau
+sitemap, memakai `noindex`, dan diblokir melalui robots agar hanya
+disebarluaskan lewat URL langsung. Pengaturan ini tidak diperlakukan sebagai
+autentikasi.
+
+Angka `5 Digital Prototypes` pada hero diberi konteks **Target program / planned
+outcome**. Ini adalah target kampanye yang disengaja, bukan actual metric,
+sementara sumber canonical MVP lain tetap mencatat target 4 tim/4 solusi sampai
+ada keputusan produk untuk merekonsiliasi keduanya. Tidak ada klaim bahwa lima
+prototype telah selesai.
 
 ## Boundary implementasi
 

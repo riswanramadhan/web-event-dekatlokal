@@ -8,7 +8,7 @@ import {
 } from "@/data/platform";
 
 const pageDescription =
-  "Ketentuan penggunaan DekatEvent untuk aplikasi peserta, seleksi, partisipasi, informasi acara, dan penggunaan platform.";
+  "Ketentuan penggunaan DekatEvent untuk aplikasi peserta, community support, seleksi, partisipasi, informasi acara, dan penggunaan platform.";
 
 const contact: PlatformContact = platformConfig.contact;
 
@@ -28,9 +28,9 @@ const sections = [
       <>
         <p>
           Ketentuan ini berlaku saat Anda mengakses {platformConfig.name}, mengirim
-          aplikasi, atau mengikuti event yang dikelola melalui platform. Dengan
-          menggunakan layanan, Anda menyetujui ketentuan yang relevan dengan aktivitas
-          tersebut.
+          aplikasi atau community support, maupun mengikuti event yang dikelola
+          melalui platform. Dengan menggunakan layanan, Anda menyetujui ketentuan yang
+          relevan dengan aktivitas tersebut.
         </p>
         <p>
           {platformConfig.name} saat ini merupakan MVP. Fitur seperti pembayaran,
@@ -52,9 +52,40 @@ const sections = [
         </p>
         <p>
           Jangan memasukkan data sensitif, rahasia usaha yang tidak diperlukan,
-          identitas pelanggan, data perbankan, atau materi milik pihak lain tanpa izin.
-          Kode pendaftaran perlu disimpan untuk membantu verifikasi apabila ada
-          pertanyaan tentang aplikasi.
+          identitas pelanggan, data perbankan yang tidak diminta, atau materi milik
+          pihak lain tanpa izin. Bukti transfer community support hanya dikirim lewat
+          kolom upload khusus. Kode pendaftaran atau reference code support perlu
+          disimpan sebagai rujukan bila ada pertanyaan.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "community-support",
+    title: "Community support",
+    content: (
+      <>
+        <p>
+          Community support merupakan dukungan sukarela untuk kebutuhan pelaksanaan
+          program yang dijelaskan pada halaman support. Dukungan ini bukan pembelian
+          tiket, investasi, pinjaman, atau jaminan manfaat komersial tertentu.
+        </p>
+        <p>
+          Supporter perlu memastikan nama penerima sesuai sebelum transfer, mengirim
+          informasi yang benar, dan menyimpan reference code. Setelah form berhasil
+          dikirim, popup sukses dan reference code ditampilkan langsung setelah data
+          tersimpan. Tombol WhatsApp setelahnya bersifat opsional dan hanya membantu
+          supporter memberi tahu tim bahwa konfirmasi telah dikirim.
+          Tampilan sukses maupun ticker bukan bukti independen bahwa transfer telah
+          diterima.
+        </p>
+        <p>
+          Hanya submission bernama dengan persetujuan tampil yang eksplisit dapat
+          masuk ticker. Nama disamarkan dan nominal berasal dari laporan supporter;
+          submission anonim atau tanpa persetujuan tidak ditampilkan. Kontak, pesan,
+          bank tujuan, dan bukti tetap privat. Penyelenggara tidak mengisi nama atau
+          nominal fiktif dan dapat mengecualikan submission palsu, spam, atau abusif
+          dari ticker.
         </p>
       </>
     ),
@@ -277,7 +308,7 @@ export default function TermsPage() {
       eyebrow="Ketentuan"
       title="Ketentuan Penggunaan"
       description={pageDescription}
-      lastUpdated="27 Juli 2026"
+      lastUpdated="2 Agustus 2026"
       sections={sections}
     />
   );

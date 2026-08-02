@@ -8,6 +8,20 @@ Domain target proyek adalah `event.dekatlokal.com`. Domain tersebut adalah targe
 - `npm run lint`, `npm run typecheck`, dan `npm run build` dijalankan pada revision yang akan dirilis.
 - `npm run build:open-next` menghasilkan `.open-next/worker.js` untuk runtime Sites.
 - [`SUPABASE_SCHEMA.sql`](../SUPABASE_SCHEMA.sql) sudah diterapkan pada project Supabase environment tujuan.
+- Migration
+  [`../supabase/migrations/20260802000000_create_community_support.sql`](../supabase/migrations/20260802000000_create_community_support.sql)
+  dan
+  [`../supabase/migrations/20260802010000_add_community_support_idempotency.sql`](../supabase/migrations/20260802010000_add_community_support_idempotency.sql)
+  serta migration
+  [`../supabase/migrations/20260802020000_expand_community_support_submission.sql`](../supabase/migrations/20260802020000_expand_community_support_submission.sql)
+  dan
+  [`../supabase/migrations/20260802030000_contract_community_support_submission.sql`](../supabase/migrations/20260802030000_contract_community_support_submission.sql)
+  sudah diterapkan berurutan bila `/community-support` akan dirilis. Untuk
+  upgrade dari alur lama, deploy aplikasi baru di antara migration `expand` dan
+  `contract` sesuai panduan operasional.
+- Shared `rate_limits`/`consume_rate_limit` sudah diverifikasi secara terpisah,
+  atau absennya sudah dicatat sebagai caveat prarilis. Migration community
+  support tidak menyediakannya dan helper existing bersifat fail-open.
 - Status row event dan typed config sudah selaras.
 - Tanggal, venue, partner, evidence, dan impact tetap jujur.
 - Environment production sudah tersedia di hosting provider.
@@ -25,6 +39,7 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 SUPABASE_SERVICE_ROLE_KEY
 REGISTRATION_EVENT_SLUG
+TRUSTED_IP_HEADER
 ```
 
 Nilai canonical production yang direncanakan:
@@ -33,6 +48,13 @@ Nilai canonical production yang direncanakan:
 NEXT_PUBLIC_SITE_URL=https://event.dekatlokal.com
 REGISTRATION_EVENT_SLUG=ai-co-creation-lab-makassar
 ```
+
+Untuk community support, section progress sudah dihapus dan tidak ada variable
+target. CTA proposal memakai URL production tetap
+`https://event.dekatlokal.com/ai-co-creation-lab-makassar/sponsorship-proposal`.
+Biarkan `TRUSTED_IP_HEADER` kosong pada Vercel langsung. Isi
+`cf-connecting-ip` hanya jika Cloudflare langsung dan eksklusif berada di
+depan runtime serta jalur bypass ke origin sudah ditutup.
 
 Tambahkan hanya jika dipakai:
 
@@ -45,6 +67,8 @@ NEXT_PUBLIC_GA_MEASUREMENT_ID
 Aturan:
 
 - `SUPABASE_SERVICE_ROLE_KEY` dan `TURNSTILE_SECRET_KEY` adalah secret server.
+- `TRUSTED_IP_HEADER` adalah konfigurasi trust boundary server, bukan variable
+  publik; jangan mengisinya dengan header yang dapat dipilih client.
 - Variable `NEXT_PUBLIC_*` dapat masuk bundle browser; jangan menyimpan rahasia di sana.
 - Ubah `NEXT_PUBLIC_SITE_URL` tanpa trailing slash.
 - Perubahan variable publik memerlukan build/deploy baru.
@@ -80,7 +104,11 @@ Jika Vercel dipilih sebagai hosting provider:
 7. Deploy revision yang sudah diverifikasi.
 8. Periksa log build tanpa mencetak nilai secret.
 
-Build/deploy tidak menjalankan SQL Supabase. Database harus disiapkan terpisah menggunakan [`setup-supabase.md`](setup-supabase.md).
+Build/deploy tidak menjalankan SQL Supabase. Baseline dan migration community
+support harus disiapkan terpisah menggunakan
+[`setup-supabase.md`](setup-supabase.md). Pada Vercel langsung,
+`TRUSTED_IP_HEADER` harus tetap kosong karena runtime memilih header Vercel
+yang dipercaya secara otomatis.
 
 ## Menghubungkan Cloudflare
 
@@ -96,6 +124,12 @@ Di Cloudflare:
 6. Tunggu provider memverifikasi domain dan menerbitkan sertifikat TLS.
 7. Pastikan `NEXT_PUBLIC_SITE_URL` sudah menggunakan `https://event.dekatlokal.com`, kemudian redeploy.
 
+Jika aplikasi berjalan langsung di runtime yang hanya dapat dicapai melalui
+Cloudflare, set `TRUSTED_IP_HEADER=cf-connecting-ip`. Cloudflare harus selalu
+menimpa header tersebut dan origin tidak boleh memiliki jalur akses publik yang
+melewati Cloudflare. Bila syarat itu tidak dapat dijamin, jangan menandai
+header tersebut sebagai trusted sebelum boundary infrastrukturnya diperbaiki.
+
 Jangan menghapus record DNS lama yang tidak terkait. Verifikasi target dan host sebelum setiap perubahan.
 
 ## Pemeriksaan pascarilis
@@ -103,6 +137,11 @@ Jangan menghapus record DNS lama yang tidak terkait. Verifikasi target dan host 
 Lakukan pemeriksaan berikut pada URL yang benar-benar diterbitkan:
 
 - `/`, `/events`, `/privacy`, dan `/terms`;
+- buka `/community-support` hanya melalui URL langsung dan pastikan proposal,
+  copy rekening, serta share mengarah ke `https://event.dekatlokal.com`, bukan
+  origin localhost/preview;
+- pastikan `/community-support` tidak ada di navbar/footer/sitemap, memiliki
+  metadata `noindex`, dan tercantum pada `robots.txt` sebagai disallow;
 - landing event dan seluruh halaman pendaftaran;
 - satu activity journey valid dan satu slug tidak valid;
 - pastikan index Journey, challenge, tim, dokumentasi, dan impact mengembalikan 404;
@@ -111,13 +150,30 @@ Lakukan pemeriksaan berikut pada URL yang benar-benar diterbitkan:
 - keyboard navigation, visible focus, label form, dan error announcement;
 - state pendaftaran dibuka/ditutup;
 - submit mahasiswa dan UMKM menggunakan data uji yang aman;
+- submission community support bernama dengan/tanpa consent ticker dan anonim,
+  JPG/PDF, penolakan file invalid dan lebih dari 5 MB, serta state gangguan
+  jaringan;
+- form tidak meminta tanggal transfer dan popup sukses tampil langsung tanpa
+  status menunggu verifikasi;
+- CTA WhatsApp bersifat opsional dan pesan otomatisnya hanya memuat reference
+  code;
 - duplicate handling;
 - success code tanpa PII di URL;
 - tidak ada record registrasi yang dapat dibaca secara anonim;
+- bucket bukti tetap private dan response submission tidak memuat status,
+  proof path, atau proof URL;
+- ticker hanya memuat maksimal 10 submission nyata yang bernama, berstatus
+  `submitted`, dan memiliki consent eksplisit; nama sudah tersamarkan di server;
+- ticker kosong memakai pesan netral tanpa nama atau nominal fiktif, memiliki
+  kontrol jeda, dan berhenti bergerak saat reduced motion aktif;
 - tidak ada secret atau payload pendaftaran pada browser bundle/log.
 
 Pastikan Event JSON-LD memuat tanggal, waktu WITA, dan venue yang sudah
 dikonfirmasi tanpa mengarang alamat jalan.
+
+Gunakan matriks dan prosedur admin di
+[`community-support-operations.md`](community-support-operations.md); checklist
+ini bukan klaim bahwa pengujian telah dijalankan pada deployment tertentu.
 
 ## Membuka pendaftaran production
 

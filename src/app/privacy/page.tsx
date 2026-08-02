@@ -7,7 +7,7 @@ import {
 } from "@/data/platform";
 
 const pageDescription =
-  "DekatEvent mengatur pemrosesan data pendaftaran, dokumentasi, akses, penyimpanan, koreksi, dan penghapusan melalui kebijakan ini.";
+  "DekatEvent mengatur pemrosesan data pendaftaran, community support, dokumentasi, akses, penyimpanan, koreksi, dan penghapusan melalui kebijakan ini.";
 
 const contact: PlatformContact = platformConfig.contact;
 
@@ -28,8 +28,8 @@ const sections = [
         <p>
           Kebijakan ini menjelaskan cara {platformConfig.owner} memproses data pribadi
           melalui {platformConfig.name}, termasuk ketika seseorang melihat informasi
-          acara, mengajukan pendaftaran, mengikuti kegiatan, atau menyetujui
-          dokumentasi.
+          acara, mengajukan pendaftaran, mengirim community support, mengikuti
+          kegiatan, atau menyetujui dokumentasi.
         </p>
         <p>
           Pada MVP ini, data pendaftaran digunakan untuk penyelenggaraan event yang
@@ -55,14 +55,23 @@ const sections = [
             pilihan persetujuan privasi, dokumentasi, dan monitoring yang relevan;
           </li>
           <li>
+            data community support, seperti pilihan anonim, nominal, bank tujuan,
+            pesan opsional, serta persetujuan terpisah untuk tampil pada ticker;
+          </li>
+          <li>
+            bukti transfer yang dikirim sebagai catatan privat, termasuk nama file,
+            jenis, dan ukurannya;
+          </li>
+          <li>
             data teknis terbatas yang diperlukan untuk keamanan dan pencegahan
             penyalahgunaan, seperti waktu pengiriman dan informasi perangkat.
           </li>
         </ul>
         <p>
-          Jangan memasukkan kata sandi, nomor rekening, identitas pelanggan, data
-          transaksi rahasia, data kesehatan, dokumen identitas, atau informasi
-          sensitif lain ke kolom jawaban bebas.
+          Jangan memasukkan kata sandi, identitas pelanggan, data transaksi lain yang
+          tidak diperlukan, data kesehatan, dokumen identitas, atau informasi
+          sensitif ke kolom jawaban bebas. Bukti transfer hanya dikirim melalui kolom
+          upload yang disediakan, bukan melalui pesan.
         </p>
       </>
     ),
@@ -75,6 +84,10 @@ const sections = [
         <p>Data digunakan secara terbatas untuk:</p>
         <ul className="list-disc space-y-2 pl-5 marker:text-brand">
           <li>menerima, memeriksa, dan menyeleksi aplikasi;</li>
+          <li>
+            mencatat konfirmasi community support, menerbitkan reference code secara
+            langsung, dan menyusun laporan penggunaan dukungan;
+          </li>
           <li>
             menghubungi pendaftar mengenai status, persiapan, atau perubahan penting
             pada event;
@@ -92,6 +105,19 @@ const sections = [
         <p>
           Kami tidak menggunakan data pendaftaran untuk membuat profil publik peserta
           atau tujuan lain yang tidak berkaitan tanpa pemberitahuan yang memadai.
+          Untuk community support bernama yang secara eksplisit mengizinkan tampil,
+          ticker dapat menampilkan nama yang sudah disamarkan dan nominal yang
+          dilaporkan segera setelah form berhasil dikirim. Ticker merupakan
+          konfirmasi yang dikirim supporter, bukan validasi independen bahwa transfer
+          telah diterima. Submission anonim atau tanpa persetujuan tidak ditampilkan.
+          Kontak, pesan, bank tujuan, waktu pengiriman, dan bukti tidak ditampilkan
+          pada ticker.
+        </p>
+        <p>
+          Setelah submission berhasil, supporter dapat memilih membuka WhatsApp untuk
+          memberi tahu tim. Tindakan ini bersifat opsional. Pesan otomatis hanya
+          memuat konteks dukungan dan reference code, tetapi akun dan aktivitas di
+          WhatsApp diproses oleh penyedia layanan tersebut sesuai pengaturannya.
         </p>
       </>
     ),
@@ -102,17 +128,21 @@ const sections = [
     content: (
       <>
         <p>
-          Akses dibatasi kepada tim penyelenggara yang memerlukannya untuk seleksi dan
-          operasi acara. Penyedia infrastruktur dapat memproses data sejauh diperlukan
-          untuk menjalankan layanan. Mitra acara tidak otomatis memperoleh seluruh
-          data pendaftar; informasi hanya dibagikan secara minimum apabila diperlukan,
-          memiliki tujuan yang jelas, dan sesuai dengan persetujuan atau kewajiban
-          yang berlaku.
+          Akses dibatasi kepada tim penyelenggara yang memerlukannya untuk seleksi,
+          operasi acara, pencatatan community support, dan penanganan penyalahgunaan.
+          Penyedia infrastruktur
+          dapat memproses data sejauh diperlukan untuk menjalankan layanan. Mitra
+          acara tidak otomatis memperoleh seluruh data pendaftar atau supporter;
+          informasi hanya dibagikan secara minimum apabila diperlukan, memiliki
+          tujuan yang jelas, dan sesuai dengan persetujuan atau kewajiban yang
+          berlaku.
         </p>
         <p>
           {platformConfig.owner} tidak menjual, menyewakan, atau memperdagangkan data
-          pribadi pendaftar. Data registrasi juga tidak tersedia melalui akses baca
-          publik.
+          pribadi pendaftar. Data registrasi, kontak supporter, dan bukti transfer
+          juga tidak tersedia melalui akses baca publik. Endpoint ticker hanya
+          menerima nama tersamarkan dan nominal dari submission bernama yang memiliki
+          persetujuan tampil; penyaringan dan penyamaran dilakukan oleh server.
         </p>
       </>
     ),
@@ -150,9 +180,12 @@ const sections = [
           pada tahap MVP dan akan dicantumkan ketika prosedur operasionalnya final.
         </p>
         <p>
-          Kami menerapkan pembatasan akses dan pemrosesan di server untuk
-          pendaftaran. Namun, tidak ada sistem digital yang sepenuhnya bebas risiko.
-          Pendaftar tetap perlu membatasi jawaban pada informasi yang diminta.
+          Kami menerapkan pembatasan akses dan pemrosesan di server untuk pendaftaran
+          dan community support. Bukti transfer disimpan pada storage privat dan hanya
+          digunakan sebagai catatan internal atau untuk menindaklanjuti dugaan
+          penyalahgunaan. Bukti tidak memiliki URL publik. Namun, tidak ada sistem
+          digital yang sepenuhnya bebas risiko. Pengguna tetap perlu membatasi jawaban
+          dan file pada informasi yang diminta.
         </p>
       </>
     ),
@@ -163,9 +196,10 @@ const sections = [
     content: (
       <>
         <p>
-          Pendaftar dapat meminta akses, koreksi, atau penghapusan data yang telah
-          dikirim. Untuk melindungi data, kami dapat meminta kode pendaftaran atau
-          informasi secukupnya guna memverifikasi identitas pemohon.
+          Pendaftar dan supporter dapat meminta akses, koreksi, atau penghapusan data
+          yang telah dikirim. Untuk melindungi data, kami dapat meminta kode
+          pendaftaran, reference code support, atau informasi secukupnya guna
+          memverifikasi identitas pemohon.
         </p>
         <p>
           Permintaan penghapusan akan dipenuhi secara wajar, kecuali sebagian data
@@ -250,7 +284,7 @@ export default function PrivacyPage() {
       eyebrow="Privasi"
       title="Kebijakan Privasi"
       description={pageDescription}
-      lastUpdated="27 Juli 2026"
+      lastUpdated="2 Agustus 2026"
       sections={sections}
     />
   );

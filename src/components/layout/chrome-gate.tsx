@@ -3,6 +3,8 @@
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
+import { CommunitySupportTicker } from "@/components/community-support/community-support-ticker";
+
 import { MobileBottomNavigation } from "./mobile-bottom-navigation";
 import { SiteFooter } from "./site-footer";
 import { SiteHeader } from "./site-header";
@@ -15,6 +17,7 @@ import { SiteHeader } from "./site-header";
 export function ChromeGate({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
+  const isFocusedSupportRoute = pathname === "/community-support";
 
   // The admin shell renders its own <main>, so this branch must not add a
   // second one.
@@ -24,16 +27,21 @@ export function ChromeGate({ children }: { children: ReactNode }) {
 
   return (
     <>
+      {isFocusedSupportRoute ? <CommunitySupportTicker /> : null}
       <SiteHeader />
       <main id="main-content" className="flex-1">
         {children}
       </main>
       <SiteFooter />
-      <div
-        aria-hidden="true"
-        className="pb-[calc(6.1rem+env(safe-area-inset-bottom))] md:hidden"
-      />
-      <MobileBottomNavigation />
+      {isFocusedSupportRoute ? null : (
+        <>
+          <div
+            aria-hidden="true"
+            className="pb-[calc(6.1rem+env(safe-area-inset-bottom))] md:hidden"
+          />
+          <MobileBottomNavigation />
+        </>
+      )}
     </>
   );
 }

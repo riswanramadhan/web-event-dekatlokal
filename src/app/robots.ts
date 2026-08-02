@@ -12,6 +12,7 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         "/admin",
         "/api/",
+        "/community-support",
         "/ai-co-creation-lab-makassar/journey",
         "/ai-co-creation-lab-makassar/challenges",
         "/ai-co-creation-lab-makassar/teams",

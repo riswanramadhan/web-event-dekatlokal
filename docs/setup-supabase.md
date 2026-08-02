@@ -1,6 +1,9 @@
 # Setup Supabase
 
-Supabase digunakan hanya untuk data pendaftaran AI Co-Creation Lab Makassar. Konten event, journey, challenge, tim, dokumentasi, dan impact tetap berasal dari typed config di `src/data`.
+Supabase digunakan untuk data pendaftaran AI Co-Creation Lab Makassar serta
+submission dan bukti privat community support. Konten event, journey,
+challenge, tim, dokumentasi, dan impact tetap berasal dari typed config di
+`src/data`.
 
 ## 1. Siapkan project
 
@@ -14,7 +17,12 @@ Dari pengaturan API project, siapkan:
 
 Service-role key melewati RLS dan hanya boleh tersedia pada runtime server. Jangan menaruhnya di screenshot, issue, log build, source, atau variable yang diawali `NEXT_PUBLIC_`.
 
-Server Action saat ini menggunakan `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, dan `REGISTRATION_EVENT_SLUG`. Publishable key tetap tersedia pada template environment untuk kebutuhan client publik yang aman, tetapi bukan credential mutation dan tidak digunakan untuk direct insert pendaftaran.
+Server Action pendaftaran menggunakan `NEXT_PUBLIC_SUPABASE_URL`,
+`SUPABASE_SERVICE_ROLE_KEY`, dan `REGISTRATION_EVENT_SLUG`. API community
+support menggunakan URL serta service-role key yang sama untuk insert dan
+private Storage. Publishable key tetap tersedia pada template environment
+untuk kebutuhan client publik yang aman, tetapi bukan credential mutation dan
+tidak digunakan untuk direct insert.
 
 ## 2. Terapkan schema
 
@@ -39,7 +47,36 @@ Seed awal sengaja memakai `status = 'draft'` dan `registration_open = false`. Me
 
 Script ini adalah baseline awal. Perubahan schema berikutnya sebaiknya dibuat sebagai migration baru; `create table if not exists` tidak mengubah tabel lama agar selalu sama dengan definisi terbaru.
 
-## 3. Konfigurasikan environment lokal
+## 3. Terapkan migration community support
+
+Gunakan **Supabase Dashboard > SQL Editor** sebagai jalur utama:
+
+1. Buka
+   [`../supabase/migrations/20260802000000_create_community_support.sql`](../supabase/migrations/20260802000000_create_community_support.sql).
+2. Salin seluruh file ke query baru pada project Supabase yang benar.
+3. Jalankan sebagai satu script dan pastikan SQL Editor tidak melaporkan
+   error.
+4. Ulangi langkah yang sama untuk
+   [`../supabase/migrations/20260802010000_add_community_support_idempotency.sql`](../supabase/migrations/20260802010000_add_community_support_idempotency.sql).
+5. Lanjutkan sesuai urutan timestamp dengan
+   [`../supabase/migrations/20260802020000_expand_community_support_submission.sql`](../supabase/migrations/20260802020000_expand_community_support_submission.sql)
+   dan
+   [`../supabase/migrations/20260802030000_contract_community_support_submission.sql`](../supabase/migrations/20260802030000_contract_community_support_submission.sql).
+6. Periksa bahwa tabel `public.community_supports` memiliki RLS aktif dan bucket
+   `community-support-proofs` memiliki `public = false`.
+
+Pada project baru, baseline pada bagian 2 harus dijalankan lebih dahulu. Pada
+project yang baseline-nya sudah aktif, jalankan migration community support
+sesuai urutan timestamp. Bila versi lama `pending`/`verified` pernah aktif,
+jalankan migration `expand`, deploy aplikasi baru, pastikan instance lama sudah
+berhenti, lalu jalankan migration `contract`. Jangan membuat policy
+`anon`/`authenticated` dan jangan mengubah bucket menjadi public. Panduan
+rollout, status internal, dan akses bukti tersedia di
+[`community-support-operations.md`](community-support-operations.md).
+Migration ini tidak membuat shared `rate_limits`/`consume_rate_limit`; periksa
+caveat prarilis pada panduan tersebut sebelum menyatakan limiter aktif.
+
+## 4. Konfigurasikan environment lokal
 
 Buat `.env.local` dari `.env.example`, lalu isi:
 
@@ -51,13 +88,23 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=YOUR_PUBLISHABLE_KEY
 SUPABASE_SERVICE_ROLE_KEY=YOUR_SERVICE_ROLE_KEY
 
 REGISTRATION_EVENT_SLUG=ai-co-creation-lab-makassar
+
+TRUSTED_IP_HEADER=
 ```
 
 Nilai di atas adalah pola, bukan credential nyata. Jangan commit `.env.local`.
 
+Section progress community support sudah dihapus dan tidak memerlukan target
+environment. CTA proposal memakai URL production tetap
+`https://event.dekatlokal.com/ai-co-creation-lab-makassar/sponsorship-proposal`.
+Biarkan `TRUSTED_IP_HEADER` kosong saat lokal dan pada Vercel langsung; isi
+`cf-connecting-ip` hanya jika Cloudflare langsung dan eksklusif berada di depan
+runtime. Penjelasan production tersedia di
+[`deployment.md`](deployment.md#environment-production).
+
 Turnstile bersifat opsional. Jika digunakan, isi `NEXT_PUBLIC_TURNSTILE_SITE_KEY` dan `TURNSTILE_SECRET_KEY` sebagai pasangan. Form tidak boleh menganggap satu key saja sebagai konfigurasi lengkap.
 
-## 4. Verifikasi schema
+## 5. Verifikasi schema
 
 Jalankan query berikut di SQL Editor:
 
@@ -76,12 +123,15 @@ select
 from pg_class c
 join pg_namespace n on n.oid = c.relnamespace
 where n.nspname = 'public'
-  and c.relname in ('events', 'registrations');
+  and c.relname in ('events', 'registrations', 'community_supports');
 ```
 
-Kedua tabel harus memiliki RLS aktif. Tidak adanya policy publik memang disengaja. Query yang dijalankan sebagai owner melalui SQL Editor tetap dapat membaca tabel dan bukan bukti bahwa akses anonim terbuka.
+Ketiga tabel harus memiliki RLS aktif setelah migration community support
+diterapkan. Tidak adanya policy publik memang disengaja. Query yang dijalankan
+sebagai owner melalui SQL Editor tetap dapat membaca tabel dan bukan bukti
+bahwa akses anonim terbuka.
 
-## 5. Buka atau tutup pendaftaran
+## 6. Buka atau tutup pendaftaran
 
 Sebelum membuka pendaftaran, pastikan tanggal/status publik, kapasitas operasional, privacy notice, dan kontak sudah ditinjau. Lalu ubah row event:
 
@@ -107,7 +157,7 @@ Status publik pada typed config harus diperbarui secara konsisten; lihat [`conte
 
 Row database adalah otoritas mutation: Server Action hanya menerima submission jika `registration_open = true` **dan** `status = 'registration_open'`. Mengaktifkan CTA atau flag pada typed config saja tidak membuka akses server.
 
-## 6. Uji integrasi secara manual
+## 7. Uji integrasi secara manual
 
 Dengan development server aktif:
 
@@ -121,7 +171,13 @@ Dengan development server aktif:
 
 Jangan memakai data orang sungguhan untuk pengujian tanpa kebutuhan dan consent. Hapus atau tandai data uji secara terkendali sebelum pendaftaran resmi.
 
-## 7. Mengakses dan mengelola pendaftaran
+Untuk community support, uji submission bernama dengan/tanpa consent ticker,
+submission anonim, JPG/PDF, format invalid, file lebih dari 5 MB, popup sukses
+langsung, CTA WhatsApp opsional, gangguan jaringan, dan reduced motion
+menggunakan matriks di
+[`community-support-operations.md`](community-support-operations.md#3-matriks-uji-manual).
+
+## 8. Mengakses dan mengelola pendaftaran
 
 Pada MVP, reviewer internal menggunakan Supabase Dashboard. Batasi akses project hanya kepada penyelenggara yang memerlukan data.
 
@@ -150,21 +206,32 @@ withdrawn
 
 Jangan membuat public view, public select policy, atau export publik untuk tabel `registrations`. Jika data diekspor untuk review internal, simpan di lokasi terbatas dan terapkan kebijakan retensi yang sesuai.
 
-## 8. Boundary keamanan
+## 9. Boundary keamanan
 
 - Browser tidak melakukan insert langsung ke Supabase.
 - Server memvalidasi input dengan Zod sebelum membentuk `metadata`.
 - Service-role key hanya digunakan pada modul server.
 - RLS tetap aktif walaupun service role digunakan.
-- `anon` dan `authenticated` tidak diberi grant atau policy pada dua tabel.
+- `anon` dan `authenticated` tidak diberi grant atau policy pada tabel
+  `events`, `registrations`, atau `community_supports`.
 - Payload pendaftaran tidak dicatat ke log.
 - Email, WhatsApp, nama, dan metadata tidak dikirim ke analytics.
 - Submission code tidak boleh berurutan atau mudah ditebak.
 - Data peserta tidak dirender pada challenge, team, documentation, atau impact page.
+- Upload bukti community support berjalan melalui server ke bucket privat;
+  browser tidak mendapat service-role key atau proof path.
+- Form tidak meminta tanggal transfer; waktu penerimaan berasal dari
+  `created_at` server.
+- Submission sukses langsung menerima reference code tanpa status verifikasi
+  pada response publik.
+- Endpoint ticker hanya membaca maksimal 10 row `submitted` yang bernama dan
+  memiliki consent eksplisit, lalu mengembalikan nama tersamarkan serta nominal.
+- Ticker tidak mengembalikan kontak, pesan, bank, waktu, admin notes, UUID,
+  reference code, atau bukti dan tidak boleh diisi data fiktif.
 
 Jika service-role key pernah terpapar, segera rotate key di Supabase, ganti environment pada seluruh hosting environment, dan redeploy.
 
-## 9. Troubleshooting
+## 10. Troubleshooting
 
 ### Situs tampil, tetapi form tidak dapat disimpan
 
@@ -185,3 +252,14 @@ Pastikan mutation memakai service-role key di server, bukan publishable key. Jan
 ### Event tidak ditemukan
 
 Pastikan `REGISTRATION_EVENT_SLUG` sama persis dengan row `public.events.slug` dan typed event slug.
+
+### Community support tidak dapat disimpan atau ticker tidak tersedia
+
+Pastikan migration mulai
+`supabase/migrations/20260802000000_create_community_support.sql` sampai
+`supabase/migrations/20260802030000_contract_community_support_submission.sql`
+sudah diterapkan berurutan pada project yang sama dengan environment runtime.
+Periksa tabel, kolom `ticker_consent_at`, bucket privat, dan service-role
+credential; jangan memperbaikinya dengan
+membuka policy publik. Ikuti query diagnosis di
+[`community-support-operations.md`](community-support-operations.md).
