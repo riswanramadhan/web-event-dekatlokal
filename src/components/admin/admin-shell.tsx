@@ -22,6 +22,13 @@ const NAV_ITEMS = [
 ] as const;
 
 function isActivePath(pathname: string, href: string): boolean {
+  if (href === "/admin") {
+    // The registrant detail view is a sub-page of the list, so it should
+    // keep "Daftar Pendaftar" highlighted (and shown as the mobile title)
+    // rather than falling back to no active item.
+    return pathname === "/admin" || pathname.startsWith("/admin/registrations");
+  }
+
   return pathname === href;
 }
 
@@ -117,6 +124,9 @@ export function AdminShell({
   children: ReactNode;
 }) {
   const pathname = usePathname();
+  // The drawer is "open" exactly when it was opened while sitting on the
+  // current path. Navigating away changes `pathname`, so this closes itself
+  // as a pure derived value — no effect or extra state needed to reset it.
   const [drawerOpenedAtPath, setDrawerOpenedAtPath] = useState<string | null>(
     null,
   );

@@ -1,3 +1,4 @@
+import { NavArrowRight } from "iconoir-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -339,7 +340,7 @@ function RegistrationTable({
       {/* Negative margins let the table span the card's padding while the
           card itself keeps its rounded corners. */}
       <div className="-mx-5 -my-5 overflow-x-auto">
-        <table className="w-full min-w-[860px] text-left text-sm">
+        <table className="w-full min-w-[940px] text-left text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
               <th className="px-5 py-3 font-medium">Pendaftar</th>
@@ -348,13 +349,16 @@ function RegistrationTable({
               <th className="px-5 py-3 font-medium">Institusi / Usaha</th>
               <th className="px-5 py-3 font-medium">Status</th>
               <th className="px-5 py-3 font-medium">Waktu</th>
+              <th className="px-5 py-3">
+                <span className="sr-only">Aksi</span>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {registrations.map((registration) => (
               <tr
                 key={registration.id}
-                className="transition hover:bg-slate-50/70"
+                className="group transition hover:bg-slate-50/70"
               >
                 <td className="px-5 py-3.5">
                   <div className="flex items-center gap-3">
@@ -395,6 +399,15 @@ function RegistrationTable({
                 </td>
                 <td className="whitespace-nowrap px-5 py-3.5 text-xs text-slate-500">
                   {formatDate(registration.created_at)}
+                </td>
+                <td className="px-5 py-3.5 text-right">
+                  <Link
+                    href={`/admin/registrations/${registration.id}`}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-slate-500 transition group-hover:text-brand hover:bg-brand-50 hover:text-brand"
+                  >
+                    Detail
+                    <NavArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
                 </td>
               </tr>
             ))}
