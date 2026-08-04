@@ -119,7 +119,7 @@ export async function createAdminAction(
   return {
     status: "success",
     message: promotedExistingAccount
-      ? `${email} sudah punya akun login sebelumnya, jadi sekarang diberi akses admin dengan password lamanya. Password yang Anda isi TIDAK dipakai — kalau perlu diganti, lakukan dari Supabase Dashboard.`
+      ? `${email} sudah punya akun login sebelumnya, jadi sekarang diberi akses admin dengan password lamanya. Password yang Anda isi TIDAK dipakai. Kalau perlu diganti, lakukan dari Supabase Dashboard.`
       : `Admin ${email} berhasil ditambahkan.`,
   };
 }

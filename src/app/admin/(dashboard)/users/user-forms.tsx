@@ -104,7 +104,7 @@ export function DeleteAdminForm({
 
   if (disabled) {
     return (
-      <span className="text-xs text-slate-400">{disabledReason ?? "—"}</span>
+      <span className="text-xs text-slate-400">{disabledReason ?? "-"}</span>
     );
   }
 

@@ -102,7 +102,7 @@ function TimelineOverviewBar({
       className={`flex min-h-9 min-w-0 items-center justify-center overflow-hidden rounded-lg border px-1.5 text-center shadow-[0_5px_14px_rgba(1,34,98,0.05)] ${config.railClassName}`}
       style={{ gridColumn: `${range.start} / span ${range.span}` }}
       aria-label={`${item.period}: ${item.phase}, ${config.label}`}
-      title={`${item.period} — ${item.phase}`}
+      title={`${item.period} | ${item.phase}`}
     >
       <span className="font-mono text-[0.62rem] font-semibold">{index + 1}</span>
       <span className="sr-only">. {item.phase}</span>

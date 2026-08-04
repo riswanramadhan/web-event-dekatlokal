@@ -146,7 +146,7 @@ export function StatusBadge({ status }: { status: string }) {
 }
 
 /**
- * Initials avatar. Purely decorative, so it is hidden from assistive tech —
+ * Initials avatar. Purely decorative, so it is hidden from assistive tech.
  * the adjacent name already conveys the identity.
  */
 export function Avatar({
@@ -194,7 +194,7 @@ export function DetailField({
       <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
         {label}
       </dt>
-      <dd className="mt-1 text-sm leading-6 text-ink">{value || "—"}</dd>
+      <dd className="mt-1 text-sm leading-6 text-ink">{value || "-"}</dd>
     </div>
   );
 }
@@ -210,7 +210,7 @@ export function DetailText({ label, value }: { label: string; value: string }) {
         {label}
       </dt>
       <dd className="mt-1.5 whitespace-pre-wrap text-sm leading-7 text-slate-700">
-        {value || "—"}
+        {value || "-"}
       </dd>
     </div>
   );
@@ -218,7 +218,7 @@ export function DetailText({ label, value }: { label: string; value: string }) {
 
 export function TagList({ items }: { items: string[] }) {
   if (items.length === 0) {
-    return <span className="text-sm text-slate-400">—</span>;
+    return <span className="text-sm text-slate-400">-</span>;
   }
 
   return (

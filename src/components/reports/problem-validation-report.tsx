@@ -330,7 +330,7 @@ function UmkmProfiles() {
         id="umkm-interviews-heading"
         eyebrow="UMKM interviews"
         title="Five Different Workflows, Five Real Problems"
-        description="Berdasarkan wawancara terhadap lima UMKM penerima manfaat, kebutuhan digitalnya berbeda—namun semuanya meminta alur yang lebih sederhana dan dekat dengan pekerjaan sehari-hari."
+        description="Berdasarkan wawancara terhadap lima UMKM penerima manfaat, kebutuhan digitalnya berbeda. Namun, semuanya meminta alur yang lebih sederhana dan dekat dengan pekerjaan sehari-hari."
       />
       <div className="space-y-4 sm:space-y-5">
         {umkmStakeholders.map((stakeholder, index) => (
@@ -532,7 +532,7 @@ function ValidationBoundary() {
       <SectionHeading
         id="validation-boundary-heading"
         eyebrow="Evidence boundary"
-        title="What Is Validated — and What Still Needs Testing"
+        title="What Is Validated and What Still Needs Testing"
       />
       <div className="grid gap-4 md:grid-cols-2">
         {columns.map(({ title, items, Icon, className, iconClassName }) => (

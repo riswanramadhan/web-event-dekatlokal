@@ -31,7 +31,7 @@ export type RateLimitOptions = {
    * and the duplicate constraints still apply, and locking real applicants out
    * would be worse than letting a burst through.
    *
-   * "closed" is required wherever the limiter is the ONLY control — notably
+   * "closed" is required wherever the limiter is the ONLY control, notably
    * admin login, where failing open would silently remove all brute-force
    * protection (for example if the consume_rate_limit migration was never
    * applied).

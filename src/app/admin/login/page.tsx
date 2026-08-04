@@ -59,7 +59,7 @@ export default function AdminLoginPage() {
 
         <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-slate-400">
           <Lock className="h-3.5 w-3.5" aria-hidden="true" />
-          Halaman internal — khusus pengelola event
+          Halaman internal khusus pengelola event
         </p>
 
         <p className="mt-4 text-center text-xs text-slate-400">

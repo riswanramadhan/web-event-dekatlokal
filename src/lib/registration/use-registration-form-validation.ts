@@ -33,7 +33,7 @@ function focusAndScrollToField(form: HTMLFormElement, name: string): void {
  * submitUmkmRegistration re-check everything with the exact same schema
  * before writing to the database. Reusing that schema here (rather than a
  * hand-written parallel set of rules) means the client and server can never
- * disagree about what counts as valid — this layer only removes the latency
+ * disagree about what counts as valid. This layer only removes the latency
  * of a round trip and lets people fix mistakes before they submit.
  */
 export function useRegistrationFormValidation<Shape extends z.ZodRawShape>(
@@ -76,7 +76,7 @@ export function useRegistrationFormValidation<Shape extends z.ZodRawShape>(
 
   /**
    * Re-validates on every keystroke, but only once the field has already been
-   * touched — otherwise a fresh field would flash an error on the very first
+   * touched. Otherwise a fresh field would flash an error on the very first
    * character typed.
    */
   const liveRevalidateIfTouched = useCallback(
@@ -145,7 +145,7 @@ export function useRegistrationFormValidation<Shape extends z.ZodRawShape>(
 
       if (relevantIssues.length === 0) {
         // Only the hidden honeypot tripped. A real visitor never fills it, so
-        // there is nothing genuine to show — let the server's existing
+        // there is nothing genuine to show. Let the server's existing
         // silent handling deal with it rather than blocking with no visible
         // reason.
         setBlockedMessage(null);

@@ -181,7 +181,7 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
         blocks: [
           {
             type: "subheading",
-            text: "Lapisan 1 — Core Project Network",
+            text: "Lapisan 1: Core Project Network",
           },
           {
             type: "paragraph",
@@ -230,7 +230,7 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
           },
           {
             type: "subheading",
-            text: "Lapisan 2 — Institutional and Program Support",
+            text: "Lapisan 2: Institutional and Program Support",
           },
           {
             type: "table",
@@ -265,7 +265,7 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
           },
           {
             type: "subheading",
-            text: "Lapisan 3 — UMKM and Community Network",
+            text: "Lapisan 3: UMKM and Community Network",
           },
           {
             type: "table",
@@ -300,7 +300,7 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
           },
           {
             type: "subheading",
-            text: "Lapisan 4 — Corporate and Resource Network",
+            text: "Lapisan 4: Corporate and Resource Network",
           },
           {
             type: "table",
@@ -328,7 +328,7 @@ export const GEP_WEEK_ONE_REPORTS: readonly GepWeekOneReport[] = [
           },
           {
             type: "subheading",
-            text: "Lapisan 5 — Public Communication Network",
+            text: "Lapisan 5: Public Communication Network",
           },
           {
             type: "table",

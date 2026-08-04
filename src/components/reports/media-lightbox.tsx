@@ -142,7 +142,7 @@ export function MediaLightbox({
 
   const dialog = isOpen ? (
     <div
-      className="report-no-print fixed inset-0 z-[100] flex bg-slate-950/85 p-2 backdrop-blur-sm sm:p-4"
+      className="report-no-print fixed inset-0 z-[100] flex bg-[#01153f]/90 p-2 backdrop-blur-sm sm:p-4"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) {
@@ -155,9 +155,9 @@ export function MediaLightbox({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="mx-auto flex min-h-0 w-full max-w-6xl flex-col overflow-hidden rounded-[1.25rem] border border-white/15 bg-slate-950 shadow-2xl"
+        className="mx-auto flex min-h-0 w-full max-w-6xl flex-col overflow-hidden rounded-[1.25rem] border border-brand-200/30 bg-[#06245f] shadow-[0_28px_80px_rgba(0,25,80,0.5)]"
       >
-        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 bg-slate-950 px-3 py-3 text-white sm:px-5">
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/15 bg-brand px-3 py-3 text-white sm:px-5">
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold sm:text-base">{title}</p>
             <p className="mt-0.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white/60">
@@ -191,7 +191,7 @@ export function MediaLightbox({
         </header>
 
         {mode === "document" ? (
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-slate-900 p-2 sm:p-5">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-[#eaf2ff] p-2 sm:p-5">
             <div className="mx-auto grid max-w-4xl gap-3 sm:gap-5">
               {items.map((item, index) => (
                 <figure
@@ -215,7 +215,7 @@ export function MediaLightbox({
             </div>
           </div>
         ) : (
-          <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-slate-900 p-2 sm:p-6">
+          <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-[#06245f] p-2 sm:p-6">
             <Image
               src={activeItem.src}
               alt={activeItem.alt}
@@ -231,7 +231,7 @@ export function MediaLightbox({
                   type="button"
                   onClick={() => move(-1)}
                   aria-label="Lihat gambar sebelumnya"
-                  className="absolute left-3 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-slate-950/70 text-white shadow-lg transition hover:bg-slate-950 sm:left-5"
+                  className="absolute left-3 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-brand/90 text-white shadow-lg transition hover:bg-[#0044c9] sm:left-5"
                 >
                   <NavArrowLeft className="h-5 w-5" aria-hidden="true" />
                 </button>
@@ -239,7 +239,7 @@ export function MediaLightbox({
                   type="button"
                   onClick={() => move(1)}
                   aria-label="Lihat gambar berikutnya"
-                  className="absolute right-3 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-slate-950/70 text-white shadow-lg transition hover:bg-slate-950 sm:right-5"
+                  className="absolute right-3 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-brand/90 text-white shadow-lg transition hover:bg-[#0044c9] sm:right-5"
                 >
                   <NavArrowRight className="h-5 w-5" aria-hidden="true" />
                 </button>

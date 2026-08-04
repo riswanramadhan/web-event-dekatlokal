@@ -58,7 +58,7 @@ export interface SupportingDocument {
 export const problemValidationHeader = {
   slug: "problem-validation" as ProgressReportSlug,
   title: "Problem Validation",
-  metadataTitle: "Problem Validation — AI Co-Creation Lab Makassar",
+  metadataTitle: "Problem Validation | AI Co-Creation Lab Makassar",
   weekLabel: "GEP WEEK 2",
   phase: "CONNECT & COLLABORATE",
   subtitle: "Validating real problems before building solutions.",

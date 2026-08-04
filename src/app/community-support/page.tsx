@@ -115,7 +115,7 @@ export default function CommunitySupportPage() {
                 <div className="rounded-2xl bg-white p-4 shadow-[0_14px_34px_rgba(0,20,58,0.18)] sm:p-5">
                   <Image
                     src="/event-brand/ai-co-creation-lab-makassar.webp"
-                    alt="AI Co-Creation Lab Makassar — From AI Users to Local Problem Solvers"
+                    alt="AI Co-Creation Lab Makassar: From AI Users to Local Problem Solvers"
                     width={1000}
                     height={268}
                     className="h-auto w-full"

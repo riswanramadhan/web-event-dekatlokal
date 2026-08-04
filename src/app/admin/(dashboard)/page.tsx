@@ -378,7 +378,7 @@ function RegistrationTable({
                 </td>
                 <td className="px-5 py-3.5">
                   <p className="truncate text-slate-700">
-                    {registration.email ?? "—"}
+                    {registration.email ?? "-"}
                   </p>
                   <p className="font-mono text-xs text-slate-400">
                     {registration.whatsapp}
@@ -388,7 +388,7 @@ function RegistrationTable({
                   <p className="truncate text-slate-700">
                     {registration.institution_name ??
                       registration.business_name ??
-                      "—"}
+                      "-"}
                   </p>
                   <p className="truncate text-xs text-slate-400">
                     {eventTitle(registration.events)}

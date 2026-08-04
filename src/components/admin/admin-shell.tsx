@@ -126,7 +126,7 @@ export function AdminShell({
   const pathname = usePathname();
   // The drawer is "open" exactly when it was opened while sitting on the
   // current path. Navigating away changes `pathname`, so this closes itself
-  // as a pure derived value — no effect or extra state needed to reset it.
+  // as a pure derived value. No effect or extra state is needed to reset it.
   const [drawerOpenedAtPath, setDrawerOpenedAtPath] = useState<string | null>(
     null,
   );

@@ -938,7 +938,7 @@ export function CommunitySupportForm() {
                     clearFieldError("contact");
                   }}
                   onBlur={() => markTouched("contact")}
-                  placeholder="WhatsApp atau email — opsional"
+                  placeholder="WhatsApp atau email, opsional"
                   aria-invalid={Boolean(contactError)}
                   aria-describedby={
                     contactError
@@ -973,7 +973,7 @@ export function CommunitySupportForm() {
                     clearFieldError("message");
                   }}
                   onBlur={() => markTouched("message")}
-                  placeholder="Tulis pesan singkat — opsional"
+                  placeholder="Tulis pesan singkat, opsional"
                   aria-invalid={Boolean(messageError)}
                   aria-describedby={
                     messageError

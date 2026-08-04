@@ -552,7 +552,7 @@ export async function submitUmkmRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
-  // Validation first, then quota — see the note in submitStudentRegistration.
+  // Validation first, then quota. See the note in submitStudentRegistration.
   const parsed = umkmRegistrationSchema.safeParse(
     buildUmkmRegistrationCandidate(formData),
   );
