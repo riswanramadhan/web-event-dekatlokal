@@ -113,7 +113,7 @@ export const partners: readonly Partner[] = [
       ...wideLogoSize,
     },
     description: [
-      "Melalui BAKTI NUSA, saya mendapat ruang untuk belajar, menguji gagasan, dan menerjemahkan kepemimpinan menjadi aksi.",
+      "BAKTI NUSA memberi ruang bagi tim untuk belajar, menguji gagasan, dan menerjemahkan kepemimpinan menjadi aksi.",
     ],
     contributions: [
       "Kesempatan menjalankan mini project dalam konteks Global Experience Program.",
@@ -121,7 +121,7 @@ export const partners: readonly Partner[] = [
       "Akses jejaring dan pendampingan program.",
     ],
     keyImpact:
-      "Saya mendapat ruang untuk belajar, menguji ide, dan menerjemahkan kepemimpinan menjadi dampak.",
+      "Ruang belajar ini membantu ide berkembang menjadi kepemimpinan yang berdampak.",
   },
   {
     id: "great-edunesia",
@@ -137,7 +137,7 @@ export const partners: readonly Partner[] = [
       ...wideLogoSize,
     },
     description: [
-      "Bersama GREAT Edunesia, saya mengembangkan proses pembelajaran dan eksperimen kepemimpinan menjadi mini project.",
+      "GREAT Edunesia mendukung proses pembelajaran dan eksperimen kepemimpinan hingga berkembang menjadi mini project.",
     ],
     contributions: [
       "Ekosistem pembelajaran program.",
@@ -161,7 +161,7 @@ export const partners: readonly Partner[] = [
       ...wideLogoSize,
     },
     description: [
-      "Melalui ekosistem Dompet Dhuafa, saya mendapat ruang untuk belajar dan mengembangkan aksi yang bermanfaat.",
+      "Ekosistem Dompet Dhuafa membuka ruang belajar dan pengembangan aksi yang bermanfaat.",
     ],
     contributions: [
       "Konteks pengembangan kepemimpinan berdampak.",
@@ -169,7 +169,7 @@ export const partners: readonly Partner[] = [
       "Ruang untuk menguji ide dalam aksi sosial.",
     ],
     keyImpact:
-      "Saya mengembangkan kepemimpinan dengan menghubungkan pembelajaran dan dampak yang berguna.",
+      "Kepemimpinan berkembang ketika pembelajaran terhubung dengan dampak yang berguna.",
   },
   {
     id: "rumah-bumn-makassar",
@@ -185,8 +185,8 @@ export const partners: readonly Partner[] = [
       ...wideLogoSize,
     },
     description: [
-      "Saya bekerja bersama Rumah BUMN Makassar untuk menghubungkan program dengan ekosistem UMKM dan kebutuhan penerima manfaat yang nyata.",
-      "Melalui pertemuan dan koordinasi langsung, saya menyusun bentuk kolaborasi yang mendukung validasi kebutuhan serta pelaksanaan co-creation bersama UMKM.",
+      "Kolaborasi dengan Rumah BUMN Makassar menghubungkan program dengan ekosistem UMKM dan kebutuhan penerima manfaat yang nyata.",
+      "Pertemuan dan koordinasi langsung membentuk kolaborasi yang mendukung validasi kebutuhan serta pelaksanaan co-creation bersama UMKM.",
     ],
     contributions: [
       "Akses dan koordinasi dengan ekosistem UMKM penerima manfaat.",
@@ -195,7 +195,7 @@ export const partners: readonly Partner[] = [
       "Lingkungan nyata untuk menguji relevansi proses co-creation.",
     ],
     keyImpact:
-      "Saya dapat menguji solusi bersama pengguna, masalah, dan lingkungan usaha yang nyata.",
+      "Solusi dapat diuji bersama pengguna, masalah, dan lingkungan usaha yang nyata.",
   },
   {
     id: "inovasi-digital",
@@ -216,7 +216,7 @@ export const partners: readonly Partner[] = [
       position: "Direktur Utama, Inovasi Digital",
     },
     description: [
-      "Saya memperoleh dukungan Inovasi Digital agar lima solusi digital dapat diakses, diuji, dan digunakan setelah kegiatan utama.",
+      "Dukungan Inovasi Digital membuat lima solusi digital dapat diakses, diuji, dan digunakan setelah kegiatan utama.",
       "Kolaborasi ini menyediakan domain, hosting, bantuan aktivasi, dan dukungan teknis untuk menjaga prototype tetap dapat digunakan.",
     ],
     contributions: [
@@ -228,7 +228,7 @@ export const partners: readonly Partner[] = [
     ],
     inKindValue: 2_525_000,
     servicePeriod: "12 bulan sejak aktivasi masing-masing layanan",
-    keyImpact: "Saya membawa prototype menjadi solusi yang dapat diakses dan digunakan.",
+    keyImpact: "Prototype berkembang menjadi solusi yang dapat diakses dan digunakan.",
     documentId: "mou-inovasi-digital",
   },
   {
@@ -250,7 +250,7 @@ export const partners: readonly Partner[] = [
       position: "Head of Intensive Learning, Dicoding Indonesia",
     },
     description: [
-      "Saya memperoleh dukungan pembelajaran Dicoding Indonesia senilai Rp15.000.000 untuk memperkuat kapasitas panitia dan peserta selama proses co-creation.",
+      "Kami memperoleh dukungan pembelajaran Dicoding Indonesia senilai Rp15.000.000 untuk memperkuat kapasitas panitia dan peserta selama proses co-creation.",
       "Akses pembelajaran selama satu bulan memberi kesempatan kepada panitia dan peserta untuk mengembangkan kemampuan digital yang relevan dengan prototype.",
     ],
     contributions: [
@@ -280,8 +280,8 @@ export const partners: readonly Partner[] = [
       ...wideLogoSize,
     },
     description: [
-      "Saya menetapkan Komdigi Makassar sebagai lokasi utama AI Co-Creation Lab Makassar.",
-      "Melalui koordinasi ruang dan fasilitas, saya menyiapkan tempat yang mendukung proses belajar, praktik, dan kolaborasi peserta bersama UMKM.",
+      "Komdigi Makassar menjadi lokasi utama AI Co-Creation Lab Makassar.",
+      "Koordinasi ruang dan fasilitas menghasilkan tempat yang mendukung proses belajar, praktik, dan kolaborasi peserta bersama UMKM.",
     ],
     contributions: [
       "Ruang pelatihan untuk kegiatan utama.",
@@ -290,7 +290,7 @@ export const partners: readonly Partner[] = [
       "Lingkungan pelatihan komunikasi dan digital yang relevan dengan program.",
     ],
     keyImpact:
-      "Saya menyiapkan ruang yang relevan bagi mahasiswa, UMKM, mentor, dan partner untuk belajar serta membangun bersama.",
+      "Ruang yang relevan mempertemukan mahasiswa, UMKM, mentor, dan partner untuk belajar serta membangun bersama.",
     documentId: "surat-komdigi-makassar",
   },
   {
@@ -309,8 +309,8 @@ export const partners: readonly Partner[] = [
       height: 404,
     },
     description: [
-      "Saya menjadikan Makassar Creative Hub sebagai ruang pendukung untuk persiapan program dan produksi konten Global Communication.",
-      "Saya menjadwalkan Produksi Konten Global Communication pada Kamis, 6 Agustus 2026 pukul 13.00 sampai 16.00 WITA di Studio Konten.",
+      "Makassar Creative Hub menjadi ruang pendukung untuk persiapan program dan produksi konten Global Communication.",
+      "Produksi Konten Global Communication dijadwalkan pada Kamis, 6 Agustus 2026 pukul 13.00 sampai 16.00 WITA di Studio Konten.",
     ],
     contributions: [
       "Studio Konten untuk produksi Global Communication.",
@@ -319,7 +319,7 @@ export const partners: readonly Partner[] = [
     ],
     servicePeriod: "Kamis, 6 Agustus 2026",
     keyImpact:
-      "Saya menggunakan ruang kreatif untuk mempersiapkan program, berkomunikasi, dan berkolaborasi.",
+      "Ruang kreatif mendukung persiapan program, komunikasi, dan kolaborasi.",
     documentId: "surat-makassar-creative-hub",
   },
   {
@@ -338,7 +338,7 @@ export const partners: readonly Partner[] = [
       height: 520,
     },
     description: [
-      "Saya menghubungkan keterampilan teknis mahasiswa Informatika Unhas dengan kebutuhan nyata UMKM.",
+      "Kolaborasi dengan Informatika Unhas menghubungkan keterampilan teknis mahasiswa dengan kebutuhan nyata UMKM.",
       "Kolaborasi akademik ini menghadirkan jejaring talenta untuk mendukung pemateri, mentor, dan proses praktik co-creation.",
     ],
     contributions: [
@@ -347,7 +347,7 @@ export const partners: readonly Partner[] = [
       "Dukungan pengetahuan teknis selama proses co-creation.",
     ],
     keyImpact:
-      "Saya membuat pembelajaran teknis lebih bermakna dengan mempertemukannya bersama pengguna nyata.",
+      "Pembelajaran teknis menjadi lebih bermakna ketika bertemu dengan pengguna nyata.",
   },
 ] as const;
 
@@ -579,7 +579,7 @@ export const partnershipTimeline = [
   {
     title: "Kolaborasi ekosistem UMKM",
     description:
-      "Saya melakukan pertemuan dan menyusun komitmen kolaborasi bersama Rumah BUMN Makassar.",
+      "Pertemuan bersama Rumah BUMN Makassar menghasilkan komitmen kolaborasi untuk ekosistem UMKM.",
   },
   {
     title: "Talenta akademik dan penjajakan komunitas",
@@ -607,7 +607,7 @@ export const partnershipSummary = {
 } as const;
 
 export const partnershipProgressDescription =
-  "Pada Week 2, saya membangun ekosistem dukungan lintas program, UMKM, pembelajaran digital, infrastruktur, venue, ruang kreatif, dan talenta akademik. Saya memperoleh dukungan pembelajaran Dicoding Indonesia senilai Rp15.000.000 serta dukungan infrastruktur Inovasi Digital senilai Rp2.525.000. Total dukungan in-kind yang saya bangun mencapai Rp17.525.000. Saya juga mengoordinasikan kolaborasi bersama Rumah BUMN Makassar, Komdigi Makassar, Makassar Creative Hub, Informatika Unhas, dan ekosistem program untuk mendukung pelaksanaan AI Co-Creation Lab Makassar.";
+  "Pada Week 2, tim membangun ekosistem dukungan lintas program, UMKM, pembelajaran digital, infrastruktur, venue, ruang kreatif, dan talenta akademik. Dukungan pembelajaran Dicoding Indonesia bernilai Rp15.000.000, sedangkan dukungan infrastruktur Inovasi Digital bernilai Rp2.525.000. Total dukungan in-kind mencapai Rp17.525.000. Kami juga mengoordinasikan kolaborasi bersama Rumah BUMN Makassar, Komdigi Makassar, Makassar Creative Hub, Informatika Unhas, dan ekosistem program untuk mendukung pelaksanaan AI Co-Creation Lab Makassar.";
 
 export const partnershipReportOutputs = [
   "Pemetaan sembilan institusi pendukung dan perannya.",
@@ -620,8 +620,8 @@ export const partnershipReportOutputs = [
 
 export const partnershipLeadershipReflection = {
   quote:
-    "Saya belajar bahwa kolaborasi tumbuh ketika setiap pihak memahami peran dan nilai yang dibangun bersama.",
+    "Kami belajar bahwa kolaborasi tumbuh ketika setiap pihak memahami peran dan nilai yang dibangun bersama.",
   paragraphs: [
-    "Dalam proses partnership ini, saya belajar menyatukan kebutuhan program dengan kekuatan setiap mitra. Percakapan, koordinasi, dan tindak lanjut yang konsisten membantu saya membangun dukungan yang dapat digunakan langsung dalam pelaksanaan program.",
+    "Proses partnership menyatukan kebutuhan program dengan kekuatan setiap mitra. Percakapan, koordinasi, dan tindak lanjut yang konsisten membentuk dukungan yang dapat digunakan langsung dalam pelaksanaan program.",
   ],
 } as const;

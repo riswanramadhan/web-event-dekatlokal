@@ -142,7 +142,7 @@ export function MediaLightbox({
 
   const dialog = isOpen ? (
     <div
-      className="report-no-print fixed inset-0 z-[100] flex bg-[#01153f]/90 p-2 backdrop-blur-sm sm:p-4"
+      className="media-lightbox-backdrop report-no-print fixed inset-0 z-[100] flex bg-slate-950/70 p-2 backdrop-blur-md sm:p-4"
       role="presentation"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) {
@@ -155,40 +155,68 @@ export function MediaLightbox({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="mx-auto flex min-h-0 w-full max-w-6xl flex-col overflow-hidden rounded-[1.25rem] border border-brand-200/30 bg-[#06245f] shadow-[0_28px_80px_rgba(0,25,80,0.5)]"
+        className={
+          mode === "document"
+            ? "media-lightbox-pop mx-auto flex min-h-0 w-full max-w-6xl flex-col overflow-hidden rounded-[1.25rem] border border-brand-200/30 bg-[#06245f] shadow-[0_28px_80px_rgba(0,25,80,0.5)]"
+            : "media-lightbox-pop relative m-auto flex max-h-[calc(100vh-1rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/20 bg-slate-950/80 shadow-[0_28px_80px_rgba(0,0,0,0.5)] sm:max-h-[calc(100vh-2rem)]"
+        }
       >
-        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/15 bg-brand px-3 py-3 text-white sm:px-5">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold sm:text-base">{title}</p>
-            <p className="mt-0.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white/60">
-              {mode === "document"
-                ? `${items.length} halaman`
-                : `${activeIndex + 1} dari ${items.length}`}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            {downloadUrl ? (
-              <a
-                href={downloadUrl}
-                download
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 text-xs font-semibold text-white transition hover:bg-white/20 sm:px-4 sm:text-sm"
+        {mode === "document" ? (
+          <header className="flex shrink-0 items-center justify-between gap-3 border-b border-white/15 bg-brand px-3 py-3 text-white sm:px-5">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold sm:text-base">
+                {title}
+              </p>
+              <p className="mt-0.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white/60">
+                {items.length} halaman
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              {downloadUrl ? (
+                <a
+                  href={downloadUrl}
+                  download
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 text-xs font-semibold text-white transition hover:bg-white/20 sm:px-4 sm:text-sm"
+                >
+                  <Download className="h-4 w-4" aria-hidden="true" />
+                  <span className="hidden sm:inline">{downloadLabel}</span>
+                  <span className="sm:hidden">Unduh</span>
+                </a>
+              ) : null}
+              <button
+                ref={closeButtonRef}
+                type="button"
+                onClick={closeDialog}
+                aria-label="Tutup pop up"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
               >
-                <Download className="h-4 w-4" aria-hidden="true" />
-                <span className="hidden sm:inline">{downloadLabel}</span>
-                <span className="sm:hidden">Unduh</span>
-              </a>
-            ) : null}
+                <Xmark className="h-5 w-5" aria-hidden="true" />
+              </button>
+            </div>
+          </header>
+        ) : (
+          <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-4 bg-gradient-to-b from-slate-950/90 via-slate-950/55 to-transparent p-3 pb-10 text-white sm:p-4 sm:pb-12">
+            <div className="min-w-0 pt-1">
+              <p className="truncate text-sm font-semibold sm:text-base">
+                {title}
+              </p>
+              {hasMultipleItems ? (
+                <p className="mt-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white/70">
+                  {activeIndex + 1} dari {items.length}
+                </p>
+              ) : null}
+            </div>
             <button
               ref={closeButtonRef}
               type="button"
               onClick={closeDialog}
               aria-label="Tutup pop up"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
+              className="pointer-events-auto inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/30 bg-slate-950/55 text-white shadow-lg transition hover:bg-slate-950/80"
             >
               <Xmark className="h-5 w-5" aria-hidden="true" />
             </button>
-          </div>
-        </header>
+          </header>
+        )}
 
         {mode === "document" ? (
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain bg-[#eaf2ff] p-2 sm:p-5">
@@ -215,7 +243,7 @@ export function MediaLightbox({
             </div>
           </div>
         ) : (
-          <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-[#06245f] p-2 sm:p-6">
+          <div className="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-slate-950 p-0">
             <Image
               src={activeItem.src}
               alt={activeItem.alt}
@@ -223,7 +251,7 @@ export function MediaLightbox({
               height={activeItem.height}
               loading="eager"
               sizes="(max-width: 1023px) 96vw, 70rem"
-              className="max-h-full w-auto max-w-full object-contain"
+              className="max-h-[calc(100vh-1rem)] w-auto max-w-full object-contain sm:max-h-[calc(100vh-2rem)]"
             />
             {hasMultipleItems ? (
               <>

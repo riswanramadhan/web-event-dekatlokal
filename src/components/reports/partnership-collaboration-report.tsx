@@ -126,16 +126,16 @@ function PartnershipSummary() {
         id="partnership-intro-heading"
         className="mt-3 max-w-4xl text-balance text-2xl font-semibold leading-tight tracking-[-0.035em] text-ink sm:text-3xl lg:text-4xl"
       >
-        Saya membangun project ini bersama orang dan institusi yang memiliki
-        semangat kolaborasi yang sama.
+        Project ini dibangun bersama orang dan institusi yang memiliki semangat
+        kolaborasi yang sama.
       </h2>
       <div className="mt-5 max-w-4xl space-y-3 text-[0.94rem] leading-7 text-slate-700 sm:text-base sm:leading-8">
         <p>
-          Saya mengembangkan AI Co-Creation Lab Makassar melalui kolaborasi
-          lintas lembaga, industri, kampus, ekosistem UMKM, dan komunitas.
+          AI Co-Creation Lab Makassar berkembang melalui kolaborasi lintas
+          lembaga, industri, kampus, ekosistem UMKM, dan komunitas.
         </p>
         <p>
-          Bersama para mitra, saya menyiapkan akses penerima manfaat,
+          Bersama para mitra, kami menyiapkan akses penerima manfaat,
           pembelajaran digital, infrastruktur sistem, sumber daya manusia,
           venue, publikasi, dan ruang untuk mengembangkan program.
         </p>
@@ -193,7 +193,7 @@ function PartnershipEcosystem() {
         id="partnership-ecosystem-heading"
         eyebrow="Ecosystem"
         title="Ekosistem Partnership"
-        description="Saya menghubungkan setiap kategori mitra dengan kebutuhan yang berbeda dalam proses co-creation."
+        description="Setiap kategori mitra terhubung dengan kebutuhan yang berbeda dalam proses co-creation."
       />
 
       <div className="rounded-[1.25rem] border border-brand-100 bg-brand-50/45 p-4 sm:p-6">
@@ -270,7 +270,7 @@ function ProgramSupportEcosystem() {
         id="program-support-heading"
         eyebrow="Ekosistem Program"
         title="Ekosistem yang Membuka Ruang untuk Bertumbuh"
-        description="Melalui BAKTI NUSA, GREAT Edunesia, dan Dompet Dhuafa, saya mengembangkan pembelajaran kepemimpinan menjadi aksi yang nyata."
+        description="BAKTI NUSA, GREAT Edunesia, dan Dompet Dhuafa membuka ruang agar pembelajaran kepemimpinan berkembang menjadi aksi nyata."
       />
 
       <div className="grid gap-3 md:grid-cols-3">
@@ -302,7 +302,7 @@ function ProgramSupportEcosystem() {
       </div>
 
       <blockquote className="mt-5 rounded-2xl border border-violet-200 bg-violet-50/65 p-5 text-sm font-medium leading-7 text-violet-950 sm:text-base sm:leading-8">
-        Ekosistem ini memberi saya ruang untuk belajar, menguji ide, dan
+        Ekosistem ini memberi ruang bagi tim untuk belajar, menguji ide, dan
         menerjemahkan kepemimpinan menjadi dampak.
       </blockquote>
     </section>
@@ -520,8 +520,8 @@ function PartnershipValueSummary() {
           aria-hidden="true"
         />
         <p className="relative max-w-3xl pr-8">
-          Partnership ini tidak hanya membantu saya menjalankan kegiatan,
-          tetapi juga menjaga solusi tetap berlanjut setelah kegiatan selesai.
+          Partnership ini tidak hanya mendukung pelaksanaan kegiatan, tetapi
+          juga menjaga solusi tetap berlanjut setelah kegiatan selesai.
         </p>
       </blockquote>
     </section>
@@ -538,7 +538,7 @@ function PartnershipJourney() {
         id="partnership-journey-heading"
         eyebrow="Timeline"
         title="Perjalanan Partnership"
-        description="Tahapan ini merangkum proses yang saya jalankan bersama setiap mitra."
+        description="Tahapan ini merangkum proses kolaborasi bersama setiap mitra."
       />
       <ol className="relative space-y-0 before:absolute before:bottom-4 before:left-[0.68rem] before:top-4 before:w-px before:bg-brand-100 sm:before:left-[0.8rem]">
         {partnershipTimeline.map((milestone, index) => {
@@ -699,12 +699,12 @@ function OngoingOutreach() {
       <SectionHeading
         id="ongoing-outreach-heading"
         eyebrow="Berjalan"
-        title="Saya Terus Membangun Jejaring"
+        title="Jejaring Terus Bertumbuh"
       />
       <div className="max-w-4xl space-y-3 text-sm leading-7 text-slate-700 sm:text-base sm:leading-8">
         <p>Proses penjajakan partnership dan sponsorship masih berjalan.</p>
         <p>
-          Saya terus membuka ruang kolaborasi bagi brand, komunitas, lembaga,
+          Kami terus membuka ruang kolaborasi bagi brand, komunitas, lembaga,
           dan individu yang ingin mendukung kebutuhan bootcamp, pengalaman
           peserta, konsumsi, dokumentasi, merchandise, publikasi, atau
           keberlanjutan prototype.
@@ -742,7 +742,7 @@ function CommunitySupportCallToAction() {
           Ingin Menjadi Bagian dari Perjalanan Ini?
         </h2>
         <p className="mt-4 text-sm leading-7 text-white/80 sm:text-base sm:leading-8">
-          Selain membangun partnership institusional, saya juga membuka
+          Selain membangun partnership institusional, kami juga membuka
           Community Support bagi siapa pun yang ingin ikut membantu pelaksanaan
           AI Co-Creation Lab Makassar. Dukungan dapat berupa dana, produk,
           kebutuhan kegiatan, sharing informasi, atau koneksi kepada partner
