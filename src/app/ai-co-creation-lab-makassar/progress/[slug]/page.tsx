@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import {
+  PartnershipCollaborationReportPage,
   ProblemValidationReportPage,
   ProgressReportPage,
 } from "@/components/reports";
@@ -9,6 +10,7 @@ import {
   getGepWeekOneReport,
 } from "@/data/gep-week-1-reports";
 import { problemValidationHeader } from "@/data/problem-validation";
+import { partnershipHeader } from "@/data/partnership-collaboration";
 import { PROGRESS_REPORT_SLUGS } from "@/data/progress-reports";
 
 type ProgressReportRouteProps = {
@@ -62,6 +64,34 @@ export async function generateMetadata({
     };
   }
 
+  if (slug === partnershipHeader.slug) {
+    return {
+      title: {
+        absolute: partnershipHeader.metadataTitle,
+      },
+      description:
+        "Kolaborasi lembaga, industri, kampus, venue, dan komunitas yang mendukung pelaksanaan serta keberlanjutan AI Co-Creation Lab Makassar.",
+      alternates: {
+        canonical: partnershipHeader.progressUrl,
+      },
+      openGraph: {
+        title: partnershipHeader.metadataTitle,
+        description:
+          "Partnership dan evidence yang mendukung proses co-creation AI Co-Creation Lab Makassar.",
+        url: partnershipHeader.progressUrl,
+        type: "article",
+        images: [
+          {
+            url: "/aicl-cocreation-indonesia.webp",
+            width: 1600,
+            height: 900,
+            alt: "Kolaborasi mahasiswa dan pelaku UMKM dalam AI Co-Creation Lab Makassar",
+          },
+        ],
+      },
+    };
+  }
+
   const report = getGepWeekOneReport(slug);
 
   if (!report) {
@@ -94,6 +124,10 @@ export default async function ProgressReportRoute({
 
   if (slug === problemValidationHeader.slug) {
     return <ProblemValidationReportPage />;
+  }
+
+  if (slug === partnershipHeader.slug) {
+    return <PartnershipCollaborationReportPage />;
   }
 
   const report = getGepWeekOneReport(slug);

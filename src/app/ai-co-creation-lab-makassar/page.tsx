@@ -14,6 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { EventEcosystem } from "@/components/event/event-ecosystem";
+import { ProgressReportNavigation } from "@/components/reports";
 import { EventStatusBadge } from "@/components/ui/status-badge";
 import { aiCoCreationLabEvent as event } from "@/data/events";
 import { buildEventJsonLd } from "@/lib/event-json-ld";
@@ -319,6 +320,33 @@ export default async function EventLandingPage() {
         sponsorship={event.sponsorship}
         supportingEcosystem={event.supportingEcosystem}
       />
+
+      <section
+        aria-labelledby="progress-report-title"
+        className="border-y border-slate-200 bg-white py-14 sm:py-20"
+      >
+        <div className="page-container">
+          <div className="max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
+              Progress report
+            </p>
+            <h2
+              id="progress-report-title"
+              className="mt-4 text-balance text-3xl font-semibold tracking-[-0.045em] text-ink sm:text-4xl"
+            >
+              Cek perkembangan project berdasarkan week.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
+              Laporan dipisahkan berdasarkan Week 1 dan Week 2. Filter week
+              berikutnya akan muncul otomatis ketika laporannya sudah tersedia.
+            </p>
+          </div>
+          <ProgressReportNavigation
+            showLabel={false}
+            className="report-no-print mt-8 max-w-5xl"
+          />
+        </div>
+      </section>
 
       <section className="px-4 pb-16 sm:px-6 sm:pb-20 lg:px-12">
         <div className="mx-auto max-w-[74rem] rounded-[1.75rem] border border-brand-200 bg-brand px-6 py-10 text-white sm:px-10 lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-12">

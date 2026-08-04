@@ -250,3 +250,14 @@ jumlah peserta, partner, hasil, atau dukungan yang belum memiliki bukti.
 - Komponen produksi dibangun ulang sesuai kebutuhan MVP.
 - Pola visual boleh diadaptasi; logic dan dependency tidak disalin tanpa alasan.
 - Pemeriksaan akhir harus memastikan tidak ada import production yang mengarah ke `referensi-ui-dekatlokal`.
+
+## Partnership & Collaboration Addendum
+
+Halaman Partnership & Collaboration menggunakan pola report existing tanpa mengimpor runtime dari folder referensi. Implementasi mempertahankan header report, breadcrumb, status badge, card radius, spacing, page container, warna brand, typography, print treatment, serta previous dan next navigation yang sudah digunakan pada Problem Validation.
+
+Interaksi baru dibatasi pada kebutuhan progress report:
+
+- Filter week memakai card navigation existing dengan kontrol tombol yang accessible.
+- Dokumentasi memakai modal gambar di dalam halaman tanpa tab baru.
+- Pratinjau PDF memakai halaman WebP vertikal yang dapat discroll.
+- Card tanpa asset gambar tidak membuat placeholder image.

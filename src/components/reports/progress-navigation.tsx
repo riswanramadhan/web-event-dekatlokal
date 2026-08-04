@@ -1,5 +1,8 @@
+"use client";
+
 import { ArrowLeft, ArrowRight, CheckCircle, Circle } from "iconoir-react";
 import Link from "next/link";
+import { useMemo, useState } from "react";
 
 import {
   getAdjacentProgressReports,
@@ -9,21 +12,87 @@ import {
 
 export function ProgressReportNavigation({
   currentSlug,
+  className = "report-no-print mt-8 max-w-5xl border-t border-slate-200 pt-6",
+  showLabel = true,
 }: {
-  currentSlug: ProgressReportSlug;
+  currentSlug?: ProgressReportSlug;
+  className?: string;
+  showLabel?: boolean;
 }) {
+  const currentReport = progressReports.find(
+    (report) => report.slug === currentSlug,
+  );
+  const availableWeeks = useMemo(
+    () => Array.from(new Set(progressReports.map((report) => report.weekLabel))),
+    [],
+  );
+  const [selectedWeek, setSelectedWeek] = useState(
+    currentReport?.weekLabel ?? "Semua",
+  );
+  const filteredReports =
+    selectedWeek === "Semua"
+      ? progressReports
+      : progressReports.filter((report) => report.weekLabel === selectedWeek);
+
   return (
     <nav
       aria-label="Daftar progress AI Co-Creation Lab Makassar"
-      className="report-no-print mt-8 max-w-5xl border-t border-slate-200 pt-6"
+      className={className}
     >
-      <p className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
-        Progress report
+      {showLabel ? (
+        <p className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
+          Progress report
+        </p>
+      ) : null}
+
+      <div
+        className={`${showLabel ? "mt-3" : ""} flex flex-wrap gap-2`}
+        aria-label="Filter progress berdasarkan week"
+      >
+        {["Semua", ...availableWeeks].map((week) => {
+          const isSelected = selectedWeek === week;
+          const count =
+            week === "Semua"
+              ? progressReports.length
+              : progressReports.filter((report) => report.weekLabel === week)
+                  .length;
+
+          return (
+            <button
+              key={week}
+              type="button"
+              aria-pressed={isSelected}
+              onClick={() => setSelectedWeek(week)}
+              className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-xs font-semibold transition ${
+                isSelected
+                  ? "border-brand bg-brand text-white shadow-[0_8px_20px_rgba(2,85,245,0.16)]"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-brand-200 hover:bg-brand-50 hover:text-brand"
+              }`}
+            >
+              {week}
+              <span
+                className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 font-mono text-[0.58rem] ${
+                  isSelected ? "bg-white/15 text-white" : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <p className="mt-3 text-xs leading-5 text-slate-500" aria-live="polite">
+        Menampilkan {filteredReports.length} progress pada {selectedWeek}.
       </p>
-      <ol className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-        {progressReports.map((report, index) => {
+
+      <ol className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {filteredReports.map((report) => {
           const isCurrent = report.slug === currentSlug;
           const Icon = isCurrent ? CheckCircle : Circle;
+          const reportIndex = progressReports.findIndex(
+            (item) => item.slug === report.slug,
+          );
 
           return (
             <li key={report.slug}>
@@ -43,7 +112,7 @@ export function ProgressReportNavigation({
                       : "bg-slate-100 text-slate-600 group-hover:bg-white group-hover:text-brand"
                   }`}
                 >
-                  {index + 1}
+                  {reportIndex + 1}
                 </span>
                 <span className="min-w-0">
                   <span

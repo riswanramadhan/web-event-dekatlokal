@@ -159,7 +159,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Memetakan stakeholder, potensi kontribusi, hubungan, dan tindak lanjut partnership.",
     progressDescription:
-      "Pemetaan jejaring awal telah disusun dengan mengidentifikasi Rumah BUMN Makassar, pelaku UMKM, mahasiswa, Universitas Hasanuddin, komunitas teknologi, DekatLokal, calon mitra tempat, serta BAKTI NUSA sebagai stakeholder potensial atau konteks program. Potensi kontribusi dan tindak lanjut dipetakan sebagai dasar pembangunan partnership; status keterlibatan setiap pihak tetap menunggu konfirmasi.",
+      "Pemetaan jejaring awal telah disusun dengan mengidentifikasi Rumah BUMN Makassar, pelaku UMKM, mahasiswa, Universitas Hasanuddin, komunitas teknologi, DekatLokal, calon mitra tempat, serta BAKTI NUSA sebagai stakeholder potensial atau konteks program. Potensi kontribusi dan tindak lanjut dipetakan sebagai dasar pembangunan partnership. Status keterlibatan setiap pihak tetap menunggu konfirmasi.",
     output: [
       "Peta stakeholder awal.",
       "Hipotesis kontribusi setiap stakeholder.",
@@ -219,7 +219,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menguji asumsi masalah bersama calon challenge partner dan stakeholder relevan.",
     progressDescription:
-      "Problem Validation telah dilakukan melalui wawancara dan konsultasi bersama lima UMKM penerima manfaat serta tiga mahasiswa calon co-creator. Temuan mengonfirmasi masalah operasional nyata pada workflow UMKM dan kesenjangan pengalaman mahasiswa dalam membangun solusi untuk pengguna nyata. Komitmen partisipasi telah tervalidasi; detail prototype dan adopsi jangka panjang tetap akan diuji pada tahap berikutnya.",
+      "Problem Validation telah dilakukan melalui wawancara dan konsultasi bersama lima UMKM penerima manfaat serta tiga mahasiswa calon co-creator. Temuan mengonfirmasi masalah operasional nyata pada workflow UMKM dan kesenjangan pengalaman mahasiswa dalam membangun solusi untuk pengguna nyata. Komitmen partisipasi telah tervalidasi. Detail prototype dan adopsi jangka panjang tetap akan diuji pada tahap berikutnya.",
     output: [
       "Profil dan kebutuhan lima UMKM penerima manfaat.",
       "Temuan penggunaan AI dari tiga mahasiswa calon co-creator.",
@@ -244,20 +244,27 @@ const journeyActivityDefinitions = [
     week: 2,
     title: "Membangun Partnership",
     shortDescription:
-      "Menyusun nilai kolaborasi, kebutuhan kontribusi, dan status komitmen setiap calon mitra.",
+      "Membangun kolaborasi program, UMKM, pembelajaran, infrastruktur, venue, dan talenta akademik berdasarkan evidence.",
     progressDescription:
-      "Aktivitas partnership direncanakan dengan menyiapkan proposal nilai yang spesifik untuk setiap pihak, mencatat bentuk dukungan yang dibutuhkan, dan membedakan calon mitra dari mitra yang sudah menyetujui keterlibatan. Belum ada partner eksternal yang ditampilkan sebagai mitra aktif.",
+      "Progress partnership sedang berjalan dengan dua MoU yang telah diverifikasi, dokumentasi komitmen kolaborasi Rumah BUMN Makassar, supporting document venue Komdigi Makassar dan Makassar Creative Hub, serta dukungan ekosistem program dan talenta akademik. Status dan nilai dukungan ditampilkan sesuai bukti yang tersedia.",
     output: [
-      "Daftar prioritas calon mitra.",
-      "Proposisi nilai per calon mitra.",
-      "Catatan komunikasi dan tindak lanjut.",
-      "Status persetujuan nama dan logo.",
+      "Pemetaan sembilan institusi pendukung dan perannya.",
+      "Dua MoU yang telah diverifikasi dari file project.",
+      "Dokumentasi komitmen dan supporting document venue.",
+      "Ringkasan dukungan in-kind yang memiliki nilai resmi.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "in_progress",
+    updatedAt: "4 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Partnership & Collaboration Week 2",
+        href:
+          "/ai-co-creation-lab-makassar/progress/partnership-collaboration",
+        type: "website",
+      },
+    ],
     leadershipInsight:
-      "Partnership yang sehat dibangun dari tujuan bersama, ekspektasi yang jelas, dan penghormatan terhadap persetujuan.",
+      "Partnership yang sehat dibangun dari tujuan bersama, ekspektasi yang jelas, dan status evidence yang disampaikan secara proporsional.",
   },
   {
     slug: "pitching",
@@ -398,7 +405,7 @@ const journeyActivityDefinitions = [
     updatedAt: null,
     evidence: [],
     leadershipInsight:
-      "Mobilisasi bukan sekadar mengumpulkan kontak; pemimpin perlu menghubungkan kontribusi dengan tujuan dan menjaga akuntabilitas.",
+      "Mobilisasi bukan sekadar mengumpulkan kontak. Pemimpin perlu menghubungkan kontribusi dengan tujuan dan menjaga akuntabilitas.",
   },
   {
     slug: "process-documentation",
@@ -438,7 +445,7 @@ const journeyActivityDefinitions = [
     updatedAt: null,
     evidence: [],
     leadershipInsight:
-      "Tanggung jawab project tidak berhenti saat acara selesai; handover dan tindak lanjut menentukan kegunaan hasil.",
+      "Tanggung jawab project tidak berhenti saat acara selesai. Handover dan tindak lanjut menentukan kegunaan hasil.",
   },
   {
     slug: "impact-measurement",

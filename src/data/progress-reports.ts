@@ -3,6 +3,7 @@ export const PROGRESS_REPORT_SLUGS = [
   "identifikasi-masalah-sosial",
   "mini-project-canvas",
   "problem-validation",
+  "partnership-collaboration",
 ] as const;
 
 export type ProgressReportSlug = (typeof PROGRESS_REPORT_SLUGS)[number];
@@ -50,6 +51,14 @@ export const progressReports: readonly ProgressReportSummary[] = [
     phase: "Connect & collaborate",
     status: "Completed",
     route: `${progressBaseRoute}/problem-validation`,
+  },
+  {
+    slug: "partnership-collaboration",
+    title: "Partnership & Collaboration",
+    weekLabel: "Week 2",
+    phase: "Connect & collaborate",
+    status: "In Progress",
+    route: `${progressBaseRoute}/partnership-collaboration`,
   },
 ];
 

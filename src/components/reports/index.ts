@@ -31,3 +31,5 @@ export {
   TimelineStatusBadge,
 } from "./project-timeline";
 export { ProblemValidationReportPage } from "./problem-validation-report";
+export { PartnershipCollaborationReportPage } from "./partnership-collaboration-report";
+export { MediaLightbox, type LightboxMediaItem } from "./media-lightbox";

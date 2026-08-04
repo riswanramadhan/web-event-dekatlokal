@@ -12,7 +12,6 @@ import {
   Shop,
   VideoCamera,
 } from "iconoir-react";
-import Image from "next/image";
 
 import {
   problemValidationHeader,
@@ -33,6 +32,7 @@ import {
 } from "@/data/problem-validation";
 
 import { AdjacentProgressNavigation } from "./progress-navigation";
+import { MediaLightbox } from "./media-lightbox";
 import {
   LeadershipReflectionCard,
   PrintReportFooter,
@@ -672,25 +672,19 @@ function DocumentationCard({ item }: { item: DocumentationItem }) {
       id={item.id}
       className="report-card scroll-mt-28 overflow-hidden rounded-2xl border border-slate-200 bg-white"
     >
-      <a
-        href={item.image}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Buka foto dokumentasi ${item.title} dalam ukuran penuh`}
-        className="group relative block overflow-hidden bg-slate-100"
-      >
-        <Image
-          src={item.image}
-          alt={item.alt}
-          width={item.imageWidth}
-          height={item.imageHeight}
-          sizes="(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 33vw"
-          className="aspect-[4/5] h-auto w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-        />
-        <span className="report-no-print absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/70 bg-white/95 text-brand shadow-lg">
-          <OpenInBrowser className="h-4 w-4" aria-hidden="true" />
-        </span>
-      </a>
+      <MediaLightbox
+        title={`Dokumentasi ${item.title}`}
+        items={[
+          {
+            src: item.image,
+            alt: item.alt,
+            width: item.imageWidth,
+            height: item.imageHeight,
+          },
+        ]}
+        triggerLabel={`Buka foto dokumentasi ${item.title} dalam pop up`}
+        imageClassName="aspect-[4/5] h-auto w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+      />
       <figcaption className="p-4 sm:p-5">
         <p className="font-mono text-[0.61rem] font-semibold uppercase tracking-[0.1em] text-brand">
           {categoryLabels[item.category]}
@@ -812,11 +806,11 @@ function SupportingDocuments() {
 }
 
 const reportOutputs = [
-  "profil dan kebutuhan lima UMKM penerima manfaat;",
-  "temuan penggunaan AI dari tiga mahasiswa calon co-creator;",
-  "pemetaan masalah yang tervalidasi dan hipotesis yang masih perlu diuji;",
-  "komitmen lima UMKM untuk memberi feedback dan menguji prototype;",
-  "arah tindak lanjut menuju co-creation dan prototype testing.",
+  "Profil dan kebutuhan lima UMKM penerima manfaat.",
+  "Temuan penggunaan AI dari tiga mahasiswa calon co-creator.",
+  "Pemetaan masalah yang tervalidasi dan hipotesis yang masih perlu diuji.",
+  "Komitmen lima UMKM untuk memberi feedback dan menguji prototype.",
+  "Arah tindak lanjut menuju co-creation dan prototype testing.",
 ] as const;
 
 const leadershipReflection = {
