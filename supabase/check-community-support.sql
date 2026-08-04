@@ -3,7 +3,7 @@
 -- It never reads supporter rows or proof objects.
 
 select to_regclass('public.community_supports') as community_supports_table;
-
+ 
 with expected(column_name) as (
   values
     ('request_id'),

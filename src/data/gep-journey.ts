@@ -219,16 +219,23 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menguji asumsi masalah bersama calon challenge partner dan stakeholder relevan.",
     progressDescription:
-      "Validasi direncanakan melalui percakapan terstruktur dengan calon challenge partner UMKM. Proses akan menilai frekuensi masalah, dampak terhadap usaha, cara yang dipakai saat ini, perangkat yang tersedia, dan batas data yang aman. Temuan aktual belum tersedia.",
+      "Problem Validation telah dilakukan melalui wawancara dan konsultasi bersama lima UMKM penerima manfaat serta tiga mahasiswa calon co-creator. Temuan mengonfirmasi masalah operasional nyata pada workflow UMKM dan kesenjangan pengalaman mahasiswa dalam membangun solusi untuk pengguna nyata. Komitmen partisipasi telah tervalidasi; detail prototype dan adopsi jangka panjang tetap akan diuji pada tahap berikutnya.",
     output: [
-      "Panduan wawancara validasi.",
-      "Ringkasan temuan tanpa data sensitif.",
-      "Pernyataan masalah yang telah diperbarui.",
-      "Keputusan lanjut, ubah, atau hentikan asumsi challenge.",
+      "Profil dan kebutuhan lima UMKM penerima manfaat.",
+      "Temuan penggunaan AI dari tiga mahasiswa calon co-creator.",
+      "Pemetaan masalah tervalidasi dan hipotesis yang masih perlu diuji.",
+      "Komitmen lima UMKM untuk memberi feedback dan menguji prototype.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "completed",
+    updatedAt: "4 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Problem Validation Week 2",
+        href:
+          "/ai-co-creation-lab-makassar/progress/problem-validation",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Fokus kepemimpinan: mendengar dengan disiplin dan bersedia mengubah rencana ketika bukti tidak mendukung asumsi.",
   },

@@ -11,6 +11,9 @@ export {
   ProgressReportBreadcrumb,
   ProgressReportHeader,
   ProgressReportPage,
+  ReportPrintStyles,
+  ProgressUrlCard,
+  PrintReportFooter,
   ReportDownloadLink,
   ReportOutputList,
   ReportSection,
@@ -18,8 +21,13 @@ export {
   StatusBadge,
 } from "./progress-report";
 export {
+  AdjacentProgressNavigation,
+  ProgressReportNavigation,
+} from "./progress-navigation";
+export {
   ProjectTimeline,
   ProjectTimelineItem,
   TimelineOverview,
   TimelineStatusBadge,
 } from "./project-timeline";
+export { ProblemValidationReportPage } from "./problem-validation-report";

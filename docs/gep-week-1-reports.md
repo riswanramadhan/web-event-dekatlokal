@@ -14,9 +14,10 @@ atas, dan menampilkan 404 untuk slug lain.
 ## Perilaku unlisted
 
 Laporan tidak ditautkan dari navbar, footer, mobile navigation, halaman event,
-event listing, journey publik, internal search, atau sitemap. Setiap laporan
-memasang metadata `noindex, nofollow`, termasuk instruksi yang sama untuk
-Googlebot.
+event listing, internal search, atau sitemap. Setelah report dibuka melalui URL,
+navigasi di dalam report menghubungkan tiga laporan Week 1 dengan laporan
+Problem Validation Week 2. Setiap laporan memasang metadata `noindex,
+nofollow`, termasuk instruksi yang sama untuk Googlebot.
 
 > Unlisted route is not authentication. Anyone with the URL may access the report.
 

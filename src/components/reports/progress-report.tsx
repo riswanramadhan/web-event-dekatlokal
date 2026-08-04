@@ -18,6 +18,7 @@ import type {
   ReportBlock,
   ReportSection as ReportSectionData,
 } from "@/data/gep-week-1-reports";
+import type { ProgressReportSlug } from "@/data/progress-reports";
 
 import {
   CopyProgressDescriptionButton,
@@ -25,6 +26,10 @@ import {
   PrintReportButton,
 } from "./report-actions";
 import { ProjectTimeline } from "./project-timeline";
+import {
+  AdjacentProgressNavigation,
+  ProgressReportNavigation,
+} from "./progress-navigation";
 
 const eventRoute = "/ai-co-creation-lab-makassar";
 const evidenceEmptyMessage =
@@ -64,7 +69,7 @@ function InlineText({ text }: { text: string }) {
   );
 }
 
-function ReportPrintStyles() {
+export function ReportPrintStyles() {
   return (
     <style>{`
       @media print {
@@ -285,10 +290,27 @@ function UpdatedAtCard({
   );
 }
 
+export interface ProgressReportHeaderData {
+  readonly slug: ProgressReportSlug;
+  readonly title: string;
+  readonly weekLabel: string;
+  readonly phase: string;
+  readonly subtitle: string;
+  readonly status: string;
+  readonly nextStep: string;
+  readonly updatedAt: string;
+  readonly updatedAtIso: string;
+  readonly progressUrl: string;
+  readonly download?: {
+    readonly href: string;
+    readonly label: string;
+  };
+}
+
 export function ProgressReportHeader({
   report,
 }: {
-  report: GepWeekOneReport;
+  report: ProgressReportHeaderData;
 }) {
   return (
     <header className="progress-report-header relative overflow-hidden border-b border-brand-100 bg-white py-10 sm:py-14 lg:py-16">
@@ -357,6 +379,8 @@ export function ProgressReportHeader({
             ) : null}
             <PrintReportButton />
           </div>
+
+          <ProgressReportNavigation currentSlug={report.slug} />
         </div>
       </div>
     </header>
@@ -723,7 +747,7 @@ export function EvidenceEmptyState() {
   );
 }
 
-function ProgressUrlCard({ url }: { url: string }) {
+export function ProgressUrlCard({ url }: { url: string }) {
   return (
     <section
       className="report-section report-card rounded-[1.5rem] border border-slate-200 bg-white px-5 py-6 shadow-[0_16px_42px_rgba(1,34,98,0.055)] sm:px-7 sm:py-8 lg:px-9"
@@ -802,7 +826,7 @@ function EvidenceSection({
   );
 }
 
-function PrintReportFooter({
+export function PrintReportFooter({
   progressUrl,
   updatedAt,
   updatedAtIso,
@@ -851,6 +875,8 @@ export function ProgressReportPage({
           <ProgressDescriptionCard description={report.progressDescription} />
           <ProgressUrlCard url={report.progressUrl} />
           <EvidenceSection evidence={report.evidence} />
+
+          <AdjacentProgressNavigation currentSlug={report.slug} />
 
           <PrintReportFooter
             progressUrl={report.progressUrl}

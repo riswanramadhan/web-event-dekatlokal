@@ -35,6 +35,18 @@ export function AnimationProvider() {
     let refreshTimer = 0;
 
     const frame = window.requestAnimationFrame(() => {
+      const reportPage = document.querySelector(
+        "#main-content .progress-report",
+      );
+
+      // Progress reports are long, print-oriented Server Components. Leaving
+      // them static prevents AOS from mutating streamed markup before React
+      // finishes hydrating the complete report tree.
+      if (reportPage) {
+        document.documentElement.classList.add("aos-ready");
+        return;
+      }
+
       const sections = document.querySelectorAll<HTMLElement>(
         "#main-content section, #main-content [data-scroll-reveal]",
       );
