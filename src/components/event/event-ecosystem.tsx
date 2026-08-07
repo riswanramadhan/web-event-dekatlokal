@@ -1,6 +1,4 @@
-import { ArrowRight, ArrowUpRight, Building } from "iconoir-react";
 import Image from "next/image";
-import Link from "next/link";
 
 import { Reveal } from "@/components/motion/reveal";
 import type { EventConfig } from "@/data/events";
@@ -32,12 +30,12 @@ export function EventEcosystem({
       >
         <div className="mx-auto max-w-[74rem]">
           <Reveal>
-            <div className="relative isolate overflow-hidden rounded-[1.75rem] border border-brand-200 bg-brand px-6 py-8 text-white shadow-[0_22px_55px_rgba(2,85,245,0.18)] sm:px-9 sm:py-10 lg:grid lg:grid-cols-[1fr_19rem] lg:items-center lg:gap-12 lg:px-12">
+            <div className="relative isolate overflow-hidden rounded-[1.75rem] border border-brand-200 bg-brand px-6 py-8 text-white shadow-[0_22px_55px_rgba(2,85,245,0.18)] sm:px-9 sm:py-10 lg:px-12">
               <div
                 className="pointer-events-none absolute -right-16 -top-24 -z-10 h-64 w-64 rounded-full border border-white/15"
                 aria-hidden="true"
               />
-              <div className="max-w-2xl">
+              <div className="mx-auto max-w-2xl text-center">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-100">
                   {sponsorship.eyebrow}
                 </p>
@@ -47,48 +45,42 @@ export function EventEcosystem({
                 >
                   {sponsorship.title}
                 </h2>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-white/80 sm:text-base">
+                <p className="mt-4 text-sm leading-7 text-white/80 sm:text-base">
                   {sponsorship.description}
                 </p>
-                <div className="mt-7 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap">
-                  <Link
-                    href={sponsorship.proposalCtaHref}
-                    className="button-loop inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-brand shadow-[0_12px_28px_rgba(0,31,92,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-50 sm:px-6"
-                  >
-                    {sponsorship.proposalCtaLabel}
-                    <ArrowRight
-                      className="h-4 w-4 shrink-0"
-                      strokeWidth={1.8}
-                      aria-hidden="true"
-                    />
-                  </Link>
-                  <a
-                    href={sponsorship.ctaHref}
-                    className="inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full border border-white/45 px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:border-white hover:bg-white/10 sm:px-6"
-                  >
-                    {sponsorship.ctaLabel}
-                    <ArrowUpRight
-                      className="h-4 w-4 shrink-0"
-                      strokeWidth={1.8}
-                      aria-hidden="true"
-                    />
-                  </a>
-                </div>
               </div>
 
-              <div className="mt-8 flex min-h-40 items-center justify-center rounded-[1.4rem] border border-dashed border-white/45 bg-white/10 p-6 text-center backdrop-blur-sm lg:mt-0">
-                <div>
-                  <Building
-                    className="mx-auto h-9 w-9 text-white"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                  <p className="mt-4 text-2xl font-semibold tracking-[-0.04em]">
-                    {sponsorship.placeholderLabel}
-                  </p>
-                  <p className="mt-1 text-xs font-medium uppercase tracking-[0.14em] text-white/65">
-                    Bisa ada di sini
-                  </p>
+              <div
+                className="sponsor-marquee mt-9"
+                tabIndex={0}
+                role="region"
+                aria-label="Logo sponsor dan partner bergerak dari kanan ke kiri. Arahkan pointer atau fokuskan area ini untuk menjeda."
+              >
+                <div className="sponsor-marquee-track">
+                  {[false, true].map((duplicate) => (
+                    <div
+                      key={duplicate ? "duplicate" : "primary"}
+                      className="sponsor-marquee-group"
+                      aria-hidden={duplicate || undefined}
+                    >
+                      {sponsorship.partners.map((partner) => (
+                        <div
+                          key={`${duplicate ? "duplicate-" : ""}${partner.id}`}
+                          className="sponsor-logo-card"
+                        >
+                          <Image
+                            src={partner.logo.src}
+                            alt={partner.logo.alt}
+                            width={partner.logo.width}
+                            height={partner.logo.height}
+                            sizes="(max-width: 639px) 9.5rem, 11rem"
+                            loading={duplicate ? "lazy" : "eager"}
+                            className="h-full w-full object-contain"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -171,12 +163,6 @@ export function EventEcosystem({
               ))}
             </div>
           </div>
-
-          <Reveal className="mx-auto mt-6 max-w-2xl text-center">
-            <p className="text-xs leading-6 text-slate-500">
-              {supportingEcosystem.disclaimer}
-            </p>
-          </Reveal>
         </div>
       </section>
     </>

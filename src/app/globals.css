@@ -498,6 +498,61 @@ html:not(.aos-ready) [data-aos] {
   padding: 0.7rem;
 }
 
+.sponsor-marquee {
+  width: 100%;
+  overflow: hidden;
+  padding-block: 0.35rem;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+}
+
+.sponsor-marquee-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: ecosystem-marquee-scroll 32s linear infinite;
+}
+
+.sponsor-marquee:hover .sponsor-marquee-track,
+.sponsor-marquee:focus .sponsor-marquee-track,
+.sponsor-marquee:focus-within .sponsor-marquee-track {
+  animation-play-state: paused;
+}
+
+.sponsor-marquee-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.sponsor-logo-card {
+  display: flex;
+  width: 9.5rem;
+  height: 5.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.97);
+  padding: 0.85rem;
+  box-shadow: 0 0.6rem 1.6rem rgba(0, 24, 74, 0.18);
+}
+
 .page-loader-orbit {
   position: relative;
   width: 4.5rem;
@@ -576,6 +631,17 @@ html:not(.aos-ready) [data-aos] {
     width: 10rem;
     padding: 0.9rem;
   }
+
+  .sponsor-marquee-group {
+    gap: 1rem;
+    padding-right: 1rem;
+  }
+
+  .sponsor-logo-card {
+    width: 11rem;
+    height: 6.75rem;
+    padding: 1.05rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -620,18 +686,21 @@ html:not(.aos-ready) [data-aos] {
   .media-lightbox-backdrop,
   .media-lightbox-pop,
   .ecosystem-marquee-track,
+  .sponsor-marquee-track,
   .page-loader-orbit,
   .page-loader-core {
     animation: none !important;
   }
 
-  .ecosystem-marquee {
+  .ecosystem-marquee,
+  .sponsor-marquee {
     overflow-x: auto;
     -webkit-mask-image: none;
     mask-image: none;
   }
 
-  .ecosystem-marquee-group[aria-hidden="true"] {
+  .ecosystem-marquee-group[aria-hidden="true"],
+  .sponsor-marquee-group[aria-hidden="true"] {
     display: none;
   }
 
