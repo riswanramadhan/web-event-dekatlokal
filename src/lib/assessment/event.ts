@@ -1,11 +1,12 @@
 import "server-only";
 
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import { getEventSlug } from "@/lib/event/registration-state";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
-import { logAssessmentFailure } from "./errors";
+import { logAssessmentFailure, translateAssessmentError } from "./errors";
 
 const eventRowSchema = z.object({
   id: z.string().uuid(),
@@ -57,4 +58,39 @@ export async function getManagedEventId(): Promise<ManagedEventResult> {
   }
 
   return { status: "ok", eventId: parsed.data.id };
+}
+
+export type AssessmentTarget =
+  | { ok: true; supabase: SupabaseClient; eventId: string }
+  | { ok: false; message: string };
+
+/**
+ * Resolves the client and event id together, collapsing the four failure modes
+ * into one Indonesian sentence. Every write path in this feature starts here.
+ */
+export async function resolveAssessmentTarget(): Promise<AssessmentTarget> {
+  const event = await getManagedEventId();
+
+  if (event.status === "unconfigured") {
+    return { ok: false, message: "Supabase belum dikonfigurasi." };
+  }
+
+  if (event.status === "missing") {
+    return {
+      ok: false,
+      message: `Event "${event.slug}" tidak ditemukan di database.`,
+    };
+  }
+
+  if (event.status === "error") {
+    return { ok: false, message: translateAssessmentError(null) };
+  }
+
+  const supabase = getSupabaseAdminClient();
+
+  if (!supabase) {
+    return { ok: false, message: "Supabase belum dikonfigurasi." };
+  }
+
+  return { ok: true, supabase, eventId: event.eventId };
 }

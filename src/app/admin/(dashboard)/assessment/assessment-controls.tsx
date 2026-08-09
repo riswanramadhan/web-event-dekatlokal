@@ -5,41 +5,13 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
 import type { AssessmentPhase } from "@/lib/assessment/phase";
-import {
-  initialRegistrationActionState,
-  type RegistrationActionState,
-} from "@/lib/registration/result";
+import { initialRegistrationActionState } from "@/lib/registration/result";
 
+import { ActionMessage } from "./action-message";
 import {
   setAssessmentDurationAction,
   toggleAssessmentOpenAction,
 } from "./actions";
-
-function ActionMessage({ state }: { state: RegistrationActionState }) {
-  if (state.status === "idle") {
-    return null;
-  }
-
-  const isError = state.status !== "success";
-
-  return (
-    <div
-      role={isError ? "alert" : "status"}
-      className={`mt-2 text-xs leading-5 ${
-        isError ? "text-red-700" : "text-emerald-700"
-      }`}
-    >
-      <p className="font-medium">{state.message}</p>
-      {state.formErrors && state.formErrors.length > 0 ? (
-        <ul className="mt-1 list-disc space-y-0.5 pl-4">
-          {state.formErrors.map((problem, index) => (
-            <li key={`${index}-${problem}`}>{problem}</li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
-  );
-}
 
 function PhaseSwitch({
   isOpen,

@@ -143,29 +143,56 @@ skema.
 
 ## Blok 3 — Kelola soal: soal, opsi, dan kunci jawaban
 
-- [ ] Halaman `/admin/assessment/soal`
-- [ ] Baris tab Ringkasan / Soal di dalam halaman (dipindahkan dari blok 1: tab bar berisi
+- [x] Halaman `/admin/assessment/soal`
+- [x] Baris tab Ringkasan / Soal di dalam halaman (dipindahkan dari blok 1: tab bar berisi
       satu item bukan navigasi). Tab Nilai menyusul di blok 9
-- [ ] `listQuestions` — sertakan opsi, urut `order_index`, hasil baca diparse Zod
-- [ ] `createQuestion` / `updateQuestion` / `deleteQuestion`
-- [ ] `createOption` / `updateOption` / `deleteOption`
-- [ ] `setCorrectOption` — satu transaksi: lepas penanda lama, pasang yang baru
-- [ ] Daftar soal berbentuk kartu yang bisa dilipat: nomor, potongan pertanyaan, jumlah opsi
-- [ ] Kartu terbuka berisi editor pertanyaan dan daftar opsi, kunci dipilih lewat radio di
-      sisi kiri tiap opsi
-- [ ] Simpan eksplisit per soal, bukan autosave — admin sedang menyusun, bukan mengerjakan tes
-- [ ] Galat database diterjemahkan ke kalimat Indonesia, tidak pernah ditampilkan mentah
+- [x] `listQuestions` — sertakan opsi, urut `order_index`, hasil baca diparse Zod
+- [x] `createQuestion` / `updateQuestion` / `deleteQuestion`
+- [x] `createOption` / `updateOption` / `deleteOption`
+- [x] `setCorrectOption` — lepas penanda lama, pasang yang baru
+- [x] Daftar soal berbentuk kartu yang bisa dilipat: nomor, potongan pertanyaan, jumlah opsi
+- [x] Kartu terbuka berisi editor pertanyaan dan daftar opsi, kunci dipilih lewat tombol
+      huruf di sisi kiri tiap opsi (`role="radio"` di dalam `role="radiogroup"`)
+- [x] Simpan eksplisit per soal, bukan autosave — admin sedang menyusun, bukan mengerjakan tes
+- [x] Galat database diterjemahkan ke kalimat Indonesia, tidak pernah ditampilkan mentah.
+      Kode freeze `23001` dan bentrok urutan `23505` ditambahkan ke penerjemah
+- [x] Setiap tulisan opsi memeriksa dulu bahwa soal induknya milik event ini.
+      `assessment_options` tidak punya `event_id`, jadi tanpa pemeriksaan itu id opsi dari
+      event lain bisa dijangkau
 
-**Dinilai di browser:** buat 10 soal lengkap dengan opsi dan kunci jawaban, refresh, semuanya
-utuh dan urutannya konsisten. `/admin/assessment` ikut berubah karena daftar masalahnya
-menyusut — memenuhi §8.2.
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Soal dibuat, dua opsi ditambahkan, kunci jawaban ditetapkan, lalu **dipindah** dari A
+      ke B dan kembali ke A. Perpindahan itu membuktikan urutan hapus-dulu-baru-pasang tidak
+      melanggar indeks unik parsial `assessment_options_single_correct_idx`
+- [x] Semuanya utuh setelah muat ulang penuh: teks soal, kedua opsi, dan kunci di A
+- [x] `<details>` tetap terbuka setelah Server Action dan revalidasi — tidak menutup sendiri
+      di tengah penyuntingan
+- [x] `/admin/assessment` ikut berubah: daftar masalah menjadi "Soal sudah siap. Tes bisa
+      dibuka." dan kedua saklar phase aktif
+- [x] Sorotan sidebar bertahan di sub-route `/admin/assessment/soal` — cabang `isActivePath`
+      dari blok 1 akhirnya terbukti pada sub-route sungguhan
+- [x] Tanpa scroll horizontal di 360 px
+- [x] `npm run lint`, `npm run typecheck`, `npm run build` — ketiganya lolos
+
+Yang **tidak** saya lakukan: membuat 10 soal. Saya membuat satu soal lengkap dengan dua opsi
+dan kunci jawaban, cukup untuk membuktikan seluruh mekanismenya dan membuat daftar masalah
+menjadi kosong. Membuat sisanya adalah pekerjaan isi, bukan pekerjaan kode — §8.2 baru
+tercentang penuh setelah soal sungguhan dimasukkan.
 
 Tertunda dari blok 2, dinilai di sini karena baru sekarang tesnya bisa dibuka:
 
-- [ ] Saklar aktif setelah soal siap; membuka lalu menutup memindahkan kartu melewati ketiga
-      status (belum pernah dibuka → sedang terbuka → sudah ditutup) dengan tampilan berbeda
-- [ ] `opened_at` hanya terisi sekali: buka, tutup, buka lagi — kartu tidak pernah kembali ke
-      "Belum pernah dibuka"
+- [x] Saklar aktif setelah soal siap; membuka lalu menutup memindahkan kartu melewati ketiga
+      status dengan tampilan berbeda: "Belum pernah dibuka" → "Sedang terbuka" (dengan
+      "Dibuka 10 Agu 2026, 03.17") → "Sudah ditutup" (dengan "Ditutup …")
+- [x] `opened_at` hanya terisi sekali: setelah dibuka lagi, stempelnya **masih waktu
+      pembukaan pertama**, dan kartu tidak pernah kembali ke "Belum pernah dibuka"
+- [x] Hanya phase yang diminta yang berubah; Post-test tetap "Belum pernah dibuka"
+
+**Konsekuensi yang perlu diingat untuk blok 5:** pre-test sekarang punya `opened_at`, dan
+tidak ada jalan mengosongkannya kembali — `reset_assessment_attempts()` hanya menghapus
+attempt, bukan settings. Jadi gerbang "belum pernah dibuka" harus diuji di `/tes/post-test`,
+yang masih perawan.
 
 ---
 

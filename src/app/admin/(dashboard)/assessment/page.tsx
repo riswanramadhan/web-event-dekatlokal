@@ -12,6 +12,7 @@ import {
 import { ASSESSMENT_PHASE_LABELS } from "@/lib/assessment/phase";
 
 import { AssessmentPhaseControls } from "./assessment-controls";
+import { AssessmentTabs } from "./assessment-tabs";
 
 export const metadata: Metadata = {
   title: "Pre-test & Post-test",
@@ -156,6 +157,8 @@ export default async function AssessmentOverviewPage() {
         title="Pre-test & Post-test"
         description="Kontrol tes peserta untuk event ini. Pendaftar berstatus ditolak dan mundur tidak dihitung sebagai peserta."
       />
+
+      <AssessmentTabs active="/admin/assessment" />
 
       <div className="grid gap-4 md:grid-cols-2">
         {phases.map((phase) => (

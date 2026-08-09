@@ -20,6 +20,15 @@ const MESSAGE_BY_CODE: Record<string, string> = {
     "Fungsi tes belum ada di database ini. Jalankan migrasi assessment terlebih dahulu.",
   "42P01":
     "Tabel tes belum ada di database ini. Jalankan migrasi assessment terlebih dahulu.",
+  // Raised by the freeze triggers on assessment_questions / assessment_options.
+  // The app disables the edit controls first, so reaching this means the page
+  // was stale — an attempt appeared after it was rendered.
+  "23001":
+    "Soal terkunci karena sudah ada peserta yang mengerjakan tes. Muat ulang halaman untuk melihat kondisi terbaru.",
+  // Deferrable unique on (event_id, order_index) / (question_id, order_index):
+  // two administrators added a row at the same instant.
+  "23505":
+    "Urutan bentrok dengan perubahan lain yang barusan tersimpan. Muat ulang halaman, lalu coba lagi.",
 };
 
 const FALLBACK_MESSAGE = "Data tes gagal dibaca dari database.";

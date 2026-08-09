@@ -26,3 +26,29 @@ export const assessmentSettingsRowsSchema = z.array(assessmentSettingsRowSchema)
  * plain array of strings. An empty array means the questions are ready.
  */
 export const assessmentProblemsSchema = z.array(z.string());
+
+/**
+ * Admin-side option shape. `is_correct` belongs here and only here — the
+ * participant payload carries `id` and `body` alone, because a leaked answer
+ * key in the pre-test would destroy the meaning of the score difference.
+ */
+export const assessmentOptionRowSchema = z.object({
+  id: z.string().uuid(),
+  body: z.string(),
+  order_index: z.number().int().min(0),
+  is_correct: z.boolean(),
+});
+
+export type AssessmentOptionRow = z.infer<typeof assessmentOptionRowSchema>;
+
+export const assessmentQuestionRowSchema = z.object({
+  id: z.string().uuid(),
+  prompt: z.string(),
+  order_index: z.number().int().min(0),
+  points: z.number().int().min(1),
+  assessment_options: z.array(assessmentOptionRowSchema),
+});
+
+export type AssessmentQuestionRow = z.infer<typeof assessmentQuestionRowSchema>;
+
+export const assessmentQuestionRowsSchema = z.array(assessmentQuestionRowSchema);

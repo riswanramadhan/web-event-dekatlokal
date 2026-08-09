@@ -1,0 +1,223 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+import { recordAuditEvent, requireAdmin } from "@/lib/admin/auth";
+import {
+  createOption,
+  createQuestion,
+  deleteOption,
+  deleteQuestion,
+  optionBodySchema,
+  promptSchema,
+  setCorrectOption,
+  updateOption,
+  updateQuestion,
+  type QuestionsWriteResult,
+} from "@/lib/assessment/questions";
+import type { RegistrationActionState } from "@/lib/registration/result";
+
+const idSchema = z.string().uuid();
+
+/**
+ * Editing an option is recorded as `update_question`: the audit CHECK lists no
+ * option-level action, and an option only exists as part of its question.
+ */
+type AuditedAction = "create_question" | "update_question" | "delete_question";
+
+const INVALID_COMMAND: RegistrationActionState = {
+  status: "error",
+  message: "Perintah tidak valid.",
+};
+
+/**
+ * Every action here follows the same three steps: re-check authorization,
+ * validate, then write. Authorization is repeated per action because a Server
+ * Action is reachable on its own, not only through the page that rendered it.
+ */
+async function runWrite(
+  write: () => Promise<QuestionsWriteResult>,
+  audit: AuditedAction,
+  successMessage: string,
+): Promise<RegistrationActionState> {
+  const actor = await requireAdmin();
+  const result = await write();
+
+  if (!result.ok) {
+    return { status: "error", message: result.message };
+  }
+
+  await recordAuditEvent(audit, actor.email);
+
+  // The readiness list and the open/close switches on the summary page are
+  // derived from these rows, so both pages are refreshed together.
+  revalidatePath("/admin/assessment/soal");
+  revalidatePath("/admin/assessment");
+
+  return { status: "success", message: successMessage };
+}
+
+export async function createQuestionAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  await requireAdmin();
+
+  const prompt = promptSchema.safeParse(formData.get("prompt"));
+
+  if (!prompt.success) {
+    return {
+      status: "validation_error",
+      message: prompt.error.issues[0]?.message ?? "Pertanyaan tidak valid.",
+      fieldErrors: { prompt: [prompt.error.issues[0]?.message ?? ""] },
+    };
+  }
+
+  return runWrite(
+    () => createQuestion(prompt.data),
+    "create_question",
+    "Soal ditambahkan.",
+  );
+}
+
+export async function updateQuestionAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  await requireAdmin();
+
+  const questionId = idSchema.safeParse(formData.get("questionId"));
+  const prompt = promptSchema.safeParse(formData.get("prompt"));
+
+  if (!questionId.success) {
+    return INVALID_COMMAND;
+  }
+
+  if (!prompt.success) {
+    return {
+      status: "validation_error",
+      message: prompt.error.issues[0]?.message ?? "Pertanyaan tidak valid.",
+    };
+  }
+
+  return runWrite(
+    () => updateQuestion(questionId.data, prompt.data),
+    "update_question",
+    "Pertanyaan disimpan.",
+  );
+}
+
+export async function deleteQuestionAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  await requireAdmin();
+
+  const questionId = idSchema.safeParse(formData.get("questionId"));
+
+  if (!questionId.success) {
+    return INVALID_COMMAND;
+  }
+
+  return runWrite(
+    () => deleteQuestion(questionId.data),
+    "delete_question",
+    "Soal dihapus.",
+  );
+}
+
+export async function createOptionAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  await requireAdmin();
+
+  const questionId = idSchema.safeParse(formData.get("questionId"));
+  const body = optionBodySchema.safeParse(formData.get("body"));
+
+  if (!questionId.success) {
+    return INVALID_COMMAND;
+  }
+
+  if (!body.success) {
+    return {
+      status: "validation_error",
+      message: body.error.issues[0]?.message ?? "Opsi tidak valid.",
+    };
+  }
+
+  return runWrite(
+    () => createOption(questionId.data, body.data),
+    "update_question",
+    "Opsi ditambahkan.",
+  );
+}
+
+export async function updateOptionAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  await requireAdmin();
+
+  const questionId = idSchema.safeParse(formData.get("questionId"));
+  const optionId = idSchema.safeParse(formData.get("optionId"));
+  const body = optionBodySchema.safeParse(formData.get("body"));
+
+  if (!questionId.success || !optionId.success) {
+    return INVALID_COMMAND;
+  }
+
+  if (!body.success) {
+    return {
+      status: "validation_error",
+      message: body.error.issues[0]?.message ?? "Opsi tidak valid.",
+    };
+  }
+
+  return runWrite(
+    () => updateOption(questionId.data, optionId.data, body.data),
+    "update_question",
+    "Opsi disimpan.",
+  );
+}
+
+export async function deleteOptionAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  await requireAdmin();
+
+  const questionId = idSchema.safeParse(formData.get("questionId"));
+  const optionId = idSchema.safeParse(formData.get("optionId"));
+
+  if (!questionId.success || !optionId.success) {
+    return INVALID_COMMAND;
+  }
+
+  return runWrite(
+    () => deleteOption(questionId.data, optionId.data),
+    "update_question",
+    "Opsi dihapus.",
+  );
+}
+
+export async function setCorrectOptionAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  await requireAdmin();
+
+  const questionId = idSchema.safeParse(formData.get("questionId"));
+  const optionId = idSchema.safeParse(formData.get("optionId"));
+
+  if (!questionId.success || !optionId.success) {
+    return INVALID_COMMAND;
+  }
+
+  return runWrite(
+    () => setCorrectOption(questionId.data, optionId.data),
+    "update_question",
+    "Kunci jawaban disimpan.",
+  );
+}

@@ -3,10 +3,8 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
-import { getSupabaseAdminClient } from "@/lib/supabase/admin";
-
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
-import { getManagedEventId } from "./event";
+import { resolveAssessmentTarget } from "./event";
 import { ASSESSMENT_PHASES, type AssessmentPhase } from "./phase";
 import { assessmentProblemsSchema } from "./schemas";
 
@@ -31,37 +29,6 @@ export type AssessmentWriteResult =
 
 const SETTINGS_MISSING_MESSAGE =
   "Pengaturan tes belum ada di database. Muat ulang halaman ringkasan untuk membuatnya.";
-
-type ResolvedTarget =
-  | { ok: true; supabase: SupabaseClient; eventId: string }
-  | { ok: false; message: string };
-
-async function resolveTarget(): Promise<ResolvedTarget> {
-  const event = await getManagedEventId();
-
-  if (event.status === "unconfigured") {
-    return { ok: false, message: "Supabase belum dikonfigurasi." };
-  }
-
-  if (event.status === "missing") {
-    return {
-      ok: false,
-      message: `Event "${event.slug}" tidak ditemukan di database.`,
-    };
-  }
-
-  if (event.status === "error") {
-    return { ok: false, message: translateAssessmentError(null) };
-  }
-
-  const supabase = getSupabaseAdminClient();
-
-  if (!supabase) {
-    return { ok: false, message: "Supabase belum dikonfigurasi." };
-  }
-
-  return { ok: true, supabase, eventId: event.eventId };
-}
 
 /**
  * Readiness check for opening a test.
@@ -100,7 +67,7 @@ export async function setAssessmentOpen(
   phase: AssessmentPhase,
   shouldOpen: boolean,
 ): Promise<AssessmentWriteResult> {
-  const target = await resolveTarget();
+  const target = await resolveAssessmentTarget();
 
   if (!target.ok) {
     return target;
@@ -190,7 +157,7 @@ export async function setAssessmentDuration(
     };
   }
 
-  const target = await resolveTarget();
+  const target = await resolveAssessmentTarget();
 
   if (!target.ok) {
     return target;
