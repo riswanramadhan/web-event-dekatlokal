@@ -13,6 +13,9 @@ export default function robots(): MetadataRoute.Robots {
         "/admin",
         "/api/",
         "/community-support",
+        // Participants receive these URLs from the organisers during the event.
+        // Unlisted is not a security control — see spec §1.
+        "/tes",
         "/ai-co-creation-lab-makassar/journey",
         "/ai-co-creation-lab-makassar/challenges",
         "/ai-co-creation-lab-makassar/teams",

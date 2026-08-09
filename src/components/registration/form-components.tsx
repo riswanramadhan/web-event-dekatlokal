@@ -141,6 +141,12 @@ type ParsedSelectOption = {
   label: string;
   disabled: boolean;
   selected: boolean;
+  /**
+   * Optional secondary line, taken from `data-description` on the <option>.
+   * The native <select> ignores the attribute, so the hidden field that feeds
+   * FormData is unaffected.
+   */
+  description?: string;
 };
 
 function getNodeText(node: ReactNode): string {
@@ -171,12 +177,19 @@ function parseSelectOptions(children: ReactNode): ParsedSelectOption[] {
 
       if (child.type === "option") {
         const label = getNodeText(child.props.children);
+        const description = (
+          child.props as { "data-description"?: unknown }
+        )["data-description"];
 
         parsedOptions.push({
           value: String(child.props.value ?? label),
           label,
           disabled: Boolean(child.props.disabled),
           selected: Boolean(child.props.selected),
+          description:
+            typeof description === "string" && description.trim() !== ""
+              ? description
+              : undefined,
         });
         return;
       }
@@ -211,6 +224,10 @@ export function SelectInput({
   required = false,
   autoFocus = false,
   className = "",
+  searchable = false,
+  searchLabel = "Cari pilihan",
+  searchPlaceholder = "Ketik untuk mencari",
+  emptyLabel = "Tidak ada yang cocok.",
   onChange,
   onInvalid,
   ...props
@@ -218,13 +235,24 @@ export function SelectInput({
   name: string;
   error?: string;
   helper?: string;
+  /**
+   * Adds a filter box above the option list. Off by default, so the two
+   * registration forms already running in production keep the exact behaviour
+   * they had before this prop existed.
+   */
+  searchable?: boolean;
+  searchLabel?: string;
+  searchPlaceholder?: string;
+  emptyLabel?: string;
 }) {
   const generatedId = useId();
   const triggerId = id ?? name;
   const nativeSelectId = `${generatedId}-native`;
   const listboxId = `${generatedId}-listbox`;
+  const searchId = `${generatedId}-search`;
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
   const nativeSelectRef = useRef<HTMLSelectElement>(null);
   const optionRefs = useRef<Array<HTMLLIElement | null>>([]);
   const typeaheadValueRef = useRef("");
@@ -242,12 +270,12 @@ export function SelectInput({
   const selectedValue = controlled
     ? normalizeSelectValue(value)
     : uncontrolledValue;
-  const selectedIndex = options.findIndex(
+  const selectedOption = options.find(
     (option) => option.value === selectedValue,
   );
-  const selectedOption = selectedIndex >= 0 ? options[selectedIndex] : undefined;
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [query, setQuery] = useState("");
   const [menuPlacement, setMenuPlacement] = useState<"top" | "bottom">("bottom");
   const describedBy =
     [
@@ -258,20 +286,41 @@ export function SelectInput({
       .filter(Boolean)
       .join(" ") || undefined;
 
+  /**
+   * The list the keyboard and pointer actually operate on. With the filter off
+   * it is the whole option list, which is what keeps the existing path
+   * behaviourally identical.
+   */
+  const visibleOptions = useMemo(() => {
+    const trimmed = query.trim().toLocaleLowerCase("id-ID");
+
+    if (!searchable || trimmed === "") {
+      return options;
+    }
+
+    return options.filter((option) =>
+      option.label.toLocaleLowerCase("id-ID").includes(trimmed),
+    );
+  }, [options, query, searchable]);
+
+  const visibleSelectedIndex = visibleOptions.findIndex(
+    (option) => option.value === selectedValue,
+  );
+
   const firstEnabledIndex = useCallback(
-    () => options.findIndex((option) => !option.disabled),
-    [options],
+    () => visibleOptions.findIndex((option) => !option.disabled),
+    [visibleOptions],
   );
 
   const lastEnabledIndex = useCallback(() => {
-    for (let index = options.length - 1; index >= 0; index -= 1) {
-      if (!options[index]?.disabled) {
+    for (let index = visibleOptions.length - 1; index >= 0; index -= 1) {
+      if (!visibleOptions[index]?.disabled) {
         return index;
       }
     }
 
     return -1;
-  }, [options]);
+  }, [visibleOptions]);
 
   const updateMenuPlacement = useCallback(() => {
     const trigger = triggerRef.current;
@@ -307,12 +356,12 @@ export function SelectInput({
         return;
       }
 
-      let nextActiveIndex = selectedIndex;
+      let nextActiveIndex = visibleSelectedIndex;
 
       if (
         preference === "first" ||
         nextActiveIndex < 0 ||
-        options[nextActiveIndex]?.disabled
+        visibleOptions[nextActiveIndex]?.disabled
       ) {
         nextActiveIndex = firstEnabledIndex();
       }
@@ -329,14 +378,15 @@ export function SelectInput({
       disabled,
       firstEnabledIndex,
       lastEnabledIndex,
-      options,
-      selectedIndex,
+      visibleOptions,
+      visibleSelectedIndex,
       updateMenuPlacement,
     ],
   );
 
   const closeMenu = useCallback((restoreFocus = false) => {
     setIsOpen(false);
+    setQuery("");
 
     if (restoreFocus) {
       window.requestAnimationFrame(() => triggerRef.current?.focus());
@@ -345,7 +395,7 @@ export function SelectInput({
 
   const commitValue = useCallback(
     (optionIndex: number) => {
-      const option = options[optionIndex];
+      const option = visibleOptions[optionIndex];
 
       if (!option || option.disabled) {
         return;
@@ -374,12 +424,12 @@ export function SelectInput({
 
       closeMenu(true);
     },
-    [closeMenu, controlled, options],
+    [closeMenu, controlled, visibleOptions],
   );
 
   const moveActiveOption = useCallback(
     (direction: 1 | -1) => {
-      if (options.length === 0) {
+      if (visibleOptions.length === 0) {
         return;
       }
 
@@ -390,20 +440,27 @@ export function SelectInput({
             ? firstEnabledIndex() - 1
             : lastEnabledIndex() + 1;
 
-      for (let attempt = 0; attempt < options.length; attempt += 1) {
+      for (let attempt = 0; attempt < visibleOptions.length; attempt += 1) {
         nextIndex =
-          (nextIndex + direction + options.length) % options.length;
+          (nextIndex + direction + visibleOptions.length) %
+          visibleOptions.length;
 
-        if (!options[nextIndex]?.disabled) {
+        if (!visibleOptions[nextIndex]?.disabled) {
           setActiveIndex(nextIndex);
           return;
         }
       }
     },
-    [activeIndex, firstEnabledIndex, lastEnabledIndex, options],
+    [activeIndex, firstEnabledIndex, lastEnabledIndex, visibleOptions],
   );
 
-  function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+  /**
+   * Navigation shared by the trigger and the filter box, so both drive the same
+   * listbox with the same keys.
+   */
+  function handleNavigationKeyDown(
+    event: ReactKeyboardEvent<HTMLElement>,
+  ): boolean {
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
@@ -412,7 +469,7 @@ export function SelectInput({
         } else {
           openMenu("selected");
         }
-        return;
+        return true;
       case "ArrowUp":
         event.preventDefault();
         if (isOpen) {
@@ -420,7 +477,7 @@ export function SelectInput({
         } else {
           openMenu("last");
         }
-        return;
+        return true;
       case "Home":
         event.preventDefault();
         if (!isOpen) {
@@ -428,7 +485,7 @@ export function SelectInput({
         } else {
           setActiveIndex(firstEnabledIndex());
         }
-        return;
+        return true;
       case "End":
         event.preventDefault();
         if (!isOpen) {
@@ -436,28 +493,49 @@ export function SelectInput({
         } else {
           setActiveIndex(lastEnabledIndex());
         }
-        return;
+        return true;
       case "Enter":
-      case " ":
         event.preventDefault();
         if (isOpen && activeIndex >= 0) {
           commitValue(activeIndex);
-        } else {
+        } else if (!isOpen) {
           openMenu("selected");
         }
-        return;
+        return true;
       case "Escape":
         if (isOpen) {
           event.preventDefault();
           event.stopPropagation();
           closeMenu(true);
         }
-        return;
+        return true;
       default:
-        break;
+        return false;
+    }
+  }
+
+  function handleTriggerKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    // Space activates on the trigger. Inside the filter box it must stay an
+    // ordinary character, which is why it is handled here and not in the
+    // shared navigation.
+    if (event.key === " ") {
+      event.preventDefault();
+      if (isOpen && activeIndex >= 0) {
+        commitValue(activeIndex);
+      } else {
+        openMenu("selected");
+      }
+      return;
     }
 
+    if (handleNavigationKeyDown(event)) {
+      return;
+    }
+
+    // Jump-to-option typeahead is replaced by the filter box while search mode
+    // is on — the two must never run at the same time.
     if (
+      searchable ||
       event.key.length !== 1 ||
       event.ctrlKey ||
       event.metaKey ||
@@ -486,9 +564,9 @@ export function SelectInput({
 
     const searchStart = activeIndex >= 0 ? activeIndex + 1 : 0;
 
-    for (let offset = 0; offset < options.length; offset += 1) {
-      const optionIndex = (searchStart + offset) % options.length;
-      const option = options[optionIndex];
+    for (let offset = 0; offset < visibleOptions.length; offset += 1) {
+      const optionIndex = (searchStart + offset) % visibleOptions.length;
+      const option = visibleOptions[optionIndex];
 
       if (
         option &&
@@ -548,6 +626,14 @@ export function SelectInput({
     }
   }, [activeIndex, isOpen]);
 
+  // Focus moves into the filter box when the menu opens, so typing filters
+  // straight away instead of needing a second click.
+  useEffect(() => {
+    if (isOpen && searchable) {
+      window.requestAnimationFrame(() => searchRef.current?.focus());
+    }
+  }, [isOpen, searchable]);
+
   useEffect(() => {
     const form = nativeSelectRef.current?.form;
 
@@ -579,6 +665,11 @@ export function SelectInput({
     },
     [],
   );
+
+  const activeDescendant =
+    isOpen && activeIndex >= 0
+      ? `${listboxId}-option-${activeIndex}`
+      : undefined;
 
   return (
     <div ref={rootRef} className="relative">
@@ -617,9 +708,7 @@ export function SelectInput({
         aria-expanded={isOpen}
         aria-controls={listboxId}
         aria-activedescendant={
-          isOpen && activeIndex >= 0
-            ? `${listboxId}-option-${activeIndex}`
-            : undefined
+          searchable && isOpen ? undefined : activeDescendant
         }
         aria-required={required}
         aria-invalid={Boolean(error)}
@@ -657,60 +746,104 @@ export function SelectInput({
       </button>
 
       {isOpen ? (
-        <ul
-          id={listboxId}
-          role="listbox"
-          aria-labelledby={triggerId}
-          className={`absolute left-0 z-[100] max-h-[min(18rem,45vh)] w-full min-w-0 overflow-y-auto overscroll-contain rounded-2xl border border-slate-200 bg-white p-1.5 shadow-[0_20px_55px_rgba(15,23,42,0.18)] ${
+        <div
+          className={`absolute left-0 z-[100] w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-[0_20px_55px_rgba(15,23,42,0.18)] ${
             menuPlacement === "top"
               ? "bottom-[calc(100%+0.5rem)]"
               : "top-[calc(100%+0.5rem)]"
           }`}
         >
-          {options.map((option, optionIndex) => {
-            const selected = option.value === selectedValue;
-            const active = optionIndex === activeIndex;
+          {searchable ? (
+            <div className="p-1 pb-2">
+              <label htmlFor={searchId} className="sr-only">
+                {searchLabel}
+              </label>
+              <input
+                ref={searchRef}
+                id={searchId}
+                type="text"
+                autoComplete="off"
+                value={query}
+                placeholder={searchPlaceholder}
+                aria-controls={listboxId}
+                aria-activedescendant={activeDescendant}
+                onChange={(event) => {
+                  setQuery(event.currentTarget.value);
+                  setActiveIndex(0);
+                }}
+                onKeyDown={handleNavigationKeyDown}
+                className="min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-ink outline-none transition focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand-100"
+              />
+              <p aria-live="polite" role="status" className="sr-only">
+                {visibleOptions.length} pilihan cocok
+              </p>
+            </div>
+          ) : null}
 
-            return (
-              <li
-                ref={(node) => {
-                  optionRefs.current[optionIndex] = node;
-                }}
-                key={`${option.value}-${optionIndex}`}
-                id={`${listboxId}-option-${optionIndex}`}
-                role="option"
-                aria-selected={selected}
-                aria-disabled={option.disabled || undefined}
-                onPointerMove={() => {
-                  if (!option.disabled) {
-                    setActiveIndex(optionIndex);
-                  }
-                }}
-                onPointerDown={(event) => event.preventDefault()}
-                onClick={() => commitValue(optionIndex)}
-                className={`flex min-h-11 items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm outline-none transition ${
-                  option.disabled
-                    ? "cursor-not-allowed text-slate-400"
-                    : "cursor-pointer text-ink"
-                } ${
-                  active
-                    ? "bg-brand-50 text-brand-900"
-                    : selected
-                      ? "bg-slate-50"
-                      : "hover:bg-slate-50"
-                }`}
-              >
-                <span className="min-w-0 flex-1">{option.label}</span>
-                {selected ? (
-                  <Check
-                    className="h-4 w-4 shrink-0 text-brand"
-                    aria-hidden="true"
-                  />
-                ) : null}
+          <ul
+            id={listboxId}
+            role="listbox"
+            aria-labelledby={triggerId}
+            className="max-h-[min(18rem,45vh)] overflow-y-auto overscroll-contain"
+          >
+            {visibleOptions.length === 0 ? (
+              <li className="px-3 py-4 text-center text-sm text-slate-500">
+                {emptyLabel}
               </li>
-            );
-          })}
-        </ul>
+            ) : (
+              visibleOptions.map((option, optionIndex) => {
+                const selected = option.value === selectedValue;
+                const active = optionIndex === activeIndex;
+
+                return (
+                  <li
+                    ref={(node) => {
+                      optionRefs.current[optionIndex] = node;
+                    }}
+                    key={`${option.value}-${optionIndex}`}
+                    id={`${listboxId}-option-${optionIndex}`}
+                    role="option"
+                    aria-selected={selected}
+                    aria-disabled={option.disabled || undefined}
+                    onPointerMove={() => {
+                      if (!option.disabled) {
+                        setActiveIndex(optionIndex);
+                      }
+                    }}
+                    onPointerDown={(event) => event.preventDefault()}
+                    onClick={() => commitValue(optionIndex)}
+                    className={`flex min-h-11 items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm outline-none transition ${
+                      option.disabled
+                        ? "cursor-not-allowed text-slate-400"
+                        : "cursor-pointer text-ink"
+                    } ${
+                      active
+                        ? "bg-brand-50 text-brand-900"
+                        : selected
+                          ? "bg-slate-50"
+                          : "hover:bg-slate-50"
+                    }`}
+                  >
+                    <span className="min-w-0 flex-1">
+                      <span className="block">{option.label}</span>
+                      {option.description ? (
+                        <span className="mt-0.5 block truncate text-xs text-slate-500">
+                          {option.description}
+                        </span>
+                      ) : null}
+                    </span>
+                    {selected ? (
+                      <Check
+                        className="h-4 w-4 shrink-0 text-brand"
+                        aria-hidden="true"
+                      />
+                    ) : null}
+                  </li>
+                );
+              })
+            )}
+          </ul>
+        </div>
       ) : null}
     </div>
   );

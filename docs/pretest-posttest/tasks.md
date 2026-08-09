@@ -260,48 +260,89 @@ Logikanya terpasang dan menolak di dua lapis; buktinya menyusul di checklist blo
 
 ---
 
-## Blok 5 — Peserta: gerbang dan pilih nama
+## Blok 5 — Peserta: gerbang, pilih nama, dan pengerjaan
 
-Ekstensi `SelectInput` ikut blok ini, bukan blok tersendiri: sebagai blok terpisah, prop
-barunya tidak punya konsumen yang bisa dilihat di layar mana pun. Di sini satu blok menguji
-dua sisinya sekaligus — combobox baru hidup di `/tes/pre-test`, dan dua form pendaftaran
-produksi wajib berperilaku persis sama.
+Batas blok digeser atas keputusan user: gerbang dan pilih nama saja akan berakhir di tombol
+"Mulai mengerjakan" yang tidak punya layar tujuan — persis jenis tombol mati yang dilarang
+aturan blok. Jadi blok ini berjalan sampai peserta betul-betul bisa mengerjakan dan
+menyelesaikan tes. Timer, peta soal, dialog, dan penanganan kedaluwarsa yang rumit tetap di
+blok 6-7.
 
-- [ ] Route `/tes/[phase]`; phase tak dikenal → `notFound()`
-- [ ] `getAssessmentState` — kirim `is_open`, `duration_seconds`, `has_ever_opened`.
-      `has_ever_opened` diturunkan dari `opened_at is not null`; **jangan kirim timestamp
-      mentah**
-- [ ] `listParticipants` — filter status §4.1 (`rejected` dan `withdrawn` dikecualikan)
-      ditulis sebagai **satu konstanta di satu tempat**, bukan disebar di beberapa query.
-      Payload hanya `id`, `full_name`, dan satu label pembeda
-- [ ] Gerbang "belum pernah dibuka": tanpa dropdown, tanpa tombol
-- [ ] Gerbang "sudah ditutup": **dropdown dan tombol Mulai tetap ditampilkan**, dengan
-      bingkai berbeda dan pesan bahwa yang sudah mulai boleh melanjutkan
-- [ ] Polling 15 detik di layar gerbang, **berhenti saat `document.hidden`**, jalan sekali
-      lagi saat tab kembali terlihat
-- [ ] Ekstend `SelectInput` di `src/components/registration/form-components.tsx` lewat prop
-      baru yang defaultnya mempertahankan perilaku lama: input teks pemfilter di atas daftar,
-      `role="combobox"` dengan `aria-expanded` dan `aria-controls`, pengumuman jumlah hasil
-      lewat live region, state "tidak ada nama yang cocok"
-- [ ] Typeahead lompat-ke-opsi dimatikan selama mode pencarian aktif — dua mekanisme itu
-      tidak boleh berjalan bersamaan
-- [ ] Tiap baris: nama sebagai teks utama, institusi atau nama usaha sebagai teks sekunder
-      yang lebih kecil dan redup. Tidak punya keduanya → baris sekunder dihilangkan, bukan
-      diisi tanda strip
-- [ ] State layar pilih nama: memuat (skeleton setinggi combobox), kosong, gagal memuat
-      dengan tombol coba lagi, nama terpilih, sedang memulai
-- [ ] Nama terakhir disimpan di `localStorage` — kenyamanan saja, bukan penyimpan jawaban
-- [ ] Cabang `/tes` di `src/components/layout/chrome-gate.tsx`: tanpa `SiteHeader`,
-      `SiteFooter`, dan `MobileBottomNavigation`
-- [ ] `src/app/robots.ts` + `src/app/sitemap.ts` + `noindex` diubah **bersamaan** — aturan
-      route tak terdaftar di CLAUDE.md
+Ekstensi `SelectInput` juga ikut di sini, bukan blok tersendiri: sebagai blok terpisah, prop
+barunya tidak punya konsumen yang bisa dilihat di layar mana pun.
 
-**Dinilai di browser:** tutup pre-test dari admin pada database yang `opened_at`-nya masih
-null → `/tes/pre-test` menampilkan "Pre-test belum dibuka" tanpa dropdown. Buka → dropdown
-muncul dan memfilter saat diketik. Tutup lagi → dropdown **tetap ada** dengan pesan sudah
-ditutup. Lalu buka `/ai-co-creation-lab-makassar/register/student` dan `/umkm`: kedua form
-berperilaku persis sama seperti sebelumnya, termasuk navigasi panah, Home/End, Escape,
-penempatan menu, dan nilai yang terkirim (§8.14).
+- [x] Route `/tes/[phase]`; phase tak dikenal → `notFound()`
+- [x] `getAssessmentState` — kirim `is_open`, `duration_seconds`, `has_ever_opened`, dan
+      jumlah soal. `has_ever_opened` diturunkan dari `opened_at is not null`; timestamp
+      mentah tidak pernah dikirim
+- [x] `listParticipants` — filter status §4.1 memakai konstanta yang sama dengan hitungan
+      peserta di halaman admin. Query hanya memilih empat kolom, jadi kolom lain tidak bisa
+      bocor belakangan tanpa mengubah query
+- [x] Gerbang "belum pernah dibuka": tanpa dropdown, tanpa tombol, **dan tanpa daftar nama
+      dikirim ke client sama sekali**
+- [x] Gerbang "sudah ditutup": dropdown dan tombol Mulai tetap ditampilkan, dengan bingkai
+      amber dan pesan bahwa yang sudah mulai boleh melanjutkan
+- [x] Polling 15 detik di layar gerbang, berhenti saat `document.hidden`, jalan sekali lagi
+      saat tab kembali terlihat
+- [x] Ekstend `SelectInput` lewat prop `searchable` yang defaultnya mati: kotak pemfilter di
+      atas daftar, live region jumlah hasil, state "tidak ada nama yang cocok", fokus pindah
+      ke kotak pemfilter saat menu terbuka
+- [x] Typeahead lompat-ke-opsi dimatikan selama mode pencarian aktif
+- [x] Baris opsi mendukung teks sekunder lewat `data-description` pada `<option>`; peserta
+      tanpa institusi maupun nama usaha tidak mendapat baris kedua, bukan tanda strip
+- [x] Nama terakhir diingat lewat `localStorage`, dibaca dengan `useSyncExternalStore`
+      supaya render server punya snapshot dan tidak ada efek yang menulis state saat mount
+- [x] `startOrResumeAttempt` lewat fungsi database; aplikasi tidak pernah `insert` langsung
+      ke `assessment_attempts`
+- [x] Payload soal peserta hanya `id`, `prompt`, serta `id` dan `body` opsi. `is_correct`
+      tidak ikut karena query-nya memang tidak memilih kolom itu — bukan karena disaring
+- [x] Urutan soal mengikuti `question_order` attempt; tidak pernah diacak ulang di client
+- [x] `saveAnswer` dipanggil imperatif dari event handler, optimistis, dengan satu retry
+      otomatis dan indikator kecil "Tersimpan / Menyimpan… / Belum tersimpan"
+- [x] Penolakan karena kedaluwarsa diperlakukan sebagai submit, bukan galat yang ditampilkan
+- [x] `submitAttempt` idempoten lewat RPC. **Nilai tidak pernah dikembalikan ke client di
+      blok ini**, untuk kedua phase — cara paling pasti menjaga skor pre-test keluar dari
+      respons jaringan adalah tidak pernah memasukkannya
+- [x] Layar selesai tanpa satu angka pun
+- [x] Cabang `/tes` di `chrome-gate.tsx`: tanpa `SiteHeader`, `SiteFooter`, dan
+      `MobileBottomNavigation`
+- [x] `robots.ts` + `sitemap.ts` + `noindex` diubah bersamaan
+
+**Sudah terverifikasi:**
+
+- [x] `robots.txt` memuat `Disallow: /tes`; `sitemap.xml` nol kemunculan; halaman `noindex`
+- [x] `/tes/post-test` yang belum pernah dibuka menampilkan "Post-test belum dibuka" tanpa
+      dropdown, dan HTML-nya mengandung **nol** opsi peserta dan nol nama
+- [x] `/tes/pre-test` yang terbuka menampilkan "2 soal · 20 menit", combobox, dan tombol
+      "Mulai mengerjakan" yang nonaktif sampai nama dipilih
+- [x] **Privasi payload (§4.9):** HTML layar pilih nama memuat tepat 5 opsi peserta dan nol
+      kemunculan email, `whatsapp`, `metadata`, `submission_code`, `ip_hash`, `is_correct`
+- [x] Tanpa header, footer, dan bottom nav di seluruh `/tes/*`
+- [x] Regresi struktural form pendaftaran: student merender 2 `SelectInput`, UMKM 3,
+      seluruhnya masih trigger combobox + `<select>` native, dan **nol** kotak pencarian —
+      prop `searchable` benar-benar default mati
+- [x] `npm run lint`, `npm run typecheck`, `npm run build` — ketiganya lolos
+
+**Belum terverifikasi — butuh interaksi di browser sungguhan.** Panel Browser di sesi ini
+tidak merender (`document.visibilityState` tetap `hidden`, seluruh `getBoundingClientRect`
+nol), dan Next.js menolak Server Action yang disubmit lewat JS karena `origin` bernilai null.
+Jadi jalur berikut belum dibuktikan dan **tidak boleh dianggap selesai**:
+
+- [ ] Mengetik di combobox memfilter daftar, live region mengumumkan jumlah hasil
+- [ ] Pilih nama → Mulai mengerjakan → layar pengerjaan muncul dengan soal pertama
+- [ ] Pilih jawaban → indikator "Tersimpan"; muat ulang halaman → jawaban masih terpilih
+- [ ] Maju-mundur antar soal; `?soal=N` berubah dan tombol Kembali browser bekerja wajar
+- [ ] Selesaikan → layar selesai, dan **tidak ada angka di layar maupun di payload jaringan**
+- [ ] Tutup pre-test dari admin → dropdown tetap ada; peserta yang sudah mulai bisa
+      melanjutkan, peserta lain ditolak dengan "Tes sudah ditutup dan kamu belum mulai
+      mengerjakan."
+- [ ] Regresi perilaku form pendaftaran: navigasi panah, Home/End, Escape, typeahead
+      lompat-ke-opsi, penempatan menu atas/bawah, dan nilai yang terkirim (§8.14)
+
+**Catatan:** submit post-test untuk sementara mendarat di layar "jawaban tersimpan" yang sama
+seperti pre-test, bukan halaman hasil. Halaman hasil beserta perbandingan nilai adalah blok 8.
+Tidak ada jalur rusak, hanya layar yang belum sekaya rancangan akhirnya — dan tidak ada angka
+yang bocor ke mana pun.
 
 ---
 
