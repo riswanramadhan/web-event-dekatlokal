@@ -11,6 +11,8 @@ import {
 } from "@/lib/assessment/overview";
 import { ASSESSMENT_PHASE_LABELS } from "@/lib/assessment/phase";
 
+import { AssessmentPhaseControls } from "./assessment-controls";
+
 export const metadata: Metadata = {
   title: "Pre-test & Post-test",
   robots: { index: false, follow: false },
@@ -33,17 +35,6 @@ function formatDateTime(value: string): string {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
-}
-
-function formatDuration(seconds: number): string {
-  const minutes = Math.floor(seconds / 60);
-  const remainder = seconds % 60;
-
-  if (remainder === 0) {
-    return `${minutes} menit`;
-  }
-
-  return `${minutes} menit ${remainder} detik`;
 }
 
 function PhaseStatusBadge({ status }: { status: AssessmentPhaseStatus }) {
@@ -72,9 +63,11 @@ function phaseTimestampLine(phase: AssessmentPhaseOverview): string | null {
 function PhaseCard({
   phase,
   participantCount,
+  problems,
 }: {
   phase: AssessmentPhaseOverview;
   participantCount: number;
+  problems: string[];
 }) {
   const timestampLine = phaseTimestampLine(phase);
 
@@ -92,27 +85,25 @@ function PhaseCard({
         <PhaseStatusBadge status={phase.status} />
       </div>
 
-      <dl className="mt-5 grid gap-4 sm:grid-cols-2">
-        <div>
-          <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
-            Durasi per peserta
-          </dt>
-          <dd className="mt-1 font-mono text-lg font-semibold text-ink">
-            {formatDuration(phase.durationSeconds)}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
-            Sudah selesai
-          </dt>
-          <dd className="mt-1 font-mono text-lg font-semibold text-ink">
-            {phase.submittedCount}
-            <span className="ml-1 font-sans text-sm font-normal text-slate-500">
-              dari {participantCount} peserta
-            </span>
-          </dd>
-        </div>
+      <dl className="mt-5">
+        <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
+          Sudah selesai
+        </dt>
+        <dd className="mt-1 font-mono text-lg font-semibold text-ink">
+          {phase.submittedCount}
+          <span className="ml-1 font-sans text-sm font-normal text-slate-500">
+            dari {participantCount} peserta
+          </span>
+        </dd>
       </dl>
+
+      <AssessmentPhaseControls
+        phase={phase.phase}
+        label={ASSESSMENT_PHASE_LABELS[phase.phase]}
+        isOpen={phase.status === "open"}
+        durationSeconds={phase.durationSeconds}
+        problems={problems}
+      />
     </Card>
   );
 }
@@ -172,6 +163,7 @@ export default async function AssessmentOverviewPage() {
             key={phase.phase}
             phase={phase}
             participantCount={participantCount}
+            problems={problems}
           />
         ))}
       </div>

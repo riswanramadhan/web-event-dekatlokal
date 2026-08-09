@@ -90,24 +90,54 @@ terbuka. Tidak ada cara membuka tes sampai blok 2 ada, jadi buktinya menyusul di
 
 ## Blok 2 — Kontrol buka/tutup dan durasi
 
-- [ ] Tambahkan sembilan action baru ke union `AdminAuditAction` di `src/lib/admin/auth.ts`
+- [x] Tambahkan sembilan action baru ke union `AdminAuditAction` di `src/lib/admin/auth.ts`
       (`open_assessment`, `close_assessment`, `update_assessment_duration`,
       `create_question`, `update_question`, `delete_question`, `reorder_questions`,
       `finalize_assessment`, `reset_assessment`). CHECK-nya sudah ada di migrasi; tanpa
       langkah ini insert audit gagal
-- [ ] `setAssessmentOpen()` — tolak membuka bila `assessment_problems` tidak kosong; isi
-      `opened_at` **hanya bila masih null**; selalu perbarui `closed_at` saat menutup
-- [ ] `setAssessmentDuration()` — rentang 60–14400 detik, divalidasi Zod di server
-- [ ] Saklar per phase mengikuti pola `src/components/admin/registration-toggle.tsx`
+- [x] `setAssessmentOpen()` — tolak membuka bila `assessment_problems` tidak kosong; isi
+      `opened_at` **hanya bila masih null**; selalu perbarui `closed_at` saat menutup.
+      Stempel `opened_at` dijalankan sebagai statement terpisah berfilter `is null`, supaya
+      dua admin yang membuka bersamaan tidak sama-sama menyimpulkan kolomnya masih null
+- [x] `setAssessmentDuration()` — rentang 60–14400 detik, divalidasi Zod di server
+- [x] Saklar per phase mengikuti pola `src/components/admin/registration-toggle.tsx`
       (`useActionState` + Server Action, `role="switch"`, pending dari `useFormStatus`)
-- [ ] Input durasi dalam menit, memakai `<input>`/`<select>` native seperti kontrol admin
+- [x] Input durasi dalam menit, memakai `<input type="number">` native seperti kontrol admin
       lain — bukan `SelectInput` yang khusus form publik
-- [ ] Saklar nonaktif menampilkan **daftar masalahnya**, bukan sekadar menolak
-- [ ] Catat aksi ke `admin_audit_log` lewat `recordAuditEvent()`
+- [x] Saklar nonaktif menampilkan **alasan konkretnya**, bukan sekadar menolak. Hanya arah
+      "buka" yang dikunci; tes yang sudah terbuka selalu bisa ditutup
+- [x] Pemeriksaan kesiapan diulang di sisi server saat menulis, bukan hanya di UI. Database
+      tidak menjaga aturan ini — `start_assessment_attempt()` cuma menolak saat soal kosong
+      sama sekali, jadi tidak ada penjaga lain untuk soal tanpa kunci jawaban
+- [x] Kedua action memakai kontrak hasil bersama `RegistrationActionState`, dengan daftar
+      masalah dibawa di `formErrors`. Tidak ada tipe state baru
+- [x] Catat aksi ke `admin_audit_log` lewat `recordAuditEvent()`
 
-**Dinilai di browser:** saklar tetap nonaktif selama belum ada soal, dengan alasan yang
-terbaca. Ubah durasi, refresh, nilainya bertahan. Kartu berpindah antara tiga status dengan
-benar setelah dibuka lalu ditutup.
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Saklar kedua phase nonaktif selama belum ada soal, dengan alasan konkret di kartunya:
+      "Tes belum bisa dibuka. Belum ada soal sama sekali untuk event ini."
+- [x] Durasi pre-test diubah 15 → 20 menit, tersimpan, dan **bertahan setelah muat ulang**.
+      Post-test tetap 15, jadi update hanya mengenai phase yang diminta
+- [x] Penjagaan sisi server terbukti: atribut `disabled` dilepas dari saklar (simulasi
+      halaman basi) lalu diklik → Server Action menolak dengan "Tes belum bisa dibuka karena
+      soal belum siap." beserta daftar masalahnya, dan phase tetap tertutup
+- [x] Tanpa scroll horizontal di 360 px; saklar 44×24 px, tombol Simpan 87×40 px
+- [x] `npm run lint`, `npm run typecheck`, `npm run build` — ketiganya lolos
+
+**Belum terverifikasi, butuh akses database:** apakah baris `admin_audit_log` benar-benar
+masuk. `recordAuditEvent()` sengaja best-effort dan membuang galatnya, jadi kalau CHECK di
+database demo ternyata belum memuat sembilan action baru, insert-nya gagal tanpa jejak di
+layar. Query pemeriksanya ada di catatan blok ini.
+
+Perpindahan kartu antar tiga status baru bisa dinilai setelah tes benar-benar bisa dibuka,
+yaitu setelah blok 3 menyediakan soal. Dicatat di checklist blok 3.
+
+Catatan: `admin_audit_log` tidak punya kolom untuk phase (hanya `actor_email`, `action`,
+`target_email`, `created_at`), jadi log mencatat `open_assessment` tanpa keterangan pre-test
+atau post-test. `target_email` sengaja dibiarkan null — mengisinya dengan `"pre_test"` akan
+membuat nama kolomnya berbohong. Diterima apa adanya atas keputusan user, tanpa perubahan
+skema.
 
 ---
 
@@ -129,6 +159,13 @@ benar setelah dibuka lalu ditutup.
 **Dinilai di browser:** buat 10 soal lengkap dengan opsi dan kunci jawaban, refresh, semuanya
 utuh dan urutannya konsisten. `/admin/assessment` ikut berubah karena daftar masalahnya
 menyusut — memenuhi §8.2.
+
+Tertunda dari blok 2, dinilai di sini karena baru sekarang tesnya bisa dibuka:
+
+- [ ] Saklar aktif setelah soal siap; membuka lalu menutup memindahkan kartu melewati ketiga
+      status (belum pernah dibuka → sedang terbuka → sudah ditutup) dengan tampilan berbeda
+- [ ] `opened_at` hanya terisi sekali: buka, tutup, buka lagi — kartu tidak pernah kembali ke
+      "Belum pernah dibuka"
 
 ---
 
