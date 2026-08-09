@@ -24,8 +24,11 @@ export const optionBodySchema = z
   .min(1, "Opsi jawaban tidak boleh kosong.")
   .max(500, "Opsi jawaban maksimal 500 karakter.");
 
+export const FROZEN_MESSAGE =
+  "Soal terkunci karena sudah ada peserta yang mengerjakan tes. Reset data pengerjaan dulu kalau memang perlu diubah.";
+
 export type QuestionsReadResult =
-  | { ok: true; questions: AssessmentQuestionRow[] }
+  | { ok: true; questions: AssessmentQuestionRow[]; frozen: boolean }
   | { ok: false; message: string };
 
 export type QuestionsWriteResult =
@@ -34,6 +37,52 @@ export type QuestionsWriteResult =
 
 const idSchema = z.string().uuid();
 
+const orderableRowSchema = z.object({
+  id: z.string().uuid(),
+  prompt: z.string(),
+  order_index: z.number().int().min(0),
+});
+
+/**
+ * True as soon as one attempt exists for this event, matching the database
+ * triggers that lock `assessment_questions` and `assessment_options`.
+ *
+ * Fails **closed**: when the count cannot be read, the answer is "frozen". The
+ * app is supposed to get here before the trigger does, so a wrong guess in the
+ * permissive direction would mean rendering enabled controls that blow up on
+ * click — exactly what the freeze rule exists to prevent.
+ */
+async function isFrozen(
+  supabase: SupabaseClient,
+  eventId: string,
+): Promise<boolean> {
+  const { count, error } = await supabase
+    .from("assessment_attempts")
+    .select("id", { count: "exact", head: true })
+    .eq("event_id", eventId);
+
+  if (error) {
+    logAssessmentFailure("count_attempts", error);
+    return true;
+  }
+
+  return (count ?? 0) > 0;
+}
+
+/**
+ * Guard shared by every write below, so the rule holds no matter which action
+ * is reached. The triggers remain the safety net; this is the UX layer that is
+ * supposed to arrive first.
+ */
+async function refuseWhenFrozen(
+  supabase: SupabaseClient,
+  eventId: string,
+): Promise<{ ok: false; message: string } | null> {
+  return (await isFrozen(supabase, eventId))
+    ? { ok: false, message: FROZEN_MESSAGE }
+    : null;
+}
+
 export async function listQuestions(): Promise<QuestionsReadResult> {
   const target = await resolveAssessmentTarget();
 
@@ -41,31 +90,34 @@ export async function listQuestions(): Promise<QuestionsReadResult> {
     return target;
   }
 
-  const { data, error } = await target.supabase
-    .from("assessment_questions")
-    .select(
-      "id, prompt, order_index, points, assessment_options(id, body, order_index, is_correct)",
-    )
-    .eq("event_id", target.eventId)
-    .order("order_index", { ascending: true })
-    .order("order_index", {
-      ascending: true,
-      referencedTable: "assessment_options",
-    });
+  const [listResult, frozen] = await Promise.all([
+    target.supabase
+      .from("assessment_questions")
+      .select(
+        "id, prompt, order_index, points, assessment_options(id, body, order_index, is_correct)",
+      )
+      .eq("event_id", target.eventId)
+      .order("order_index", { ascending: true })
+      .order("order_index", {
+        ascending: true,
+        referencedTable: "assessment_options",
+      }),
+    isFrozen(target.supabase, target.eventId),
+  ]);
 
-  if (error) {
-    logAssessmentFailure("list_questions", error);
-    return { ok: false, message: translateAssessmentError(error) };
+  if (listResult.error) {
+    logAssessmentFailure("list_questions", listResult.error);
+    return { ok: false, message: translateAssessmentError(listResult.error) };
   }
 
-  const parsed = assessmentQuestionRowsSchema.safeParse(data ?? []);
+  const parsed = assessmentQuestionRowsSchema.safeParse(listResult.data ?? []);
 
   if (!parsed.success) {
     logAssessmentFailure("list_questions_shape", { code: "INVALID_SHAPE" });
     return { ok: false, message: translateAssessmentError(null) };
   }
 
-  return { ok: true, questions: parsed.data };
+  return { ok: true, questions: parsed.data, frozen };
 }
 
 /**
@@ -97,7 +149,9 @@ async function nextOrderIndex(
     return 0;
   }
 
-  const parsed = z.object({ order_index: z.number().int().min(0) }).safeParse(data);
+  const parsed = z
+    .object({ order_index: z.number().int().min(0) })
+    .safeParse(data);
 
   if (!parsed.success) {
     logAssessmentFailure(`next_order_index_${table}_shape`, {
@@ -116,6 +170,12 @@ export async function createQuestion(
 
   if (!target.ok) {
     return target;
+  }
+
+  const frozen = await refuseWhenFrozen(target.supabase, target.eventId);
+
+  if (frozen) {
+    return frozen;
   }
 
   const orderIndex = await nextOrderIndex(
@@ -153,6 +213,12 @@ export async function updateQuestion(
     return target;
   }
 
+  const frozen = await refuseWhenFrozen(target.supabase, target.eventId);
+
+  if (frozen) {
+    return frozen;
+  }
+
   // Scoped by event_id as well as id: an id from another event must not be
   // editable through this panel even if it is guessed.
   const { data, error } = await target.supabase
@@ -184,6 +250,12 @@ export async function deleteQuestion(
     return target;
   }
 
+  const frozen = await refuseWhenFrozen(target.supabase, target.eventId);
+
+  if (frozen) {
+    return frozen;
+  }
+
   const { data, error } = await target.supabase
     .from("assessment_questions")
     .delete()
@@ -199,6 +271,103 @@ export async function deleteQuestion(
 
   if (data === null) {
     return { ok: false, message: "Soal tidak ditemukan." };
+  }
+
+  return { ok: true };
+}
+
+/**
+ * Moves one question up or down by swapping `order_index` with its neighbour.
+ *
+ * `assessment_questions_event_order_key` is `deferrable initially deferred`, so
+ * the two rows may hold the same index momentarily as long as the swap commits
+ * together. That makes atomicity the whole point — and PostgREST cannot send
+ * two different UPDATE statements in one transaction. The upsert below is one
+ * request, therefore one transaction, and its conflict target is the primary
+ * key rather than the deferrable constraint that Postgres would refuse.
+ *
+ * The cost is that `prompt` is written back with the value read a moment
+ * earlier, so an administrator saving new text in that same instant would lose
+ * it. `points` is left out of the payload and keeps its stored value.
+ */
+export async function moveQuestion(
+  questionId: string,
+  direction: "up" | "down",
+): Promise<QuestionsWriteResult> {
+  const target = await resolveAssessmentTarget();
+
+  if (!target.ok) {
+    return target;
+  }
+
+  const frozen = await refuseWhenFrozen(target.supabase, target.eventId);
+
+  if (frozen) {
+    return frozen;
+  }
+
+  const { data, error } = await target.supabase
+    .from("assessment_questions")
+    .select("id, prompt, order_index")
+    .eq("event_id", target.eventId)
+    .order("order_index", { ascending: true });
+
+  if (error) {
+    logAssessmentFailure("reorder_read", error);
+    return { ok: false, message: translateAssessmentError(error) };
+  }
+
+  const parsed = z.array(orderableRowSchema).safeParse(data ?? []);
+
+  if (!parsed.success) {
+    logAssessmentFailure("reorder_read_shape", { code: "INVALID_SHAPE" });
+    return { ok: false, message: translateAssessmentError(null) };
+  }
+
+  const questions = parsed.data;
+  const position = questions.findIndex((row) => row.id === questionId);
+
+  if (position < 0) {
+    return { ok: false, message: "Soal tidak ditemukan." };
+  }
+
+  const neighbourPosition = direction === "up" ? position - 1 : position + 1;
+  const current = questions[position];
+  const neighbour = questions[neighbourPosition];
+
+  if (!current || !neighbour) {
+    return {
+      ok: false,
+      message:
+        direction === "up"
+          ? "Soal ini sudah paling atas."
+          : "Soal ini sudah paling bawah.",
+    };
+  }
+
+  const { error: swapError } = await target.supabase
+    .from("assessment_questions")
+    .upsert(
+      [
+        {
+          id: current.id,
+          event_id: target.eventId,
+          prompt: current.prompt,
+          order_index: neighbour.order_index,
+        },
+        {
+          id: neighbour.id,
+          event_id: target.eventId,
+          prompt: neighbour.prompt,
+          order_index: current.order_index,
+        },
+      ],
+      { onConflict: "id" },
+    );
+
+  if (swapError) {
+    logAssessmentFailure("reorder_swap", swapError);
+    return { ok: false, message: translateAssessmentError(swapError) };
   }
 
   return { ok: true };
@@ -229,14 +398,23 @@ async function assertQuestionInEvent(
   return idSchema.safeParse((data as { id?: unknown } | null)?.id).success;
 }
 
-export async function createOption(
+/** Shared preamble for the three option writes and the answer key. */
+async function prepareOptionWrite(
   questionId: string,
-  body: string,
-): Promise<QuestionsWriteResult> {
+): Promise<
+  | { ok: true; supabase: SupabaseClient; eventId: string }
+  | { ok: false; message: string }
+> {
   const target = await resolveAssessmentTarget();
 
   if (!target.ok) {
     return target;
+  }
+
+  const frozen = await refuseWhenFrozen(target.supabase, target.eventId);
+
+  if (frozen) {
+    return frozen;
   }
 
   if (
@@ -245,8 +423,21 @@ export async function createOption(
     return { ok: false, message: "Soal tidak ditemukan." };
   }
 
+  return { ok: true, supabase: target.supabase, eventId: target.eventId };
+}
+
+export async function createOption(
+  questionId: string,
+  body: string,
+): Promise<QuestionsWriteResult> {
+  const prepared = await prepareOptionWrite(questionId);
+
+  if (!prepared.ok) {
+    return prepared;
+  }
+
   const orderIndex = await nextOrderIndex(
-    target.supabase,
+    prepared.supabase,
     "assessment_options",
     "question_id",
     questionId,
@@ -256,7 +447,7 @@ export async function createOption(
     return { ok: false, message: translateAssessmentError(null) };
   }
 
-  const { error } = await target.supabase.from("assessment_options").insert({
+  const { error } = await prepared.supabase.from("assessment_options").insert({
     question_id: questionId,
     body,
     order_index: orderIndex,
@@ -275,19 +466,13 @@ export async function updateOption(
   optionId: string,
   body: string,
 ): Promise<QuestionsWriteResult> {
-  const target = await resolveAssessmentTarget();
+  const prepared = await prepareOptionWrite(questionId);
 
-  if (!target.ok) {
-    return target;
+  if (!prepared.ok) {
+    return prepared;
   }
 
-  if (
-    !(await assertQuestionInEvent(target.supabase, target.eventId, questionId))
-  ) {
-    return { ok: false, message: "Soal tidak ditemukan." };
-  }
-
-  const { data, error } = await target.supabase
+  const { data, error } = await prepared.supabase
     .from("assessment_options")
     .update({ body })
     .eq("id", optionId)
@@ -311,19 +496,13 @@ export async function deleteOption(
   questionId: string,
   optionId: string,
 ): Promise<QuestionsWriteResult> {
-  const target = await resolveAssessmentTarget();
+  const prepared = await prepareOptionWrite(questionId);
 
-  if (!target.ok) {
-    return target;
+  if (!prepared.ok) {
+    return prepared;
   }
 
-  if (
-    !(await assertQuestionInEvent(target.supabase, target.eventId, questionId))
-  ) {
-    return { ok: false, message: "Soal tidak ditemukan." };
-  }
-
-  const { data, error } = await target.supabase
+  const { data, error } = await prepared.supabase
     .from("assessment_options")
     .delete()
     .eq("id", optionId)
@@ -358,19 +537,13 @@ export async function setCorrectOption(
   questionId: string,
   optionId: string,
 ): Promise<QuestionsWriteResult> {
-  const target = await resolveAssessmentTarget();
+  const prepared = await prepareOptionWrite(questionId);
 
-  if (!target.ok) {
-    return target;
+  if (!prepared.ok) {
+    return prepared;
   }
 
-  if (
-    !(await assertQuestionInEvent(target.supabase, target.eventId, questionId))
-  ) {
-    return { ok: false, message: "Soal tidak ditemukan." };
-  }
-
-  const cleared = await target.supabase
+  const cleared = await prepared.supabase
     .from("assessment_options")
     .update({ is_correct: false })
     .eq("question_id", questionId)
@@ -381,7 +554,7 @@ export async function setCorrectOption(
     return { ok: false, message: translateAssessmentError(cleared.error) };
   }
 
-  const { data, error } = await target.supabase
+  const { data, error } = await prepared.supabase
     .from("assessment_options")
     .update({ is_correct: true })
     .eq("id", optionId)

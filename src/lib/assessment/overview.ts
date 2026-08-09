@@ -32,6 +32,8 @@ export type AssessmentOverview = {
   /** Empty means the questions are ready and the test may be opened. */
   problems: string[];
   phases: AssessmentPhaseOverview[];
+  /** True once any attempt exists: the questions are locked by the triggers. */
+  frozen: boolean;
 };
 
 export type AssessmentOverviewResult =
@@ -117,8 +119,13 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
     return { status: "error", message: translateAssessmentError(ensureError) };
   }
 
-  const [settingsResult, problemsResult, participantsResult, submittedResults] =
-    await Promise.all([
+  const [
+    settingsResult,
+    problemsResult,
+    participantsResult,
+    attemptsResult,
+    submittedResults,
+  ] = await Promise.all([
       supabase
         .from("assessment_settings")
         .select("phase, is_open, duration_seconds, opened_at, closed_at")
@@ -129,6 +136,10 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
         .select("id", { count: "exact", head: true })
         .eq("event_id", event.eventId)
         .not("status", "in", PARTICIPANT_STATUS_EXCLUSION),
+      supabase
+        .from("assessment_attempts")
+        .select("id", { count: "exact", head: true })
+        .eq("event_id", event.eventId),
       // Counted per phase with head-only queries rather than by fetching the
       // attempts and measuring the array, matching how the registrant totals
       // are counted on /admin.
@@ -165,6 +176,7 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
   // outcome: a wrong number here is read as fact.
   const failedCount =
     participantsResult.error ??
+    attemptsResult.error ??
     submittedResults.find((result) => result.error)?.error;
 
   if (failedCount) {
@@ -213,6 +225,7 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
       participantCount: participantsResult.count ?? 0,
       problems: problems.data,
       phases,
+      frozen: (attemptsResult.count ?? 0) > 0,
     },
   };
 }

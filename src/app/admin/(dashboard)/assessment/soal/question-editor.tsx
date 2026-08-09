@@ -1,6 +1,13 @@
 "use client";
 
-import { Check, NavArrowDown, Plus, Trash } from "iconoir-react";
+import {
+  Check,
+  NavArrowDown,
+  NavArrowUp,
+  Plus,
+  Trash,
+  WarningTriangle,
+} from "iconoir-react";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
@@ -13,13 +20,14 @@ import {
   createQuestionAction,
   deleteOptionAction,
   deleteQuestionAction,
+  moveQuestionAction,
   setCorrectOptionAction,
   updateOptionAction,
   updateQuestionAction,
 } from "./actions";
 
 const textControlClass =
-  "min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-ink outline-none transition placeholder:text-slate-400 focus:border-brand focus:ring-4 focus:ring-brand-100";
+  "min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-ink outline-none transition placeholder:text-slate-400 focus:border-brand focus:ring-4 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500";
 
 const primaryButtonClass =
   "inline-flex min-h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:cursor-not-allowed disabled:bg-slate-400";
@@ -30,18 +38,20 @@ const quietButtonClass =
 function SubmitButton({
   label,
   pendingLabel,
+  disabled = false,
   className = primaryButtonClass,
   icon,
 }: {
   label: string;
   pendingLabel: string;
+  disabled?: boolean;
   className?: string;
   icon?: React.ReactNode;
 }) {
   const { pending } = useFormStatus();
 
   return (
-    <button type="submit" disabled={pending} className={className}>
+    <button type="submit" disabled={pending || disabled} className={className}>
       {pending ? null : icon}
       {pending ? pendingLabel : label}
     </button>
@@ -51,16 +61,18 @@ function SubmitButton({
 function ConfirmingDeleteButton({
   confirmText,
   label,
+  disabled = false,
 }: {
   confirmText: string;
   label: string;
+  disabled?: boolean;
 }) {
   const { pending } = useFormStatus();
 
   return (
     <button
       type="submit"
-      disabled={pending}
+      disabled={pending || disabled}
       onClick={(event) => {
         if (!window.confirm(confirmText)) {
           event.preventDefault();
@@ -74,12 +86,42 @@ function ConfirmingDeleteButton({
   );
 }
 
+function MoveButton({
+  direction,
+  disabled,
+  number,
+}: {
+  direction: "up" | "down";
+  disabled: boolean;
+  number: number;
+}) {
+  const { pending } = useFormStatus();
+  const Icon = direction === "up" ? NavArrowUp : NavArrowDown;
+
+  return (
+    <button
+      type="submit"
+      disabled={pending || disabled}
+      aria-label={
+        direction === "up"
+          ? `Naikkan soal nomor ${number}`
+          : `Turunkan soal nomor ${number}`
+      }
+      className="grid h-11 w-11 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:border-brand-200 hover:text-brand disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      <Icon className="h-4 w-4" aria-hidden="true" />
+    </button>
+  );
+}
+
 function CorrectKeyButton({
   isCorrect,
   letter,
+  disabled,
 }: {
   isCorrect: boolean;
   letter: string;
+  disabled: boolean;
 }) {
   const { pending } = useFormStatus();
 
@@ -89,7 +131,7 @@ function CorrectKeyButton({
       role="radio"
       aria-checked={isCorrect}
       aria-label={`Jadikan opsi ${letter} kunci jawaban`}
-      disabled={pending}
+      disabled={pending || disabled}
       className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl border text-sm font-semibold transition focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 disabled:cursor-not-allowed disabled:opacity-60 ${
         isCorrect
           ? "border-emerald-300 bg-emerald-50 text-emerald-700"
@@ -111,12 +153,14 @@ function OptionRow({
   body,
   isCorrect,
   letter,
+  frozen,
 }: {
   questionId: string;
   optionId: string;
   body: string;
   isCorrect: boolean;
   letter: string;
+  frozen: boolean;
 }) {
   const [correctState, correctAction] = useActionState(
     setCorrectOptionAction,
@@ -137,7 +181,11 @@ function OptionRow({
         <form action={correctAction}>
           <input type="hidden" name="questionId" value={questionId} />
           <input type="hidden" name="optionId" value={optionId} />
-          <CorrectKeyButton isCorrect={isCorrect} letter={letter} />
+          <CorrectKeyButton
+            isCorrect={isCorrect}
+            letter={letter}
+            disabled={frozen}
+          />
         </form>
 
         <form
@@ -152,12 +200,14 @@ function OptionRow({
             required
             maxLength={500}
             defaultValue={body}
+            disabled={frozen}
             aria-label={`Isi opsi ${letter}`}
             className={`${textControlClass} min-w-0 flex-1`}
           />
           <SubmitButton
             label="Simpan"
             pendingLabel="Menyimpan…"
+            disabled={frozen}
             className={quietButtonClass}
           />
         </form>
@@ -167,6 +217,7 @@ function OptionRow({
           <input type="hidden" name="optionId" value={optionId} />
           <ConfirmingDeleteButton
             label="Hapus"
+            disabled={frozen}
             confirmText={`Hapus opsi ${letter}?`}
           />
         </form>
@@ -179,7 +230,13 @@ function OptionRow({
   );
 }
 
-function AddOptionForm({ questionId }: { questionId: string }) {
+function AddOptionForm({
+  questionId,
+  frozen,
+}: {
+  questionId: string;
+  frozen: boolean;
+}) {
   const [state, action] = useActionState(
     createOptionAction,
     initialRegistrationActionState,
@@ -194,6 +251,7 @@ function AddOptionForm({ questionId }: { questionId: string }) {
           type="text"
           required
           maxLength={500}
+          disabled={frozen}
           placeholder="Tulis opsi jawaban baru"
           aria-label="Opsi jawaban baru"
           className={`${textControlClass} min-w-0 flex-1`}
@@ -201,6 +259,7 @@ function AddOptionForm({ questionId }: { questionId: string }) {
         <SubmitButton
           label="Tambah opsi"
           pendingLabel="Menambahkan…"
+          disabled={frozen}
           className={quietButtonClass}
           icon={<Plus className="h-4 w-4" aria-hidden="true" />}
         />
@@ -210,12 +269,42 @@ function AddOptionForm({ questionId }: { questionId: string }) {
   );
 }
 
+/**
+ * Reasons this question would block the test from opening, phrased the way the
+ * administrator needs to read them at a glance. Mirrors `assessment_problems()`
+ * so the badge and the readiness list never disagree.
+ */
+function questionIssues(question: AssessmentQuestionRow): string[] {
+  const issues: string[] = [];
+  const correctCount = question.assessment_options.filter(
+    (option) => option.is_correct,
+  ).length;
+
+  if (question.assessment_options.length < 2) {
+    issues.push("perlu minimal 2 opsi");
+  }
+
+  if (correctCount === 0) {
+    issues.push("belum ada kunci jawaban");
+  } else if (correctCount > 1) {
+    issues.push(`ada ${correctCount} kunci jawaban`);
+  }
+
+  return issues;
+}
+
 export function QuestionCard({
   question,
   number,
+  frozen,
+  isFirst,
+  isLast,
 }: {
   question: AssessmentQuestionRow;
   number: number;
+  frozen: boolean;
+  isFirst: boolean;
+  isLast: boolean;
 }) {
   const [promptState, promptAction] = useActionState(
     updateQuestionAction,
@@ -225,108 +314,162 @@ export function QuestionCard({
     deleteQuestionAction,
     initialRegistrationActionState,
   );
+  const [moveState, moveAction] = useActionState(
+    moveQuestionAction,
+    initialRegistrationActionState,
+  );
 
   const options = question.assessment_options;
+  const issues = questionIssues(question);
   const promptId = `prompt-${question.id}`;
 
   return (
-    <details className="group rounded-2xl border border-slate-200 bg-white">
-      <summary className="flex cursor-pointer list-none items-start gap-3 p-4 [&::-webkit-details-marker]:hidden">
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-slate-100 font-mono text-sm font-semibold text-slate-600">
-          {number}
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium text-ink">
-            {question.prompt}
-          </span>
-          <span className="mt-0.5 block text-xs text-slate-500">
-            {options.length} opsi
-          </span>
-        </span>
-        <NavArrowDown
-          className="mt-1 h-4 w-4 shrink-0 text-slate-400 transition-transform group-open:rotate-180"
-          aria-hidden="true"
-        />
-      </summary>
-
-      <div className="space-y-5 border-t border-slate-100 p-4">
-        <form action={promptAction}>
-          <input type="hidden" name="questionId" value={question.id} />
-          <label
-            htmlFor={promptId}
-            className="block text-xs font-medium uppercase tracking-wide text-slate-500"
-          >
-            Pertanyaan
-          </label>
-          <textarea
-            id={promptId}
-            name="prompt"
-            required
-            rows={3}
-            minLength={3}
-            maxLength={2000}
-            defaultValue={question.prompt}
-            className={`${textControlClass} mt-1.5 resize-y`}
-          />
-          <div className="mt-2">
-            <SubmitButton
-              label="Simpan pertanyaan"
-              pendingLabel="Menyimpan…"
-              className={primaryButtonClass}
+    <div>
+      <div className="flex items-start gap-2">
+        {/* Outside the <details> on purpose: a button inside <summary> toggles
+            the disclosure as a native default action, which React's synthetic
+            stopPropagation does not prevent. */}
+        <div className="flex shrink-0 flex-col gap-1 pt-3">
+          <form action={moveAction}>
+            <input type="hidden" name="questionId" value={question.id} />
+            <input type="hidden" name="direction" value="up" />
+            <MoveButton
+              direction="up"
+              number={number}
+              disabled={frozen || isFirst}
             />
-          </div>
-          <ActionMessage state={promptState} />
-        </form>
-
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
-            Opsi jawaban
-          </p>
-          <p className="mt-1 text-xs leading-5 text-slate-500">
-            Tekan huruf di sebelah kiri untuk menandai kunci jawaban. Satu soal
-            tepat satu kunci.
-          </p>
-
-          {options.length === 0 ? (
-            <p className="mt-3 rounded-xl border border-dashed border-slate-300 px-3 py-4 text-center text-xs text-slate-500">
-              Belum ada opsi jawaban.
-            </p>
-          ) : (
-            <ul
-              role="radiogroup"
-              aria-label={`Kunci jawaban soal ${number}`}
-              className="mt-3 space-y-2"
-            >
-              {options.map((option, index) => (
-                <OptionRow
-                  key={option.id}
-                  questionId={question.id}
-                  optionId={option.id}
-                  body={option.body}
-                  isCorrect={option.is_correct}
-                  letter={String.fromCharCode(65 + index)}
-                />
-              ))}
-            </ul>
-          )}
-
-          <AddOptionForm questionId={question.id} />
+          </form>
+          <form action={moveAction}>
+            <input type="hidden" name="questionId" value={question.id} />
+            <input type="hidden" name="direction" value="down" />
+            <MoveButton
+              direction="down"
+              number={number}
+              disabled={frozen || isLast}
+            />
+          </form>
         </div>
 
-        <form action={deleteAction} className="border-t border-slate-100 pt-4">
-          <input type="hidden" name="questionId" value={question.id} />
-          <ConfirmingDeleteButton
-            label="Hapus soal ini"
-            confirmText={`Hapus soal nomor ${number} beserta seluruh opsinya?`}
-          />
-          <ActionMessage state={deleteState} />
-        </form>
+        <details className="group min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white">
+          <summary className="flex cursor-pointer list-none items-start gap-3 p-4 [&::-webkit-details-marker]:hidden">
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-slate-100 font-mono text-sm font-semibold text-slate-600">
+              {number}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-medium text-ink">
+                {question.prompt}
+              </span>
+              <span className="mt-0.5 block text-xs text-slate-500">
+                {options.length} opsi
+              </span>
+              {issues.length > 0 ? (
+                <span className="mt-1 flex items-start gap-1 text-xs font-medium text-amber-700">
+                  <WarningTriangle
+                    className="mt-0.5 h-3.5 w-3.5 shrink-0"
+                    aria-hidden="true"
+                  />
+                  Belum siap: {issues.join(", ")}
+                </span>
+              ) : null}
+            </span>
+            <NavArrowDown
+              className="mt-1 h-4 w-4 shrink-0 text-slate-400 transition-transform group-open:rotate-180"
+              aria-hidden="true"
+            />
+          </summary>
+
+          <div className="space-y-5 border-t border-slate-100 p-4">
+            <form action={promptAction}>
+              <input type="hidden" name="questionId" value={question.id} />
+              <label
+                htmlFor={promptId}
+                className="block text-xs font-medium uppercase tracking-wide text-slate-500"
+              >
+                Pertanyaan
+              </label>
+              <textarea
+                id={promptId}
+                name="prompt"
+                required
+                rows={3}
+                minLength={3}
+                maxLength={2000}
+                disabled={frozen}
+                defaultValue={question.prompt}
+                className={`${textControlClass} mt-1.5 resize-y`}
+              />
+              <div className="mt-2">
+                <SubmitButton
+                  label="Simpan pertanyaan"
+                  pendingLabel="Menyimpan…"
+                  disabled={frozen}
+                  className={primaryButtonClass}
+                />
+              </div>
+              <ActionMessage state={promptState} />
+            </form>
+
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                Opsi jawaban
+              </p>
+              <p className="mt-1 text-xs leading-5 text-slate-500">
+                Tekan huruf di sebelah kiri untuk menandai kunci jawaban. Satu
+                soal tepat satu kunci.
+              </p>
+
+              {options.length === 0 ? (
+                <p className="mt-3 rounded-xl border border-dashed border-slate-300 px-3 py-4 text-center text-xs text-slate-500">
+                  Belum ada opsi jawaban.
+                </p>
+              ) : (
+                <ul
+                  role="radiogroup"
+                  aria-label={`Kunci jawaban soal ${number}`}
+                  className="mt-3 space-y-2"
+                >
+                  {options.map((option, index) => (
+                    <OptionRow
+                      key={option.id}
+                      questionId={question.id}
+                      optionId={option.id}
+                      body={option.body}
+                      isCorrect={option.is_correct}
+                      letter={String.fromCharCode(65 + index)}
+                      frozen={frozen}
+                    />
+                  ))}
+                </ul>
+              )}
+
+              <AddOptionForm questionId={question.id} frozen={frozen} />
+            </div>
+
+            <form
+              action={deleteAction}
+              className="border-t border-slate-100 pt-4"
+            >
+              <input type="hidden" name="questionId" value={question.id} />
+              <ConfirmingDeleteButton
+                label="Hapus soal ini"
+                disabled={frozen}
+                confirmText={`Hapus soal nomor ${number} beserta seluruh opsinya?`}
+              />
+              <ActionMessage state={deleteState} />
+            </form>
+          </div>
+        </details>
       </div>
-    </details>
+
+      {/* Rendered outside the disclosure: the move buttons sit outside it too,
+          and a message hidden inside a collapsed <details> would never be read
+          — including the refusal when the questions are frozen. */}
+      <ActionMessage state={moveState} />
+    </div>
   );
 }
 
-export function AddQuestionForm() {
+export function AddQuestionForm({ frozen }: { frozen: boolean }) {
   const [state, action] = useActionState(
     createQuestionAction,
     initialRegistrationActionState,
@@ -347,6 +490,7 @@ export function AddQuestionForm() {
         rows={3}
         minLength={3}
         maxLength={2000}
+        disabled={frozen}
         placeholder="Tulis pertanyaan pilihan ganda"
         className={`${textControlClass} mt-1.5 resize-y`}
       />
@@ -354,6 +498,7 @@ export function AddQuestionForm() {
         <SubmitButton
           label="Tambah soal"
           pendingLabel="Menambahkan…"
+          disabled={frozen}
           icon={<Plus className="h-4 w-4" aria-hidden="true" />}
         />
       </div>

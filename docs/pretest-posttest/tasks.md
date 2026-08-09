@@ -198,23 +198,65 @@ yang masih perawan.
 
 ## Blok 4 — Urutan soal, penanda kesiapan, dan freeze
 
-- [ ] `reorderQuestions` — satu transaksi berisi `UPDATE` biasa. **`ON CONFLICT` tidak bisa
-      dipakai**: `assessment_questions_event_order_key` bersifat `deferrable`, dan Postgres
-      menolak constraint deferrable sebagai target `ON CONFLICT`
-- [ ] Tombol naik dan turun, bukan drag and drop — lebih mudah dibuat benar dan tetap
-      berfungsi di layar sentuh
-- [ ] Penanda visual pada soal yang belum valid (kurang dari dua opsi, atau kunci bukan tepat
-      satu), supaya admin tidak perlu membuka satu per satu untuk mencari yang bermasalah
-- [ ] Kesadaran freeze: begitu ada satu attempt untuk event ini, seluruh kontrol edit tampil
-      **nonaktif dengan penjelasan** di atas daftar. Aplikasi mendahului trigger; trigger
-      adalah jaring pengaman, bukan mekanisme UX
-- [ ] Banner freeze di halaman ringkasan, dengan tautan ke aksi reset
-- [ ] Server action tetap menolak lebih dulu saat freeze aktif, tidak hanya UI-nya
+- [x] Pemindahan soal lewat tombol naik dan turun, bukan drag and drop
+- [x] Penanda visual pada soal yang belum valid, langsung di ringkasan kartu, supaya admin
+      tidak perlu membuka satu per satu. Teksnya menyebut sebabnya: "Belum siap: perlu
+      minimal 2 opsi, belum ada kunci jawaban"
+- [x] Kesadaran freeze: `listQuestions` mengembalikan `frozen`, seluruh kontrol edit tampil
+      nonaktif, dan banner penjelasan muncul di atas daftar
+- [x] Banner freeze juga di halaman ringkasan, menegaskan bahwa buka/tutup tes tetap bisa
+      dilakukan — yang terkunci hanya penyuntingan soal
+- [x] Deteksi freeze **gagal-tertutup**: kalau jumlah attempt tidak terbaca, jawabannya
+      "terkunci". Menebak ke arah permisif berarti merender kontrol aktif yang akan ditolak
+      trigger saat diklik — persis yang ingin dicegah aturan freeze
+- [x] Server action menolak lebih dulu saat freeze, lewat satu penjaga bersama di lapisan
+      lib sehingga berlaku untuk semua aksi tulis
+- [x] Tombol naik/turun 44×44 px, memenuhi target sentuh yang berlaku di repo ini
 
-**Dinilai di browser:** ubah urutan soal, refresh, urutannya bertahan. Hapus kunci satu soal
-→ penandanya muncul di daftar, dan saklar buka di ringkasan menyebut soal mana yang
-bermasalah (§8.3). Jalur nonaktif-karena-freeze baru bisa dinilai di blok 6 — dicatat di
-checklist blok itu, jangan diklaim selesai di sini.
+### Penyimpangan dari spec pada `reorderQuestions`
+
+`spec.md` §6 menulis: "satu transaksi berisi `UPDATE` biasa. **`ON CONFLICT` tidak bisa
+dipakai** — constraint urutannya `deferrable`, dan Postgres menolak constraint deferrable
+sebagai target `ON CONFLICT`."
+
+Kedua syarat itu tidak bisa dipenuhi sekaligus lewat PostgREST: **satu request PostgREST =
+satu transaksi**, dan tidak ada cara mengirim dua `UPDATE` berbeda dalam satu request. Yang
+tersedia hanya tiga:
+
+1. `upsert` dengan conflict target `id` — satu request, jadi satu transaksi
+2. Tiga `UPDATE` berurutan lewat nilai sementara — `UPDATE` biasa, tapi tiga transaksi
+3. Fungsi RPC baru — perubahan skema, dan skema sudah dibekukan
+
+Dipilih (1). Alasan spec melarang `ON CONFLICT` adalah karena constraint `deferrable` tidak
+bisa jadi target — dan itu tidak berlaku di sini, karena targetnya primary key. Yang
+sesungguhnya dijaga spec adalah keatomikan, dan hanya (1) yang memberikannya.
+
+Harganya: `prompt` ikut ditulis ulang dengan nilai yang dibaca sesaat sebelumnya, jadi admin
+lain yang menyimpan teks baru pada instan yang sama akan kehilangannya. `points` tidak ikut
+dikirim sehingga nilainya tidak tersentuh. Kalau nanti panel ini dipakai lebih dari satu
+orang sekaligus, pilihan ini perlu ditinjau ulang.
+
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Soal kedua dibuat, lalu urutan ditukar naik-turun dan **bertahan setelah muat ulang** —
+      membuktikan `upsert` dengan constraint `deferrable` memang commit sebagai satu kesatuan
+- [x] Tombol naik nonaktif di soal pertama, tombol turun nonaktif di soal terakhir
+- [x] Penanda "Belum siap" muncul pada soal tanpa opsi, lalu **berubah isinya** saat opsi
+      ditambahkan ("perlu minimal 2 opsi, belum ada kunci jawaban" → "belum ada kunci
+      jawaban"), lalu hilang setelah kunci ditetapkan
+- [x] Kasus tepi §4.5 terbukti hidup: saat pre-test sudah terbuka lalu ada soal jadi tidak
+      valid, saklar pre-test **tetap bisa ditutup** sementara saklar post-test terkunci dari
+      pembukaan
+- [x] Tanpa scroll horizontal di 360 px dengan seluruh kartu terbuka
+- [x] `npm run lint`, `npm run typecheck`, `npm run build` — ketiganya lolos
+
+Cacat yang ditemukan dan diperbaiki saat verifikasi: pesan hasil pemindahan semula dirender
+di dalam `<details>`, sehingga tidak pernah terbaca saat kartunya tertutup — termasuk pesan
+penolakan ketika soal terkunci. Sekarang dirender di luar, sebaris dengan tombolnya.
+
+**Belum bisa dinilai di blok ini:** tampilan freeze yang sesungguhnya. Belum ada satu pun
+attempt di database, dan tidak ada cara membuatnya sampai peserta bisa memulai tes di blok 6.
+Logikanya terpasang dan menolak di dua lapis; buktinya menyusul di checklist blok 6.
 
 ---
 
@@ -299,7 +341,10 @@ penempatan menu, dan nilai yang terkirim (§8.14).
 - [ ] Setelah submit pre-test, tidak ada angka di layar **maupun di payload jaringan** —
       periksa tab Network (§8.6)
 - [ ] Buka `/admin/assessment/soal` → seluruh kontrol edit kini nonaktif karena sudah ada
-      attempt (§8.7, jalur yang tertunda dari blok 4)
+      attempt, banner freeze muncul di halaman soal dan ringkasan (§8.7, jalur yang tertunda
+      dari blok 4)
+- [ ] Lepas atribut `disabled` dari salah satu kontrol edit lalu klik → Server Action
+      menolak dengan pesan freeze, bukan galat mentah dari trigger (lapis kedua blok 4)
 - [ ] Tutup pre-test dari admin saat satu peserta ada di soal ke-7 → peserta itu membuka
       ulang halaman, masih menemukan dropdown, memilih namanya, dan melanjutkan sampai
       selesai. Peserta lain yang belum pernah memulai ditolak setelah menekan Mulai (§8.5)

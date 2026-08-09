@@ -9,6 +9,7 @@ import {
   createQuestion,
   deleteOption,
   deleteQuestion,
+  moveQuestion,
   optionBodySchema,
   promptSchema,
   setCorrectOption,
@@ -24,7 +25,13 @@ const idSchema = z.string().uuid();
  * Editing an option is recorded as `update_question`: the audit CHECK lists no
  * option-level action, and an option only exists as part of its question.
  */
-type AuditedAction = "create_question" | "update_question" | "delete_question";
+type AuditedAction =
+  | "create_question"
+  | "update_question"
+  | "delete_question"
+  | "reorder_questions";
+
+const directionSchema = z.enum(["up", "down"]);
 
 const INVALID_COMMAND: RegistrationActionState = {
   status: "error",
@@ -124,6 +131,26 @@ export async function deleteQuestionAction(
     () => deleteQuestion(questionId.data),
     "delete_question",
     "Soal dihapus.",
+  );
+}
+
+export async function moveQuestionAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  await requireAdmin();
+
+  const questionId = idSchema.safeParse(formData.get("questionId"));
+  const direction = directionSchema.safeParse(formData.get("direction"));
+
+  if (!questionId.success || !direction.success) {
+    return INVALID_COMMAND;
+  }
+
+  return runWrite(
+    () => moveQuestion(questionId.data, direction.data),
+    "reorder_questions",
+    direction.data === "up" ? "Soal dinaikkan." : "Soal diturunkan.",
   );
 }
 

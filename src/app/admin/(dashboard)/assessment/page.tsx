@@ -1,4 +1,4 @@
-import { CheckCircle, WarningTriangle } from "iconoir-react";
+import { CheckCircle, Lock, WarningTriangle } from "iconoir-react";
 import type { Metadata } from "next";
 
 import { Card, PageHeader } from "@/components/admin/ui";
@@ -149,7 +149,7 @@ export default async function AssessmentOverviewPage() {
     );
   }
 
-  const { participantCount, problems, phases } = result.overview;
+  const { participantCount, problems, phases, frozen } = result.overview;
 
   return (
     <>
@@ -159,6 +159,17 @@ export default async function AssessmentOverviewPage() {
       />
 
       <AssessmentTabs active="/admin/assessment" />
+
+      {frozen ? (
+        <div className="mb-4 flex items-start gap-2.5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+          <Lock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+          <p>
+            Soal terkunci karena sudah ada peserta yang mengerjakan tes.
+            Menutup atau membuka tes tetap bisa dilakukan; yang terkunci hanya
+            penyuntingan soal.
+          </p>
+        </div>
+      ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
         {phases.map((phase) => (

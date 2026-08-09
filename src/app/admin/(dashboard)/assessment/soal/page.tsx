@@ -1,3 +1,4 @@
+import { Lock } from "iconoir-react";
 import type { Metadata } from "next";
 
 import { Card, PageHeader } from "@/components/admin/ui";
@@ -34,6 +35,19 @@ export default async function AssessmentQuestionsPage() {
         <EmptyState title="Gagal memuat soal" description={result.message} />
       ) : (
         <div className="space-y-6">
+          {result.frozen ? (
+            <div className="flex items-start gap-2.5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
+              <Lock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+              <p>
+                Soal terkunci karena sudah ada peserta yang mengerjakan tes.
+                Mengubah soal sekarang akan membuat nilai yang sudah tersimpan
+                tidak lagi sebanding. Untuk membukanya kembali, reset data
+                pengerjaan dari halaman Ringkasan — dan itu menghapus seluruh
+                nilai peserta.
+              </p>
+            </div>
+          ) : null}
+
           {result.questions.length === 0 ? (
             <EmptyState
               title="Belum ada soal"
@@ -46,6 +60,9 @@ export default async function AssessmentQuestionsPage() {
                   key={question.id}
                   question={question}
                   number={index + 1}
+                  frozen={result.frozen}
+                  isFirst={index === 0}
+                  isLast={index === result.questions.length - 1}
                 />
               ))}
             </div>
@@ -55,7 +72,7 @@ export default async function AssessmentQuestionsPage() {
             title="Tambah soal"
             description="Soal baru masuk ke urutan paling akhir."
           >
-            <AddQuestionForm />
+            <AddQuestionForm frozen={result.frozen} />
           </Card>
         </div>
       )}
