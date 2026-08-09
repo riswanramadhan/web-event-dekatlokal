@@ -1,6 +1,13 @@
 "use client";
 
-import { Group, LogOut, Menu, ShieldCheck, Xmark } from "iconoir-react";
+import {
+  ClipboardCheck,
+  Group,
+  LogOut,
+  Menu,
+  ShieldCheck,
+  Xmark,
+} from "iconoir-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -12,6 +19,12 @@ const NAV_ITEMS = [
     label: "Daftar Pendaftar",
     description: "Data peserta masuk",
     icon: Group,
+  },
+  {
+    href: "/admin/assessment",
+    label: "Pre-test & Post-test",
+    description: "Soal, kontrol tes, nilai",
+    icon: ClipboardCheck,
   },
   {
     href: "/admin/users",
@@ -27,6 +40,13 @@ function isActivePath(pathname: string, href: string): boolean {
     // keep "Daftar Pendaftar" highlighted (and shown as the mobile title)
     // rather than falling back to no active item.
     return pathname === "/admin" || pathname.startsWith("/admin/registrations");
+  }
+
+  if (href === "/admin/assessment") {
+    // The question and score screens are sub-pages of this section. Without
+    // this, they lose the sidebar highlight and the mobile top bar falls back
+    // to the generic "Panel Admin" title, because it renders activeItem.label.
+    return pathname === href || pathname.startsWith("/admin/assessment/");
   }
 
   return pathname === href;
