@@ -254,9 +254,9 @@ Cacat yang ditemukan dan diperbaiki saat verifikasi: pesan hasil pemindahan semu
 di dalam `<details>`, sehingga tidak pernah terbaca saat kartunya tertutup — termasuk pesan
 penolakan ketika soal terkunci. Sekarang dirender di luar, sebaris dengan tombolnya.
 
-**Belum bisa dinilai di blok ini:** tampilan freeze yang sesungguhnya. Belum ada satu pun
-attempt di database, dan tidak ada cara membuatnya sampai peserta bisa memulai tes di blok 6.
-Logikanya terpasang dan menolak di dua lapis; buktinya menyusul di checklist blok 6.
+**Utang freeze sudah lunas.** Diverifikasi saat pengujian manual blok 5: setelah peserta
+pertama memulai tes, `/admin/assessment/soal` menampilkan banner "Soal terkunci…" dan seluruh
+kontrol edit nonaktif — kolom teks, simpan, hapus, naik/turun, dan tambah soal (§8.7).
 
 ---
 
@@ -323,21 +323,39 @@ barunya tidak punya konsumen yang bisa dilihat di layar mana pun.
       prop `searchable` benar-benar default mati
 - [x] `npm run lint`, `npm run typecheck`, `npm run build` — ketiganya lolos
 
-**Belum terverifikasi — butuh interaksi di browser sungguhan.** Panel Browser di sesi ini
-tidak merender (`document.visibilityState` tetap `hidden`, seluruh `getBoundingClientRect`
-nol), dan Next.js menolak Server Action yang disubmit lewat JS karena `origin` bernilai null.
-Jadi jalur berikut belum dibuktikan dan **tidak boleh dianggap selesai**:
+**Terverifikasi lewat pengujian manual user di Chrome:**
 
-- [ ] Mengetik di combobox memfilter daftar, live region mengumumkan jumlah hasil
-- [ ] Pilih nama → Mulai mengerjakan → layar pengerjaan muncul dengan soal pertama
-- [ ] Pilih jawaban → indikator "Tersimpan"; muat ulang halaman → jawaban masih terpilih
-- [ ] Maju-mundur antar soal; `?soal=N` berubah dan tombol Kembali browser bekerja wajar
-- [ ] Selesaikan → layar selesai, dan **tidak ada angka di layar maupun di payload jaringan**
-- [ ] Tutup pre-test dari admin → dropdown tetap ada; peserta yang sudah mulai bisa
-      melanjutkan, peserta lain ditolak dengan "Tes sudah ditutup dan kamu belum mulai
-      mengerjakan."
-- [ ] Regresi perilaku form pendaftaran: navigasi panah, Home/End, Escape, typeahead
-      lompat-ke-opsi, penempatan menu atas/bawah, dan nilai yang terkirim (§8.14)
+- [x] Mengetik di combobox memfilter daftar; kotak pencarian muncul dengan fokus langsung di
+      dalamnya; ketikan yang tidak cocok menampilkan "Tidak ada nama yang cocok."
+- [x] Pilih nama → Mulai mengerjakan → layar pengerjaan dengan "Soal 1 dari 2"
+- [x] Pilih jawaban → "Tersimpan"; muat ulang halaman dan pilih nama yang sama → jawaban
+      masih terpilih (§8.4 terpenuhi)
+- [x] Maju-mundur antar soal; `?soal=N` berubah dan tombol Kembali browser bekerja wajar
+- [x] Selesaikan → layar selesai, dan tidak ada angka di layar maupun di payload jaringan
+      (§8.6 terpenuhi)
+- [x] Tutup pre-test dari admin → dropdown tetap ada dengan bingkai amber; peserta yang belum
+      pernah mulai ditolak dengan "Tes sudah ditutup dan kamu belum mulai mengerjakan."
+      (§8.5 terpenuhi)
+- [x] Regresi form pendaftaran: navigasi panah, Home/End, Escape, dan typeahead
+      lompat-ke-opsi masih bekerja; tidak ada kotak pencarian di kedua form (§8.14 terpenuhi)
+
+### Bug yang ditemukan dan diperbaiki saat verifikasi
+
+Langkah "Mulai mengerjakan" memunculkan error boundary. Sebabnya `actions.ts` mengekspor
+konstanta `initialStartAttemptState`, sedangkan berkas `"use server"` hanya boleh mengekspor
+fungsi async — satu ekspor objek membuat seluruh modul action gagal dievaluasi, jadi setiap
+POST ke route itu mati. Konstantanya dipindahkan ke `tes-flow.tsx`.
+
+**`npm run lint`, `npm run typecheck`, dan `npm run build` ketiganya lolos dengan bug ini di
+dalamnya.** Aturannya ditegakkan Next.js saat modul dievaluasi, bukan saat kompilasi. Gerbang
+statis buta terhadap kelas kesalahan ini, jadi tiap blok yang menambah Server Action perlu
+audit ini:
+
+```bash
+for f in $(grep -rl '"use server"' src --include=*.ts --include=*.tsx); do echo "=== $f ==="; grep -n "^export \(const\|let\|var\|class\)" "$f"; done
+```
+
+Tujuh berkas `"use server"` lain di repo — termasuk seluruh action admin blok 2-4 — bersih.
 
 **Catatan:** submit post-test untuk sementara mendarat di layar "jawaban tersimpan" yang sama
 seperti pre-test, bukan halaman hasil. Halaman hasil beserta perbandingan nilai adalah blok 8.
@@ -346,49 +364,35 @@ yang bocor ke mana pun.
 
 ---
 
-## Blok 6 — Peserta: layar pengerjaan, autosave, dan selesai pre-test
+## Blok 6 — Peserta: timer, submit otomatis, dan peta soal
 
-- [ ] `startOrResumeAttempt` — seluruh pembuatan dan pelanjutan attempt lewat
-      `start_assessment_attempt()`. Aplikasi **tidak pernah** `insert` langsung ke
-      `assessment_attempts`
-- [ ] Routing hasilnya sesuai tabel §4.2: in_progress belum lewat batas → lanjut; sudah lewat
-      → submit lalu pindah; submitted → pre-test ke "sudah selesai", post-test ke hasil
-- [ ] Render soal mengikuti `question_order` dari attempt; **jangan pernah mengacak ulang di
-      client**
-- [ ] Payload soal untuk peserta hanya `id`, `prompt`, dan opsi berisi `id` dan `body`.
-      Jangan `select('*')` — `is_correct` tidak boleh sampai ke client
-- [ ] `saveAnswer` sebagai Server Action yang dipanggil imperatif dari event handler, bukan
-      `useActionState`. Tidak memblokir UI, punya retry, kegagalannya tampil sebagai
-      indikator kecil — bukan toast
-- [ ] Rate limiter **tidak** dipasang di jalur autosave; itu keputusan, bukan kelalaian
-- [ ] Header lengket: nama phase, timer mundur dari `expires_at` dikurangi waktu sekarang
-      (bukan hitungan lokal sejak halaman dimuat), progress bar, penomoran "Soal 6 dari 15"
-- [ ] Kartu opsi selebar penuh, seluruh areanya bisa diketuk, tinggi minimal 44 px, penanda
-      huruf A/B/C/D, kondisi terpilih ditandai warna **dan** ikon
-- [ ] Navigasi lengket bawah: dua tombol berdampingan; di soal terakhir tombol kanan menjadi
-      **Selesaikan**; tombol Sebelumnya nonaktif di soal pertama, bukan disembunyikan
-- [ ] Nomor soal aktif di search param (`?soal=3`)
-- [ ] Indikator penyimpanan: "Tersimpan" / "Menyimpan…" / "Belum tersimpan"
-- [ ] `submitAttempt` idempoten lewat `submit_assessment_attempt()`. **Untuk pre-test, nilai
-      dari RPC dibuang di server** dan tidak pernah masuk respons — penyaringan adalah
-      tanggung jawab lapisan server, bukan database
-- [ ] Layar selesai pre-test: ikon centang, satu kalimat, tombol sekunder ke beranda. **Tidak
-      ada angka apa pun.** Layar yang sama dipakai untuk peserta yang sudah pernah selesai,
-      dengan judul "Kamu sudah menyelesaikan pre-test"
+Cakupan blok ini menyusut: inti layar pengerjaan sudah masuk blok 5 saat batas bloknya
+digeser. Yang tersisa di sini adalah lapisan waktu dan navigasi soal.
+
+Sudah selesai dan terverifikasi di blok 5, tidak diulang di sini: `startOrResumeAttempt`,
+urutan soal mengikuti `question_order`, payload tanpa `is_correct`, `saveAnswer` imperatif
+dengan retry, indikator penyimpanan, kartu opsi, navigasi bawah, `?soal=N`, `submitAttempt`
+idempoten, dan layar selesai tanpa angka.
+
+- [ ] Timer mundur di header, dihitung dari `expires_at` dikurangi waktu sekarang — bukan
+      hitungan lokal sejak halaman dimuat, supaya refresh tidak menambah waktu
+- [ ] Timer berubah warna pada dua menit terakhir dan berkedip halus pada 30 detik terakhir,
+      kecuali `useReducedMotion()` aktif — di situ cukup warna
+- [ ] Waktu habis → submit otomatis dan pindah layar
+- [ ] Peta soal: grid nomor yang muncul di bawah header dan **mendorong konten ke bawah**,
+      bukan overlay. `AnimatePresence` + animasi tinggi, hormati `useReducedMotion()`.
+      Tanpa focus trap dan scroll lock; cukup `aria-expanded` dan `aria-controls`
+- [ ] Nomor terjawab, belum terjawab, dan aktif dibedakan dengan tiga penanda
+- [ ] Di atas 1024 px peta soal boleh permanen sebagai kolom kanan, tombol pembukanya
+      disembunyikan
+- [ ] Jalankan audit ekspor `"use server"` sebelum blok ditutup
 
 **Dinilai di browser:**
-- [ ] Kerjakan pre-test, tutup browser di soal ke-5, buka di perangkat atau browser lain,
-      pilih nama yang sama → lanjut dari jawaban yang sama (§8.4)
-- [ ] Setelah submit pre-test, tidak ada angka di layar **maupun di payload jaringan** —
-      periksa tab Network (§8.6)
-- [ ] Buka `/admin/assessment/soal` → seluruh kontrol edit kini nonaktif karena sudah ada
-      attempt, banner freeze muncul di halaman soal dan ringkasan (§8.7, jalur yang tertunda
-      dari blok 4)
-- [ ] Lepas atribut `disabled` dari salah satu kontrol edit lalu klik → Server Action
-      menolak dengan pesan freeze, bukan galat mentah dari trigger (lapis kedua blok 4)
-- [ ] Tutup pre-test dari admin saat satu peserta ada di soal ke-7 → peserta itu membuka
-      ulang halaman, masih menemukan dropdown, memilih namanya, dan melanjutkan sampai
-      selesai. Peserta lain yang belum pernah memulai ditolak setelah menekan Mulai (§8.5)
+- [ ] Set durasi 1 menit dari admin, mulai attempt baru, diamkan → submit otomatis terjadi
+      dan peserta pindah ke layar selesai (§8.8)
+- [ ] Muat ulang di tengah pengerjaan → sisa waktu tidak bertambah
+- [ ] Peta soal membedakan nomor terjawab, belum, dan aktif; mengetuk nomor melompat ke soal
+      itu lalu menutup grid
 
 ---
 

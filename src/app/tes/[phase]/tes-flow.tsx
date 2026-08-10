@@ -19,11 +19,21 @@ import type { AssessmentPhaseSlug } from "@/lib/assessment/phase";
 import type { AssessmentPublicState } from "@/lib/assessment/state";
 
 import {
-  initialStartAttemptState,
   refreshGateAction,
   startAttemptAction,
+  type StartAttemptState,
 } from "./actions";
 import { WorkScreen } from "./work-screen";
+
+/**
+ * Lives here rather than beside the action: a "use server" module may only
+ * export async functions, so exporting a plain object from it breaks the whole
+ * route at runtime — and neither lint, typecheck, nor build catches it.
+ */
+const initialStartAttemptState: StartAttemptState = {
+  status: "idle",
+  message: "",
+};
 
 const GATE_POLL_MS = 15_000;
 const LAST_NAME_STORAGE_KEY = "dekatevent.tes.nama-terakhir";

@@ -31,11 +31,6 @@ export type StartAttemptState = RegistrationActionState & {
   attempt?: AttemptPayload;
 };
 
-export const initialStartAttemptState: StartAttemptState = {
-  status: "idle",
-  message: "",
-};
-
 export type GateRefresh = {
   state: AssessmentPublicState;
   /** Only sent once the dropdown is due to appear. */
