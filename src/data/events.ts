@@ -83,6 +83,12 @@ export interface EventEcosystemMember {
   readonly logo: EventImageAsset;
 }
 
+export interface EventSponsorPartner {
+  readonly id: string;
+  readonly name: string;
+  readonly logo: EventImageAsset;
+}
+
 export interface EventRegistrationOption {
   readonly role: RegistrationRole;
   readonly title: string;
@@ -167,11 +173,7 @@ export interface EventConfig {
     readonly registrationCta: EventLandingSection;
   };
   readonly sponsorship: EventLandingSection & {
-    readonly placeholderLabel: "Your Brand";
-    readonly proposalCtaLabel: string;
-    readonly proposalCtaHref: `/${string}`;
-    readonly ctaLabel: string;
-    readonly ctaHref: `mailto:${string}`;
+    readonly partners: readonly EventSponsorPartner[];
   };
   readonly supportingEcosystem: EventLandingSection & {
     readonly disclaimer: string;
@@ -379,17 +381,93 @@ export const aiCoCreationLabEvent = {
     },
   },
   sponsorship: {
-    eyebrow: "Sponsorship",
-    title: "Biar ide bagus ini bisa jalan lebih jauh, brand kamu bisa ikut ambil bagian.",
+    eyebrow: "Sponsors & Partners",
+    title:
+      "Didukung oleh partner yang ikut membuat kolaborasi ini terwujud.",
     description:
-      "Dukung ruang belajar dan co creation bagi mahasiswa serta UMKM lokal melalui kontribusi yang relevan dan transparan.",
-    placeholderLabel: "Your Brand",
-    proposalCtaLabel: "Lihat Proposal Sponsorship",
-    proposalCtaHref:
-      "/ai-co-creation-lab-makassar/sponsorship-proposal",
-    ctaLabel: "Jadi Supporting Partner",
-    ctaHref:
-      "mailto:hello@dekatlokal.com?subject=Kolaborasi%20AI%20Co%20Creation%20Lab%20Makassar",
+      "AI Co-Creation Lab Makassar hadir dengan dukungan berbagai partner yang percaya pada kolaborasi mahasiswa, teknologi, dan UMKM lokal.",
+    partners: [
+      {
+        id: "cleo",
+        name: "Cleo",
+        logo: {
+          src: "/sponsorship-logo/optimized/logo-cleo.webp",
+          alt: "Logo Cleo",
+          width: 446,
+          height: 415,
+        },
+      },
+      {
+        id: "i-team",
+        name: "i-team Professional MC Management",
+        logo: {
+          src: "/sponsorship-logo/optimized/logo-i-team.webp",
+          alt: "Logo i-team Professional MC Management",
+          width: 421,
+          height: 108,
+        },
+      },
+      {
+        id: "eyfa",
+        name: "EYFA Natural Oil",
+        logo: {
+          src: "/sponsorship-logo/optimized/logo-eyfa.webp",
+          alt: "Logo EYFA Natural Oil",
+          width: 309,
+          height: 166,
+        },
+      },
+      {
+        id: "kira-kira-michi",
+        name: "Kira Kira Michi",
+        logo: {
+          src: "/sponsorship-logo/optimized/logo-kira-kira-michi.webp",
+          alt: "Logo Kira Kira Michi",
+          width: 823,
+          height: 303,
+        },
+      },
+      {
+        id: "sukma-jahe",
+        name: "Sukma Jahe",
+        logo: {
+          src: "/sponsorship-logo/optimized/logo-sukma-jahe.webp",
+          alt: "Logo Sukma Jahe",
+          width: 758,
+          height: 329,
+        },
+      },
+      {
+        id: "dapur-andist",
+        name: "Dapur Andist",
+        logo: {
+          src: "/sponsorship-logo/optimized/logo-dapur-andist.webp",
+          alt: "Logo Dapur Andist",
+          width: 327,
+          height: 412,
+        },
+      },
+      {
+        id: "wija",
+        name: "Wija",
+        logo: {
+          src: "/sponsorship-logo/optimized/logo-wija.webp",
+          alt: "Logo Wija",
+          width: 575,
+          height: 434,
+        },
+      },
+      {
+        id: "id",
+        name: "iD",
+        logo: {
+          src: "/sponsorship-logo/optimized/logo-id.webp",
+          alt: "Logo iD",
+          width: 504,
+          height: 495,
+        },
+      },
+    ],
   },
   supportingEcosystem: {
     eyebrow: "Our Supporting Ecosystem",
