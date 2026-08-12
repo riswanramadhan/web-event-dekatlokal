@@ -2,10 +2,23 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import {
+  FinalActionPlanReportPage,
+  GlobalCommunicationReportPage,
+  LeadershipConversationReportPage,
+  MeetTheLeaderReportPage,
+  MiniProjectImplementationReportPage,
+  NetworkMobilizationReportPage,
   PartnershipCollaborationReportPage,
+  PitchingMiniProjectReportPage,
   ProblemValidationReportPage,
+  ProcessDocumentationReportPage,
   ProgressReportPage,
+  WeekThreeHubReportPage,
 } from "@/components/reports";
+import {
+  weekTwoThreeHeaders,
+  type WeekTwoThreeProgressSlug,
+} from "@/data/gep-week-2-3";
 import {
   getGepWeekOneReport,
 } from "@/data/gep-week-1-reports";
@@ -89,6 +102,51 @@ export async function generateMetadata({
           },
         ],
       },
+      robots: {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      },
+    };
+  }
+
+  const currentHeader =
+    weekTwoThreeHeaders[slug as WeekTwoThreeProgressSlug];
+
+  if (currentHeader) {
+    return {
+      title: {
+        absolute: currentHeader.metadataTitle,
+      },
+      description: currentHeader.subtitle,
+      alternates: {
+        canonical: currentHeader.route,
+      },
+      openGraph: {
+        title: currentHeader.metadataTitle,
+        description: currentHeader.subtitle,
+        url: currentHeader.route,
+        type: "article",
+        images: [
+          {
+            url: "/aicl-cocreation-indonesia.webp",
+            width: 1600,
+            height: 900,
+            alt: "Mahasiswa dan pelaku UMKM dalam proses co-creation",
+          },
+        ],
+      },
+      robots: {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      },
     };
   }
 
@@ -130,11 +188,32 @@ export default async function ProgressReportRoute({
     return <PartnershipCollaborationReportPage />;
   }
 
-  const report = getGepWeekOneReport(slug);
-
-  if (!report) {
-    notFound();
+  switch (slug as WeekTwoThreeProgressSlug) {
+    case "pitching-mini-project":
+      return <PitchingMiniProjectReportPage />;
+    case "final-action-plan":
+      return <FinalActionPlanReportPage />;
+    case "global-communication":
+      return <GlobalCommunicationReportPage />;
+    case "lead-the-action":
+      return <WeekThreeHubReportPage />;
+    case "meet-the-leader":
+      return <MeetTheLeaderReportPage />;
+    case "leadership-conversation":
+      return <LeadershipConversationReportPage />;
+    case "mini-project-implementation":
+      return <MiniProjectImplementationReportPage />;
+    case "network-mobilization":
+      return <NetworkMobilizationReportPage />;
+    case "process-documentation":
+      return <ProcessDocumentationReportPage />;
   }
 
-  return <ProgressReportPage report={report} />;
+  const report = getGepWeekOneReport(slug);
+
+  if (report !== undefined) {
+    return <ProgressReportPage report={report!} />;
+  }
+
+  return notFound();
 }

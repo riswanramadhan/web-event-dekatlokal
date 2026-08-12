@@ -1,3 +1,8 @@
+import {
+  umkmStakeholders,
+  type UmkmStakeholder,
+} from "@/data/problem-validation";
+
 export type ChallengeStatus =
   | "validation"
   | "confirmed"
@@ -29,122 +34,52 @@ export interface Challenge {
   readonly solution: string | null;
 }
 
-export const challenges = [
-  {
-    id: "challenge-01-content-planning",
-    slot: 1,
-    title: "AI Content Planning System",
-    description:
-      "Contoh area challenge untuk membantu perencanaan konten yang lebih konsisten. Penetapan kebutuhan akhir menunggu validasi dengan UMKM terpilih.",
-    status: "validation",
-    statusLabel: "Dalam Proses Validasi",
-    assignmentStatus: "example",
-    assignmentLabel: "Contoh, belum menjadi penugasan final",
-    partnerName: null,
-    partnerDisplayName: "Challenge partner belum dikonfirmasi",
-    problemIndicators: [
-      "Sulit konsisten membuat konten.",
-      "Ide caption berulang.",
-      "Promosi dibuat mendadak.",
-    ],
-    possibleOutputs: [
-      "Business context prompt.",
-      "Content calendar.",
-      "Caption templates.",
-      "CTA library.",
-      "Panduan penggunaan melalui perangkat mobile.",
-    ],
-    solutionStatus: "not_started",
-    solutionStatusLabel: "Belum Dimulai",
-    solution: null,
+function getPossibleOutputs(
+  stakeholder: UmkmStakeholder,
+): readonly string[] {
+  return [
+    stakeholder.priorityNeed,
+    ...(stakeholder.additionalOpportunity
+      ? [stakeholder.additionalOpportunity]
+      : []),
+    ...(stakeholder.solutionHypothesis
+      ? [stakeholder.solutionHypothesis]
+      : []),
+  ];
+}
+
+export const challenges: readonly Challenge[] = umkmStakeholders.map(
+  (stakeholder, index) => {
+    const slot = index + 1;
+    const slotLabel = String(slot).padStart(2, "0");
+
+    return {
+      id: `challenge-${slotLabel}-${stakeholder.id}`,
+      slot,
+      title: `Kebutuhan operasional ${stakeholder.businessName}`,
+      description:
+        "Area challenge ini diturunkan dari problem validation. Detail output, hasil testing, dan solusi final tetap menunggu konsolidasi evidence pelaksanaan.",
+      status: "in_progress",
+      statusLabel: "Masalah Tervalidasi · Follow-Up Berjalan",
+      assignmentStatus: "assigned",
+      assignmentLabel: "Dipetakan ke co-creation team",
+      partnerName: stakeholder.businessName,
+      partnerDisplayName: stakeholder.businessName,
+      problemIndicators: [
+        stakeholder.currentWorkflow,
+        stakeholder.painPoint,
+        stakeholder.keyInsight,
+      ],
+      possibleOutputs: getPossibleOutputs(stakeholder),
+      solutionStatus: "in_progress",
+      solutionStatusLabel: "Output dan Testing Sedang Dikonsolidasikan",
+      solution: null,
+    };
   },
-  {
-    id: "challenge-02-product-catalog",
-    slot: 2,
-    title: "AI Product Catalog Assistant",
-    description:
-      "Contoh area challenge untuk merapikan proses penyusunan katalog. Penetapan kebutuhan akhir menunggu validasi dengan UMKM terpilih.",
-    status: "validation",
-    statusLabel: "Dalam Proses Validasi",
-    assignmentStatus: "example",
-    assignmentLabel: "Contoh, belum menjadi penugasan final",
-    partnerName: null,
-    partnerDisplayName: "Challenge partner belum dikonfirmasi",
-    problemIndicators: [
-      "Deskripsi produk tidak konsisten.",
-      "Produk memiliki banyak varian.",
-      "Katalog sulit diperbarui.",
-    ],
-    possibleOutputs: [
-      "Template input data.",
-      "Workflow penyusunan deskripsi produk.",
-      "Template sales copy.",
-      "Template respons WhatsApp.",
-      "Panduan penggunaan.",
-    ],
-    solutionStatus: "not_started",
-    solutionStatusLabel: "Belum Dimulai",
-    solution: null,
-  },
-  {
-    id: "challenge-03-customer-service",
-    slot: 3,
-    title: "AI Customer Service Assistant",
-    description:
-      "Contoh area challenge untuk membantu penyusunan respons berulang yang tetap dapat diverifikasi pemilik usaha.",
-    status: "validation",
-    statusLabel: "Dalam Proses Validasi",
-    assignmentStatus: "example",
-    assignmentLabel: "Contoh, belum menjadi penugasan final",
-    partnerName: null,
-    partnerDisplayName: "Challenge partner belum dikonfirmasi",
-    problemIndicators: [
-      "Pertanyaan pelanggan berulang.",
-      "Jawaban belum konsisten.",
-      "Pemilik harus membalas secara manual.",
-    ],
-    possibleOutputs: [
-      "Basis pengetahuan FAQ yang disetujui UMKM.",
-      "Template balasan.",
-      "Aturan eskalasi.",
-      "Checklist verifikasi.",
-    ],
-    solutionStatus: "not_started",
-    solutionStatusLabel: "Belum Dimulai",
-    solution: null,
-  },
-  {
-    id: "challenge-04-customer-insight",
-    slot: 4,
-    title: "AI Customer Insight System",
-    description:
-      "Contoh area challenge untuk mengelompokkan masukan anonim tanpa memasukkan identitas atau data sensitif pelanggan.",
-    status: "validation",
-    statusLabel: "Dalam Proses Validasi",
-    assignmentStatus: "example",
-    assignmentLabel: "Contoh, belum menjadi penugasan final",
-    partnerName: null,
-    partnerDisplayName: "Challenge partner belum dikonfirmasi",
-    problemIndicators: [
-      "Masukan belum dianalisis.",
-      "Keluhan berulang belum terpetakan.",
-      "Promosi masih berdasarkan perkiraan.",
-    ],
-    possibleOutputs: [
-      "Template masukan yang dianonimkan.",
-      "Prompt pengelompokan.",
-      "Ringkasan insight.",
-      "Daftar prioritas perbaikan.",
-    ],
-    solutionStatus: "not_started",
-    solutionStatusLabel: "Belum Dimulai",
-    solution: null,
-  },
-] as const satisfies readonly Challenge[];
+);
 
 export const challengeSlots = challenges;
 
 export function getChallengeById(id: string): Challenge | undefined {
   return challenges.find((challenge) => challenge.id === id);
 }
-

@@ -89,7 +89,11 @@ export function ProgressReportNavigation({
       <ol className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {filteredReports.map((report) => {
           const isCurrent = report.slug === currentSlug;
-          const Icon = isCurrent ? CheckCircle : Circle;
+          const normalizedStatus = report.status.toLowerCase();
+          const isCompleted =
+            normalizedStatus.includes("completed") ||
+            normalizedStatus.includes("finalization");
+          const Icon = isCompleted ? CheckCircle : Circle;
           const reportIndex = progressReports.findIndex(
             (item) => item.slug === report.slug,
           );
@@ -125,6 +129,17 @@ export function ProgressReportNavigation({
                   </span>
                   <span className="mt-1 block text-xs font-semibold leading-5">
                     {report.title}
+                  </span>
+                  <span
+                    className={`mt-1.5 block text-[0.68rem] font-medium leading-4 ${
+                      isCurrent
+                        ? "text-white/75"
+                        : isCompleted
+                          ? "text-emerald-700"
+                          : "text-amber-700"
+                    }`}
+                  >
+                    {report.status}
                   </span>
                 </span>
               </Link>

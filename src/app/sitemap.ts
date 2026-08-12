@@ -8,10 +8,6 @@ const staticRoutes = [
   "/privacy",
   "/terms",
   "/ai-co-creation-lab-makassar",
-  "/ai-co-creation-lab-makassar/register",
-  "/ai-co-creation-lab-makassar/register/student",
-  "/ai-co-creation-lab-makassar/register/umkm",
-  "/ai-co-creation-lab-makassar/progress/partnership-collaboration",
 ] as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -14,7 +14,6 @@ const platformLinks = [
 
 const eventLinks = [
   { label: "AI Co Creation Lab", href: "/ai-co-creation-lab-makassar" },
-  { label: "Informasi pendaftaran", href: "/ai-co-creation-lab-makassar/register" },
 ] as const;
 
 const footerLinkClass =

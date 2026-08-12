@@ -27,6 +27,10 @@ const studentTarget =
 export const metadata: Metadata = {
   title,
   description,
+  robots: {
+    index: false,
+    follow: false,
+  },
   alternates: {
     canonical: event.routes.registerStudent,
   },
@@ -39,6 +43,7 @@ export const metadata: Metadata = {
 
 export default async function StudentRegistrationPage() {
   const registration = await getRegistrationState();
+  const isPostEvent = registration.statusLabel === "Pendaftaran Ditutup";
   const environmentConfigured = isSupabaseAdminConfigured();
   const configuredTurnstileSiteKey =
     process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
@@ -50,9 +55,17 @@ export default async function StudentRegistrationPage() {
   return (
     <>
       <EventPageHero
-        eyebrow="Jalur mahasiswa"
-        title="Bikin AI jadi pengalaman nyata, bukan cuma tab di browser."
-        description="Ceritakan skill, pengalaman, perangkat, dan role yang paling kamu banget. Kamu tidak harus jago dulu untuk mulai bikin solusi bareng UMKM."
+        eyebrow={isPostEvent ? "Arsip jalur mahasiswa" : "Jalur mahasiswa"}
+        title={
+          isPostEvent
+            ? "Pendaftaran mahasiswa telah ditutup."
+            : "Bikin AI jadi pengalaman nyata, bukan cuma tab di browser."
+        }
+        description={
+          isPostEvent
+            ? "Kegiatan utama telah dilaksanakan pada 10 Agustus 2026. Formulir berikut hanya ditampilkan sebagai pratinjau arsip dan tidak menerima pengiriman baru."
+            : "Ceritakan skill, pengalaman, perangkat, dan role yang paling kamu banget. Kamu tidak harus jago dulu untuk mulai bikin solusi bareng UMKM."
+        }
         status={registration.statusLabel}
         actions={
           <Link
@@ -60,19 +73,24 @@ export default async function StudentRegistrationPage() {
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-brand-200 bg-white px-5 text-sm font-semibold text-brand transition hover:bg-brand-50"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Pilih jalur lain
+            {isPostEvent ? "Kembali ke arsip pendaftaran" : "Pilih jalur lain"}
           </Link>
         }
       />
 
       <section className="bg-surface py-10 sm:py-14 lg:py-18">
         <div className="page-container">
-          <RegistrationProgramBanner audience="student" />
+          {!isPostEvent ? (
+            <RegistrationProgramBanner audience="student" />
+          ) : null}
 
-          <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10">
+          <div
+            className={`${isPostEvent ? "" : "mt-8"} grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10`}
+          >
             <StudentRegistrationForm
               environmentConfigured={environmentConfigured}
               registrationOpen={registration.isOpen}
+              registrationResolved={registration.resolved}
               showConfigurationDetails={process.env.NODE_ENV !== "production"}
               successPath={event.routes.registrationSuccess}
               turnstileSiteKey={turnstileSiteKey}
@@ -106,7 +124,9 @@ export default async function StudentRegistrationPage() {
                     aria-hidden="true"
                   />
                   <h2 className="font-semibold text-ink">
-                    Kriteria jalur mahasiswa
+                    {isPostEvent
+                      ? "Kriteria yang digunakan"
+                      : "Kriteria jalur mahasiswa"}
                   </h2>
                 </div>
                 <ul className="mt-5 space-y-3">
@@ -128,12 +148,14 @@ export default async function StudentRegistrationPage() {
               <div className="rounded-[1.75rem] border border-brand-100 bg-brand-50 p-6">
                 <ShieldCheck className="h-5 w-5 text-brand" aria-hidden="true" />
                 <h2 className="mt-4 font-semibold text-ink">
-                  Seleksi, bukan penerimaan otomatis
+                  {isPostEvent
+                    ? "Proses seleksi telah selesai"
+                    : "Seleksi, bukan penerimaan otomatis"}
                 </h2>
                 <p className="mt-2 text-xs leading-6 text-slate-600">
-                  Kami akan melihat kecocokan role, komposisi tim, perangkat,
-                  dan komitmen hadir. Hasilnya dikirim lewat kontak yang kamu
-                  daftarkan.
+                  {isPostEvent
+                    ? "Kecocokan role, komposisi tim, perangkat, dan komitmen hadir telah digunakan dalam proses seleksi peserta."
+                    : "Kami akan melihat kecocokan role, komposisi tim, perangkat, dan komitmen hadir. Hasilnya dikirim lewat kontak yang kamu daftarkan."}
                 </p>
               </div>
             </aside>

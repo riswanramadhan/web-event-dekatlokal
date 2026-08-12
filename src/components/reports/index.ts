@@ -33,3 +33,16 @@ export {
 export { ProblemValidationReportPage } from "./problem-validation-report";
 export { PartnershipCollaborationReportPage } from "./partnership-collaboration-report";
 export { MediaLightbox, type LightboxMediaItem } from "./media-lightbox";
+export {
+  FinalActionPlanReportPage,
+  GlobalCommunicationReportPage,
+  PitchingMiniProjectReportPage,
+} from "./gep-week-2-reports";
+export {
+  LeadershipConversationReportPage,
+  MeetTheLeaderReportPage,
+  MiniProjectImplementationReportPage,
+  NetworkMobilizationReportPage,
+  ProcessDocumentationReportPage,
+  WeekThreeHubReportPage,
+} from "./gep-week-3-reports";

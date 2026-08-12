@@ -251,6 +251,46 @@ jumlah peserta, partner, hasil, atau dukungan yang belum memiliki bukti.
 - Pola visual boleh diadaptasi; logic dan dependency tidak disalin tanpa alasan.
 - Pemeriksaan akhir harus memastikan tidak ada import production yang mengarah ke `referensi-ui-dekatlokal`.
 
+## Week 2 dan Week 3 Progress Addendum
+
+Progress Pitching Mini Project, Finalisasi Action Plan, Global Communication,
+dan rangkaian Week 3 melanjutkan sistem report produksi yang sudah digunakan
+oleh Week 1 dan dua progress awal Week 2. Implementasi mempertahankan:
+
+- route dinamis `/ai-co-creation-lab-makassar/progress/[slug]`;
+- header report, breadcrumb, status, update date, report actions, dan navigasi
+  previous/next existing;
+- container `max-w-5xl`, card radius `1.5rem`, border netral, shadow ringan,
+  Poppins, label Geist Mono, serta primary blue `#0255F5`;
+- hierarki editorial berupa konteks singkat, evidence, insight, output,
+  progress description, dan next progress;
+- layout mobile-first dengan flow vertikal pada layar sempit dan grid hanya
+  ketika ruang mencukupi;
+- print treatment, focus-visible, touch target, semantic heading, serta
+  reduced-motion behavior existing.
+
+Evidence baru tidak memperkenalkan visual generatif. Pitch deck ditampilkan
+sebagai PDF asli 17 halaman dengan pratinjau click-to-load serta fallback
+view/download agar file besar tidak otomatis dimuat di mobile. Global
+Communication memakai native video player tanpa autoplay dan file MP4 asli.
+Dokumentasi Week 3 hanya memakai aset nyata dari Problem Validation dan
+Partnership; kategori implementasi yang belum memiliki aset terverifikasi
+menampilkan empty state eksplisit.
+
+Untuk menjaga status tetap jujur, report badge diperluas dengan tone eksplisit
+untuk completed, in progress, documentation finalization, dan placeholder.
+Angka pelaksanaan diberi label `Actual`, sedangkan target lama tidak diam-diam
+diubah menjadi impact. Nama pimpinan, isi percakapan, prototype, testimonial,
+dan dokumentasi pelaksanaan yang belum tersedia tidak dibuat-buat.
+
+Seluruh progress bersifat unlisted: tidak ditampilkan pada landing event,
+navbar, atau sitemap, dan metadata serta header response report memakai
+`noindex, nofollow, noarchive`. Aset evidence PDF/MP4 juga memakai
+`X-Robots-Tag` untuk
+mencegah indexing langsung. URL tetap dapat dibuka melalui link yang dibagikan
+serta saling terhubung melalui navigasi report setelah pengguna masuk ke
+rangkaian progress.
+
 ## Partnership & Collaboration Addendum
 
 Halaman Partnership & Collaboration menggunakan pola report existing tanpa mengimpor runtime dari folder referensi. Implementasi mempertahankan header report, breadcrumb, status badge, card radius, spacing, page container, warna brand, typography, print treatment, serta previous dan next navigation yang sudah digunakan pada Problem Validation.

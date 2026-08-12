@@ -13,6 +13,8 @@ export default function robots(): MetadataRoute.Robots {
         "/admin",
         "/api/",
         "/community-support",
+        "/ai-co-creation-lab-makassar/progress",
+        "/ai-co-creation-lab-makassar/register",
         "/ai-co-creation-lab-makassar/journey",
         "/ai-co-creation-lab-makassar/challenges",
         "/ai-co-creation-lab-makassar/teams",

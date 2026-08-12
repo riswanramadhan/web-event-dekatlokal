@@ -159,16 +159,23 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Memetakan stakeholder, potensi kontribusi, hubungan, dan tindak lanjut partnership.",
     progressDescription:
-      "Pemetaan jejaring awal telah disusun dengan mengidentifikasi Rumah BUMN Makassar, pelaku UMKM, mahasiswa, Universitas Hasanuddin, komunitas teknologi, DekatLokal, calon mitra tempat, serta BAKTI NUSA sebagai stakeholder potensial atau konteks program. Potensi kontribusi dan tindak lanjut dipetakan sebagai dasar pembangunan partnership. Status keterlibatan setiap pihak tetap menunggu konfirmasi.",
+      "Leadership Network Mapping awal telah diselesaikan sebagai fondasi untuk partnership Week 2 dan mobilisasi jejaring Week 3. Peta membedakan stakeholder potensial, bentuk kontribusi, prioritas pendekatan, dan status hubungan; penyelesaian artefak ini tidak berarti seluruh pihak otomatis menjadi mitra aktif.",
     output: [
       "Peta stakeholder awal.",
       "Hipotesis kontribusi setiap stakeholder.",
       "Prioritas pendekatan dan tindak lanjut.",
       "Catatan status konfirmasi jejaring.",
     ],
-    status: "in_progress",
-    updatedAt: null,
-    evidence: [],
+    status: "completed",
+    updatedAt: "30 Juli 2026",
+    evidence: [
+      {
+        label: "Laporan Leadership Network Mapping Week 1",
+        href:
+          "/ai-co-creation-lab-makassar/progress/leadership-network-mapping",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Pemetaan jejaring membantu melihat hubungan sebagai pertukaran nilai yang perlu dikelola secara jujur dan berkelanjutan.",
   },
@@ -179,15 +186,22 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Mengidentifikasi kesenjangan akses, kemampuan, dan pendampingan antara mahasiswa dan UMKM.",
     progressDescription:
-      "Observasi awal menunjukkan adanya kesenjangan antara mahasiswa yang memiliki akses terhadap perangkat dan teknologi AI dengan pelaku UMKM yang memiliki permasalahan usaha nyata tetapi terbatas dalam perangkat, literasi, dan pendampingan. Isu ini masih perlu divalidasi melalui wawancara stakeholder.",
+      "Identifikasi awal masalah sosial telah diselesaikan dengan merumuskan kesenjangan antara pengalaman mahasiswa menggunakan AI dan kebutuhan operasional nyata UMKM. Rumusan awal ini kemudian diuji melalui Problem Validation Week 2; laporan Week 1 tetap diposisikan sebagai artefak problem discovery, bukan klaim dampak.",
     output: [
       "Rumusan awal isu sosial.",
       "Hipotesis penyebab dan pihak terdampak.",
       "Daftar pertanyaan validasi stakeholder.",
     ],
-    status: "in_progress",
-    updatedAt: null,
-    evidence: [],
+    status: "completed",
+    updatedAt: "30 Juli 2026",
+    evidence: [
+      {
+        label: "Laporan Identifikasi Masalah Sosial Week 1",
+        href:
+          "/ai-co-creation-lab-makassar/progress/identifikasi-masalah-sosial",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Pemimpin perlu menahan asumsi dan memberi ruang bagi pengalaman stakeholder sebelum menetapkan masalah.",
   },
@@ -198,7 +212,7 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menyusun konsep awal program, pengguna, nilai, aktivitas, output, dan indikator dampak.",
     progressDescription:
-      "Konsep awal AI Co Creation Lab Makassar disusun dengan kuota 20 mahasiswa dan 5 UMKM. Peserta direncanakan merancang solusi sederhana berdasarkan permasalahan nyata melalui bootcamp dan co creation selama satu hari. Canvas masih dapat berubah mengikuti hasil validasi dan partnership.",
+      "Mini Project Canvas awal telah diselesaikan untuk menyelaraskan masalah, sasaran, value proposition, aktivitas, target output, indikator, dan risiko AI Co-Creation Lab Makassar. Canvas ini menjadi baseline desain; pembaruan pasca-validasi dan reviewer dicatat terpisah dalam Final Action Plan Week 2.",
     output: [
       "Rumusan masalah dan sasaran.",
       "Value proposition program.",
@@ -206,9 +220,16 @@ const journeyActivityDefinitions = [
       "Target output dan indikator awal.",
       "Asumsi serta risiko yang perlu divalidasi.",
     ],
-    status: "in_progress",
-    updatedAt: null,
-    evidence: [],
+    status: "completed",
+    updatedAt: "30 Juli 2026",
+    evidence: [
+      {
+        label: "Laporan Mini Project Canvas Week 1",
+        href:
+          "/ai-co-creation-lab-makassar/progress/mini-project-canvas",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Canvas dipakai sebagai alat menyelaraskan arah, bukan sebagai alasan untuk mengabaikan temuan baru.",
   },
@@ -246,15 +267,15 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Membangun kolaborasi program, UMKM, pembelajaran, infrastruktur, venue, dan talenta akademik berdasarkan evidence.",
     progressDescription:
-      "Progress partnership sedang berjalan dengan dua MoU yang telah diverifikasi, dokumentasi komitmen kolaborasi Rumah BUMN Makassar, supporting document venue Komdigi Makassar dan Makassar Creative Hub, serta dukungan ekosistem program dan talenta akademik. Status dan nilai dukungan ditampilkan sesuai bukti yang tersedia.",
+      "Output Partnership Building Week 2 telah diselesaikan melalui dua MoU yang telah diverifikasi, dokumentasi komitmen kolaborasi Rumah BUMN Makassar, supporting document venue Komdigi Makassar dan Makassar Creative Hub, serta dukungan ekosistem program dan talenta akademik. Hubungan kolaborasi dan dokumentasi lanjutan tetap berjalan setelah milestone Week 2.",
     output: [
       "Pemetaan sembilan institusi pendukung dan perannya.",
       "Dua MoU yang telah diverifikasi dari file project.",
       "Dokumentasi komitmen dan supporting document venue.",
       "Ringkasan dukungan in-kind yang memiliki nilai resmi.",
     ],
-    status: "in_progress",
-    updatedAt: "4 Agustus 2026",
+    status: "completed",
+    updatedAt: "12 Agustus 2026",
     evidence: [
       {
         label: "Laporan Partnership & Collaboration Week 2",
@@ -271,18 +292,25 @@ const journeyActivityDefinitions = [
     week: 2,
     title: "Pitching Mini Project",
     shortDescription:
-      "Menyampaikan masalah, rancangan program, kebutuhan dukungan, dan ukuran keberhasilan secara ringkas.",
+      "Mempresentasikan konsep mini project kepada reviewer untuk memvalidasi dan memperkuat rencana implementasi.",
     progressDescription:
-      "Pitch mini project akan disusun setelah temuan validasi cukup untuk mendukung narasi masalah. Materi direncanakan menjelaskan konteks, konsep AI Co Creation Lab Makassar, batas lingkup satu hari, target, kebutuhan partnership, risiko, dan rencana pengukuran tanpa mengklaim hasil yang belum terjadi.",
+      "Pitching Mini Project telah diselesaikan dengan mempresentasikan konsep AI Co-Creation Lab Makassar kepada reviewer. Konsep utama tetap dipertahankan, sementara masukan reviewer digunakan untuk memperkuat sustainability, impact measurement, dan replication sebelum implementasi.",
     output: [
-      "Pitch deck mini project.",
-      "Narasi pitch singkat.",
-      "Daftar kebutuhan dukungan.",
-      "Catatan pertanyaan dan umpan balik.",
+      "Pitch deck 17 slide yang telah dipresentasikan dan direview.",
+      "Ringkasan enam bagian utama pitch.",
+      "Tiga arah penguatan dari reviewer.",
+      "Daftar replication assets awal.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "completed",
+    updatedAt: "12 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Pitching Mini Project Week 2",
+        href:
+          "/ai-co-creation-lab-makassar/progress/pitching-mini-project",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Pitching adalah latihan mengubah kompleksitas menjadi ajakan kolaborasi yang jelas dan dapat dipertanggungjawabkan.",
   },
@@ -291,19 +319,24 @@ const journeyActivityDefinitions = [
     week: 2,
     title: "Finalisasi Action Plan",
     shortDescription:
-      "Mengubah konsep menjadi urutan kerja, penanggung jawab, kebutuhan, risiko, dan titik keputusan.",
+      "Menyempurnakan rencana implementasi berdasarkan masukan reviewer tanpa mengubah konsep utama project.",
     progressDescription:
-      "Action plan final akan disusun setelah problem validation dan pembicaraan partnership. Rencana akan memuat persiapan peserta, validasi challenge, pembagian tim, bootcamp, co creation, testing, handover, dokumentasi, dan monitoring. Tanggal final serta penanggung jawab belum dipublikasikan.",
+      "Finalisasi Action Plan menyempurnakan AI Co-Creation Lab Makassar yang sama—bukan mengganti konsepnya. Perubahan utama adalah memperpanjang perjalanan dari prototype menuju adoption, membedakan impact mahasiswa dan UMKM, serta menyiapkan dokumentasi agar model dapat direplikasi.",
     output: [
-      "Timeline kerja.",
-      "Pembagian peran dan penanggung jawab.",
-      "Daftar kebutuhan operasional.",
-      "Risk register dan rencana mitigasi.",
-      "Checklist kesiapan kegiatan.",
+      "Perbandingan rencana sebelum dan setelah review.",
+      "Tiga perbaikan utama pasca-review.",
+      "Sustainability model pada level solution, impact, dan program.",
+      "Final action plan sembilan fase.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "completed",
+    updatedAt: "12 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Finalisasi Action Plan Week 2",
+        href: "/ai-co-creation-lab-makassar/progress/final-action-plan",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Fokus kepemimpinan: menerjemahkan visi menjadi keputusan, kepemilikan tugas, dan batas waktu yang realistis.",
   },
@@ -312,17 +345,24 @@ const journeyActivityDefinitions = [
     week: 2,
     title: "Global Communication",
     shortDescription:
-      "Melatih komunikasi lintas konteks agar project lokal dapat dipahami audiens yang lebih luas.",
+      "Menyampaikan perjalanan kepemimpinan dan misi project melalui video singkat berbahasa asing.",
     progressDescription:
-      "Aktivitas ini direncanakan untuk menyusun penjelasan project yang ringkas, kontekstual, dan dapat dipahami oleh audiens di luar Makassar. Materi akan menjaga istilah lokal tetap terjelaskan serta membedakan target, proses, dan dampak aktual. Output komunikasi belum dipublikasikan.",
+      "Global Communication telah diselesaikan melalui video berdurasi maksimal dua menit dalam bahasa asing. Video memperkenalkan perjalanan kepemimpinan Riswan Ramadhan, nilai integrity, collaboration, dan real impact, serta mengundang kolaborasi melalui AI Co-Creation Lab Makassar.",
     output: [
-      "Ringkasan project dalam format komunikasi global.",
-      "Glosarium konteks lokal yang diperlukan.",
-      "Versi pesan untuk audiens berbeda.",
+      "Video My Leadership Journey.",
+      "Ringkasan pesan kepemimpinan dan personal mission.",
+      "Publikasi Instagram yang dapat diakses publik.",
+      "Transisi menuju Week 3 — Lead The Action.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "completed",
+    updatedAt: "12 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Global Communication Week 2",
+        href: "/ai-co-creation-lab-makassar/progress/global-communication",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Komunikasi lintas konteks membutuhkan kejelasan, empati terhadap audiens, dan ketelitian menjaga makna.",
   },
@@ -331,18 +371,24 @@ const journeyActivityDefinitions = [
     week: 3,
     title: "Meet the Leader Challenge",
     shortDescription:
-      "Mempersiapkan pertemuan pembelajaran dengan pemimpin yang relevan terhadap project.",
+      "Mendokumentasikan audiensi pembelajaran bersama pimpinan Rumah BUMN Makassar.",
     progressDescription:
-      "Pertemuan dengan pemimpin belum dilaksanakan. Persiapan direncanakan mencakup pemilihan narasumber yang relevan, tujuan belajar, pertanyaan tentang mobilisasi jejaring dan pengambilan keputusan, serta permintaan persetujuan dokumentasi.",
+      "Audiensi Meet the Leader telah dilakukan bersama pimpinan Rumah BUMN Makassar. Identitas pimpinan, isi percakapan terperinci, refleksi, dan dokumentasi belum dipublikasikan karena masih berada dalam tahap finalisasi dan verifikasi.",
     output: [
-      "Kriteria dan pilihan narasumber.",
-      "Tujuan percakapan.",
-      "Daftar pertanyaan.",
-      "Catatan persetujuan dokumentasi.",
+      "Konteks audiensi bersama Rumah BUMN Makassar.",
+      "Struktur leader profile.",
+      "Slot leadership insights dan feedback mini project.",
+      "Ruang personal reflection dan dokumentasi.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "in_progress",
+    updatedAt: "12 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Meet the Leader Challenge Week 3",
+        href: "/ai-co-creation-lab-makassar/progress/meet-the-leader",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Fokus kepemimpinan: datang dengan rasa ingin tahu dan menghargai waktu serta pengalaman narasumber.",
   },
@@ -351,18 +397,24 @@ const journeyActivityDefinitions = [
     week: 3,
     title: "Leadership Conversation Report",
     shortDescription:
-      "Menyusun laporan percakapan dan menerjemahkan pelajaran menjadi keputusan project.",
+      "Menyusun laporan percakapan kepemimpinan setelah catatan dan evidence terverifikasi.",
     progressDescription:
-      "Laporan belum tersedia karena percakapan belum dilaksanakan. Setelah kegiatan, laporan direncanakan memuat konteks narasumber yang disetujui, pokok pembelajaran, relevansi terhadap mini project, keputusan yang berubah, dan tindak lanjut.",
+      "Leadership Conversation Report masih disusun. Halaman laporan menampilkan struktur yang siap menerima leader profile, pokok diskusi, insights, feedback, reflection, supporting documentation, dan file laporan setelah seluruh materi terverifikasi.",
     output: [
-      "Ringkasan percakapan.",
-      "Pelajaran kepemimpinan utama.",
-      "Implikasi terhadap keputusan project.",
-      "Rencana tindak lanjut.",
+      "Template struktur laporan percakapan.",
+      "State file report yang jujur dan mudah diperbarui.",
+      "Slot supporting documentation.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "in_progress",
+    updatedAt: "12 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Leadership Conversation Week 3",
+        href:
+          "/ai-co-creation-lab-makassar/progress/leadership-conversation",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Percakapan menjadi bernilai ketika pembelajaran diterjemahkan menjadi perubahan tindakan yang dapat diamati.",
   },
@@ -371,19 +423,25 @@ const journeyActivityDefinitions = [
     week: 3,
     title: "Pelaksanaan Mini Project",
     shortDescription:
-      "Menjalankan bootcamp, co creation, testing, demo, dan handover sesuai batas lingkup.",
+      "Menjalankan AI Co-Creation Lab Makassar dan melanjutkan tindak lanjut pasca-kegiatan.",
     progressDescription:
-      "Pelaksanaan AI Co Creation Lab Makassar belum berlangsung. Pada tahap implementasi, empat tim yang direncanakan akan bekerja bersama challenge partner untuk membuat solusi sederhana, melakukan verifikasi, menguji langkah utama, dan menyerahkan panduan penggunaan.",
+      "AI Co-Creation Lab Makassar 2026 telah dilaksanakan pada 10 Agustus 2026 dengan 20 mahasiswa, lima UMKM, dan lima co-creation teams. Detail prototype, testing, testimonial, serta dokumentasi pelaksanaan masih dikonsolidasikan; post-project follow-up berlanjut melalui UAT, improvement, deployment, handover, dan monitoring.",
     output: [
-      "Catatan pelaksanaan.",
-      "Workflow atau prototype per tim.",
-      "Hasil testing.",
-      "Panduan penggunaan.",
-      "Daftar batasan dan tindak lanjut.",
+      "Pelaksanaan kegiatan utama pada 10 Agustus 2026.",
+      "Lima co-creation cases berdasarkan UMKM yang telah tervalidasi.",
+      "Struktur evidence pelaksanaan dan output prototype.",
+      "Post-lab journey untuk tindak lanjut solusi.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "completed",
+    updatedAt: "12 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Pelaksanaan Mini Project Week 3",
+        href:
+          "/ai-co-creation-lab-makassar/progress/mini-project-implementation",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Fokus kepemimpinan: menjaga arah dan keselamatan proses sambil memberi ruang kepada tim untuk mengambil peran.",
   },
@@ -392,18 +450,23 @@ const journeyActivityDefinitions = [
     week: 3,
     title: "Mobilisasi Jejaring",
     shortDescription:
-      "Mengaktifkan kontribusi stakeholder berdasarkan kebutuhan nyata dan komitmen yang telah disepakati.",
+      "Menghubungkan kebutuhan program dengan kontribusi stakeholder dalam ekosistem kolaborasi.",
     progressDescription:
-      "Mobilisasi jejaring belum dilaksanakan. Aktivitas direncanakan untuk mencocokkan kebutuhan project dengan kontribusi yang telah disetujui, seperti akses calon peserta, validasi challenge, tempat, pengetahuan, dokumentasi, atau dukungan pelaksanaan. Kontribusi aktual akan dicatat setelah terjadi.",
+      "Mobilisasi jejaring menghubungkan kebutuhan program dengan kontribusi lembaga, ekosistem UMKM, infrastruktur digital, pembelajaran, venue, ruang kolaborasi, dan talenta teknis. Daftar pada laporan diturunkan dari sumber partnership existing agar tidak membuat klaim mitra baru; dokumentasi pendukung masih dilanjutkan.",
     output: [
-      "Daftar kontribusi yang diminta.",
-      "Konfirmasi kontribusi yang disetujui.",
-      "Pembagian tindak lanjut.",
-      "Rekap kontribusi aktual.",
+      "Pemetaan peran stakeholder berdasarkan kategori kontribusi.",
+      "Daftar lima UMKM co-creators dari data problem validation.",
+      "Narasi kontribusi ekosistem yang tidak berhenti pada logo.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "in_progress",
+    updatedAt: "12 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Mobilisasi Jejaring Week 3",
+        href: "/ai-co-creation-lab-makassar/progress/network-mobilization",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Mobilisasi bukan sekadar mengumpulkan kontak. Pemimpin perlu menghubungkan kontribusi dengan tujuan dan menjaga akuntabilitas.",
   },
@@ -412,18 +475,24 @@ const journeyActivityDefinitions = [
     week: 3,
     title: "Dokumentasi Proses",
     shortDescription:
-      "Mendokumentasikan persiapan, implementasi, keputusan, dan perubahan secara runtut.",
+      "Mengorganisasi evidence persiapan, kolaborasi, pelaksanaan, dan tindak lanjut secara runtut.",
     progressDescription:
-      "Bukti proses belum dipublikasikan. Dokumentasi direncanakan mencakup audiensi, persiapan, implementasi, demo, dan monitoring dengan caption yang menjelaskan konteks. Hanya aset dan tautan yang aman serta memiliki persetujuan yang akan ditampilkan.",
+      "Dokumentasi proses masih diorganisasi. Laporan menggunakan evidence pra-pelaksanaan yang sudah tersedia dan memberi empty state untuk kategori pelaksanaan yang belum memiliki aset publik terverifikasi. Tidak ada stock image atau dokumentasi rekaan.",
     output: [
-      "Daftar dokumentasi per kategori.",
-      "Caption kontekstual.",
-      "Tautan bukti yang telah diverifikasi.",
-      "Catatan izin publikasi.",
+      "Taksonomi 16 kategori dokumentasi proses.",
+      "Galeri evidence problem validation yang sudah tersedia.",
+      "Pranala evidence partnership yang sudah tersedia.",
+      "Empty state untuk dokumentasi pelaksanaan yang belum final.",
     ],
-    status: "planned",
-    updatedAt: null,
-    evidence: [],
+    status: "in_progress",
+    updatedAt: "12 Agustus 2026",
+    evidence: [
+      {
+        label: "Laporan Dokumentasi Proses Week 3",
+        href: "/ai-co-creation-lab-makassar/progress/process-documentation",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Dokumentasi yang baik membuat keputusan dan pembelajaran dapat ditinjau tanpa mengorbankan privasi.",
   },
@@ -434,15 +503,15 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menutup pekerjaan terbuka dan memantau penggunaan solusi setelah handover.",
     progressDescription:
-      "Monitoring belum dimulai karena implementasi belum berlangsung. Rencana monitoring akan memeriksa apakah UMKM dapat mengakses panduan, menggunakan kembali solusi, menemukan hambatan, dan membutuhkan penyesuaian pada H+3 atau H+7 sesuai kesepakatan.",
+      "Post-project monitoring sedang berjalan setelah kegiatan utama 10 Agustus 2026. Kerangka pengukuran memisahkan Baseline dari follow-up H+7, H+14, dan H+30 untuk memeriksa akses, penggunaan ulang, hambatan, serta kebutuhan perbaikan. Hasil per tim belum dipublikasikan karena evidence masih dikonsolidasikan.",
     output: [
       "Checklist penyelesaian output.",
-      "Catatan monitoring H+3 atau H+7.",
+      "Catatan Baseline, H+7, H+14, dan H+30.",
       "Daftar hambatan penggunaan.",
       "Tindak lanjut perbaikan.",
     ],
-    status: "planned",
-    updatedAt: null,
+    status: "in_progress",
+    updatedAt: "12 Agustus 2026",
     evidence: [],
     leadershipInsight:
       "Tanggung jawab project tidak berhenti saat acara selesai. Handover dan tindak lanjut menentukan kegunaan hasil.",
@@ -454,16 +523,16 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Membandingkan target dengan data aktual melalui metode yang telah ditetapkan.",
     progressDescription:
-      "Pengukuran dampak belum dilakukan. Rencana mencakup kehadiran, pembentukan tim, penyelesaian dan testing solusi, tes awal dan tes akhir mahasiswa, kemampuan UMKM mencoba, penggunaan ulang, kepuasan, serta testimoni yang memiliki persetujuan publikasi.",
+      "Pengukuran dampak sedang berjalan. Data aktual kegiatan utama mencatat 20 mahasiswa, lima UMKM, dan lima co-creation teams; angka ini dilaporkan terpisah dari target. Data penyelesaian prototype, testing, pembelajaran, adopsi, kepuasan, dan testimoni masih dikonsolidasikan melalui Baseline serta follow-up H+7, H+14, dan H+30 sehingga belum dinyatakan sebagai dampak final.",
     output: [
-      "Data target dan aktual yang dipisahkan.",
+      "Data target dan aktual partisipasi yang dipisahkan.",
       "Perbandingan tes awal dan tes akhir.",
-      "Rekap testing dan penggunaan ulang.",
+      "Rekap testing dan penggunaan ulang pada setiap titik monitoring.",
       "Catatan keterbatasan pengukuran.",
       "Ringkasan dampak terverifikasi.",
     ],
-    status: "planned",
-    updatedAt: null,
+    status: "in_progress",
+    updatedAt: "12 Agustus 2026",
     evidence: [],
     leadershipInsight:
       "Fokus kepemimpinan: melaporkan hasil secara jujur, termasuk capaian yang belum terpenuhi dan keterbatasan data.",

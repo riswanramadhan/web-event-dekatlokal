@@ -218,7 +218,7 @@ export const aiCoCreationLabEvent = {
   description:
     "Program praktik satu hari yang mempertemukan 20 mahasiswa dan 5 UMKM untuk meracik solusi AI yang simpel, aman, dan relevan bagi kebutuhan usaha nyata.",
   featuredSummary:
-    "20 mahasiswa dan 5 UMKM satu meja, bongkar masalah usaha yang real, lalu bikin solusi AI yang bisa langsung dicoba.",
+    "20 mahasiswa dan 5 UMKM telah berkolaborasi dalam lima tim; detail output dan pengujian sedang dikonsolidasikan.",
   branding: {
     logo: {
       src: "/event-brand/ai-co-creation-lab-makassar.webp",
@@ -227,8 +227,8 @@ export const aiCoCreationLabEvent = {
       height: 268,
     },
   },
-  status: "registration_open",
-  statusLabel: "Pendaftaran Dibuka",
+  status: "completed",
+  statusLabel: "Kegiatan Telah Dilaksanakan",
   fee: {
     amount: 0,
     currency: "IDR",
@@ -236,7 +236,7 @@ export const aiCoCreationLabEvent = {
   },
   capacity: {
     total: 25,
-    statusLabel: "Kuota terbatas",
+    statusLabel: "Kegiatan telah selesai",
   },
   date: {
     value: "2026-08-10",
@@ -282,14 +282,14 @@ export const aiCoCreationLabEvent = {
     {
       id: "teams",
       label: "Tim",
-      target: 4,
+      target: 5,
       unit: "tim",
       kind: "target",
     },
     {
       id: "ai-solutions",
       label: "Solusi AI",
-      target: 4,
+      target: 5,
       unit: "solusi",
       kind: "target",
     },
@@ -349,9 +349,9 @@ export const aiCoCreationLabEvent = {
     },
     concept: {
       eyebrow: "Konsep program",
-      title: "Dengar masalahnya, bikin bareng, lalu tes sampai kepakai.",
+      title: "Dengar masalahnya, bikin bareng, lalu lanjutkan pengujiannya.",
       description:
-        "Setiap tim memahami kebutuhan UMKM, membuat alur kerja atau prototype sederhana, mengujinya bersama, lalu menyiapkan panduan yang ramah smartphone.",
+        "Setiap tim memahami kebutuhan UMKM dan menyusun alur kerja atau konsep prototype sederhana. Detail testing, output, dan panduan masih dikonsolidasikan sebagai evidence tindak lanjut.",
     },
     eventFlow: {
       eyebrow: "Alur kegiatan",
@@ -512,7 +512,7 @@ export const aiCoCreationLabEvent = {
   problem:
     "Mahasiswa telah menggunakan AI untuk berbagai kebutuhan, tetapi belum semuanya memiliki pengalaman mengubah teknologi tersebut menjadi solusi bagi pengguna nyata. Pada sisi lain, pelaku UMKM memiliki permasalahan usaha yang dapat dibantu AI, tetapi terkendala perangkat, waktu, literasi, atau pendampingan.",
   solution:
-    "AI Co Creation Lab Makassar mempertemukan mahasiswa dan UMKM dalam tim kolaborasi. Setiap tim memahami satu masalah, menyusun alur kerja atau prototype sederhana, menguji hasil bersama UMKM, lalu menyerahkan panduan yang dapat digunakan kembali melalui smartphone.",
+    "AI Co Creation Lab Makassar mempertemukan mahasiswa dan UMKM dalam tim kolaborasi. Setiap tim memahami satu masalah dan menyusun arah solusi sederhana; pengujian, perbaikan, handover, dan monitoring dilanjutkan sebagai perjalanan pasca-kegiatan.",
   importantLimitation:
     "Program tidak menjanjikan pembangunan aplikasi kompleks dalam satu hari. Target kegiatan adalah solusi AI sederhana, relevan, aman, dapat diuji, dan dapat digunakan ulang.",
   howItWorks: [
@@ -542,7 +542,7 @@ export const aiCoCreationLabEvent = {
     {
       id: "testing-handover",
       title: "Testing dan handover",
-      description: "UMKM mencoba hasil dan menerima panduan.",
+      description: "Testing, panduan, dan handover dikonsolidasikan pada tindak lanjut.",
     },
     {
       id: "monitoring",
@@ -586,10 +586,10 @@ export const aiCoCreationLabEvent = {
     umkm: [
       "Belajar AI melalui kasus usaha sendiri.",
       "Didampingi mahasiswa yang membawa perangkat.",
-      "Memperoleh workflow atau prototype sederhana.",
-      "Mencoba solusi secara langsung.",
-      "Menerima panduan penggunaan melalui smartphone.",
-      "Mendapat monitoring setelah kegiatan.",
+      "Terlibat dalam penyusunan arah workflow atau prototype sederhana.",
+      "Memiliki jalur testing dan improvement yang dapat ditindaklanjuti.",
+      "Menerima panduan setelah evidence dan output siap diserahterimakan.",
+      "Masuk dalam rencana monitoring pasca-kegiatan.",
     ],
   },
   criteria: {
@@ -612,7 +612,7 @@ export const aiCoCreationLabEvent = {
       time: "13.00 sampai 16.30",
       title: "Bootcamp dan co creation",
       description:
-        "Rangkaian pembelajaran, perumusan masalah, co creation, pengujian, dan penutupan. Pembagian waktu setiap sesi akan diumumkan setelah agenda final.",
+        "Rangkaian pembelajaran, perumusan masalah, co creation, dan penutupan telah dilaksanakan. Detail output serta evidence pengujian masih dikonsolidasikan.",
     },
   ],
   partners: [
@@ -628,26 +628,32 @@ export const aiCoCreationLabEvent = {
       fallbackLabel: "DekatLokal",
     },
     {
-      id: "potential-main-partner",
+      id: "rumah-bumn-makassar",
       name: "Rumah BUMN Makassar",
       role: "supporter",
-      roleLabel: "Calon mitra utama",
-      status: "in_process",
-      statusLabel: "Dalam Proses Konfirmasi",
-      approved: false,
-      logo: null,
-      fallbackLabel: "Mitra utama dalam proses konfirmasi",
+      roleLabel: "UMKM Ecosystem & Implementation Partner",
+      status: "confirmed",
+      statusLabel: "Kolaborasi Berjalan",
+      approved: true,
+      logo: {
+        src: "/logo-ecosystem/optimized/logo-rumahbumn.webp",
+        alt: "Logo Rumah BUMN Makassar",
+      },
+      fallbackLabel: "Rumah BUMN Makassar",
     },
     {
-      id: "potential-venue-partner",
-      name: "Komdigi atau unit terkait",
+      id: "komdigi-makassar",
+      name: "Balai Besar Pelatihan Komunikasi dan Digital Makassar",
       role: "venue_partner",
-      roleLabel: "Calon mitra tempat",
-      status: "unconfirmed",
-      statusLabel: "Belum Dikonfirmasi",
-      approved: false,
-      logo: null,
-      fallbackLabel: "Mitra tempat belum dikonfirmasi",
+      roleLabel: "Main Venue Partner",
+      status: "confirmed",
+      statusLabel: "Venue Confirmed",
+      approved: true,
+      logo: {
+        src: "/logo-ecosystem/optimized/logo-komdigimakassar.webp",
+        alt: "Logo Komdigi Makassar",
+      },
+      fallbackLabel: "Komdigi Makassar",
     },
   ],
   programContext: {

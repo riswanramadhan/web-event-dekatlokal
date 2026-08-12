@@ -27,6 +27,10 @@ const umkmTarget =
 export const metadata: Metadata = {
   title,
   description,
+  robots: {
+    index: false,
+    follow: false,
+  },
   alternates: {
     canonical: event.routes.registerUmkm,
   },
@@ -39,6 +43,7 @@ export const metadata: Metadata = {
 
 export default async function UmkmRegistrationPage() {
   const registration = await getRegistrationState();
+  const isPostEvent = registration.statusLabel === "Pendaftaran Ditutup";
   const environmentConfigured = isSupabaseAdminConfigured();
   const configuredTurnstileSiteKey =
     process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
@@ -50,9 +55,17 @@ export default async function UmkmRegistrationPage() {
   return (
     <>
       <EventPageHero
-        eyebrow="Jalur UMKM"
-        title="Cerita usahamu bisa jadi titik awal solusi yang lebih ringan."
-        description="Bawa satu proses yang terasa ribet atau berulang. Kamu tidak perlu jago AI, cukup paham usahamu dan siap mencoba bareng tim mahasiswa."
+        eyebrow={isPostEvent ? "Arsip jalur UMKM" : "Jalur UMKM"}
+        title={
+          isPostEvent
+            ? "Pendaftaran UMKM telah ditutup."
+            : "Cerita usahamu bisa jadi titik awal solusi yang lebih ringan."
+        }
+        description={
+          isPostEvent
+            ? "Kegiatan utama telah dilaksanakan pada 10 Agustus 2026. Formulir berikut hanya ditampilkan sebagai pratinjau arsip dan tidak menerima pengiriman baru."
+            : "Bawa satu proses yang terasa ribet atau berulang. Kamu tidak perlu jago AI, cukup paham usahamu dan siap mencoba bareng tim mahasiswa."
+        }
         status={registration.statusLabel}
         actions={
           <Link
@@ -60,19 +73,24 @@ export default async function UmkmRegistrationPage() {
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-brand-200 bg-white px-5 text-sm font-semibold text-brand transition hover:bg-brand-50"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Pilih jalur lain
+            {isPostEvent ? "Kembali ke arsip pendaftaran" : "Pilih jalur lain"}
           </Link>
         }
       />
 
       <section className="bg-surface py-10 sm:py-14 lg:py-18">
         <div className="page-container">
-          <RegistrationProgramBanner audience="umkm" />
+          {!isPostEvent ? (
+            <RegistrationProgramBanner audience="umkm" />
+          ) : null}
 
-          <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10">
+          <div
+            className={`${isPostEvent ? "" : "mt-8"} grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-10`}
+          >
             <UmkmRegistrationForm
               environmentConfigured={environmentConfigured}
               registrationOpen={registration.isOpen}
+              registrationResolved={registration.resolved}
               showConfigurationDetails={process.env.NODE_ENV !== "production"}
               successPath={event.routes.registrationSuccess}
               turnstileSiteKey={turnstileSiteKey}
@@ -106,7 +124,9 @@ export default async function UmkmRegistrationPage() {
                     aria-hidden="true"
                   />
                   <h2 className="font-semibold text-ink">
-                    Kriteria jalur UMKM
+                    {isPostEvent
+                      ? "Kriteria yang digunakan"
+                      : "Kriteria jalur UMKM"}
                   </h2>
                 </div>
                 <ul className="mt-5 space-y-3">
