@@ -47,10 +47,10 @@ Adaptasi event mempertahankan hierarki tersebut, tetapi teks form dan informasi 
 
 Palet utama referensi:
 
-| Token | Nilai |
-|---|---|
-| Primary | `#0255F5` |
-| Primary 50 | `#EBF1FE` |
+| Token       | Nilai     |
+| ----------- | --------- |
+| Primary     | `#0255F5` |
+| Primary 50  | `#EBF1FE` |
 | Primary 100 | `#B7CFFC` |
 | Primary 200 | `#83AEFA` |
 | Primary 300 | `#4F8DF8` |
@@ -301,3 +301,52 @@ Interaksi baru dibatasi pada kebutuhan progress report:
 - Dokumentasi memakai modal gambar di dalam halaman tanpa tab baru.
 - Pratinjau PDF memakai halaman WebP vertikal yang dapat discroll.
 - Card tanpa asset gambar tidak membuat placeholder image.
+
+## Week 4 Progress Addendum
+
+Week 4 — Measure, Reflect & Sustain melanjutkan sistem report yang sama tanpa
+membuat layout atau navigasi paralel. Hub dan detail tetap memakai route datar
+`/ai-co-creation-lab-makassar/progress/[slug]`, header report, breadcrumb,
+filter week, status badge, progress description, navigasi previous/next,
+footer, serta treatment print existing. Route progress tetap unlisted, memakai
+metadata serta response header `noindex, nofollow, noarchive`, dan tidak
+ditambahkan ke sitemap. Route sengaja tetap dapat dicrawl agar crawler dapat
+membaca directive `noindex`; ini bukan access control dan link tetap harus
+dibagikan langsung.
+
+Penyajian visual Week 4 mempertahankan container `max-w-5xl`, typography,
+spacing, radius card, border, shadow, dan warna brand dari Week 1–3. Diagram
+monitoring, measurement timeline, sustainability flow, dan final journey
+memakai pola flow sederhana yang menumpuk vertikal pada mobile lalu membungkus
+secara aman ketika ruang bertambah. Progress cards, evidence cards, checklist,
+dan framework menggunakan surface serta hierarki editorial existing; tidak ada
+chart, ilustrasi AI, gradient tambahan, atau animasi dekoratif baru.
+
+Status Week 4 disampaikan melalui teks, ikon, dan tone. Navigasi hanya memakai
+checkmark hijau untuk status yang benar-benar selesai. `In Progress`, data
+collection, documentation/finalization, dan framework development tetap
+ditampilkan sebagai pekerjaan berjalan; `To Be Completed`, preparation, dan
+planned memakai state netral. Dengan demikian frasa `To Be Completed` tidak
+keliru dibaca sebagai completed hanya karena mengandung kata “completed”.
+
+Boundary evidence dan data tetap eksplisit:
+
+- lima UMKM memakai sumber data Problem Validation existing, bukan daftar nama
+  kedua;
+- 20 mahasiswa, lima UMKM, dan lima tim hanya diposisikan sebagai actual
+  kegiatan yang telah tersedia, bukan bukti impact;
+- status prototype, UAT, deployment, handover, adoption, perubahan kemampuan,
+  operational benefit, persentase, dan testimoni tidak diisi sebelum evidence
+  terverifikasi;
+- target dan actual result dipisahkan secara visual dan semantik;
+- Project Monitoring Report, Impact Report, Leadership Reflection Essay, dan
+  Final Presentation memakai empty state serta aksi nonaktif selama file belum
+  tersedia;
+- struktur Leadership Reflection tidak diisi dengan cerita personal rekaan,
+  dan Final Presentation tidak memakai dummy deck.
+
+Data journey Week 4 diselaraskan ke empat detail progress melalui evidence link
+website. Monitoring dan impact measurement tetap berstatus dalam proses,
+sedangkan leadership reflection dan final presentation tetap planned sampai
+output final tersedia. Tanggal pembaruan pada journey menunjukkan pembaruan
+struktur halaman, bukan tanggal penyelesaian atau klaim hasil.

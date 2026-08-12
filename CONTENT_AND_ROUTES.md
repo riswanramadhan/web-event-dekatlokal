@@ -157,8 +157,8 @@ Program tidak menjanjikan pembangunan aplikasi kompleks dalam satu hari. Target 
 
 ## 6. Rundown
 
-| Waktu | Aktivitas |
-|---|---|
+| Waktu                   | Aktivitas                                                                                  |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
 | 13.00 sampai 16.30 WITA | Bootcamp dan co creation. Pembagian waktu setiap sesi akan diumumkan setelah agenda final. |
 
 ---
@@ -327,12 +327,17 @@ Content:
 - Mobilisasi Jejaring
 - Dokumentasi Proses
 
-### Week 4 — Create Impact & Reflection
+### Week 4 — Measure, Reflect & Sustain
 
-- Penyelesaian dan Monitoring
+- Project Completion & Monitoring
 - Impact Measurement
 - Leadership Reflection
 - Final Presentation
+
+Sustainability & Replication tetap menjadi section utama pada hub Week 4,
+bukan detail page kelima. Seluruh hasil monitoring, impact, reflection, dan
+file final yang belum tersedia harus memakai placeholder jujur serta aksi
+nonaktif.
 
 ---
 
@@ -393,16 +398,16 @@ terpisah.
 
 ## 14. Impact targets
 
-| Metric | Target | Actual initial |
-|---|---:|---|
-| Mahasiswa | 20 | null |
-| UMKM | 5 | null |
-| Tim | 4 | null |
-| Solusi | 4 | null |
-| Solusi diuji | 4 | null |
-| UMKM mampu mencoba | 5 | null |
-| UMKM menggunakan ulang | 3 | null |
-| Mahasiswa meningkat | 12 | null |
+| Metric                 | Target | Actual initial |
+| ---------------------- | -----: | -------------- |
+| Mahasiswa              |     20 | null           |
+| UMKM                   |      5 | null           |
+| Tim                    |      4 | null           |
+| Solusi                 |      4 | null           |
+| Solusi diuji           |      4 | null           |
+| UMKM mampu mencoba     |      5 | null           |
+| UMKM menggunakan ulang |      3 | null           |
+| Mahasiswa meningkat    |     12 | null           |
 
 Use `Belum Diukur` for null.
 

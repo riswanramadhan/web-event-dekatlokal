@@ -1,4 +1,9 @@
-import { ArrowRight, CheckCircle, Download, OpenNewWindow } from "iconoir-react";
+import {
+  ArrowRight,
+  CheckCircle,
+  Download,
+  OpenNewWindow,
+} from "iconoir-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -81,16 +86,25 @@ export function ProcessFlow({
   } as const;
 
   return (
-    <ol aria-label={label} className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+    <ol
+      aria-label={label}
+      className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center"
+    >
       {steps.map((step, index) => (
-        <li key={`${step}-${index}`} className="flex min-w-0 flex-col items-center gap-2 sm:flex-row">
+        <li
+          key={`${step}-${index}`}
+          className="flex min-w-0 flex-col items-center gap-2 sm:flex-row"
+        >
           <span
             className={`inline-flex min-h-10 w-full min-w-0 items-center justify-center rounded-xl border px-3 py-2 text-center text-xs font-semibold leading-5 sm:w-auto sm:text-sm ${toneClassNames[tone]}`}
           >
             {step}
           </span>
           {index < steps.length - 1 ? (
-            <span aria-hidden="true" className="font-mono text-sm text-slate-400">
+            <span
+              aria-hidden="true"
+              className="font-mono text-sm text-slate-400"
+            >
               <span className="sm:hidden">↓</span>
               <span className="hidden sm:inline">→</span>
             </span>
@@ -115,9 +129,14 @@ export function NumberedEditorialList({
   return (
     <ol className="divide-y divide-slate-200 border-y border-slate-200">
       {items.map((item) => (
-        <li key={`${item.number}-${item.title}`} className="grid gap-3 py-5 sm:grid-cols-[4rem_1fr] sm:gap-5 sm:py-6">
+        <li
+          key={`${item.number}-${item.title}`}
+          className="grid gap-3 py-5 sm:grid-cols-[4rem_1fr] sm:gap-5 sm:py-6"
+        >
           <div>
-            <span className="font-mono text-sm font-semibold text-brand">{item.number}</span>
+            <span className="font-mono text-sm font-semibold text-brand">
+              {item.number}
+            </span>
             {item.label ? (
               <span className="mt-1 block font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
                 {item.label}
@@ -158,8 +177,13 @@ export function StatusChip({
   } as const;
 
   return (
-    <span className={`inline-flex min-h-8 max-w-full items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold leading-5 ${toneClassNames[tone]}`}>
-      <span className="h-2 w-2 shrink-0 rounded-full bg-current" aria-hidden="true" />
+    <span
+      className={`inline-flex min-h-8 max-w-full items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold leading-5 ${toneClassNames[tone]}`}
+    >
+      <span
+        className="h-2 w-2 shrink-0 rounded-full bg-current"
+        aria-hidden="true"
+      />
       {children}
     </span>
   );
@@ -189,7 +213,9 @@ export function EvidenceActions({
         >
           <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
           {viewLabel}
-          {external ? <span className="sr-only"> (terbuka di tab baru)</span> : null}
+          {external ? (
+            <span className="sr-only"> (terbuka di tab baru)</span>
+          ) : null}
         </a>
       ) : null}
       {downloadHref && downloadLabel ? (
@@ -208,8 +234,30 @@ export function EvidenceActions({
 
 export function DisabledEvidenceActions() {
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap" aria-label="Aksi laporan belum tersedia">
-      {["View Report", "Download Report"].map((label) => (
+    <DisabledFileActions
+      viewLabel="View Report"
+      downloadLabel="Download Report"
+      ariaLabel="Aksi laporan belum tersedia"
+    />
+  );
+}
+
+export function DisabledFileActions({
+  viewLabel,
+  downloadLabel,
+  ariaLabel = "Aksi file belum tersedia",
+}: {
+  viewLabel: string;
+  downloadLabel: string;
+  ariaLabel?: string;
+}) {
+  return (
+    <div
+      role="group"
+      className="flex flex-col gap-2 sm:flex-row sm:flex-wrap"
+      aria-label={ariaLabel}
+    >
+      {[viewLabel, downloadLabel].map((label) => (
         <button
           key={label}
           type="button"
@@ -220,6 +268,164 @@ export function DisabledEvidenceActions() {
         </button>
       ))}
     </div>
+  );
+}
+
+export interface EvidenceFileCardProps {
+  readonly title: string;
+  readonly fileName?: string | null;
+  readonly type: string | null;
+  readonly description: string;
+  readonly status: string;
+  readonly date: string | null;
+  readonly fileSize: string | null;
+  readonly previewHref?: string | null;
+  readonly slideCount?: number | null;
+  readonly lastUpdated?: string | null;
+  readonly viewHref?: string | null;
+  readonly downloadHref?: string | null;
+  readonly viewLabel?: string;
+  readonly downloadLabel?: string;
+  readonly statusTone?: "green" | "amber" | "blue" | "neutral";
+}
+
+function isExternalFileHref(href: string) {
+  return /^https?:\/\//i.test(href);
+}
+
+export function EvidenceFileCard({
+  title,
+  fileName = null,
+  type,
+  description,
+  status,
+  date,
+  fileSize,
+  previewHref = null,
+  slideCount = null,
+  lastUpdated = null,
+  viewHref,
+  downloadHref,
+  viewLabel = "View Report",
+  downloadLabel = "Download Report",
+  statusTone = "amber",
+}: EvidenceFileCardProps) {
+  const metadata = [
+    { label: "File name", value: fileName },
+    { label: "File type", value: type },
+    { label: "Date", value: date },
+    { label: "File size", value: fileSize },
+    {
+      label: "Slide count",
+      value: slideCount === null ? null : `${slideCount} slides`,
+    },
+    { label: "Last updated", value: lastUpdated },
+  ] as const;
+  const viewIsExternal = viewHref ? isExternalFileHref(viewHref) : false;
+  const downloadIsExternal = downloadHref
+    ? isExternalFileHref(downloadHref)
+    : false;
+
+  return (
+    <article className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-6">
+      <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
+        <div className="min-w-0">
+          <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-slate-500">
+            Evidence file
+          </p>
+          <h3 className="mt-2 text-balance text-xl font-semibold leading-7 tracking-[-0.02em] text-ink">
+            {title}
+          </h3>
+        </div>
+        <StatusChip tone={statusTone}>{status}</StatusChip>
+      </div>
+
+      <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
+        {description}
+      </p>
+
+      <dl className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {metadata.map((item) => (
+          <div
+            key={item.label}
+            className="min-w-0 rounded-xl border border-slate-200 bg-white px-4 py-3"
+          >
+            <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+              {item.label}
+            </dt>
+            <dd className="mt-1.5 break-words text-sm font-semibold leading-6 text-ink [overflow-wrap:anywhere]">
+              {item.value ?? "Belum tersedia"}
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      {previewHref ? (
+        <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <iframe
+            src={previewHref}
+            title={`PDF preview: ${title}`}
+            loading="lazy"
+            className="h-[30rem] w-full sm:h-[38rem]"
+          />
+        </div>
+      ) : null}
+
+      <div
+        role="group"
+        className="report-no-print mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap"
+        aria-label={`Aksi file ${title}`}
+      >
+        {viewHref ? (
+          <a
+            href={viewHref}
+            target={viewIsExternal ? "_blank" : undefined}
+            rel={viewIsExternal ? "noopener noreferrer" : undefined}
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand-600 sm:w-auto"
+          >
+            <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
+            {viewLabel}
+            {viewIsExternal ? (
+              <span className="sr-only"> (terbuka di tab baru)</span>
+            ) : null}
+          </a>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="inline-flex min-h-11 w-full cursor-not-allowed items-center justify-center rounded-full border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-500 sm:w-auto"
+          >
+            <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
+            {viewLabel}
+          </button>
+        )}
+
+        {downloadHref ? (
+          <a
+            href={downloadHref}
+            download={!downloadIsExternal || undefined}
+            target={downloadIsExternal ? "_blank" : undefined}
+            rel={downloadIsExternal ? "noopener noreferrer" : undefined}
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 sm:w-auto"
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            {downloadLabel}
+            {downloadIsExternal ? (
+              <span className="sr-only"> (terbuka di tab baru)</span>
+            ) : null}
+          </a>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="inline-flex min-h-11 w-full cursor-not-allowed items-center justify-center rounded-full border border-slate-200 bg-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-500 sm:w-auto"
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            {downloadLabel}
+          </button>
+        )}
+      </div>
+    </article>
   );
 }
 
@@ -274,8 +480,14 @@ export function CheckList({ items }: { items: readonly string[] }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2">
       {items.map((item) => (
-        <li key={item} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm leading-6 text-slate-700">
-          <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+        <li
+          key={item}
+          className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-sm leading-6 text-slate-700"
+        >
+          <CheckCircle
+            className="mt-0.5 h-4 w-4 shrink-0 text-brand"
+            aria-hidden="true"
+          />
           <span>{item}</span>
         </li>
       ))}
@@ -320,6 +532,7 @@ export function GepProgressReportShell({
   reflection,
   children,
   afterSummary,
+  deliverablesState = "completed",
 }: {
   header: ProgressReportHeaderData;
   progressDescription: string;
@@ -330,6 +543,7 @@ export function GepProgressReportShell({
   } | null;
   children: ReactNode;
   afterSummary?: ReactNode;
+  deliverablesState?: "completed" | "planned";
 }) {
   return (
     <article className="progress-report relative isolate overflow-hidden bg-[#f8fbff]">
@@ -342,8 +556,21 @@ export function GepProgressReportShell({
         />
         <div className="relative mx-auto max-w-5xl space-y-5 sm:space-y-6">
           {children}
-          {reflection ? <LeadershipReflectionCard reflection={reflection} /> : null}
-          <ReportOutputList outputs={outputs} />
+          {reflection ? (
+            <LeadershipReflectionCard reflection={reflection} />
+          ) : null}
+          {deliverablesState === "completed" ? (
+            <ReportOutputList outputs={outputs} />
+          ) : (
+            <ReportSectionCard
+              id="planned-deliverables"
+              eyebrow="Planned Deliverables"
+              title="Planned Output Structure"
+              description="Daftar berikut merupakan struktur output yang sedang disiapkan, bukan hasil final yang sudah tersedia."
+            >
+              <PlannedList items={outputs} label="Planned" />
+            </ReportSectionCard>
+          )}
           <ProgressDescriptionCard description={progressDescription} />
           <ProgressUrlCard url={header.progressUrl} />
           {afterSummary}

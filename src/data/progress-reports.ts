@@ -13,6 +13,11 @@ export const PROGRESS_REPORT_SLUGS = [
   "mini-project-implementation",
   "network-mobilization",
   "process-documentation",
+  "measure-reflect-sustain",
+  "project-completion-monitoring",
+  "impact-measurement",
+  "leadership-reflection",
+  "final-presentation",
 ] as const;
 
 export type ProgressReportSlug = (typeof PROGRESS_REPORT_SLUGS)[number];
@@ -140,6 +145,46 @@ export const progressReports: readonly ProgressReportSummary[] = [
     phase: "Lead the action",
     status: "In Progress",
     route: `${progressBaseRoute}/process-documentation`,
+  },
+  {
+    slug: "measure-reflect-sustain",
+    title: "Week 4 — Measure, Reflect & Sustain",
+    weekLabel: "Week 4",
+    phase: "Measure, reflect & sustain",
+    status: "In Progress",
+    route: `${progressBaseRoute}/measure-reflect-sustain`,
+  },
+  {
+    slug: "project-completion-monitoring",
+    title: "Project Completion & Monitoring",
+    weekLabel: "Week 4",
+    phase: "Measure, reflect & sustain",
+    status: "In Progress",
+    route: `${progressBaseRoute}/project-completion-monitoring`,
+  },
+  {
+    slug: "impact-measurement",
+    title: "Impact Measurement",
+    weekLabel: "Week 4",
+    phase: "Measure, reflect & sustain",
+    status: "Data Collection / In Progress",
+    route: `${progressBaseRoute}/impact-measurement`,
+  },
+  {
+    slug: "leadership-reflection",
+    title: "Leadership Reflection",
+    weekLabel: "Week 4",
+    phase: "Measure, reflect & sustain",
+    status: "To Be Completed",
+    route: `${progressBaseRoute}/leadership-reflection`,
+  },
+  {
+    slug: "final-presentation",
+    title: "Final Presentation",
+    weekLabel: "Week 4",
+    phase: "Measure, reflect & sustain",
+    status: "Preparation",
+    route: `${progressBaseRoute}/final-presentation`,
   },
 ];
 

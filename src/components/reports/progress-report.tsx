@@ -234,7 +234,10 @@ export function StatusBadge({
   status: string;
   tone?: ReportStatusTone;
 }) {
-  const isCompleted = status.toLowerCase().includes("completed");
+  const normalizedStatus = status.trim().toLowerCase();
+  const isCompleted =
+    !normalizedStatus.includes("to be completed") &&
+    normalizedStatus.includes("completed");
   const Icon = isCompleted ? CheckCircle : Circle;
   const inferredTone: ReportStatusTone = isCompleted ? "green" : "blue";
 
@@ -258,7 +261,11 @@ export function NextStepCard({ nextStep }: { nextStep: string }) {
     <div className="report-card rounded-2xl border border-brand-100 bg-white p-4 shadow-[0_12px_32px_rgba(1,34,98,0.06)] sm:p-5">
       <div className="flex items-start gap-3">
         <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand">
-          <ArrowRight className="h-4 w-4" strokeWidth={1.9} aria-hidden="true" />
+          <ArrowRight
+            className="h-4 w-4"
+            strokeWidth={1.9}
+            aria-hidden="true"
+          />
         </span>
         <div className="min-w-0">
           <p className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
@@ -596,11 +603,7 @@ function ReportBlockView({
   }
 }
 
-export function ReportSection({
-  section,
-}: {
-  section: ReportSectionData;
-}) {
+export function ReportSection({ section }: { section: ReportSectionData }) {
   const headingId = `${section.id}-heading`;
 
   return (
@@ -854,18 +857,13 @@ export function PrintReportFooter({
         URL laporan: <span>{progressUrl}</span>
       </p>
       <p>
-        Terakhir diperbarui:{" "}
-        <time dateTime={updatedAtIso}>{updatedAt}</time>
+        Terakhir diperbarui: <time dateTime={updatedAtIso}>{updatedAt}</time>
       </p>
     </footer>
   );
 }
 
-export function ProgressReportPage({
-  report,
-}: {
-  report: GepWeekOneReport;
-}) {
+export function ProgressReportPage({ report }: { report: GepWeekOneReport }) {
   return (
     <article className="progress-report relative isolate overflow-hidden bg-[#f8fbff]">
       <ReportPrintStyles />
@@ -881,9 +879,7 @@ export function ProgressReportPage({
             <ReportSection key={section.id} section={section} />
           ))}
 
-          <LeadershipReflectionCard
-            reflection={report.leadershipReflection}
-          />
+          <LeadershipReflectionCard reflection={report.leadershipReflection} />
           <ReportOutputList outputs={report.outputs} />
           <ProgressDescriptionCard description={report.progressDescription} />
           <ProgressUrlCard url={report.progressUrl} />

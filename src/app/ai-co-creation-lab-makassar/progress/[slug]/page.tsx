@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 
 import {
   FinalActionPlanReportPage,
+  FinalPresentationReportPage,
   GlobalCommunicationReportPage,
+  ImpactMeasurementReportPage,
   LeadershipConversationReportPage,
+  LeadershipReflectionReportPage,
   MeetTheLeaderReportPage,
   MiniProjectImplementationReportPage,
   NetworkMobilizationReportPage,
@@ -12,16 +15,17 @@ import {
   PitchingMiniProjectReportPage,
   ProblemValidationReportPage,
   ProcessDocumentationReportPage,
+  ProjectCompletionMonitoringReportPage,
   ProgressReportPage,
+  WeekFourHubReportPage,
   WeekThreeHubReportPage,
 } from "@/components/reports";
+import { weekFourHeaders, type WeekFourProgressSlug } from "@/data/gep-week-4";
 import {
   weekTwoThreeHeaders,
   type WeekTwoThreeProgressSlug,
 } from "@/data/gep-week-2-3";
-import {
-  getGepWeekOneReport,
-} from "@/data/gep-week-1-reports";
+import { getGepWeekOneReport } from "@/data/gep-week-1-reports";
 import { problemValidationHeader } from "@/data/problem-validation";
 import { partnershipHeader } from "@/data/partnership-collaboration";
 import { PROGRESS_REPORT_SLUGS } from "@/data/progress-reports";
@@ -113,22 +117,24 @@ export async function generateMetadata({
     };
   }
 
-  const currentHeader =
-    weekTwoThreeHeaders[slug as WeekTwoThreeProgressSlug];
+  const currentHeader = weekTwoThreeHeaders[slug as WeekTwoThreeProgressSlug];
 
-  if (currentHeader) {
+  const currentWeekFourHeader = weekFourHeaders[slug as WeekFourProgressSlug];
+
+  if (currentHeader || currentWeekFourHeader) {
+    const metadataHeader = currentHeader ?? currentWeekFourHeader;
     return {
       title: {
-        absolute: currentHeader.metadataTitle,
+        absolute: metadataHeader.metadataTitle,
       },
-      description: currentHeader.subtitle,
+      description: metadataHeader.subtitle,
       alternates: {
-        canonical: currentHeader.route,
+        canonical: metadataHeader.progressUrl,
       },
       openGraph: {
-        title: currentHeader.metadataTitle,
-        description: currentHeader.subtitle,
-        url: currentHeader.route,
+        title: metadataHeader.metadataTitle,
+        description: metadataHeader.subtitle,
+        url: metadataHeader.progressUrl,
         type: "article",
         images: [
           {
@@ -207,6 +213,19 @@ export default async function ProgressReportRoute({
       return <NetworkMobilizationReportPage />;
     case "process-documentation":
       return <ProcessDocumentationReportPage />;
+  }
+
+  switch (slug as WeekFourProgressSlug) {
+    case "measure-reflect-sustain":
+      return <WeekFourHubReportPage />;
+    case "project-completion-monitoring":
+      return <ProjectCompletionMonitoringReportPage />;
+    case "impact-measurement":
+      return <ImpactMeasurementReportPage />;
+    case "leadership-reflection":
+      return <LeadershipReflectionReportPage />;
+    case "final-presentation":
+      return <FinalPresentationReportPage />;
   }
 
   const report = getGepWeekOneReport(slug);

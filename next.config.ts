@@ -68,6 +68,17 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Reserved for future public-safe Week 4 evidence. Raw monitoring,
+        // assessment, and operational records must never be placed here.
+        source: "/documents/week-4/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
     ];
   },
 };

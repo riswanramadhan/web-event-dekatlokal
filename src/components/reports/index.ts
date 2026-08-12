@@ -46,3 +46,10 @@ export {
   ProcessDocumentationReportPage,
   WeekThreeHubReportPage,
 } from "./gep-week-3-reports";
+export {
+  FinalPresentationReportPage,
+  ImpactMeasurementReportPage,
+  LeadershipReflectionReportPage,
+  ProjectCompletionMonitoringReportPage,
+  WeekFourHubReportPage,
+} from "./gep-week-4-reports";

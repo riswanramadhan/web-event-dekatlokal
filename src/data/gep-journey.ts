@@ -20,21 +20,12 @@ export const JOURNEY_ACTIVITY_SLUGS = [
   "final-presentation",
 ] as const;
 
-export type JourneyActivitySlug =
-  (typeof JOURNEY_ACTIVITY_SLUGS)[number];
+export type JourneyActivitySlug = (typeof JOURNEY_ACTIVITY_SLUGS)[number];
 export type JourneyWeekNumber = 1 | 2 | 3 | 4;
 export type JourneyStatus =
-  | "planned"
-  | "in_progress"
-  | "completed"
-  | "published";
+  "planned" | "in_progress" | "completed" | "published";
 export type EvidenceType =
-  | "document"
-  | "photo"
-  | "video"
-  | "social"
-  | "drive"
-  | "website";
+  "document" | "photo" | "video" | "social" | "drive" | "website";
 
 export interface JourneyEvidence {
   readonly label: string;
@@ -107,9 +98,9 @@ export const journeyWeekDefinitions = [
   {
     week: 4,
     title: "Week 4",
-    theme: "Create Impact & Reflection",
+    theme: "Measure, Reflect & Sustain",
     description:
-      "Menyelesaikan monitoring, mengukur dampak, merefleksikan kepemimpinan, dan menyajikan pembelajaran akhir.",
+      "Menyelesaikan project, mengukur perubahan secara jujur, merefleksikan perjalanan kepemimpinan, serta menyiapkan keberlanjutan dan replikasi.",
   },
 ] as const satisfies readonly JourneyWeekDefinition[];
 
@@ -171,8 +162,7 @@ const journeyActivityDefinitions = [
     evidence: [
       {
         label: "Laporan Leadership Network Mapping Week 1",
-        href:
-          "/ai-co-creation-lab-makassar/progress/leadership-network-mapping",
+        href: "/ai-co-creation-lab-makassar/progress/leadership-network-mapping",
         type: "website",
       },
     ],
@@ -197,8 +187,7 @@ const journeyActivityDefinitions = [
     evidence: [
       {
         label: "Laporan Identifikasi Masalah Sosial Week 1",
-        href:
-          "/ai-co-creation-lab-makassar/progress/identifikasi-masalah-sosial",
+        href: "/ai-co-creation-lab-makassar/progress/identifikasi-masalah-sosial",
         type: "website",
       },
     ],
@@ -225,8 +214,7 @@ const journeyActivityDefinitions = [
     evidence: [
       {
         label: "Laporan Mini Project Canvas Week 1",
-        href:
-          "/ai-co-creation-lab-makassar/progress/mini-project-canvas",
+        href: "/ai-co-creation-lab-makassar/progress/mini-project-canvas",
         type: "website",
       },
     ],
@@ -252,8 +240,7 @@ const journeyActivityDefinitions = [
     evidence: [
       {
         label: "Laporan Problem Validation Week 2",
-        href:
-          "/ai-co-creation-lab-makassar/progress/problem-validation",
+        href: "/ai-co-creation-lab-makassar/progress/problem-validation",
         type: "website",
       },
     ],
@@ -279,8 +266,7 @@ const journeyActivityDefinitions = [
     evidence: [
       {
         label: "Laporan Partnership & Collaboration Week 2",
-        href:
-          "/ai-co-creation-lab-makassar/progress/partnership-collaboration",
+        href: "/ai-co-creation-lab-makassar/progress/partnership-collaboration",
         type: "website",
       },
     ],
@@ -306,8 +292,7 @@ const journeyActivityDefinitions = [
     evidence: [
       {
         label: "Laporan Pitching Mini Project Week 2",
-        href:
-          "/ai-co-creation-lab-makassar/progress/pitching-mini-project",
+        href: "/ai-co-creation-lab-makassar/progress/pitching-mini-project",
         type: "website",
       },
     ],
@@ -410,8 +395,7 @@ const journeyActivityDefinitions = [
     evidence: [
       {
         label: "Laporan Leadership Conversation Week 3",
-        href:
-          "/ai-co-creation-lab-makassar/progress/leadership-conversation",
+        href: "/ai-co-creation-lab-makassar/progress/leadership-conversation",
         type: "website",
       },
     ],
@@ -437,8 +421,7 @@ const journeyActivityDefinitions = [
     evidence: [
       {
         label: "Laporan Pelaksanaan Mini Project Week 3",
-        href:
-          "/ai-co-creation-lab-makassar/progress/mini-project-implementation",
+        href: "/ai-co-creation-lab-makassar/progress/mini-project-implementation",
         type: "website",
       },
     ],
@@ -499,20 +482,26 @@ const journeyActivityDefinitions = [
   {
     slug: "monitoring",
     week: 4,
-    title: "Penyelesaian dan Monitoring",
+    title: "Project Completion & Monitoring",
     shortDescription:
-      "Menutup pekerjaan terbuka dan memantau penggunaan solusi setelah handover.",
+      "Menuntaskan pekerjaan terbuka dan menyiapkan pemantauan solusi dari final UAT hingga adopsi.",
     progressDescription:
-      "Post-project monitoring sedang berjalan setelah kegiatan utama 10 Agustus 2026. Kerangka pengukuran memisahkan Baseline dari follow-up H+7, H+14, dan H+30 untuk memeriksa akses, penggunaan ulang, hambatan, serta kebutuhan perbaikan. Hasil per tim belum dipublikasikan karena evidence masih dikonsolidasikan.",
+      "Project Completion & Monitoring sedang berjalan setelah kegiatan utama 10 Agustus 2026. Halaman Week 4 menyiapkan kerangka Prototype Review, Improvement, User Acceptance Testing, Deployment, Handover, dan Adoption Monitoring untuk lima solusi. Status final per solusi, hasil UAT, deployment, handover, dan adopsi belum dinyatakan karena data monitoring masih menunggu verifikasi setelah final UAT.",
     output: [
-      "Checklist penyelesaian output.",
-      "Catatan Baseline, H+7, H+14, dan H+30.",
-      "Daftar hambatan penggunaan.",
-      "Tindak lanjut perbaikan.",
+      "Kerangka enam tahap penyelesaian dan monitoring.",
+      "Struktur monitoring untuk lima UMKM dari data existing.",
+      "Placeholder status, masalah, improvement, dan notes per solusi.",
+      "Ruang Project Monitoring Report yang belum diisi file palsu.",
     ],
     status: "in_progress",
-    updatedAt: "12 Agustus 2026",
-    evidence: [],
+    updatedAt: "13 Agustus 2026",
+    evidence: [
+      {
+        label: "Progress Project Completion & Monitoring Week 4",
+        href: "/ai-co-creation-lab-makassar/progress/project-completion-monitoring",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Tanggung jawab project tidak berhenti saat acara selesai. Handover dan tindak lanjut menentukan kegunaan hasil.",
   },
@@ -521,19 +510,25 @@ const journeyActivityDefinitions = [
     week: 4,
     title: "Impact Measurement",
     shortDescription:
-      "Membandingkan target dengan data aktual melalui metode yang telah ditetapkan.",
+      "Mengukur perubahan mahasiswa dan UMKM tanpa mencampur target dengan hasil aktual.",
     progressDescription:
-      "Pengukuran dampak sedang berjalan. Data aktual kegiatan utama mencatat 20 mahasiswa, lima UMKM, dan lima co-creation teams; angka ini dilaporkan terpisah dari target. Data penyelesaian prototype, testing, pembelajaran, adopsi, kepuasan, dan testimoni masih dikonsolidasikan melalui Baseline serta follow-up H+7, H+14, dan H+30 sehingga belum dinyatakan sebagai dampak final.",
+      "Pengukuran dampak sedang berjalan. Data aktual kegiatan utama mencatat 20 mahasiswa, lima UMKM, dan lima co-creation teams; angka partisipasi ini tetap dipisahkan dari hasil perubahan. Data confidence dan kemampuan mahasiswa, penyelesaian prototype, testing, usability, adoption, operational benefit, kepuasan, dan testimoni belum dinyatakan sebagai impact final sampai pengumpulan serta follow-up H+7, H+14, dan H+30 selesai diverifikasi.",
     output: [
-      "Data target dan aktual partisipasi yang dipisahkan.",
-      "Perbandingan tes awal dan tes akhir.",
-      "Rekap testing dan penggunaan ulang pada setiap titik monitoring.",
-      "Catatan keterbatasan pengukuran.",
-      "Ringkasan dampak terverifikasi.",
+      "Kerangka impact mahasiswa dan UMKM.",
+      "Timeline pengukuran mahasiswa serta follow-up UMKM.",
+      "Indikator potensial untuk lima UMKM tanpa angka rekaan.",
+      "Area Planned Target dan Actual Result yang dipisahkan.",
+      "Ruang Impact Report dengan status Being Prepared.",
     ],
     status: "in_progress",
-    updatedAt: "12 Agustus 2026",
-    evidence: [],
+    updatedAt: "13 Agustus 2026",
+    evidence: [
+      {
+        label: "Progress Impact Measurement Week 4",
+        href: "/ai-co-creation-lab-makassar/progress/impact-measurement",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Fokus kepemimpinan: melaporkan hasil secara jujur, termasuk capaian yang belum terpenuhi dan keterbatasan data.",
   },
@@ -542,18 +537,23 @@ const journeyActivityDefinitions = [
     week: 4,
     title: "Leadership Reflection",
     shortDescription:
-      "Merefleksikan keputusan, dinamika tim, mobilisasi jejaring, kegagalan, dan pertumbuhan personal.",
+      "Menyiapkan struktur refleksi atas proses membangun, memimpin, mendengar, dan berkolaborasi.",
     progressDescription:
-      "Refleksi akhir belum ditulis. Setelah implementasi dan monitoring, refleksi direncanakan membahas keputusan penting, asumsi yang berubah, cara menangani ketidakpastian, kualitas kolaborasi, penggunaan jejaring, kesalahan, dan praktik yang ingin dipertahankan.",
+      "Struktur Leadership Reflection telah disiapkan, tetapi refleksi final Riswan Ramadhan belum ditulis. Konten personal baru akan dilengkapi setelah project monitoring agar pembelajaran tentang keputusan, tantangan, jejaring, ketidakpastian, feedback, dan arah kepemimpinan berikutnya tetap berbasis pengalaman yang dapat dipertanggungjawabkan.",
     output: [
-      "Refleksi kepemimpinan tertulis.",
-      "Contoh keputusan dan konsekuensinya.",
-      "Pelajaran dari hambatan atau kegagalan.",
-      "Komitmen pengembangan berikutnya.",
+      "Tujuh bagian reflection yang siap diisi.",
+      "Prompt tema untuk membantu penulisan berbasis pengalaman.",
+      "Ruang Leadership Reflection Essay dengan status To Be Uploaded.",
     ],
     status: "planned",
-    updatedAt: null,
-    evidence: [],
+    updatedAt: "13 Agustus 2026",
+    evidence: [
+      {
+        label: "Struktur Leadership Reflection Week 4",
+        href: "/ai-co-creation-lab-makassar/progress/leadership-reflection",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Refleksi yang berguna berangkat dari kejadian konkret dan menghasilkan komitmen perubahan yang spesifik.",
   },
@@ -562,19 +562,23 @@ const journeyActivityDefinitions = [
     week: 4,
     title: "Final Presentation",
     shortDescription:
-      "Menyajikan perjalanan project, kepemimpinan, partnership, output, dampak, dan keberlanjutan.",
+      "Menyiapkan struktur presentasi lengkap perjalanan AI Co-Creation Lab Makassar.",
     progressDescription:
-      "Presentasi akhir belum disusun. Materi direncanakan mengikuti alur masalah, validasi, perencanaan, partnership, implementasi, mobilisasi, output, pengukuran dampak, refleksi, dan sustainability plan dengan bukti yang telah diverifikasi.",
+      "Final Presentation masih dalam tahap preparation. Halaman Week 4 menyiapkan outline sepuluh bagian wajib dan readiness checklist, tetapi tidak membuat final deck atau menyatakan impact dan refleksi telah selesai. File presentasi baru akan dihubungkan setelah materi, evidence, impact measurement, leadership reflection, dan sustainability plan selesai diverifikasi.",
     output: [
-      "Deck presentasi akhir.",
-      "Ringkasan eksekutif project.",
-      "Daftar bukti terverifikasi.",
-      "Sustainability plan.",
-      "Catatan target yang belum tercapai.",
+      "Outline sepuluh bagian Final Presentation.",
+      "Readiness checklist yang membedakan available, in progress, dan pending.",
+      "Ruang file presentasi tanpa dummy deck.",
     ],
     status: "planned",
-    updatedAt: null,
-    evidence: [],
+    updatedAt: "13 Agustus 2026",
+    evidence: [
+      {
+        label: "Struktur Final Presentation Week 4",
+        href: "/ai-co-creation-lab-makassar/progress/final-presentation",
+        type: "website",
+      },
+    ],
     leadershipInsight:
       "Presentasi akhir adalah bentuk akuntabilitas: menjelaskan proses, hasil, batasan, dan langkah lanjutan secara utuh.",
   },
@@ -589,13 +593,14 @@ export const journeyActivities: readonly JourneyActivity[] =
     outputs: activity.output,
   }));
 
-export const journeyWeeks: readonly JourneyWeek[] =
-  journeyWeekDefinitions.map((week) => ({
+export const journeyWeeks: readonly JourneyWeek[] = journeyWeekDefinitions.map(
+  (week) => ({
     ...week,
     activities: journeyActivities.filter(
       (activity) => activity.week === week.week,
     ),
-  }));
+  }),
+);
 
 export const journeyActivityBySlug: Readonly<
   Partial<Record<JourneyActivitySlug, JourneyActivity>>
@@ -609,9 +614,7 @@ export function isJourneyActivitySlug(
   return (JOURNEY_ACTIVITY_SLUGS as readonly string[]).includes(value);
 }
 
-export function getJourneyActivity(
-  slug: string,
-): JourneyActivity | undefined {
+export function getJourneyActivity(slug: string): JourneyActivity | undefined {
   if (!isJourneyActivitySlug(slug)) {
     return undefined;
   }
