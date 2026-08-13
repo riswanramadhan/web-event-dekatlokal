@@ -13,7 +13,7 @@ import { useMemo, useState } from "react";
 import {
   getAdjacentProgressReports,
   progressReports,
-  type ProgressReportSlug,
+  type ProgressNavigationSlug,
 } from "@/data/progress-reports";
 
 type ProgressStatusKind = "completed" | "in_progress" | "planned";
@@ -67,10 +67,12 @@ const progressStatusStyles = {
 
 export function ProgressReportNavigation({
   currentSlug,
+  weekHint,
   className = "report-no-print mt-8 max-w-5xl border-t border-slate-200 pt-6",
   showLabel = true,
 }: {
-  currentSlug?: ProgressReportSlug;
+  currentSlug?: ProgressNavigationSlug;
+  weekHint?: string;
   className?: string;
   showLabel?: boolean;
 }) {
@@ -83,7 +85,7 @@ export function ProgressReportNavigation({
     [],
   );
   const [selectedWeek, setSelectedWeek] = useState(
-    currentReport?.weekLabel ?? "Semua",
+    currentReport?.weekLabel ?? weekHint ?? "Semua",
   );
   const filteredReports =
     selectedWeek === "Semua"
@@ -207,7 +209,7 @@ export function ProgressReportNavigation({
 export function AdjacentProgressNavigation({
   currentSlug,
 }: {
-  currentSlug: ProgressReportSlug;
+  currentSlug: ProgressNavigationSlug;
 }) {
   const { previous, next } = getAdjacentProgressReports(currentSlug);
 

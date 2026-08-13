@@ -19,6 +19,17 @@ const nextConfig: NextConfig = {
   },
   poweredByHeader: false,
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source:
+          "/ai-co-creation-lab-makassar/progress/lead-the-action",
+        destination:
+          "/ai-co-creation-lab-makassar/progress/week-3",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

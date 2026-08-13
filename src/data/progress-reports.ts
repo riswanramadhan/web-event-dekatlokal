@@ -7,7 +7,6 @@ export const PROGRESS_REPORT_SLUGS = [
   "pitching-mini-project",
   "final-action-plan",
   "global-communication",
-  "lead-the-action",
   "meet-the-leader",
   "leadership-conversation",
   "mini-project-implementation",
@@ -21,6 +20,7 @@ export const PROGRESS_REPORT_SLUGS = [
 ] as const;
 
 export type ProgressReportSlug = (typeof PROGRESS_REPORT_SLUGS)[number];
+export type ProgressNavigationSlug = ProgressReportSlug | "week-3";
 
 export interface ProgressReportSummary {
   readonly slug: ProgressReportSlug;
@@ -99,19 +99,11 @@ export const progressReports: readonly ProgressReportSummary[] = [
     route: `${progressBaseRoute}/global-communication`,
   },
   {
-    slug: "lead-the-action",
-    title: "Lead The Action",
-    weekLabel: "Week 3",
-    phase: "Lead the action",
-    status: "In Progress",
-    route: `${progressBaseRoute}/lead-the-action`,
-  },
-  {
     slug: "meet-the-leader",
     title: "Meet the Leader Challenge",
     weekLabel: "Week 3",
     phase: "Lead the action",
-    status: "Documentation Finalization",
+    status: "Completed",
     route: `${progressBaseRoute}/meet-the-leader`,
   },
   {
@@ -119,31 +111,31 @@ export const progressReports: readonly ProgressReportSummary[] = [
     title: "Leadership Conversation Report",
     weekLabel: "Week 3",
     phase: "Lead the action",
-    status: "In Progress",
+    status: "Completed",
     route: `${progressBaseRoute}/leadership-conversation`,
   },
   {
     slug: "mini-project-implementation",
-    title: "Pelaksanaan Mini Project",
+    title: "Mini Project Implementation",
     weekLabel: "Week 3",
     phase: "Lead the action",
-    status: "Completed — Follow-Up In Progress",
+    status: "Completed",
     route: `${progressBaseRoute}/mini-project-implementation`,
   },
   {
     slug: "network-mobilization",
-    title: "Mobilisasi Jejaring",
+    title: "Network Mobilization",
     weekLabel: "Week 3",
     phase: "Lead the action",
-    status: "Completed / Documentation",
+    status: "Completed",
     route: `${progressBaseRoute}/network-mobilization`,
   },
   {
     slug: "process-documentation",
-    title: "Dokumentasi Proses",
+    title: "Process Documentation",
     weekLabel: "Week 3",
     phase: "Lead the action",
-    status: "In Progress",
+    status: "Completed",
     route: `${progressBaseRoute}/process-documentation`,
   },
   {
@@ -188,11 +180,11 @@ export const progressReports: readonly ProgressReportSummary[] = [
   },
 ];
 
-export function getProgressReportIndex(slug: ProgressReportSlug) {
+export function getProgressReportIndex(slug: ProgressNavigationSlug) {
   return progressReports.findIndex((report) => report.slug === slug);
 }
 
-export function getAdjacentProgressReports(slug: ProgressReportSlug) {
+export function getAdjacentProgressReports(slug: ProgressNavigationSlug) {
   const currentIndex = getProgressReportIndex(slug);
 
   return {

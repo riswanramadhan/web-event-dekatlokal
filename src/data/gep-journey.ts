@@ -356,128 +356,157 @@ const journeyActivityDefinitions = [
     week: 3,
     title: "Meet the Leader Challenge",
     shortDescription:
-      "Mendokumentasikan audiensi pembelajaran bersama pimpinan Rumah BUMN Makassar.",
+      "Belajar langsung dari Ayu Anisela tentang kepemimpinan ekosistem pemberdayaan UMKM.",
     progressDescription:
-      "Audiensi Meet the Leader telah dilakukan bersama pimpinan Rumah BUMN Makassar. Identitas pimpinan, isi percakapan terperinci, refleksi, dan dokumentasi belum dipublikasikan karena masih berada dalam tahap finalisasi dan verifikasi.",
+      "Meet the Leader Challenge telah diselesaikan bersama Ayu Anisela, Koordinator Utama Rumah BUMN BRI Makassar. Pertemuan menghubungkan pengalaman beliau memimpin ekosistem pemberdayaan UMKM dengan misi AI Co-Creation Lab serta menjadi sumber pembelajaran tentang konsistensi, KPI, dan delegasi.",
     output: [
-      "Konteks audiensi bersama Rumah BUMN Makassar.",
-      "Struktur leader profile.",
-      "Slot leadership insights dan feedback mini project.",
-      "Ruang personal reflection dan dokumentasi.",
+      "Profil Ayu Anisela sebagai pemimpin ekosistem UMKM.",
+      "Alasan pemilihan tokoh yang relevan dengan misi mini project.",
+      "Pembelajaran awal tentang konsistensi, KPI, dan delegasi.",
+      "Dokumentasi pertemuan yang bersumber dari evidence aktual.",
     ],
-    status: "in_progress",
-    updatedAt: "12 Agustus 2026",
+    status: "completed",
+    updatedAt: "14 Agustus 2026",
     evidence: [
       {
         label: "Laporan Meet the Leader Challenge Week 3",
         href: "/ai-co-creation-lab-makassar/progress/meet-the-leader",
         type: "website",
       },
+      {
+        label: "Dokumentasi Meet the Leader",
+        href: "https://drive.google.com/drive/folders/1IL5KLcFZ_mzEJtAV5ZWQ-8rIDLfmxj01?usp=sharing",
+        type: "drive",
+      },
     ],
     leadershipInsight:
-      "Fokus kepemimpinan: datang dengan rasa ingin tahu dan menghargai waktu serta pengalaman narasumber.",
+      "Kepemimpinan bertumbuh melalui konsistensi, target yang jelas, dan keberanian memberi ruang kepada orang lain untuk mengambil tanggung jawab.",
   },
   {
     slug: "leadership-conversation",
     week: 3,
     title: "Leadership Conversation Report",
     shortDescription:
-      "Menyusun laporan percakapan kepemimpinan setelah catatan dan evidence terverifikasi.",
+      "Merangkum percakapan bersama Ayu Anisela menjadi pembelajaran dan rekomendasi yang dapat diterapkan.",
     progressDescription:
-      "Leadership Conversation Report masih disusun. Halaman laporan menampilkan struktur yang siap menerima leader profile, pokok diskusi, insights, feedback, reflection, supporting documentation, dan file laporan setelah seluruh materi terverifikasi.",
+      "Leadership Conversation Report telah diselesaikan dengan merangkum profil Ayu Anisela, hasil diskusi tentang kemauan belajar UMKM, relevansi AI Co-Creation Lab, tiga leadership insights, empat rekomendasi project, dan refleksi pribadi Riswan Ramadhan.",
     output: [
-      "Template struktur laporan percakapan.",
-      "State file report yang jujur dan mudah diperbarui.",
-      "Slot supporting documentation.",
+      "Profil ringkas Ayu Anisela dan konteks kepemimpinannya.",
+      "Hasil diskusi dan relevansi AI Co-Creation Lab bagi UMKM.",
+      "Tiga leadership insights: consistency, KPI, dan delegation.",
+      "Empat rekomendasi untuk keberlanjutan model project.",
+      "Personal reflection Riswan Ramadhan.",
     ],
-    status: "in_progress",
-    updatedAt: "12 Agustus 2026",
+    status: "completed",
+    updatedAt: "14 Agustus 2026",
     evidence: [
       {
         label: "Laporan Leadership Conversation Week 3",
         href: "/ai-co-creation-lab-makassar/progress/leadership-conversation",
         type: "website",
       },
+      {
+        label: "Dokumentasi Percakapan bersama Ayu Anisela",
+        href: "https://drive.google.com/drive/folders/1IL5KLcFZ_mzEJtAV5ZWQ-8rIDLfmxj01?usp=sharing",
+        type: "drive",
+      },
     ],
     leadershipInsight:
-      "Percakapan menjadi bernilai ketika pembelajaran diterjemahkan menjadi perubahan tindakan yang dapat diamati.",
+      "Percakapan menjadi bernilai ketika pembelajaran diterjemahkan menjadi keputusan untuk mendokumentasikan, mengukur, dan membuat model yang dapat direplikasi.",
   },
   {
     slug: "implementation",
     week: 3,
-    title: "Pelaksanaan Mini Project",
+    title: "Mini Project Implementation",
     shortDescription:
-      "Menjalankan AI Co-Creation Lab Makassar dan melanjutkan tindak lanjut pasca-kegiatan.",
+      "Menyelenggarakan AI Co-Creation Lab Makassar bersama 20 mahasiswa dan lima UMKM.",
     progressDescription:
-      "AI Co-Creation Lab Makassar 2026 telah dilaksanakan pada 10 Agustus 2026 dengan 20 mahasiswa, lima UMKM, dan lima co-creation teams. Detail prototype, testing, testimonial, serta dokumentasi pelaksanaan masih dikonsolidasikan; post-project follow-up berlanjut melalui UAT, improvement, deployment, handover, dan monitoring.",
+      "AI Co-Creation Lab Makassar 2026 telah diselesaikan pada 10 Agustus 2026 bersama 20 student co-creators, lima UMKM, dan lima co-creation teams. Rangkaian workshop, hands-on co-creation, prototype development, pitching, serta post-lab improvement menghasilkan lima functional prototypes. Status completed ini merujuk pada output Week 3; adoption dan penggunaan berulang tetap diukur terpisah pada Week 4.",
     output: [
       "Pelaksanaan kegiatan utama pada 10 Agustus 2026.",
-      "Lima co-creation cases berdasarkan UMKM yang telah tervalidasi.",
-      "Struktur evidence pelaksanaan dan output prototype.",
-      "Post-lab journey untuk tindak lanjut solusi.",
+      "Lima co-creation teams untuk lima masalah UMKM tervalidasi.",
+      "Lima functional prototypes dengan bukti visual aktual.",
+      "Dokumentasi workshop, hands-on, pitching, dan kolaborasi.",
+      "Kerangka Listen → Define → Build → Test → Improve.",
     ],
     status: "completed",
-    updatedAt: "12 Agustus 2026",
+    updatedAt: "14 Agustus 2026",
     evidence: [
       {
-        label: "Laporan Pelaksanaan Mini Project Week 3",
+        label: "Laporan Mini Project Implementation Week 3",
         href: "/ai-co-creation-lab-makassar/progress/mini-project-implementation",
         type: "website",
       },
+      {
+        label: "Dokumentasi AI Co-Creation Lab Makassar",
+        href: "https://drive.google.com/drive/folders/1whE01s1U86R6QEfs5sPHpj7wA6SrcJRN?usp=sharing",
+        type: "drive",
+      },
     ],
     leadershipInsight:
-      "Fokus kepemimpinan: menjaga arah dan keselamatan proses sambil memberi ruang kepada tim untuk mengambil peran.",
+      "Leadership is not doing everything alone; it is creating the conditions for people to build something meaningful together.",
   },
   {
     slug: "network-mobilization",
     week: 3,
-    title: "Mobilisasi Jejaring",
+    title: "Network Mobilization",
     shortDescription:
-      "Menghubungkan kebutuhan program dengan kontribusi stakeholder dalam ekosistem kolaborasi.",
+      "Menggerakkan mahasiswa, UMKM, relawan, partner, dan stakeholder sebagai satu ekosistem kolaborasi.",
     progressDescription:
-      "Mobilisasi jejaring menghubungkan kebutuhan program dengan kontribusi lembaga, ekosistem UMKM, infrastruktur digital, pembelajaran, venue, ruang kolaborasi, dan talenta teknis. Daftar pada laporan diturunkan dari sumber partnership existing agar tidak membuat klaim mitra baru; dokumentasi pendukung masih dilanjutkan.",
+      "Network Mobilization telah diselesaikan dengan menghubungkan 20 student co-creators, lima UMKM co-creators, lima volunteers dan support team, serta berbagai partner dan stakeholder. Setiap kontribusi dipetakan menurut fungsi program, ekosistem UMKM, infrastruktur digital, pembelajaran, event support, venue, dan dukungan akademik.",
     output: [
       "Pemetaan peran stakeholder berdasarkan kategori kontribusi.",
-      "Daftar lima UMKM co-creators dari data problem validation.",
-      "Narasi kontribusi ekosistem yang tidak berhenti pada logo.",
+      "Lima UMKM co-creators dengan identitas visual aktual.",
+      "Dua puluh student co-creators dalam lima team.",
+      "Lima volunteers dan event support team.",
+      "Narasi kontribusi ekosistem yang menjelaskan peran di balik setiap logo.",
     ],
-    status: "in_progress",
-    updatedAt: "12 Agustus 2026",
+    status: "completed",
+    updatedAt: "14 Agustus 2026",
     evidence: [
       {
-        label: "Laporan Mobilisasi Jejaring Week 3",
+        label: "Laporan Network Mobilization Week 3",
         href: "/ai-co-creation-lab-makassar/progress/network-mobilization",
         type: "website",
       },
+      {
+        label: "Dokumentasi Kolaborasi AI Co-Creation Lab",
+        href: "https://drive.google.com/drive/folders/1whE01s1U86R6QEfs5sPHpj7wA6SrcJRN?usp=sharing",
+        type: "drive",
+      },
     ],
     leadershipInsight:
-      "Mobilisasi bukan sekadar mengumpulkan kontak. Pemimpin perlu menghubungkan kontribusi dengan tujuan dan menjaga akuntabilitas.",
+      "Mobilizing a network was not about collecting logos; setiap orang dan organisasi berkontribusi pada bagian berbeda dari pelaksanaan project.",
   },
   {
     slug: "process-documentation",
     week: 3,
-    title: "Dokumentasi Proses",
+    title: "Process Documentation",
     shortDescription:
-      "Mengorganisasi evidence persiapan, kolaborasi, pelaksanaan, dan tindak lanjut secara runtut.",
+      "Menyusun dokumentasi aktual Week 3 menjadi cerita proses yang runtut dan dapat ditinjau kembali.",
     progressDescription:
-      "Dokumentasi proses masih diorganisasi. Laporan menggunakan evidence pra-pelaksanaan yang sudah tersedia dan memberi empty state untuk kategori pelaksanaan yang belum memiliki aset publik terverifikasi. Tidak ada stock image atau dokumentasi rekaan.",
+      "Process Documentation telah diselesaikan menggunakan foto aktual AI Co-Creation Lab Makassar. Evidence dikurasi ke dalam preparation, opening, workshop, student × UMKM co-creation, hands-on build, prototype dan pitching, partners dan stakeholders, volunteers dan event team, group documentation, serta akses menuju folder report lengkap.",
     output: [
-      "Taksonomi 16 kategori dokumentasi proses.",
-      "Galeri evidence problem validation yang sudah tersedia.",
-      "Pranala evidence partnership yang sudah tersedia.",
-      "Empty state untuk dokumentasi pelaksanaan yang belum final.",
+      "Sepuluh kategori dokumentasi proses.",
+      "Featured documentation dan event story gallery.",
+      "Pranala menuju folder Foto Report Event dan Video Report Event di Google Drive.",
     ],
-    status: "in_progress",
-    updatedAt: "12 Agustus 2026",
+    status: "completed",
+    updatedAt: "14 Agustus 2026",
     evidence: [
       {
-        label: "Laporan Dokumentasi Proses Week 3",
+        label: "Laporan Process Documentation Week 3",
         href: "/ai-co-creation-lab-makassar/progress/process-documentation",
         type: "website",
       },
+      {
+        label: "Dokumentasi Lengkap AI Co-Creation Lab Makassar",
+        href: "https://drive.google.com/drive/folders/1whE01s1U86R6QEfs5sPHpj7wA6SrcJRN?usp=sharing",
+        type: "drive",
+      },
     ],
     leadershipInsight:
-      "Dokumentasi yang baik membuat keputusan dan pembelajaran dapat ditinjau tanpa mengorbankan privasi.",
+      "Dokumentasi mengubah satu pelaksanaan menjadi pengetahuan yang dapat ditinjau, dipelajari, dan dikembangkan kembali.",
   },
   {
     slug: "monitoring",

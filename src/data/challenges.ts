@@ -2,6 +2,7 @@ import {
   umkmStakeholders,
   type UmkmStakeholder,
 } from "@/data/problem-validation";
+import { fiveFunctionalSolutions } from "@/data/gep-week-3-completed";
 
 export type ChallengeStatus =
   | "validation"
@@ -13,6 +14,7 @@ export type ChallengeAssignmentStatus = "example" | "assigned";
 export type ChallengeSolutionStatus =
   | "not_started"
   | "in_progress"
+  | "functional"
   | "tested"
   | "handed_over";
 
@@ -52,15 +54,22 @@ export const challenges: readonly Challenge[] = umkmStakeholders.map(
   (stakeholder, index) => {
     const slot = index + 1;
     const slotLabel = String(slot).padStart(2, "0");
+    const functionalSolution = fiveFunctionalSolutions.find(
+      (solution) => solution.id === stakeholder.id,
+    );
+
+    if (!functionalSolution) {
+      throw new Error(`Missing functional solution for ${stakeholder.id}`);
+    }
 
     return {
       id: `challenge-${slotLabel}-${stakeholder.id}`,
       slot,
       title: `Kebutuhan operasional ${stakeholder.businessName}`,
       description:
-        "Area challenge ini diturunkan dari problem validation. Detail output, hasil testing, dan solusi final tetap menunggu konsolidasi evidence pelaksanaan.",
-      status: "in_progress",
-      statusLabel: "Masalah Tervalidasi · Follow-Up Berjalan",
+        "Area challenge ini diturunkan dari problem validation dan telah diterjemahkan menjadi prototype fungsional pada Week 3. UAT, handover, dan adoption monitoring tetap diukur terpisah pada Week 4.",
+      status: "completed",
+      statusLabel: "Masalah Tervalidasi · Prototype Functional",
       assignmentStatus: "assigned",
       assignmentLabel: "Dipetakan ke co-creation team",
       partnerName: stakeholder.businessName,
@@ -71,9 +80,9 @@ export const challenges: readonly Challenge[] = umkmStakeholders.map(
         stakeholder.keyInsight,
       ],
       possibleOutputs: getPossibleOutputs(stakeholder),
-      solutionStatus: "in_progress",
-      solutionStatusLabel: "Output dan Testing Sedang Dikonsolidasikan",
-      solution: null,
+      solutionStatus: "functional",
+      solutionStatusLabel: "Completed · Functional",
+      solution: functionalSolution.solution,
     };
   },
 );

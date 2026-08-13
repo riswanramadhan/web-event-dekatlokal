@@ -1,0 +1,298 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-14",
+  "sourceAudit": {
+    "imageFilesAudited": 36,
+    "uniqueSourceHashes": 35,
+    "selectedAssets": 20,
+    "duplicateExcluded": {
+      "source": "Dokumentasi Workshop & Hands-On/Salinan IMG_6682.JPG",
+      "duplicateOf": "Dokumentasi Documentation Gallery/IMG_6682.JPG",
+      "sha256": "b6545d2830bb89b18f838ae5751cb615da8ed9144263de8cf68c495fa3468507"
+    },
+    "localEventVideo": null,
+    "videoNote": "No local event video was present in the supplied Week 3 source folders."
+  },
+  "assets": [
+    {
+      "path": "/week-3/meet-the-leader/ayu-anisela-01.webp",
+      "dimensions": {
+        "width": 1125,
+        "height": 2000
+      },
+      "bytes": 247054,
+      "source": "Dokumentasi Meet The Leader Challenge/IMG_5827.HEIC",
+      "sourceSha256": "96100920bea1fe8d4816313e6833fac64af673e3f6db5b074e5956f39d8e6202",
+      "outputSha256": "2bc2d8a0fa90aa44f4becdd4b56a405e4f8138366db3d44a956d93f8cca3d2b3",
+      "category": "meet-the-leader",
+      "caption": "Dokumentasi pertemuan Meet the Leader bersama Ayu Anisela.",
+      "altSuggestion": "Ayu Anisela dan seorang peserta duduk bersama di meja pertemuan."
+    },
+    {
+      "path": "/week-3/meet-the-leader/ayu-anisela-02.webp",
+      "dimensions": {
+        "width": 1125,
+        "height": 2000
+      },
+      "bytes": 258792,
+      "source": "Dokumentasi Meet The Leader Challenge/IMG_5828.HEIC",
+      "sourceSha256": "31b7bcd256bfac3ae488db3e56b072bf9d3c05b741af779e889f0d1cc99531dc",
+      "outputSha256": "282ba5f775fac47ad62262ab39918bdea7b41cb0f6ec903bace511cb2e7eda72",
+      "category": "meet-the-leader",
+      "caption": "Dokumentasi percakapan dalam Meet the Leader Challenge.",
+      "altSuggestion": "Ayu Anisela dan seorang peserta berpose di meja pertemuan."
+    },
+    {
+      "path": "/week-3/meet-the-leader/ayu-anisela-03.webp",
+      "dimensions": {
+        "width": 1125,
+        "height": 2000
+      },
+      "bytes": 238632,
+      "source": "Google Drive verified local copy/IMG_5830.HEIC",
+      "sourceSha256": "79730b090173c4ae679fb958321a6a639f4fc9379bf81e011bdd2eea541a858a",
+      "outputSha256": "c527e5262567e7d883d582150f2e3145d2843562bde142b63f1a8372ee7080e9",
+      "category": "meet-the-leader",
+      "caption": "Dokumentasi ketiga pertemuan Meet the Leader bersama Ayu Anisela.",
+      "altSuggestion": "Ayu Anisela dan seorang peserta berpose dengan buku di meja pertemuan."
+    },
+    {
+      "path": "/week-3/prototypes/dapur-andist.webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 164746,
+      "source": "Dokuemntasi Prototype Outputs/prototype-dapurandist.png",
+      "sourceSha256": "3ec99a6b944f9ad6c2888e1ebdfea03d5b42b902dbded28a084b0363494ca994",
+      "outputSha256": "3837a5f6f97b5d0191a5f015691db93d5b2df300834afa371f440edf5f159bd2",
+      "category": "prototype",
+      "caption": "Tampilan prototipe digital Dapur Andist.",
+      "altSuggestion": "Mockup ponsel dan dashboard desktop prototipe Dapur Andist."
+    },
+    {
+      "path": "/week-3/prototypes/eyfa-natural-oil.webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 152314,
+      "source": "Dokuemntasi Prototype Outputs/prototype-eyfa natural oil.png",
+      "sourceSha256": "f2baae939b92c1b774497131e44a9ba376367a9a892ffa4d3952708e60d177b3",
+      "outputSha256": "77985d89060c30337d992cc55d57772bd4f53aa1608b6e57a7953361ddd1ba45",
+      "category": "prototype",
+      "caption": "Tampilan prototipe digital Eyfa Natural Oil.",
+      "altSuggestion": "Dashboard desktop prototipe Eyfa Natural Oil dengan katalog dan ringkasan data."
+    },
+    {
+      "path": "/week-3/prototypes/kira-kira-michi.webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 156092,
+      "source": "Dokuemntasi Prototype Outputs/prototype-kirakiramichi.png",
+      "sourceSha256": "008685eba39df5037b903a157b1d458b2ffee6343cc47dc9ee970df5396aedcb",
+      "outputSha256": "421ab1f24afe84e0501a358ad17a58a7272d133de1cbbd72f67490671a088912",
+      "category": "prototype",
+      "caption": "Tampilan prototipe digital Kira Kira Michi.",
+      "altSuggestion": "Mockup ponsel dan dashboard desktop prototipe Kira Kira Michi."
+    },
+    {
+      "path": "/week-3/prototypes/markisa-bintang-jaya.webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 167950,
+      "source": "Dokuemntasi Prototype Outputs/prototype-markisa bintang jaya.png",
+      "sourceSha256": "bfc0e9785947a3cf96b50767f643af99dd69415276a3d2c6b977e67b9d1be648",
+      "outputSha256": "062eb73222b6f5cdcde357f16b434279f30cd8f158d54517909567b03231b22b",
+      "category": "prototype",
+      "caption": "Tampilan prototipe digital Markisa Bintang Jaya.",
+      "altSuggestion": "Mockup ponsel dan dashboard desktop prototipe Markisa Bintang Jaya."
+    },
+    {
+      "path": "/week-3/prototypes/sukmajahe-sarabba.webp",
+      "dimensions": {
+        "width": 1672,
+        "height": 941
+      },
+      "bytes": 177602,
+      "source": "Dokuemntasi Prototype Outputs/prototype-sukmajahe sarabba.png",
+      "sourceSha256": "e47441a88e238ab7419d8ef11ccb6103efc18f7fd566c16b0a5750a0a99a2360",
+      "outputSha256": "4c059983e1c2e1e0affc77b37f266955971f20e8ff5f49d9d020f32a4d6403a0",
+      "category": "prototype",
+      "caption": "Tampilan prototipe digital Sukmajahe Sarabba.",
+      "altSuggestion": "Mockup ponsel dan dashboard desktop prototipe Sukmajahe Sarabba."
+    },
+    {
+      "path": "/week-3/documentation/event-opening.webp",
+      "dimensions": {
+        "width": 1800,
+        "height": 1012
+      },
+      "bytes": 180398,
+      "source": "Dokumentasi Documentation Gallery/IMG_6683.jpeg",
+      "sourceSha256": "e2433a6cc4fd771bc0e72a9581dd320252eb1f42dd8a9e9862f333f3ecb4b848",
+      "outputSha256": "7a011ca3beb9639683182ba647d6342232bbc160be0effc466ad4488abe4d332",
+      "category": "event-opening",
+      "caption": "Peserta menyimak sesi di ruang acara dengan identitas DekatLokal di layar.",
+      "altSuggestion": "Peserta duduk menghadap layar presentasi DekatLokal di ruang acara."
+    },
+    {
+      "path": "/week-3/documentation/workshop-facilitation.webp",
+      "dimensions": {
+        "width": 1012,
+        "height": 1800
+      },
+      "bytes": 114886,
+      "source": "Dokumentasi Documentation Gallery/IMG_6336.HEIC",
+      "sourceSha256": "eee3db9f227d6dab0679a5ffc908062d061e81175628c0feee8570ca867fcbfd",
+      "outputSha256": "70fea0d3fab02f56760aa33f564c3c24285d0081352a2155ec252118f04f2b67",
+      "category": "workshop",
+      "caption": "Fasilitator menyampaikan materi di depan peserta workshop.",
+      "altSuggestion": "Seorang fasilitator berdiri di depan layar presentasi dan peserta."
+    },
+    {
+      "path": "/week-3/documentation/workshop-collaboration.webp",
+      "dimensions": {
+        "width": 1012,
+        "height": 1800
+      },
+      "bytes": 185290,
+      "source": "Dokumentasi Workshop & Hands-On/IMG_6392.HEIC",
+      "sourceSha256": "036237ab978a10c974644c48eb7a715bc08d387a2cbf66809b1c6f16170eb6b0",
+      "outputSha256": "d078e37efa6095523a6eba652adb5d73055f7de4db8d8ae24214080bbbc82eba",
+      "category": "workshop",
+      "caption": "Peserta bekerja bersama menggunakan laptop dalam sesi workshop.",
+      "altSuggestion": "Deretan peserta berdiskusi dan menggunakan laptop di meja workshop."
+    },
+    {
+      "path": "/week-3/documentation/participant-interaction.webp",
+      "dimensions": {
+        "width": 1012,
+        "height": 1800
+      },
+      "bytes": 73648,
+      "source": "Dokumentasi Workshop & Hands-On/IMG_6404.JPG",
+      "sourceSha256": "bf5d95ea3a760296b2a876cf77bcbda7fccf25894da4a486b3f5826a53d235e6",
+      "outputSha256": "49b4eda911398f6a0548be084c62e05f4dba06bb5973e700155f8c51451b61de",
+      "category": "participant-interaction",
+      "caption": "Interaksi peserta saat menjalankan aktivitas workshop.",
+      "altSuggestion": "Seorang peserta berdiri memegang lembar aktivitas di samping peserta lain."
+    },
+    {
+      "path": "/week-3/documentation/student-umkm-discussion.webp",
+      "dimensions": {
+        "width": 1012,
+        "height": 1800
+      },
+      "bytes": 131486,
+      "source": "Dokumentasi Team Pitching/IMG_6345.HEIC",
+      "sourceSha256": "4ccebc899ca5763fd8a9465f4378873ce372ceb8deef967a1419091380332b8d",
+      "outputSha256": "0e1df8161a642447796afede8ae176054cef2e1e6252ed7f56557c7ecfd62f1f",
+      "category": "co-creation",
+      "caption": "Diskusi kelompok menggunakan lembar kerja selama proses co-creation.",
+      "altSuggestion": "Tiga peserta berdiskusi mengelilingi meja dengan lembar kerja."
+    },
+    {
+      "path": "/week-3/documentation/hands-on-building.webp",
+      "dimensions": {
+        "width": 1800,
+        "height": 1012
+      },
+      "bytes": 213996,
+      "source": "Dokumentasi Workshop & Hands-On/IMG_6746.JPG",
+      "sourceSha256": "bba66b0fc1870a619d792ab787977809974299412aca7e30a9afcfa6ed156ab3",
+      "outputSha256": "09bbb74066ed480abe4e1859e5b02cbb592f6d1d3222c0f6e651987a064a6490",
+      "category": "hands-on-building",
+      "caption": "Kelompok mengembangkan solusi bersama dalam sesi hands-on.",
+      "altSuggestion": "Seorang peserta berdiri berbicara kepada kelompok yang bekerja dengan laptop."
+    },
+    {
+      "path": "/week-3/documentation/prototype-development.webp",
+      "dimensions": {
+        "width": 1012,
+        "height": 1800
+      },
+      "bytes": 145540,
+      "source": "Dokumentasi Workshop & Hands-On/IMG_6753.JPG",
+      "sourceSha256": "9b355141aad1b54fd8de704b56468adf11c77c246b52e565a24dca3d78ba6e99",
+      "outputSha256": "7bc9beccc43936e74b5da320924d2e66ba75c9dd44e563d0b148b89952a46b35",
+      "category": "prototype-development",
+      "caption": "Proses pengembangan prototipe pada laptop peserta.",
+      "altSuggestion": "Tangan peserta bekerja pada laptop dengan tampilan kode di layar."
+    },
+    {
+      "path": "/week-3/documentation/prototype-review.webp",
+      "dimensions": {
+        "width": 1012,
+        "height": 1800
+      },
+      "bytes": 153836,
+      "source": "Dokumentasi Team Pitching/IMG_6365.JPG",
+      "sourceSha256": "594a79e960a12a7cc1b9488b32a4ec7b2135d4d6dffdf8456bb4189605c6aff2",
+      "outputSha256": "4e8a65930c8dd161a377d6663c67b8fa007e25aafe0c8013b25a6b4d266e89fb",
+      "category": "prototype-review",
+      "caption": "Peserta memperlihatkan hasil kerja digital kepada anggota tim.",
+      "altSuggestion": "Seorang peserta memperlihatkan layar laptop kepada anggota kelompok."
+    },
+    {
+      "path": "/week-3/documentation/team-pitching.webp",
+      "dimensions": {
+        "width": 1012,
+        "height": 1800
+      },
+      "bytes": 129834,
+      "source": "Dokumentasi Team Pitching/IMG_6359.JPG",
+      "sourceSha256": "02965685263be78f9df7cf565876fbdbc08fe79147f10a8c4fcb0a1796bc1cdd",
+      "outputSha256": "047fee792b67bf261787269ad88cbb5c469ae678546e63262b9b19dad520618d",
+      "category": "team-pitching",
+      "caption": "Penyampaian progres solusi dalam sesi team pitching.",
+      "altSuggestion": "Seorang peserta berbicara kepada anggota tim yang duduk di meja kerja."
+    },
+    {
+      "path": "/week-3/documentation/stakeholder-recognition.webp",
+      "dimensions": {
+        "width": 1012,
+        "height": 1800
+      },
+      "bytes": 208670,
+      "source": "Dokumentasi Documentation Gallery/IMG_6438.HEIC",
+      "sourceSha256": "ffcab6a4ca7f9c7aaa2a233887bb72986e09123a5b253cf86fea9d57f75f5633",
+      "outputSha256": "261179501406710689915e072d5410d06cfb6956de58509390b784fceaf4c4e4",
+      "category": "stakeholder-partner",
+      "caption": "Dokumentasi penyerahan sertifikat di area acara.",
+      "altSuggestion": "Tiga orang berpose sambil memegang sertifikat di area acara."
+    },
+    {
+      "path": "/week-3/documentation/group-documentation.webp",
+      "dimensions": {
+        "width": 1600,
+        "height": 900
+      },
+      "bytes": 134238,
+      "source": "Dokumentasi Documentation Gallery/1ef44739-db3b-4adb-a761-8888bce79c83.jpg",
+      "sourceSha256": "d37f1b9098a0b14f6a2b228112b004077671daba2f7c68b4027a9d7d6688a90d",
+      "outputSha256": "6905c45dfbe5cc32eeebc4eeb86f5e0722ca2915b30de7abb47c651e8910d9c2",
+      "category": "group-photo",
+      "caption": "Dokumentasi kelompok peserta di area acara.",
+      "altSuggestion": "Sekelompok peserta berpose bersama di depan area acara."
+    },
+    {
+      "path": "/week-3/documentation/event-team.webp",
+      "dimensions": {
+        "width": 900,
+        "height": 1600
+      },
+      "bytes": 125180,
+      "source": "Dokumentasi Documentation Gallery/2aa5df63-90d8-44f3-9419-ac269042670b.jpg",
+      "sourceSha256": "c6760445251998efc5c084e6a628c184ad8e8e3e84b90751c5d1accbf0fc6342",
+      "outputSha256": "bfe3640ba36d3d0fab732eb2b3dcba5b026e9d676f41cd49a077c3c4099ab2a7",
+      "category": "event-team",
+      "caption": "Dokumentasi kebersamaan tim dan peserta kegiatan.",
+      "altSuggestion": "Sekelompok peserta berpose bersama di dalam ruang kegiatan."
+    }
+  ]
+}

@@ -12,6 +12,7 @@ export type TeamPartnerStatus =
 export type TeamSolutionStatus =
   | "not_started"
   | "in_progress"
+  | "functional"
   | "tested"
   | "handed_over";
 
@@ -87,16 +88,16 @@ function createActiveTeam(challenge: Challenge): CollaborationTeam {
     temporaryName: `Tim ${slotLabel}`,
     name: null,
     displayName: `Tim ${slotLabel} — ${challenge.partnerDisplayName}`,
-    status: "active",
-    statusLabel: "Kegiatan Utama Selesai · Follow-Up Berjalan",
+    status: "completed",
+    statusLabel: "Week 3 Completed · Monitoring Week 4",
     roles: unpublishedTeamRoles.map((role) => ({ ...role })),
     challengeId: challenge.id,
     challengePartnerName: challenge.partnerName,
     challengePartnerStatus: "confirmed",
     challengePartnerStatusLabel: "Challenge Partner Tervalidasi",
-    solutionName: null,
-    solutionStatus: "in_progress",
-    solutionStatusLabel: "Output dan Testing Sedang Dikonsolidasikan",
+    solutionName: challenge.solution,
+    solutionStatus: "functional",
+    solutionStatusLabel: "Completed · Functional",
   };
 }
 

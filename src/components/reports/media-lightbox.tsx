@@ -5,6 +5,8 @@ import {
   Enlarge,
   NavArrowLeft,
   NavArrowRight,
+  Pause,
+  Play,
   Xmark,
 } from "iconoir-react";
 import Image from "next/image";
@@ -17,6 +19,7 @@ export interface LightboxMediaItem {
   readonly height: number;
   readonly alt: string;
   readonly label?: string;
+  readonly objectPosition?: string;
 }
 
 interface MediaLightboxProps {
@@ -30,6 +33,9 @@ interface MediaLightboxProps {
   readonly imageClassName?: string;
   readonly sizes?: string;
   readonly showInlineNavigation?: boolean;
+  readonly autoPlayIntervalMs?: number;
+  readonly showDots?: boolean;
+  readonly enableSwipe?: boolean;
 }
 
 const focusableSelector =
@@ -50,12 +56,24 @@ export function MediaLightbox({
   imageClassName = "h-auto w-full object-cover transition duration-300 group-hover:scale-[1.02]",
   sizes = "(max-width: 639px) calc(100vw - 2.5rem), (max-width: 1023px) 50vw, 33vw",
   showInlineNavigation = false,
+  autoPlayIntervalMs,
+  showDots = false,
+  enableSwipe = false,
 }: MediaLightboxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isInteractionPaused, setIsInteractionPaused] = useState(false);
+  const [isDocumentVisible, setIsDocumentVisible] = useState(true);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isAutoPlayStopped, setIsAutoPlayStopped] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const touchStartXRef = useRef<number | null>(null);
+  const touchStartYRef = useRef<number | null>(null);
+  const suppressClickRef = useRef(false);
+  const [isInViewport, setIsInViewport] = useState(false);
   const activeItem = items[activeIndex];
   const hasMultipleItems = items.length > 1;
 
@@ -72,6 +90,88 @@ export function MediaLightbox({
     },
     [items.length],
   );
+
+  useEffect(() => {
+    if (!autoPlayIntervalMs) {
+      return;
+    }
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateMotionPreference = () => {
+      setPrefersReducedMotion(motionQuery.matches);
+    };
+    const updateVisibility = () => {
+      setIsDocumentVisible(document.visibilityState === "visible");
+    };
+
+    updateMotionPreference();
+    updateVisibility();
+    motionQuery.addEventListener("change", updateMotionPreference);
+    document.addEventListener("visibilitychange", updateVisibility);
+
+    return () => {
+      motionQuery.removeEventListener("change", updateMotionPreference);
+      document.removeEventListener("visibilitychange", updateVisibility);
+    };
+  }, [autoPlayIntervalMs]);
+
+  useEffect(() => {
+    if (!autoPlayIntervalMs || !containerRef.current) {
+      return;
+    }
+
+    if (!("IntersectionObserver" in window)) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInViewport(entry?.isIntersecting ?? false),
+      { rootMargin: "120px 0px", threshold: 0.05 },
+    );
+    observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
+  }, [autoPlayIntervalMs]);
+
+  useEffect(() => {
+    if (!autoPlayIntervalMs || !isInViewport) {
+      return;
+    }
+
+    items.forEach((item) => {
+      const preloadImage = new window.Image();
+      preloadImage.src = item.src;
+    });
+  }, [autoPlayIntervalMs, isInViewport, items]);
+
+  useEffect(() => {
+    if (
+      !autoPlayIntervalMs ||
+      autoPlayIntervalMs < 1_000 ||
+      !hasMultipleItems ||
+      isOpen ||
+      isAutoPlayStopped ||
+      isInteractionPaused ||
+      !isInViewport ||
+      !isDocumentVisible ||
+      prefersReducedMotion
+    ) {
+      return;
+    }
+
+    const timer = window.setInterval(() => move(1), autoPlayIntervalMs);
+    return () => window.clearInterval(timer);
+  }, [
+    autoPlayIntervalMs,
+    hasMultipleItems,
+    isDocumentVisible,
+    isInteractionPaused,
+    isAutoPlayStopped,
+    isInViewport,
+    isOpen,
+    move,
+    prefersReducedMotion,
+  ]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -280,11 +380,79 @@ export function MediaLightbox({
   ) : null;
 
   return (
-    <div className="relative">
+    <div
+      ref={containerRef}
+      className="relative"
+      onMouseEnter={
+        autoPlayIntervalMs ? () => setIsInteractionPaused(true) : undefined
+      }
+      onMouseLeave={
+        autoPlayIntervalMs ? () => setIsInteractionPaused(false) : undefined
+      }
+      onFocusCapture={
+        autoPlayIntervalMs ? () => setIsInteractionPaused(true) : undefined
+      }
+      onBlurCapture={
+        autoPlayIntervalMs
+          ? (event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setIsInteractionPaused(false);
+              }
+            }
+          : undefined
+      }
+      onTouchStart={(event) => {
+        if (enableSwipe) {
+          touchStartXRef.current = event.touches[0]?.clientX ?? null;
+          touchStartYRef.current = event.touches[0]?.clientY ?? null;
+        }
+      }}
+      onTouchEnd={(event) => {
+        if (
+          !enableSwipe ||
+          touchStartXRef.current === null ||
+          touchStartYRef.current === null
+        ) {
+          return;
+        }
+
+        const touchEndX = event.changedTouches[0]?.clientX;
+        const touchEndY = event.changedTouches[0]?.clientY;
+        if (touchEndX === undefined || touchEndY === undefined) {
+          touchStartXRef.current = null;
+          touchStartYRef.current = null;
+          return;
+        }
+
+        const distanceX = touchEndX - touchStartXRef.current;
+        const distanceY = touchEndY - touchStartYRef.current;
+        touchStartXRef.current = null;
+        touchStartYRef.current = null;
+        if (Math.abs(distanceX) >= 48 && Math.abs(distanceX) > Math.abs(distanceY)) {
+          suppressClickRef.current = true;
+          window.setTimeout(() => {
+            suppressClickRef.current = false;
+          }, 600);
+          move(distanceX < 0 ? 1 : -1);
+        }
+      }}
+      onTouchCancel={() => {
+        touchStartXRef.current = null;
+        touchStartYRef.current = null;
+      }}
+    >
       <button
         ref={triggerRef}
         type="button"
-        onClick={() => setIsOpen(true)}
+        onClick={(event) => {
+          if (suppressClickRef.current) {
+            event.preventDefault();
+            suppressClickRef.current = false;
+            return;
+          }
+
+          setIsOpen(true);
+        }}
         aria-haspopup="dialog"
         aria-label={triggerLabel ?? `Buka ${title} dalam pop up`}
         className={`group ${triggerClassName}`}
@@ -296,6 +464,11 @@ export function MediaLightbox({
           height={activeItem.height}
           sizes={sizes}
           className={imageClassName}
+          style={
+            activeItem.objectPosition
+              ? { objectPosition: activeItem.objectPosition }
+              : undefined
+          }
         />
         <span className="absolute right-3 top-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/70 bg-white/95 text-brand shadow-lg">
           <Enlarge className="h-4 w-4" aria-hidden="true" />
@@ -329,6 +502,55 @@ export function MediaLightbox({
             <NavArrowRight className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
+      ) : null}
+
+      {showDots && hasMultipleItems ? (
+        <div
+          className="absolute inset-x-0 bottom-3 z-10 flex min-h-11 items-center justify-center gap-1.5 px-16"
+          role="group"
+          aria-label={`Pilih foto ${title}`}
+        >
+          {items.map((item, index) => (
+            <button
+              key={item.src}
+              type="button"
+              onClick={() => setActiveIndex(index)}
+              aria-label={`Tampilkan foto ${index + 1} dari ${items.length}`}
+              aria-current={index === activeIndex ? "true" : undefined}
+              className="group/dot inline-flex h-11 w-8 items-center justify-center"
+            >
+              <span
+                className={`block h-2 rounded-full border border-white/80 shadow-sm transition-all ${
+                  index === activeIndex
+                    ? "w-6 bg-white"
+                    : "w-2 bg-white/55 group-hover/dot:bg-white"
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      {autoPlayIntervalMs && hasMultipleItems && !prefersReducedMotion ? (
+        <button
+          type="button"
+          onClick={() => setIsAutoPlayStopped((current) => !current)}
+          aria-pressed={isAutoPlayStopped}
+          aria-label={
+            isAutoPlayStopped
+              ? "Lanjutkan pergantian foto otomatis"
+              : "Jeda pergantian foto otomatis"
+          }
+          className="absolute left-3 top-3 z-10 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/70 bg-white/95 px-3 text-xs font-semibold text-brand shadow-lg transition hover:bg-brand-50"
+        >
+          {isAutoPlayStopped ? (
+            <Play className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Pause className="h-4 w-4" aria-hidden="true" />
+          )}
+          {isAutoPlayStopped ? "Putar" : "Jeda"}
+        </button>
       ) : null}
 
       {dialog && typeof document !== "undefined"

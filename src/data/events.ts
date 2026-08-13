@@ -220,7 +220,7 @@ export const aiCoCreationLabEvent = {
   description:
     "Program praktik satu hari yang mempertemukan 20 mahasiswa dan 5 UMKM untuk meracik solusi AI yang simpel, aman, dan relevan bagi kebutuhan usaha nyata.",
   featuredSummary:
-    "20 mahasiswa dan 5 UMKM telah berkolaborasi dalam lima tim; detail output dan pengujian sedang dikonsolidasikan.",
+    "20 mahasiswa dan 5 UMKM telah berkolaborasi dalam lima tim dan menghasilkan lima prototype fungsional; pengukuran adopsi dilanjutkan pada Week 4.",
   branding: {
     logo: {
       src: "/event-brand/ai-co-creation-lab-makassar.webp",
@@ -690,7 +690,7 @@ export const aiCoCreationLabEvent = {
       time: "13.00 sampai 16.30",
       title: "Bootcamp dan co creation",
       description:
-        "Rangkaian pembelajaran, perumusan masalah, co creation, dan penutupan telah dilaksanakan. Detail output serta evidence pengujian masih dikonsolidasikan.",
+        "Rangkaian pembelajaran, perumusan masalah, co creation, dan penutupan telah dilaksanakan serta menghasilkan lima prototype fungsional. UAT dan adoption monitoring dilanjutkan pada Week 4.",
     },
   ],
   partners: [

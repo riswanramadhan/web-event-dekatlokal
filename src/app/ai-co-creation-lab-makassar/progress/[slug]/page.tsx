@@ -18,7 +18,6 @@ import {
   ProjectCompletionMonitoringReportPage,
   ProgressReportPage,
   WeekFourHubReportPage,
-  WeekThreeHubReportPage,
 } from "@/components/reports";
 import { weekFourHeaders, type WeekFourProgressSlug } from "@/data/gep-week-4";
 import {
@@ -201,8 +200,6 @@ export default async function ProgressReportRoute({
       return <FinalActionPlanReportPage />;
     case "global-communication":
       return <GlobalCommunicationReportPage />;
-    case "lead-the-action":
-      return <WeekThreeHubReportPage />;
     case "meet-the-leader":
       return <MeetTheLeaderReportPage />;
     case "leadership-conversation":

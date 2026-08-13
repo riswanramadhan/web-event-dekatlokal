@@ -38,14 +38,19 @@ From AI Users to Local Problem Solvers
 
 Program kolaborasi satu hari yang mempertemukan 20 mahasiswa dan 5 pelaku UMKM untuk merancang dan menguji solusi berbantuan AI berdasarkan kebutuhan usaha yang nyata.
 
-### Key metrics
+### Verified implementation metrics — 10 August 2026
 
-- 20 mahasiswa
-- 5 UMKM
-- 4 tim
-- 4 solusi AI
+- 20 Student Co-Creators
+- 5 UMKM Co-Creators
+- 5 Co-Creation Teams
+- 5 Functional Prototypes
+- 5 Event Volunteers / Support Team
 - 1 kegiatan utama
 - 3,5 jam pelaksanaan
+
+Angka ini adalah ringkasan pelaksanaan Week 3, bukan hasil impact atau bukti
+adopsi. Target perencanaan lama tetap harus dibaca sebagai target historis;
+hasil penggunaan ulang dan adopsi solusi diukur terpisah pada Week 4.
 
 ### Main activity time
 
@@ -321,11 +326,31 @@ Content:
 
 ### Week 3 — Lead The Action
 
-- Meet the Leader Challenge
-- Leadership Conversation Report
-- Pelaksanaan Mini Project
-- Mobilisasi Jejaring
-- Dokumentasi Proses
+- Meet the Leader Challenge — `Completed`
+- Leadership Conversation Report — `Completed`
+- Mini Project Implementation — `Completed`
+- Network Mobilization — `Completed`
+- Process Documentation — `Completed`
+
+`Lead The Action` adalah tema Week 3, bukan progress item atau detail page.
+Hub non-detail berada di `/ai-co-creation-lab-makassar/progress/week-3` dan
+URL lama `/ai-co-creation-lab-makassar/progress/lead-the-action` hanya memberi
+permanent redirect untuk kompatibilitas link. Hub tidak muncul dalam filter,
+daftar Week 3, maupun navigasi previous/next. Lima progress report Week 3 yang
+dapat dinavigasi adalah:
+
+- `/ai-co-creation-lab-makassar/progress/meet-the-leader`
+- `/ai-co-creation-lab-makassar/progress/leadership-conversation`
+- `/ai-co-creation-lab-makassar/progress/mini-project-implementation`
+- `/ai-co-creation-lab-makassar/progress/network-mobilization`
+- `/ai-co-creation-lab-makassar/progress/process-documentation`
+
+Evidence utama Week 3 menggunakan dokumentasi aktual. Dokumentasi Meet the
+Leader terhubung ke folder Drive yang diberikan pemilik dan galeri lokal yang
+dikurasi. Dokumentasi pelaksanaan serta Process Documentation memakai sumber
+Foto Report Event, lima screenshot prototype, dan pranala menuju folder
+dokumentasi lengkap. Video Global Communication Week 2 tidak boleh dipakai
+ulang atau dilabeli sebagai video dokumentasi event Week 3.
 
 ### Week 4 — Measure, Reflect & Sustain
 

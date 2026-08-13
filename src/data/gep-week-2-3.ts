@@ -1,6 +1,12 @@
-import { partners } from "@/data/partnership-collaboration";
-import { umkmStakeholders } from "@/data/problem-validation";
 import type { ProgressReportSlug } from "@/data/progress-reports";
+import {
+  leadershipConversationCompletedHeader,
+  meetTheLeaderCompletedHeader,
+  miniProjectImplementationCompletedHeader,
+  networkMobilizationCompletedHeader,
+  processDocumentationCompletedHeader,
+  weekThreeCompletedHeader,
+} from "@/data/gep-week-3-completed";
 
 const progressBaseRoute = "/ai-co-creation-lab-makassar/progress";
 const publicProgressBaseUrl =
@@ -78,113 +84,19 @@ export const globalCommunicationHeader = {
   ...sharedUpdate,
 } as const;
 
-export const weekThreeHeader = {
-  slug: "lead-the-action" as ProgressReportSlug,
-  title: "Week 3 — Lead The Action",
-  metadataTitle:
-    "Lead The Action — AI Co-Creation Lab Makassar | DekatLokal",
-  weekLabel: "GEP WEEK 3",
-  phase: "LEAD THE ACTION",
-  subtitle:
-    "Turning plans into action through leadership conversations, real project implementation, network mobilization, and documented impact.",
-  status: "In Progress",
-  statusTone: "amber" as const,
-  nextStep: "Meet the Leader Challenge",
-  route: progressRoute("lead-the-action"),
-  progressUrl: progressUrl("lead-the-action"),
-  ...sharedUpdate,
-} as const;
-
-export const meetTheLeaderHeader = {
-  slug: "meet-the-leader" as ProgressReportSlug,
-  title: "Meet the Leader Challenge",
-  metadataTitle:
-    "Meet the Leader Challenge — Rumah BUMN Makassar | DekatLokal",
-  weekLabel: "GEP WEEK 3",
-  phase: "LEAD THE ACTION",
-  subtitle:
-    "Audiensi bersama pimpinan Rumah BUMN Makassar untuk memperoleh perspektif kepemimpinan, kolaborasi, dan masukan bagi mini project.",
-  status: "Completed / Documentation Being Finalized",
-  statusTone: "amber" as const,
-  nextStep: "Leadership Conversation Report",
-  route: progressRoute("meet-the-leader"),
-  progressUrl: progressUrl("meet-the-leader"),
-  ...sharedUpdate,
-} as const;
-
-export const leadershipConversationHeader = {
-  slug: "leadership-conversation" as ProgressReportSlug,
-  title: "Leadership Conversation Report",
-  metadataTitle:
-    "Leadership Conversation Report — AI Co-Creation Lab Makassar | DekatLokal",
-  weekLabel: "GEP WEEK 3",
-  phase: "LEAD THE ACTION",
-  subtitle:
-    "Struktur laporan percakapan kepemimpinan yang siap dilengkapi setelah seluruh catatan dan evidence terverifikasi.",
-  status: "In Progress",
-  statusTone: "amber" as const,
-  nextStep: "Pelaksanaan Mini Project Kontribusi Sosial",
-  route: progressRoute("leadership-conversation"),
-  progressUrl: progressUrl("leadership-conversation"),
-  ...sharedUpdate,
-} as const;
-
-export const miniProjectImplementationHeader = {
-  slug: "mini-project-implementation" as ProgressReportSlug,
-  title: "Pelaksanaan Mini Project Kontribusi Sosial",
-  metadataTitle:
-    "Pelaksanaan AI Co-Creation Lab Makassar 2026 | DekatLokal",
-  weekLabel: "GEP WEEK 3",
-  phase: "LEAD THE ACTION",
-  subtitle:
-    "AI Co-Creation Lab Makassar 2026 mempertemukan mahasiswa dan UMKM untuk membangun solusi digital dari masalah usaha yang nyata.",
-  status: "Completed — Post-Project Follow-Up In Progress",
-  statusTone: "amber" as const,
-  nextStep: "UAT, improvement, deployment, handover, dan monitoring",
-  route: progressRoute("mini-project-implementation"),
-  progressUrl: progressUrl("mini-project-implementation"),
-  ...sharedUpdate,
-} as const;
-
-export const networkMobilizationHeader = {
-  slug: "network-mobilization" as ProgressReportSlug,
-  title: "Mobilisasi Jejaring",
-  metadataTitle:
-    "Mobilisasi Jejaring — AI Co-Creation Lab Makassar | DekatLokal",
-  weekLabel: "GEP WEEK 3",
-  phase: "LEAD THE ACTION",
-  subtitle:
-    "Built Together, Backed by an Ecosystem.",
-  status: "Completed / Documentation",
-  statusTone: "amber" as const,
-  nextStep: "Dokumentasi Proses",
-  route: progressRoute("network-mobilization"),
-  progressUrl: progressUrl("network-mobilization"),
-  ...sharedUpdate,
-} as const;
-
-export const processDocumentationHeader = {
-  slug: "process-documentation" as ProgressReportSlug,
-  title: "Dokumentasi Proses",
-  metadataTitle:
-    "Dokumentasi Proses — AI Co-Creation Lab Makassar | DekatLokal",
-  weekLabel: "GEP WEEK 3",
-  phase: "LEAD THE ACTION",
-  subtitle:
-    "Ruang dokumentasi terstruktur untuk persiapan, kolaborasi, pelaksanaan, pengujian, pitching, dan tindak lanjut program.",
-  status: "In Progress",
-  statusTone: "amber" as const,
-  nextStep: "Penyelesaian, monitoring, dan impact measurement",
-  route: progressRoute("process-documentation"),
-  progressUrl: progressUrl("process-documentation"),
-  ...sharedUpdate,
-} as const;
+export const weekThreeHeader = weekThreeCompletedHeader;
+export const meetTheLeaderHeader = meetTheLeaderCompletedHeader;
+export const leadershipConversationHeader =
+  leadershipConversationCompletedHeader;
+export const miniProjectImplementationHeader =
+  miniProjectImplementationCompletedHeader;
+export const networkMobilizationHeader = networkMobilizationCompletedHeader;
+export const processDocumentationHeader = processDocumentationCompletedHeader;
 
 export const weekTwoThreeHeaders = {
   "pitching-mini-project": pitchingHeader,
   "final-action-plan": finalActionPlanHeader,
   "global-communication": globalCommunicationHeader,
-  "lead-the-action": weekThreeHeader,
   "meet-the-leader": meetTheLeaderHeader,
   "leadership-conversation": leadershipConversationHeader,
   "mini-project-implementation": miniProjectImplementationHeader,
@@ -441,194 +353,6 @@ export const weekTwoCompletedOutputs = [
   "Global Communication",
 ] as const;
 
-export const weekThreeProgress = [
-  {
-    slug: "meet-the-leader" as ProgressReportSlug,
-    title: "Meet the Leader Challenge",
-    description: "Audiensi telah dilakukan bersama pimpinan Rumah BUMN Makassar.",
-    status: "Documentation Finalization",
-  },
-  {
-    slug: "leadership-conversation" as ProgressReportSlug,
-    title: "Leadership Conversation Report",
-    description: "Laporan disusun setelah catatan dan evidence terverifikasi.",
-    status: "In Progress",
-  },
-  {
-    slug: "mini-project-implementation" as ProgressReportSlug,
-    title: "Mini Project Implementation",
-    description: "Kegiatan utama terlaksana; follow-up solusi masih berjalan.",
-    status: "Completed",
-  },
-  {
-    slug: "network-mobilization" as ProgressReportSlug,
-    title: "Network Mobilization",
-    description: "Kontribusi ekosistem telah dimobilisasi dan dokumentasi dirapikan.",
-    status: "Completed / Documentation",
-  },
-  {
-    slug: "process-documentation" as ProgressReportSlug,
-    title: "Process Documentation",
-    description: "Aset pelaksanaan sedang diorganisasi dan diverifikasi.",
-    status: "In Progress",
-  },
-] as const;
-
-export const meetTheLeaderPurposes = [
-  "Leadership insight",
-  "Perspective dari practitioner",
-  "Masukan terhadap AI Co-Creation Lab",
-  "Pembelajaran terkait kolaborasi dan implementasi program",
-] as const;
-
-export const leadershipConversationSections = [
-  "Leader Profile — name, position, organization",
-  "Key Discussion",
-  "Leadership Insights",
-  "Feedback for AI Co-Creation Lab",
-  "Personal Reflection",
-  "Supporting Documentation",
-] as const;
-
-export const implementationFacts = [
-  { value: "10 Aug 2026", label: "Tanggal pelaksanaan", kind: "Actual" },
-  { value: "20", label: "Students", kind: "Actual" },
-  { value: "5", label: "UMKM", kind: "Actual" },
-  { value: "5", label: "Co-Creation Teams", kind: "Actual" },
-] as const;
-
-export const coCreationProcess = ["Listen", "Define", "Build", "Test", "Improve"] as const;
-
-export const coCreationCases = umkmStakeholders.map((stakeholder, index) => ({
-  number: String(index + 1).padStart(2, "0"),
-  id: stakeholder.id,
-  businessName: stakeholder.businessName,
-  problem: stakeholder.painPoint,
-  priorityNeed: stakeholder.priorityNeed,
-}));
-
-export const implementationSections = [
-  {
-    id: "workshop-hands-on",
-    eyebrow: "Implementation 01",
-    title: "Workshop & Hands-On",
-    status: "Documentation being organized",
-    description:
-      "Ruang ini disiapkan untuk agenda workshop, aktivitas hands-on, dan evidence pelaksanaan yang telah diverifikasi.",
-  },
-  {
-    id: "prototype-outputs",
-    eyebrow: "Implementation 02",
-    title: "Prototype Outputs",
-    status: "Output details being finalized",
-    description:
-      "Detail prototype per tim belum dipublikasikan sampai fungsi, kepemilikan, dan status testing dapat dikonfirmasi.",
-  },
-  {
-    id: "umkm-testing",
-    eyebrow: "Implementation 03",
-    title: "UMKM Testing",
-    status: "Testing notes being consolidated",
-    description:
-      "Catatan pengujian bersama UMKM akan ditempatkan di sini setelah hasil dan konteksnya selesai dirapikan.",
-  },
-  {
-    id: "team-pitching",
-    eyebrow: "Implementation 04",
-    title: "Team Pitching",
-    status: "Documentation being organized",
-    description:
-      "Ruang ini disiapkan untuk ringkasan pitching tim dan evidence yang telah mendapat persetujuan publikasi.",
-  },
-  {
-    id: "testimonials",
-    eyebrow: "Implementation 05",
-    title: "Testimonials",
-    status: "No approved testimonial published yet",
-    description:
-      "Tidak ada testimonial yang ditulis atau dipublikasikan sebelum kutipan dan persetujuan sumber tersedia.",
-  },
-  {
-    id: "documentation-gallery",
-    eyebrow: "Implementation 06",
-    title: "Documentation Gallery",
-    status: "Documentation being organized",
-    description:
-      "Galeri pelaksanaan akan menggunakan dokumentasi nyata dengan caption, konteks, dan status izin yang jelas.",
-  },
-] as const;
-
-export const postLabJourney = [
-  "UAT",
-  "Improvement",
-  "Deployment",
-  "Handover",
-  "Monitoring",
-] as const;
-
-function existingPartnerNames(ids: readonly string[]) {
-  return ids.flatMap((id) => {
-    const partner = partners.find((item) => item.id === id);
-    return partner ? [partner.name] : [];
-  });
-}
-
-export const networkEcosystemGroups = [
-  {
-    title: "Program & Leadership Ecosystem",
-    members: existingPartnerNames(["bakti-nusa", "great-edunesia", "dompet-dhuafa"]),
-  },
-  {
-    title: "UMKM Ecosystem",
-    members: existingPartnerNames(["rumah-bumn-makassar"]),
-  },
-  {
-    title: "Digital Infrastructure",
-    members: existingPartnerNames(["inovasi-digital"]),
-  },
-  {
-    title: "Digital Learning",
-    members: existingPartnerNames(["dicoding-indonesia"]),
-  },
-  {
-    title: "Venue / Collaboration Space",
-    members: existingPartnerNames(["komdigi-makassar", "makassar-creative-hub"]),
-  },
-  {
-    title: "Academic / Technical Talent",
-    members: existingPartnerNames(["informatika-unhas"]),
-  },
-] as const;
-
-export const eventSupportPendingEvidence = [
-  "I-Team Professional MC Management",
-  "Cleo Pure Water",
-] as const;
-
-export const fiveUmkmCoCreators = umkmStakeholders.map((stakeholder) => ({
-  id: stakeholder.id,
-  name: stakeholder.businessName,
-}));
-
-export const documentationCategories = [
-  "Preparation",
-  "Stakeholder meetings",
-  "UMKM problem validation",
-  "Partnership",
-  "Participant recruitment",
-  "Event opening",
-  "Workshop",
-  "Student–UMKM discussion",
-  "Hands-on building",
-  "Prototype development",
-  "UMKM testing",
-  "Pitching",
-  "Testimonials",
-  "Partner / sponsor moments",
-  "Group photo",
-  "Media / social publication",
-] as const;
-
 export const reportCopy = {
   pitching: {
     progressDescription:
@@ -677,92 +401,6 @@ export const reportCopy = {
       quote: leadershipProfile.closing,
       paragraphs: [
         "Komunikasi global memberi latihan untuk menjelaskan masalah lokal secara sederhana tanpa kehilangan konteks, serta menghubungkan identitas personal dengan tindakan yang sedang dibangun bersama komunitas.",
-      ],
-    },
-  },
-  weekThree: {
-    progressDescription:
-      "Week 3 sedang berjalan. Audiensi pemimpin dan kegiatan utama telah terlaksana, sedangkan laporan percakapan, dokumentasi, post-project improvement, serta evidence pendukung masih diselesaikan dan diverifikasi sebelum dipublikasikan.",
-    outputs: [
-      "Audiensi Meet the Leader yang sedang difinalisasi dokumentasinya.",
-      "Struktur Leadership Conversation Report.",
-      "Laporan pelaksanaan mini project dan lima co-creation cases.",
-      "Pemetaan kontribusi ekosistem program.",
-      "Struktur dokumentasi proses yang siap diperbarui.",
-    ],
-    reflection: {
-      quote: "Leadership becomes visible when plans turn into coordinated action.",
-      paragraphs: [
-        "Fokus Week 3 adalah menjaga tindakan, jejaring, dokumentasi, dan tindak lanjut tetap terhubung tanpa mengklaim evidence yang belum final.",
-      ],
-    },
-  },
-  meetTheLeader: {
-    progressDescription:
-      "Audiensi Meet the Leader telah dilakukan bersama pimpinan Rumah BUMN Makassar. Identitas pimpinan, isi percakapan terperinci, refleksi, dan dokumentasi belum dipublikasikan karena masih berada dalam tahap finalisasi dan verifikasi.",
-    outputs: [
-      "Konteks audiensi bersama Rumah BUMN Makassar.",
-      "Struktur leader profile.",
-      "Slot leadership insights dan feedback mini project.",
-      "Ruang personal reflection dan dokumentasi.",
-    ],
-    reflection: null,
-  },
-  leadershipConversation: {
-    progressDescription:
-      "Leadership Conversation Report masih disusun. Halaman ini menampilkan struktur final yang siap menerima leader profile, pokok diskusi, insights, feedback, reflection, supporting documentation, dan file laporan setelah seluruh materi terverifikasi.",
-    outputs: [
-      "Template struktur laporan percakapan.",
-      "State file report yang jujur dan mudah diperbarui.",
-      "Slot supporting documentation.",
-    ],
-    reflection: null,
-  },
-  implementation: {
-    progressDescription:
-      "AI Co-Creation Lab Makassar 2026 telah dilaksanakan pada 10 Agustus 2026 dengan 20 mahasiswa, lima UMKM, dan lima co-creation teams. Detail prototype, testing, testimonial, serta dokumentasi pelaksanaan masih dikonsolidasikan; post-project follow-up berlanjut melalui UAT, improvement, deployment, handover, dan monitoring.",
-    outputs: [
-      "Pelaksanaan kegiatan utama pada 10 Agustus 2026.",
-      "Lima co-creation cases berdasarkan UMKM yang telah tervalidasi.",
-      "Struktur evidence pelaksanaan dan output prototype.",
-      "Post-lab journey untuk tindak lanjut solusi.",
-    ],
-    reflection: {
-      quote: "Execution is a milestone; adoption is the longer responsibility.",
-      paragraphs: [
-        "Pelaksanaan menandai perubahan rencana menjadi aksi. Tanggung jawab berikutnya adalah merapikan bukti, memperbaiki solusi, dan memantau kegunaannya bersama UMKM.",
-      ],
-    },
-  },
-  networkMobilization: {
-    progressDescription:
-      "Mobilisasi jejaring menghubungkan kebutuhan program dengan kontribusi lembaga, ekosistem UMKM, infrastruktur digital, pembelajaran, venue, ruang kolaborasi, dan talenta teknis. Daftar ini diturunkan dari sumber partnership existing agar tidak membuat klaim mitra baru.",
-    outputs: [
-      "Pemetaan peran stakeholder berdasarkan kategori kontribusi.",
-      "Daftar lima UMKM co-creators dari data problem validation.",
-      "Narasi kontribusi ekosistem yang tidak berhenti pada logo.",
-    ],
-    reflection: {
-      quote:
-        "Mobilizing a network was not only about collecting logos. Each stakeholder contributed to a different part of the project’s execution.",
-      paragraphs: [
-        "Collaborative leadership berarti menghubungkan kontribusi yang berbeda kepada kebutuhan yang jelas, lalu menjaga komunikasi dan dokumentasinya.",
-      ],
-    },
-  },
-  documentation: {
-    progressDescription:
-      "Dokumentasi proses masih diorganisasi. Halaman ini menggunakan evidence pra-pelaksanaan yang sudah tersedia dan memberi empty state untuk kategori pelaksanaan yang belum memiliki aset publik terverifikasi. Tidak ada stock image atau dokumentasi rekaan.",
-    outputs: [
-      "Taksonomi 16 kategori dokumentasi proses.",
-      "Galeri evidence problem validation yang sudah tersedia.",
-      "Pranala evidence partnership yang sudah tersedia.",
-      "Empty state untuk dokumentasi pelaksanaan yang belum final.",
-    ],
-    reflection: {
-      quote: "Documentation should preserve context, not manufacture certainty.",
-      paragraphs: [
-        "Dokumentasi diperlakukan sebagai evidence. Setiap aset perlu caption, konteks, izin, dan status yang jelas sebelum dipublikasikan.",
       ],
     },
   },

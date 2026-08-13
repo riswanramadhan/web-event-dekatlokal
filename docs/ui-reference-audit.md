@@ -273,15 +273,60 @@ Evidence baru tidak memperkenalkan visual generatif. Pitch deck ditampilkan
 sebagai PDF asli 17 halaman dengan pratinjau click-to-load serta fallback
 view/download agar file besar tidak otomatis dimuat di mobile. Global
 Communication memakai native video player tanpa autoplay dan file MP4 asli.
-Dokumentasi Week 3 hanya memakai aset nyata dari Problem Validation dan
-Partnership; kategori implementasi yang belum memiliki aset terverifikasi
-menampilkan empty state eksplisit.
+Dokumentasi Week 3 memakai foto kegiatan dan screenshot prototype aktual yang
+diberikan pemilik, bukan lagi empty state berbasis evidence pra-pelaksanaan.
+Video Global Communication tetap hanya menjadi evidence Week 2 dan tidak
+dipakai ulang sebagai video report event Week 3.
 
-Untuk menjaga status tetap jujur, report badge diperluas dengan tone eksplisit
-untuk completed, in progress, documentation finalization, dan placeholder.
-Angka pelaksanaan diberi label `Actual`, sedangkan target lama tidak diam-diam
-diubah menjadi impact. Nama pimpinan, isi percakapan, prototype, testimonial,
-dan dokumentasi pelaksanaan yang belum tersedia tidak dibuat-buat.
+Untuk menjaga status tetap jujur, report badge tetap memiliki tone eksplisit
+untuk completed, in progress, documentation/finalization, dan placeholder.
+Setelah finalisasi, lima progress Week 3 memakai state `Completed`; state lain
+tetap tersedia bagi Week 4 yang memang belum selesai. Angka pelaksanaan diberi
+label `Actual`, sedangkan target lama tidak diam-diam diubah menjadi impact.
+
+### Week 3 Finalization — 14 Agustus 2026
+
+Finalisasi mempertahankan seluruh design system report existing dan hanya
+mengganti state, copy, serta evidence yang sebelumnya belum tersedia.
+`Lead The Action` hanya menjadi tema: hub non-detail memakai route
+`/progress/week-3`, sedangkan URL lama `/progress/lead-the-action` melakukan
+permanent redirect dan tidak lagi dirender sebagai detail page. Keduanya tidak
+masuk `progressReports`. Karena itu, filter Week 3 dan navigasi previous/next
+hanya memiliki lima item:
+
+1. Meet the Leader Challenge.
+2. Leadership Conversation Report.
+3. Mini Project Implementation.
+4. Network Mobilization.
+5. Process Documentation.
+
+Kelima item menggunakan status `Completed`. `Completed · Functional` hanya
+dipakai pada konteks lima prototype; label tersebut tidak menyatakan UAT,
+deployment, handover, penggunaan berulang, atau adopsi Week 4 telah selesai.
+
+Meet the Leader dan Leadership Conversation memakai identitas serta materi
+yang diberikan pemilik: Ayu Anisela, Koordinator Utama Rumah BUMN BRI
+Makassar. Tiga visual pertemuan disajikan melalui carousel ringan dengan
+autoplay yang dapat dijeda, kontrol dot, interaksi swipe, reduced-motion
+treatment, dan link menuju folder dokumentasi sumber.
+
+Dokumentasi implementasi dikurasi agar halaman tetap ringan dan tidak menjadi
+dump seluruh folder. Struktur aset produksi terdiri dari tiga gambar Meet the
+Leader, lima screenshot prototype, dan dua belas gambar event terpilih; seluruh
+path dicatat dalam `public/week-3/media-manifest.json`. Foto memakai
+`next/image`, ukuran intrinsik, lazy loading untuk item non-hero, serta
+`object-fit: cover` dengan posisi yang menjaga subjek utama.
+
+Tidak ditemukan file video report event yang kompatibel di folder aset lokal.
+Karena itu, implementasi tidak mengganti video tersebut dengan
+`my-leadership-journey.mp4` milik Global Communication. Kategori Video Report
+tetap terhubung ke folder dokumentasi lengkap Google Drive yang diberikan
+pemilik sampai file event video terpisah tersedia sebagai aset runtime.
+
+Partner, sponsor, dan lima UMKM memakai aset logo existing atau visual usaha
+aktual yang sudah digunakan pada halaman lain. Tidak ada logo generatif, URL
+prototype rekaan, stock image, testimoni rekaan, atau perluasan klaim dukungan
+di luar peran yang diberikan pemilik.
 
 Seluruh progress bersifat unlisted: tidak ditampilkan pada landing event,
 navbar, atau sitemap, dan metadata serta header response report memakai

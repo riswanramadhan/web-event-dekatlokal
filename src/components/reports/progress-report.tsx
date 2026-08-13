@@ -18,7 +18,7 @@ import type {
   ReportBlock,
   ReportSection as ReportSectionData,
 } from "@/data/gep-week-1-reports";
-import type { ProgressReportSlug } from "@/data/progress-reports";
+import type { ProgressNavigationSlug } from "@/data/progress-reports";
 
 import {
   CopyProgressDescriptionButton,
@@ -310,7 +310,7 @@ function UpdatedAtCard({
 }
 
 export interface ProgressReportHeaderData {
-  readonly slug: ProgressReportSlug;
+  readonly slug: ProgressNavigationSlug;
   readonly title: string;
   readonly weekLabel: string;
   readonly phase: string;
@@ -332,6 +332,9 @@ export function ProgressReportHeader({
 }: {
   report: ProgressReportHeaderData;
 }) {
+  const weekNumber = report.weekLabel.match(/\d+/)?.[0];
+  const navigationWeekHint = weekNumber ? `Week ${weekNumber}` : undefined;
+
   return (
     <header className="progress-report-header relative overflow-hidden border-b border-brand-100 bg-white py-10 sm:py-14 lg:py-16">
       <div
@@ -400,7 +403,11 @@ export function ProgressReportHeader({
             <PrintReportButton />
           </div>
 
-          <ProgressReportNavigation currentSlug={report.slug} />
+          <ProgressReportNavigation
+            key={report.slug}
+            currentSlug={report.slug}
+            weekHint={navigationWeekHint}
+          />
         </div>
       </div>
     </header>
