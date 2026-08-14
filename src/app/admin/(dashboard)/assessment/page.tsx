@@ -13,6 +13,7 @@ import { ASSESSMENT_PHASE_LABELS } from "@/lib/assessment/phase";
 
 import { AssessmentPhaseControls } from "./assessment-controls";
 import { AssessmentTabs } from "./assessment-tabs";
+import { AssessmentMaintenanceControls } from "./maintenance-controls";
 
 export const metadata: Metadata = {
   title: "Pre-test & Post-test",
@@ -149,7 +150,8 @@ export default async function AssessmentOverviewPage() {
     );
   }
 
-  const { participantCount, problems, phases, frozen } = result.overview;
+  const { participantCount, problems, phases, frozen, maintenance } =
+    result.overview;
 
   return (
     <>
@@ -213,6 +215,8 @@ export default async function AssessmentOverviewPage() {
           )}
         </Card>
       </div>
+
+      <AssessmentMaintenanceControls maintenance={maintenance} />
     </>
   );
 }

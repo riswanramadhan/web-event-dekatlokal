@@ -5,6 +5,10 @@ import { z } from "zod";
 
 import { recordAuditEvent, requireAdmin } from "@/lib/admin/auth";
 import {
+  finalizeExpiredAttempts,
+  resetAssessment,
+} from "@/lib/assessment/maintenance";
+import {
   ASSESSMENT_PHASES,
   ASSESSMENT_PHASE_LABELS,
 } from "@/lib/assessment/phase";
@@ -72,6 +76,75 @@ export async function toggleAssessmentOpenAction(
   return {
     status: "success",
     message: shouldOpen ? `${label} dibuka.` : `${label} ditutup.`,
+  };
+}
+
+export async function finalizeExpiredAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  const actor = await requireAdmin();
+
+  // Mirrors the registration toggle: the intent field keeps a stray POST from
+  // triggering a state change nobody asked for.
+  if (!z.literal("finalize").safeParse(formData.get("intent")).success) {
+    return { status: "error", message: "Perintah tidak valid." };
+  }
+
+  const result = await finalizeExpiredAttempts();
+
+  if (!result.ok) {
+    return { status: "error", message: result.message };
+  }
+
+  await recordAuditEvent("finalize_assessment", actor.email);
+
+  revalidatePath("/admin/assessment");
+  revalidatePath("/admin/assessment/nilai");
+
+  return {
+    status: "success",
+    message:
+      result.affected === 0
+        ? "Tidak ada attempt kedaluwarsa yang perlu ditutup."
+        : `${result.affected} attempt kedaluwarsa ditutup.`,
+  };
+}
+
+export async function resetAssessmentAction(
+  _prevState: RegistrationActionState,
+  formData: FormData,
+): Promise<RegistrationActionState> {
+  const actor = await requireAdmin();
+
+  // The typed word is re-checked here, not only in the dialog: the dialog is
+  // the courtesy, this is the control.
+  const confirmation = z
+    .literal("HAPUS")
+    .safeParse(formData.get("confirmation"));
+
+  if (!confirmation.success) {
+    return {
+      status: "validation_error",
+      message: 'Ketik HAPUS persis untuk mengonfirmasi.',
+    };
+  }
+
+  const result = await resetAssessment();
+
+  if (!result.ok) {
+    return { status: "error", message: result.message };
+  }
+
+  await recordAuditEvent("reset_assessment", actor.email);
+
+  revalidatePath("/admin/assessment");
+  revalidatePath("/admin/assessment/soal");
+  revalidatePath("/admin/assessment/nilai");
+
+  return {
+    status: "success",
+    message: `${result.affected} attempt dihapus. Soal bisa diedit lagi.`,
   };
 }
 

@@ -516,27 +516,58 @@ status pendaftaran sudah punya tempatnya sendiri di `/admin`.
 
 ## Blok 10 — Admin: finalisasi dan reset berjenjang
 
-Blok ini sengaja di belakang: keduanya hanya bisa dinilai kalau sudah ada attempt sungguhan.
+- [x] Tombol finalisasi attempt kedaluwarsa dengan konfirmasi yang menyebut jumlahnya,
+      **disembunyikan** bila tidak ada yang kedaluwarsa
+- [x] Bagian reset terpisah bergaya destruktif, menampilkan tiga angka: total attempt,
+      sudah terkirim, sedang mengerjakan
+- [x] Nonaktif saat ada attempt berjalan, dengan jumlahnya disebut
+- [x] Dialog mewajibkan ekspor CSV lebih dulu bila ada nilai; tombol hapus terkunci sampai
+      CSV tersimpan
+- [x] Konfirmasi ketik ulang kata `HAPUS`, diperiksa **lagi di server** — dialog itu
+      keramahan, pemeriksaan server yang jadi kontrol
+- [x] Dialog menyebut angka konkret: berapa attempt dihapus dan berapa di antaranya terkirim
+- [x] `resetAssessment` mengulang pemeriksaan attempt berjalan di sisi server. Database tidak
+      menjaga aturan ini — `reset_assessment_attempts()` akan dengan senang hati menghapus
+      attempt yang sedang dikerjakan orang
+- [x] Dialog admin pertama di repo: `src/components/admin/confirm-dialog.tsx`, focus trap dan
+      scroll lock mengikuti `mobile-bottom-navigation.tsx`, tanpa dependensi baru.
+      Konfirmasi yang ada sebelumnya memakai `window.confirm()`, yang tidak bisa memuat form
+- [x] Kedua aksi tercatat ke `admin_audit_log`
+- [x] Audit ekspor `"use server"` dijalankan — bersih
 
-- [ ] `finalizeExpired` memanggil `finalize_expired_attempts()`, dengan konfirmasi biasa yang
-      menyebut berapa attempt akan ditutup. Tombolnya disembunyikan bila tidak ada yang
-      kedaluwarsa
-- [ ] Bagian reset terpisah bergaya destruktif, perilakunya berjenjang:
-  - [ ] Ada attempt berjalan → nonaktif, sebut jumlahnya, tolak
-  - [ ] Ada attempt terkirim → aktif, tapi dialog **mewajibkan ekspor CSV lebih dulu**
-        sebelum tombol hapus bisa ditekan
-  - [ ] Tidak ada attempt terkirim → aktif dengan konfirmasi ketik ulang biasa
-- [ ] Dialog selalu menyebut angka konkret: berapa attempt akan dihapus dan berapa di
-      antaranya sudah terkirim
-- [ ] `resetAssessment` memanggil `reset_assessment_attempts()`
-- [ ] Ini dialog admin pertama di repo — bangun dari pola focus trap yang sudah ada, jangan
-      tambah dependensi
-- [ ] Kedua aksi tercatat di `admin_audit_log`
+**Dinilai di browser — sudah dijalankan:**
 
-**Dinilai di browser:** tinggalkan satu attempt lewat batas waktu → tombol finalisasi muncul,
-menutupnya, dan tabel nilai tidak lagi menyisakan baris menggantung. Reset ditolak saat ada
-yang sedang mengerjakan. Setelah ada nilai, tombol hapus terkunci sampai CSV diunduh. Setelah
-reset berhasil, kontrol edit soal aktif kembali (§8.11).
+- [x] Tanpa attempt kedaluwarsa, bagian finalisasi tidak dirender sama sekali
+- [x] Satu attempt dibiarkan lewat batas waktu → bagian finalisasi muncul sendiri dengan
+      "1 attempt lewat batas waktu tapi tidak pernah dibuka lagi"
+- [x] Finalisasi dijalankan → "1 attempt kedaluwarsa ditutup", hitungan berubah dari
+      5 terkirim / 1 berjalan menjadi 6 terkirim / 0 berjalan, dan bagiannya hilang sendiri
+- [x] Saat ada 1 attempt berjalan: tombol reset **nonaktif** dengan "Masih ada 1 peserta yang
+      sedang mengerjakan. Tunggu sampai selesai atau finalisasi dulu." (§8.11)
+- [x] Dialog reset menyebut "5 attempt akan dihapus, 5 di antaranya sudah terkirim dan punya
+      nilai", `aria-modal="true"`, dan mengunci scroll
+- [x] **Gerbangnya berlapis dan urutannya benar:** mengetik `HAPUS` saja tidak cukup —
+      tombol hapus tetap terkunci sampai CSV diunduh, baru setelah keduanya terpenuhi aktif
+      (§8.11)
+- [x] Menutup dialog melepas scroll lock kembali
+
+### Temuan tentang spec: tingkat ketiga tidak bisa dicapai
+
+`ui-flow.md` §4.1 menetapkan tiga perilaku tombol reset. Tingkat ketiga — "Tidak ada attempt
+terkirim → Aktif dengan konfirmasi ketik ulang biasa" — **tidak pernah bisa terjadi**:
+
+- Attempt hanya punya dua status, `in_progress` atau `submitted`.
+- Kalau ada attempt tapi tidak satu pun terkirim, berarti semuanya berjalan — dan tingkat
+  pertama sudah menonaktifkan tombolnya.
+- Kalau tidak ada attempt sama sekali, tidak ada yang perlu dihapus.
+
+Jadi setiap kali reset benar-benar mungkin dilakukan, pasti ada nilai, dan gerbang ekspor
+selalu berlaku. Implementasinya tetap menangani kasus itu dengan benar (blok ekspor tidak
+dirender), tapi jalur itu tidak bisa diuji karena memang tidak bisa dicapai.
+
+**Belum dijalankan:** penghapusan yang sesungguhnya. Menunggu keputusan user — sekali
+dijalankan, seluruh nilai peserta di database demo hilang dan tidak bisa dikembalikan.
+Yang akan ikut terbukti bila dijalankan: soal kembali bisa diedit setelah freeze terlepas.
 
 ---
 

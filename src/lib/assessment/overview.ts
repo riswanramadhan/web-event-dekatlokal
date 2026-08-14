@@ -27,6 +27,19 @@ export type AssessmentPhaseOverview = {
   submittedCount: number;
 };
 
+/**
+ * Counts the destructive controls are built on. Every one of them is named to
+ * the administrator before anything is deleted — spec §4.6 asks for concrete
+ * numbers, not a general warning.
+ */
+export type AssessmentMaintenance = {
+  total: number;
+  inProgress: number;
+  submitted: number;
+  /** Running attempts whose deadline has already passed. */
+  expired: number;
+};
+
 export type AssessmentOverview = {
   participantCount: number;
   /** Empty means the questions are ready and the test may be opened. */
@@ -34,6 +47,7 @@ export type AssessmentOverview = {
   phases: AssessmentPhaseOverview[];
   /** True once any attempt exists: the questions are locked by the triggers. */
   frozen: boolean;
+  maintenance: AssessmentMaintenance;
 };
 
 export type AssessmentOverviewResult =
@@ -124,6 +138,9 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
     problemsResult,
     participantsResult,
     attemptsResult,
+    inProgressResult,
+    submittedTotalResult,
+    expiredResult,
     submittedResults,
   ] = await Promise.all([
       supabase
@@ -140,6 +157,22 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
         .from("assessment_attempts")
         .select("id", { count: "exact", head: true })
         .eq("event_id", event.eventId),
+      supabase
+        .from("assessment_attempts")
+        .select("id", { count: "exact", head: true })
+        .eq("event_id", event.eventId)
+        .eq("status", "in_progress"),
+      supabase
+        .from("assessment_attempts")
+        .select("id", { count: "exact", head: true })
+        .eq("event_id", event.eventId)
+        .eq("status", "submitted"),
+      supabase
+        .from("assessment_attempts")
+        .select("id", { count: "exact", head: true })
+        .eq("event_id", event.eventId)
+        .eq("status", "in_progress")
+        .lt("expires_at", new Date().toISOString()),
       // Counted per phase with head-only queries rather than by fetching the
       // attempts and measuring the array, matching how the registrant totals
       // are counted on /admin.
@@ -177,6 +210,9 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
   const failedCount =
     participantsResult.error ??
     attemptsResult.error ??
+    inProgressResult.error ??
+    submittedTotalResult.error ??
+    expiredResult.error ??
     submittedResults.find((result) => result.error)?.error;
 
   if (failedCount) {
@@ -226,6 +262,12 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
       problems: problems.data,
       phases,
       frozen: (attemptsResult.count ?? 0) > 0,
+      maintenance: {
+        total: attemptsResult.count ?? 0,
+        inProgress: inProgressResult.count ?? 0,
+        submitted: submittedTotalResult.count ?? 0,
+        expired: expiredResult.count ?? 0,
+      },
     },
   };
 }
