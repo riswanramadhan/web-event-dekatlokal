@@ -366,7 +366,10 @@ export type GetResultOutcome =
  * the display must not depend on that assumption, so it yields null and the
  * page renders a dash instead of NaN.
  */
-function toPercent(score: number | null, total: number | null): number | null {
+export function toPercent(
+  score: number | null,
+  total: number | null,
+): number | null {
   if (score === null || total === null || total <= 0) {
     return null;
   }

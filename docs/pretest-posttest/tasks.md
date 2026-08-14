@@ -465,25 +465,52 @@ Keduanya terpasang; jalur reset baru bisa dipicu setelah tombol reset ada di blo
 
 ## Blok 9 — Admin: tabel nilai dan ekspor CSV
 
-- [ ] Halaman `/admin/assessment/nilai`, tambahkan tabnya ke baris tab
-- [ ] `listScores` — join `registrations` dengan filter status §4.1 (konstanta yang sama
-      dengan blok 5), plus attempt pre dan post. Hasil baca diparse Zod
-- [ ] Kolom: Nama, Jenis, Pre-test, Post-test, Selisih, Status
-- [ ] Kolom nilai menampilkan persentase dan nilai mentah: `80% (12/15)`
-- [ ] Sel kosong untuk yang belum mengerjakan, penanda untuk attempt yang masih berjalan
-- [ ] Ringkasan di atas tabel: rata-rata pre, rata-rata post, rata-rata kenaikan
-- [ ] Ekspor CSV lewat Server Action yang mengembalikan string, client membuat `Blob` dan
-      mengunduhnya — tidak ada route handler baru di bawah `/admin` yang gerbang
-      otorisasinya harus dipasang ulang dengan tangan
-- [ ] Kolom CSV sama persis dengan yang tampil. **Tanpa email dan nomor WhatsApp** — file
-      nilai beredar lebih bebas daripada panel admin
-- [ ] Di bawah 768 px tabel berubah menjadi daftar kartu per peserta. **Pola baru**: repo ini
-      belum punya satu pun tabel yang berubah bentuk; dua tabel yang ada memakai
-      `overflow-x-auto` dengan `min-w`, dan `ui-flow.md` §4.3 justru menolak idiom itu di sini
+- [x] Halaman `/admin/assessment/nilai`, tab Nilai ditambahkan ke baris tab
+- [x] `listScores` — digerakkan oleh daftar `registrations` dengan filter status §4.1, bukan
+      oleh daftar attempt, supaya peserta yang belum mulai tetap muncul sebagai baris kosong.
+      Hasil baca diparse Zod
+- [x] Kolom: Nama, Jenis, Pre-test, Post-test, Selisih, Status
+- [x] Kolom nilai menampilkan persentase dan nilai mentah: `50% (1/2)`
+- [x] Sel kosong untuk yang belum mengerjakan, dan penanda "Sedang mengerjakan" untuk attempt
+      yang masih berjalan — sel kosong dan nol berarti dua hal yang sangat berbeda
+- [x] Ringkasan di atas tabel: rata-rata pre, rata-rata post, rata-rata kenaikan. Rata-rata
+      hanya menghitung yang benar-benar terkirim, dan kenaikan hanya dari peserta yang
+      menyelesaikan keduanya — merata-ratakan selisih terhadap pre-test yang tidak ada akan
+      mengarang angka yang tidak pernah diperoleh siapa pun
+- [x] Ekspor CSV lewat Server Action + `Blob`, bukan route handler baru di bawah `/admin`
+      yang gerbang otorisasinya harus dipasang ulang dengan tangan
+- [x] Tabel dan CSV memakai **formatter yang sama** di `score-format.ts`; dua formatter
+      terpisah cepat atau lambat akan berbeda, dan CSV adalah salinan yang keluar dari panel
+- [x] `TYPE_LABELS` diekspor dari `components/admin/ui.tsx` agar badge dan CSV tidak
+      menyimpang satu sama lain
+- [x] Kutip RFC 4180 untuk nama yang mengandung koma atau tanda kutip
+- [x] Tanpa email dan nomor WhatsApp — bukan disaring, tapi memang tidak pernah dipilih
+      `listScores`
+- [x] Di bawah 768 px tabel berubah menjadi daftar kartu per peserta
 
-**Dinilai di browser:** angka di tabel cocok dengan data mentah di database; CSV terbuka di
-spreadsheet; peserta `rejected` dan `withdrawn` tidak muncul di keduanya (§8.10). Di 375 px
-tabel sudah berbentuk kartu.
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Tabel cocok persis dengan data mentah hasil pengujian blok 6-8: Peserta 1
+      `0% (0/2)` → `50% (1/2)`, selisih `+50`, status "Selesai"; Peserta 2-4 sel pre-test
+      kosong dengan status "Baru post-test"; Peserta 5 kosong seluruhnya, "Belum mulai"
+      (§8.10 terpenuhi)
+- [x] Ringkasan menghitung benar: rata-rata pre 0%, post 13% (rerata 50/0/0/0), kenaikan
+      +50 dari 1 peserta yang menyelesaikan keduanya
+- [x] CSV yang diunduh identik dengan tabel, berakhiran CRLF, sel kosong tetap kosong, dan
+      **nol kemunculan email maupun nomor WhatsApp**
+- [x] Berkas CSV diawali BOM UTF-8 (byte `239,187,191`) supaya spreadsheet tidak menebak
+      encoding. Diverifikasi di level byte — `blob.text()` membuang BOM saat membaca, jadi
+      pemeriksaan lewat teks menyesatkan
+- [x] Di 375 px tabel `display: none` dan daftar kartu `display: block` dengan 5 kartu, tanpa
+      scroll horizontal; di 1280 px sebaliknya
+- [x] Halaman nol kemunculan alamat email
+- [x] `npm run lint`, `npm run typecheck`, `npm run build`, dan audit ekspor `"use server"` —
+      semuanya lolos
+
+Catatan interpretasi: `ui-flow.md` §4.3 menyebut kolom "Status" tanpa mendefinisikannya.
+Diisi status pengerjaan tes — Belum mulai / Sedang mengerjakan / Baru pre-test / Baru
+post-test / Selesai — bukan status pendaftaran, karena tabel ini tentang hasil tes dan
+status pendaftaran sudah punya tempatnya sendiri di `/admin`.
 
 ---
 

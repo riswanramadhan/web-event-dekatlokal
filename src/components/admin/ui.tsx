@@ -90,7 +90,8 @@ const TYPE_STYLES: Record<string, string> = {
   general: "border-slate-200 bg-slate-50 text-slate-700",
 };
 
-const TYPE_LABELS: Record<string, string> = {
+/** Exported so the scores table and its CSV export cannot drift from the badge. */
+export const TYPE_LABELS: Record<string, string> = {
   student: "Mahasiswa",
   umkm: "UMKM",
   general: "Umum",
