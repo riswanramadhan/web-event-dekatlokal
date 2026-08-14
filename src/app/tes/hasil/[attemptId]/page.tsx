@@ -143,6 +143,14 @@ export default async function HasilPage({ params }: PageProps) {
           {postTotal > 0 ? `Benar ${postScore} dari ${postTotal}` : "—"}
         </p>
 
+        {/* Panduan scoring §2 dan §8: angka ini hanya dari soal pengetahuan.
+            Pernyataan skala mengukur persepsi diri, bukan benar-salah, dan
+            menyatukannya di satu angka akan salah dibaca sebagai nilai. */}
+        <p className="mt-2 text-center text-xs leading-5 text-slate-500">
+          Nilai ini hanya dari soal pengetahuan. Pernyataan skala 1–5 tidak
+          dinilai benar atau salah.
+        </p>
+
         <div className="mt-6 text-center">
           <Link
             href="/"

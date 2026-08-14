@@ -31,12 +31,13 @@ const LAST_MINUTE_SECONDS = 60;
 const WARNING_SECONDS = 120;
 
 function OptionCard({
-  letter,
+  marker,
   body,
   selected,
   onSelect,
 }: {
-  letter: string;
+  /** Huruf A–D untuk pilihan, angka 1–5 untuk skala. */
+  marker: string;
   body: string;
   selected: boolean;
   onSelect: () => void;
@@ -61,7 +62,7 @@ function OptionCard({
           }`}
           aria-hidden="true"
         >
-          {letter}
+          {marker}
         </span>
         <span className="min-w-0 flex-1 text-sm leading-6 text-ink">{body}</span>
         {/* Selection is marked twice on purpose: colour alone is not a signal
@@ -372,7 +373,13 @@ export function WorkScreen({
               {question.options.map((option, index) => (
                 <OptionCard
                   key={option.id}
-                  letter={String.fromCharCode(65 + index)}
+                  // Soal skala memakai angka nilainya sendiri, bukan huruf
+                  // urutan: angka itulah yang dilaporkan sebagai 1–5.
+                  marker={
+                    question.questionType === "likert" && option.value !== null
+                      ? String(option.value)
+                      : String.fromCharCode(65 + index)
+                  }
                   body={option.body}
                   selected={answers[question.id] === option.id}
                   onSelect={() => chooseOption(question.id, option.id)}

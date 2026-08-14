@@ -571,7 +571,7 @@ Yang akan ikut terbukti bila dijalankan: soal kembali bisa diedit setelah freeze
 
 ---
 
-## Instrumen baru: Likert, cakupan phase, dan refleksi (blok 11–14)
+## Instrumen baru: Likert, cakupan phase, dan refleksi (blok 11–15)
 
 Rancangan instrumen untuk laporan impact tidak seluruhnya berskor: 16 pernyataan skala
 Likert, 4 soal pengetahuan, 1 pilihan minat, dan 4 pertanyaan refleksi terbuka. Lima di
@@ -631,21 +631,61 @@ disaring per phase.
       membuktikan `phase_scope` benar-benar menyaring
 - [x] `npm run lint`, `npm run typecheck`, `npm run build`, audit ekspor `"use server"`
 
-**Belum dinilai:** tampilan editor admin (badge tipe, opsi Likert read-only, pemilih tipe).
-Sesi admin kedaluwarsa saat verifikasi dan password tidak diisi Claude Code.
+- [x] Editor admin: soal 1 menampilkan badge "Skala 1–5" + kategori; soal 13 "Pilihan
+      berskor"; soal 17 "Skala 1–5" + **"Khusus post-test"**; soal 21 "Pilihan tanpa skor" +
+      "Khusus post-test". **Tidak ada satu pun penanda "Belum siap"** di 21 soal
+- [x] Kartu skala menampilkan lima opsi read-only bernomor 1–5, **tanpa tombol tambah opsi
+      dan tanpa radio kunci jawaban**
+- [x] Halaman ringkasan menyatakan "Soal sudah siap" — `assessment_problems()` yang ditulis
+      ulang menerima ke-21 soal dengan aturan per tipe
+
+---
+
+## Aturan istilah — mengikat seluruh UI dan CSV
+
+Dari Panduan Scoring §2 dan §8. Salah label di sini merusak kredibilitas laporan:
+
+- Soal berskor → **"Pemahaman"** / Knowledge Score, skala 0–100. Boleh disebut nilai.
+- Likert Q1–Q12 → **"Kapabilitas menurut penilaian sendiri"**, skala **1–5 dua desimal**.
+  Tidak pernah dipersenkan, tidak pernah disebut "kemampuan".
+- Q17–Q20 → **"Pengalaman setelah program"**, tanpa baseline pre, disajikan rata-rata 1–5
+  dan persentase Setuju + Sangat Setuju.
+- Q21 → **"Minat jadi technical steward"**, jumlah dan persentase per kategori. Tanpa
+  rata-rata.
+- **Tidak ada satu pun angka gabungan** dari ketiganya, di layar maupun di CSV.
+
+Behavioral Evidence (§7) di luar lingkup fitur ini — itu capaian acara, bukan data kuesioner.
 
 ---
 
 ## Blok 12 — Layar pengerjaan: Likert dan cakupan phase
 
-- [ ] `attempts.ts`: payload peserta membawa `question_type` dan `value` opsi, tetap tanpa
+- [x] `attempts.ts`: payload peserta membawa `question_type` dan `value` opsi, tetap tanpa
       `is_correct`
-- [ ] `work-screen.tsx`: soal skala dirender dengan angka 1–5 menggantikan huruf, plus label
-      ujung "Sangat Tidak Setuju" dan "Sangat Setuju"
-- [ ] Halaman hasil: skor pengetahuan X/4 saja, pre vs post
+- [x] `work-screen.tsx`: `OptionCard` menerima `marker`, bukan `letter`. Soal skala memakai
+      angka nilainya sendiri — angka itulah yang dilaporkan sebagai 1–5, bukan huruf urutan
+- [x] Halaman hasil peserta menambahkan satu kalimat: nilai hanya dari soal pengetahuan,
+      pernyataan skala tidak dinilai benar atau salah
 
-**Dinilai di browser:** pre-test 16 soal dan post-test 21 soal saat dikerjakan sungguhan;
-Likert tersimpan; halaman hasil menampilkan X/4, bukan persentase dari 21 soal.
+Label ujung skala **tidak** ditambahkan seperti rencana semula: setiap opsi Likert sudah
+memuat labelnya sendiri ("Sangat Tidak Setuju" … "Sangat Setuju"), jadi label ujung hanya
+akan mengulang isi kartu di bawahnya.
+
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Attempt post-test sungguhan berisi **21 soal**; peta soal menampilkan 21 tombol
+- [x] Soal 1 adalah pernyataan skala dengan penanda **1, 2, 3, 4, 5** dan label
+      "Sangat Tidak Setuju" sampai "Sangat Setuju"
+- [x] Soal 13 adalah soal pengetahuan dengan penanda **A–D**, dan **bukan** soal pengetahuan
+      pertama menurut urutan seed — membuktikan pengacakan hanya menggeser soal berskor di
+      antara slotnya sendiri
+- [x] Halaman hasil menampilkan **"Benar 0 dari 4"**, bukan "0 dari 21" — penyebut benar
+      dibatasi soal berskor, persis rumus panduan `(benar/4) × 100`
+- [x] `npm run lint`, `npm run typecheck`, `npm run build`, audit ekspor `"use server"`
+
+**Belum dibuktikan langsung:** attempt pre-test berisi tepat 16 soal. Panel browser tersendat
+saat menekan Mulai. Buktinya sejauh ini tidak langsung: gerbang pre-test menampilkan 16 soal,
+dan attempt post-test terbukti 21 — selisih lima, persis jumlah soal `post_test`.
 
 ---
 
@@ -661,17 +701,38 @@ yang sama, bukan menambah.
 
 ---
 
-## Blok 14 — Tabel nilai: skor pengetahuan dan rata-rata Likert
+## Blok 14 — Kolom dimensi, tabel nilai ringkas, dan CSV
 
-- [ ] `scores.ts`: pisahkan skor pengetahuan dari Likert; rata-rata per item pre vs post
-- [ ] `nilai/page.tsx`: kolom skor pengetahuan + rata-rata Likert; bagian terpisah per item
-- [ ] CSV kedua khusus Likert per item; CSV utama tetap jadi gerbang dialog reset
+- [ ] Migrasi `dimension` + backfill sesuai panduan §3 (0–3, 4, 5–7, 8–11). **Berhenti,
+      minta user menjalankan.**
+- [ ] Isian dimensi di editor soal, muncul hanya untuk tipe Likert
+- [ ] `scores.ts`: pisahkan pemahaman dari kapabilitas; rata-rata per dimensi per peserta
+- [ ] `nilai/page.tsx`: Nama, Jenis, Pemahaman pre/post/gain, Kapabilitas pre/post/perubahan
+      — **tanpa kolom nilai gabungan**
+- [ ] CSV: pemahaman + empat dimensi pre/post/perubahan
 
-**Dinilai di browser:** angka cocok dengan data mentah; kedua CSV terbuka di spreadsheet.
+**Dinilai di browser:** angka cocok dengan data mentah; CSV terbuka di spreadsheet; tidak ada
+kolom yang menjumlahkan pemahaman dengan Likert.
 
 ---
 
-## Blok 15 — Sapuan responsif dan aksesibilitas
+## Blok 15 — Halaman ringkasan lima layer (§9)
+
+Halaman baru `/admin/assessment/ringkasan`:
+
+- [ ] Pemahaman: rata-rata pre → post dari 100, gain, persentase peserta yang meningkat
+- [ ] Kapabilitas: empat dimensi, pre → post dari 5 dua desimal, perubahan
+- [ ] Pengalaman setelah program: rata-rata 1–5 dan persentase Setuju + Sangat Setuju
+- [ ] Minat steward: jumlah dan persentase per kategori
+- [ ] Dampak kualitatif: tautan ke halaman refleksi, tanpa analisis tema otomatis
+- [ ] Catatan tetap: ketiga layer tidak dijumlahkan, dipakai berdampingan
+
+**Dinilai di browser:** setiap layer cocok dengan tabel per peserta; tidak ada satu pun angka
+gabungan; label memakai istilah panduan.
+
+---
+
+## Blok 16 — Sapuan responsif dan aksesibilitas
 
 Jalankan daftar periksa `ui-flow.md` §6 di semua layar dan **perbaiki temuannya**, bukan
 sekadar mencentang. Dijalankan terakhir supaya layar yang berubah bentuk karena instrumen

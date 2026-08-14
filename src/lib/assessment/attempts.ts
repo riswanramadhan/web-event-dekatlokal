@@ -5,6 +5,10 @@ import { z } from "zod";
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
 import { resolveAssessmentTarget } from "./event";
 import { ASSESSMENT_PHASES, type AssessmentPhase } from "./phase";
+import {
+  QUESTION_TYPES,
+  type AssessmentQuestionType,
+} from "./question-type";
 
 /**
  * The participant payload for one option. `is_correct` is absent by
@@ -15,11 +19,14 @@ import { ASSESSMENT_PHASES, type AssessmentPhase } from "./phase";
 export type ParticipantOption = {
   id: string;
   body: string;
+  /** Nilai skala 1–5 untuk opsi Likert; null untuk tipe soal lain. */
+  value: number | null;
 };
 
 export type ParticipantQuestion = {
   id: string;
   prompt: string;
+  questionType: AssessmentQuestionType;
   options: ParticipantOption[];
 };
 
@@ -52,8 +59,13 @@ const startRowSchema = z.object({
 const questionRowSchema = z.object({
   id: z.string().uuid(),
   prompt: z.string(),
+  question_type: z.enum(QUESTION_TYPES),
   assessment_options: z.array(
-    z.object({ id: z.string().uuid(), body: z.string() }),
+    z.object({
+      id: z.string().uuid(),
+      body: z.string(),
+      value: z.number().int().min(1).max(5).nullable(),
+    }),
   ),
 });
 
@@ -131,7 +143,7 @@ export async function startOrResumeAttempt(
   const [questionsResult, answersResult] = await Promise.all([
     target.supabase
       .from("assessment_questions")
-      .select("id, prompt, assessment_options(id, body)")
+      .select("id, prompt, question_type, assessment_options(id, body, value)")
       .in("id", started.question_order)
       .order("order_index", {
         ascending: true,
@@ -179,6 +191,7 @@ export async function startOrResumeAttempt(
       ordered.push({
         id: row.id,
         prompt: row.prompt,
+        questionType: row.question_type,
         options: row.assessment_options,
       });
     }
