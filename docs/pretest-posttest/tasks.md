@@ -571,10 +571,111 @@ Yang akan ikut terbukti bila dijalankan: soal kembali bisa diedit setelah freeze
 
 ---
 
-## Blok 11 — Sapuan responsif dan aksesibilitas
+## Instrumen baru: Likert, cakupan phase, dan refleksi (blok 11–14)
+
+Rancangan instrumen untuk laporan impact tidak seluruhnya berskor: 16 pernyataan skala
+Likert, 4 soal pengetahuan, 1 pilihan minat, dan 4 pertanyaan refleksi terbuka. Lima di
+antaranya khusus post-test.
+
+`spec.md` §1 menaruh "tipe soal selain pilihan ganda" dan "bank soal berbeda antara pre-test
+dan post-test" di luar ruang lingkup. Keduanya kini masuk ruang lingkup — spec ikut direvisi.
+
+Keputusan yang dikonfirmasi user: perluas skema yang ada (bukan sistem paralel); refleksi
+jadi form terpisah tanpa timer; halaman hasil peserta hanya menampilkan skor pengetahuan X/4;
+sapuan responsif bergeser ke blok 15.
+
+Konsekuensi penting: karena refleksi keluar dari tes berbatas waktu, **`assessment_answers`
+tidak disentuh sama sekali** — `option_id` tetap NOT NULL, FK utuh, dan
+`assessment_answers_guard` tidak berubah.
+
+---
+
+## Blok 11 — Skema tipe soal dan editor admin
+
+- [x] Migrasi `20260815000000_assessment_question_types.sql`: enum
+      `assessment_question_type`, kolom `question_type` / `phase_scope` / `category` di
+      `assessment_questions`, kolom `value` di `assessment_options`, tabel
+      `assessment_reflections`, dan tiga fungsi ditulis ulang
+- [x] Default `scored_choice` + `both` menjaga soal lama tetap sah tanpa disentuh
+- [x] `value` disimpan terpisah dari `order_index`: menggeser urutan opsi tidak boleh
+      diam-diam mengubah arti jawaban yang sudah tersimpan
+- [x] `start_assessment_attempt()` — soal non-berskor tetap urut `order_index`, soal berskor
+      ditukar posisi **hanya di antara slot yang ditempati soal berskor**. Pengacakan tetap
+      ada di tempat yang butuh anti-contek tanpa merusak alur kategori Likert
+- [x] `submit_assessment_attempt()` — penyebut dibatasi dua kali: hanya `scored_choice`,
+      **dan** hanya yang ada di `question_order` attempt itu
+- [x] Berkas seed `docs/pretest-posttest/seed-instrumen.sql` (21 soal, ~100 opsi), menolak
+      jalan kalau bank soal belum kosong
+- [x] Migrasi dan seed **sudah dijalankan user**
+- [x] `question-type.ts`: daftar tipe, cakupan, label, dan lima opsi Likert baku — dipakai
+      bersama modul server dan komponen client
+- [x] `schemas.ts` memparse kolom baru; `questions.ts` menulisnya
+- [x] Membuat soal Likert otomatis membuat lima opsi bakunya
+- [x] Opsi Likert dikunci di server, bukan hanya read-only di UI: `createOption`,
+      `updateOption`, `deleteOption`, dan `setCorrectOption` menolak untuk tipe `likert`
+- [x] `setCorrectOption` juga menolak `unscored_choice` — memasang kunci di sana lolos
+      constraint database tapi membuat tes tidak bisa dibuka dengan alasan membingungkan
+- [x] Editor: pemilih tipe dengan penjelasan, pemilih cakupan phase, isian kategori, badge
+      tipe dan cakupan di ringkasan kartu, opsi Likert tampil read-only bernomor 1–5
+- [x] Penanda "Belum siap" mengikuti aturan per tipe
+
+### Cacat yang ditemukan dan diperbaiki
+
+`getAssessmentState()` menghitung **seluruh** soal event tanpa menyaring cakupan phase, jadi
+gerbang pre-test menjanjikan 21 soal padahal peserta hanya akan menemui 16. Hitungannya kini
+disaring per phase.
+
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Gerbang `/tes/pre-test` menampilkan **16 soal**, `/tes/post-test` **21 soal** —
+      membuktikan `phase_scope` benar-benar menyaring
+- [x] `npm run lint`, `npm run typecheck`, `npm run build`, audit ekspor `"use server"`
+
+**Belum dinilai:** tampilan editor admin (badge tipe, opsi Likert read-only, pemilih tipe).
+Sesi admin kedaluwarsa saat verifikasi dan password tidak diisi Claude Code.
+
+---
+
+## Blok 12 — Layar pengerjaan: Likert dan cakupan phase
+
+- [ ] `attempts.ts`: payload peserta membawa `question_type` dan `value` opsi, tetap tanpa
+      `is_correct`
+- [ ] `work-screen.tsx`: soal skala dirender dengan angka 1–5 menggantikan huruf, plus label
+      ujung "Sangat Tidak Setuju" dan "Sangat Setuju"
+- [ ] Halaman hasil: skor pengetahuan X/4 saja, pre vs post
+
+**Dinilai di browser:** pre-test 16 soal dan post-test 21 soal saat dikerjakan sungguhan;
+Likert tersimpan; halaman hasil menampilkan X/4, bukan persentase dari 21 soal.
+
+---
+
+## Blok 13 — Form refleksi dan testimonial
+
+- [ ] Route `/tes/refleksi` tanpa timer: pilih nama, empat isian panjang, pilihan izin
+      testimoni
+- [ ] `robots.ts` + `sitemap.ts` + `noindex` diubah bersamaan
+- [ ] Halaman admin membaca jawabannya dengan label izin yang jelas
+
+**Dinilai di browser:** isi form lalu muncul di panel admin; mengisi ulang memperbarui baris
+yang sama, bukan menambah.
+
+---
+
+## Blok 14 — Tabel nilai: skor pengetahuan dan rata-rata Likert
+
+- [ ] `scores.ts`: pisahkan skor pengetahuan dari Likert; rata-rata per item pre vs post
+- [ ] `nilai/page.tsx`: kolom skor pengetahuan + rata-rata Likert; bagian terpisah per item
+- [ ] CSV kedua khusus Likert per item; CSV utama tetap jadi gerbang dialog reset
+
+**Dinilai di browser:** angka cocok dengan data mentah; kedua CSV terbuka di spreadsheet.
+
+---
+
+## Blok 15 — Sapuan responsif dan aksesibilitas
 
 Jalankan daftar periksa `ui-flow.md` §6 di semua layar dan **perbaiki temuannya**, bukan
-sekadar mencentang.
+sekadar mencentang. Dijalankan terakhir supaya layar yang berubah bentuk karena instrumen
+baru — soal skala dan form refleksi — ikut tersapu.
 
 - [ ] Seluruh layar peserta dipakai di viewport 360 px tanpa scroll horizontal
 - [ ] Header dan navigasi tetap terlihat saat keyboard virtual muncul

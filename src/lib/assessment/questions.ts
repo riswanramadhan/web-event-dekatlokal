@@ -6,6 +6,12 @@ import { z } from "zod";
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
 import { resolveAssessmentTarget } from "./event";
 import {
+  LIKERT_OPTIONS,
+  QUESTION_TYPES,
+  type AssessmentQuestionType,
+  type PhaseScope,
+} from "./question-type";
+import {
   assessmentQuestionRowsSchema,
   type AssessmentQuestionRow,
 } from "./schemas";
@@ -35,7 +41,6 @@ export type QuestionsWriteResult =
   | { ok: true }
   | { ok: false; message: string };
 
-const idSchema = z.string().uuid();
 
 const orderableRowSchema = z.object({
   id: z.string().uuid(),
@@ -94,7 +99,7 @@ export async function listQuestions(): Promise<QuestionsReadResult> {
     target.supabase
       .from("assessment_questions")
       .select(
-        "id, prompt, order_index, points, assessment_options(id, body, order_index, is_correct)",
+        "id, prompt, order_index, points, question_type, phase_scope, category, assessment_options(id, body, order_index, is_correct, value)",
       )
       .eq("event_id", target.eventId)
       .order("order_index", { ascending: true })
@@ -165,6 +170,9 @@ async function nextOrderIndex(
 
 export async function createQuestion(
   prompt: string,
+  questionType: AssessmentQuestionType,
+  phaseScope: PhaseScope,
+  category: string | null,
 ): Promise<QuestionsWriteResult> {
   const target = await resolveAssessmentTarget();
 
@@ -189,15 +197,57 @@ export async function createQuestion(
     return { ok: false, message: translateAssessmentError(null) };
   }
 
-  const { error } = await target.supabase.from("assessment_questions").insert({
-    event_id: target.eventId,
-    prompt,
-    order_index: orderIndex,
-  });
+  const { data, error } = await target.supabase
+    .from("assessment_questions")
+    .insert({
+      event_id: target.eventId,
+      prompt,
+      order_index: orderIndex,
+      question_type: questionType,
+      phase_scope: phaseScope,
+      category,
+    })
+    .select("id")
+    .maybeSingle();
 
   if (error) {
     logAssessmentFailure("create_question", error);
     return { ok: false, message: translateAssessmentError(error) };
+  }
+
+  const created = z.object({ id: z.string().uuid() }).safeParse(data);
+
+  if (!created.success) {
+    logAssessmentFailure("create_question_shape", { code: "INVALID_SHAPE" });
+    return { ok: false, message: translateAssessmentError(null) };
+  }
+
+  if (questionType !== "likert") {
+    return { ok: true };
+  }
+
+  // Soal skala langsung mendapat kelima opsi bakunya. PostgREST tidak bisa
+  // mengirim dua statement dalam satu transaksi, jadi kalau insert ini gagal
+  // soalnya berdiri tanpa opsi — dan itu tidak senyap: assessment_problems()
+  // langsung melaporkannya di daftar kesiapan.
+  const { error: optionsError } = await target.supabase
+    .from("assessment_options")
+    .insert(
+      LIKERT_OPTIONS.map((option, index) => ({
+        question_id: created.data.id,
+        body: option.body,
+        order_index: index,
+        is_correct: false,
+        value: option.value,
+      })),
+    );
+
+  if (optionsError) {
+    logAssessmentFailure("create_likert_options", optionsError);
+    return {
+      ok: false,
+      message: `${translateAssessmentError(optionsError)} Soal terbuat tanpa opsi skala — hapus lalu buat ulang.`,
+    };
   }
 
   return { ok: true };
@@ -373,36 +423,48 @@ export async function moveQuestion(
   return { ok: true };
 }
 
+const ownedQuestionSchema = z.object({
+  id: z.string().uuid(),
+  question_type: z.enum(QUESTION_TYPES),
+});
+
 /**
- * Confirms the question belongs to the managed event before any option write.
+ * Confirms the question belongs to the managed event and reports its type.
  * `assessment_options` has no `event_id` of its own, so without this an option
  * id from another event would be reachable.
  */
-async function assertQuestionInEvent(
+async function findOwnedQuestion(
   supabase: SupabaseClient,
   eventId: string,
   questionId: string,
-): Promise<boolean> {
+): Promise<AssessmentQuestionType | null> {
   const { data, error } = await supabase
     .from("assessment_questions")
-    .select("id")
+    .select("id, question_type")
     .eq("id", questionId)
     .eq("event_id", eventId)
     .maybeSingle();
 
   if (error) {
     logAssessmentFailure("assert_question_in_event", error);
-    return false;
+    return null;
   }
 
-  return idSchema.safeParse((data as { id?: unknown } | null)?.id).success;
+  const parsed = ownedQuestionSchema.safeParse(data);
+
+  return parsed.success ? parsed.data.question_type : null;
 }
 
 /** Shared preamble for the three option writes and the answer key. */
 async function prepareOptionWrite(
   questionId: string,
 ): Promise<
-  | { ok: true; supabase: SupabaseClient; eventId: string }
+  | {
+      ok: true;
+      supabase: SupabaseClient;
+      eventId: string;
+      questionType: AssessmentQuestionType;
+    }
   | { ok: false; message: string }
 > {
   const target = await resolveAssessmentTarget();
@@ -417,14 +479,32 @@ async function prepareOptionWrite(
     return frozen;
   }
 
-  if (
-    !(await assertQuestionInEvent(target.supabase, target.eventId, questionId))
-  ) {
+  const questionType = await findOwnedQuestion(
+    target.supabase,
+    target.eventId,
+    questionId,
+  );
+
+  if (questionType === null) {
     return { ok: false, message: "Soal tidak ditemukan." };
   }
 
-  return { ok: true, supabase: target.supabase, eventId: target.eventId };
+  return {
+    ok: true,
+    supabase: target.supabase,
+    eventId: target.eventId,
+    questionType,
+  };
 }
+
+/**
+ * Opsi skala tidak boleh disunting satu per satu. Kelimanya baku, dan kalau
+ * satu pernyataan memakai label berbeda dari yang lain, rata-ratanya tidak lagi
+ * bisa dibandingkan antar item. Editor menampilkannya read-only; ini lapis
+ * keduanya, karena Server Action bisa dicapai sendiri.
+ */
+const LIKERT_LOCKED_MESSAGE =
+  "Opsi skala 1–5 bersifat baku dan tidak bisa diubah. Ganti tipe soalnya kalau memang perlu opsi lain.";
 
 export async function createOption(
   questionId: string,
@@ -434,6 +514,10 @@ export async function createOption(
 
   if (!prepared.ok) {
     return prepared;
+  }
+
+  if (prepared.questionType === "likert") {
+    return { ok: false, message: LIKERT_LOCKED_MESSAGE };
   }
 
   const orderIndex = await nextOrderIndex(
@@ -472,6 +556,10 @@ export async function updateOption(
     return prepared;
   }
 
+  if (prepared.questionType === "likert") {
+    return { ok: false, message: LIKERT_LOCKED_MESSAGE };
+  }
+
   const { data, error } = await prepared.supabase
     .from("assessment_options")
     .update({ body })
@@ -500,6 +588,10 @@ export async function deleteOption(
 
   if (!prepared.ok) {
     return prepared;
+  }
+
+  if (prepared.questionType === "likert") {
+    return { ok: false, message: LIKERT_LOCKED_MESSAGE };
   }
 
   const { data, error } = await prepared.supabase
@@ -541,6 +633,21 @@ export async function setCorrectOption(
 
   if (!prepared.ok) {
     return prepared;
+  }
+
+  if (prepared.questionType === "likert") {
+    return { ok: false, message: LIKERT_LOCKED_MESSAGE };
+  }
+
+  // Hanya soal berskor yang punya kunci. Memasang kunci pada pilihan tanpa
+  // skor akan lolos constraint database tapi membuat assessment_problems()
+  // menolak membuka tes, dengan alasan yang membingungkan.
+  if (prepared.questionType === "unscored_choice") {
+    return {
+      ok: false,
+      message:
+        "Pilihan tanpa skor tidak punya jawaban benar. Ubah tipe soalnya kalau ini seharusnya dinilai.",
+    };
   }
 
   const cleared = await prepared.supabase

@@ -8,9 +8,17 @@ import {
   Trash,
   WarningTriangle,
 } from "iconoir-react";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 
+import {
+  PHASE_SCOPE_LABELS,
+  PHASE_SCOPES,
+  QUESTION_TYPE_HINTS,
+  QUESTION_TYPE_LABELS,
+  QUESTION_TYPES,
+  type AssessmentQuestionType,
+} from "@/lib/assessment/question-type";
 import type { AssessmentQuestionRow } from "@/lib/assessment/schemas";
 import { initialRegistrationActionState } from "@/lib/registration/result";
 
@@ -154,6 +162,7 @@ function OptionRow({
   isCorrect,
   letter,
   frozen,
+  scored,
 }: {
   questionId: string;
   optionId: string;
@@ -161,6 +170,8 @@ function OptionRow({
   isCorrect: boolean;
   letter: string;
   frozen: boolean;
+  /** Hanya soal berskor yang punya penanda kunci jawaban. */
+  scored: boolean;
 }) {
   const [correctState, correctAction] = useActionState(
     setCorrectOptionAction,
@@ -178,15 +189,24 @@ function OptionRow({
   return (
     <li className="rounded-xl bg-slate-50/70 p-2">
       <div className="flex flex-wrap items-start gap-2">
-        <form action={correctAction}>
-          <input type="hidden" name="questionId" value={questionId} />
-          <input type="hidden" name="optionId" value={optionId} />
-          <CorrectKeyButton
-            isCorrect={isCorrect}
-            letter={letter}
-            disabled={frozen}
-          />
-        </form>
+        {scored ? (
+          <form action={correctAction}>
+            <input type="hidden" name="questionId" value={questionId} />
+            <input type="hidden" name="optionId" value={optionId} />
+            <CorrectKeyButton
+              isCorrect={isCorrect}
+              letter={letter}
+              disabled={frozen}
+            />
+          </form>
+        ) : (
+          <span
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 text-sm font-semibold text-slate-400"
+            aria-hidden="true"
+          >
+            {letter}
+          </span>
+        )}
 
         <form
           action={bodyAction}
@@ -276,12 +296,41 @@ function AddOptionForm({
  */
 function questionIssues(question: AssessmentQuestionRow): string[] {
   const issues: string[] = [];
-  const correctCount = question.assessment_options.filter(
-    (option) => option.is_correct,
-  ).length;
+  const options = question.assessment_options;
+  const correctCount = options.filter((option) => option.is_correct).length;
 
-  if (question.assessment_options.length < 2) {
+  if (question.question_type === "likert") {
+    if (options.length !== 5) {
+      issues.push(`perlu tepat 5 opsi skala, sekarang ${options.length}`);
+    }
+
+    const values = new Set(
+      options
+        .map((option) => option.value)
+        .filter((value): value is number => value !== null),
+    );
+
+    if (options.length === 5 && values.size !== 5) {
+      issues.push("nilai skala 1–5 tidak lengkap");
+    }
+
+    if (correctCount > 0) {
+      issues.push("tidak boleh punya kunci jawaban");
+    }
+
+    return issues;
+  }
+
+  if (options.length < 2) {
     issues.push("perlu minimal 2 opsi");
+  }
+
+  if (question.question_type === "unscored_choice") {
+    if (correctCount > 0) {
+      issues.push("tidak boleh punya kunci jawaban");
+    }
+
+    return issues;
   }
 
   if (correctCount === 0) {
@@ -359,8 +408,17 @@ export function QuestionCard({
               <span className="block truncate text-sm font-medium text-ink">
                 {question.prompt}
               </span>
-              <span className="mt-0.5 block text-xs text-slate-500">
-                {options.length} opsi
+              <span className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+                <span className="rounded-md bg-slate-100 px-1.5 py-0.5 font-medium text-slate-600">
+                  {QUESTION_TYPE_LABELS[question.question_type]}
+                </span>
+                {question.phase_scope === "post_test" ? (
+                  <span className="rounded-md bg-brand-50 px-1.5 py-0.5 font-medium text-brand">
+                    {PHASE_SCOPE_LABELS.post_test}
+                  </span>
+                ) : null}
+                {question.category ? <span>{question.category}</span> : null}
+                <span>· {options.length} opsi</span>
               </span>
               {issues.length > 0 ? (
                 <span className="mt-1 flex items-start gap-1 text-xs font-medium text-amber-700">
@@ -414,18 +472,45 @@ export function QuestionCard({
                 Opsi jawaban
               </p>
               <p className="mt-1 text-xs leading-5 text-slate-500">
-                Tekan huruf di sebelah kiri untuk menandai kunci jawaban. Satu
-                soal tepat satu kunci.
+                {question.question_type === "likert"
+                  ? "Skala 1–5 memakai lima opsi baku yang sama untuk semua pernyataan, supaya rata-ratanya bisa dibandingkan antar item."
+                  : question.question_type === "unscored_choice"
+                    ? "Pilihan ini tidak punya jawaban benar dan tidak masuk hitungan skor."
+                    : "Tekan huruf di sebelah kiri untuk menandai kunci jawaban. Satu soal tepat satu kunci."}
               </p>
 
-              {options.length === 0 ? (
+              {question.question_type === "likert" ? (
+                <ul className="mt-3 space-y-2">
+                  {options.map((option) => (
+                    <li
+                      key={option.id}
+                      className="flex items-center gap-3 rounded-xl bg-slate-50/70 px-3 py-2.5"
+                    >
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-white font-mono text-sm font-semibold text-slate-600">
+                        {option.value ?? "?"}
+                      </span>
+                      <span className="min-w-0 flex-1 text-sm text-slate-700">
+                        {option.body}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : options.length === 0 ? (
                 <p className="mt-3 rounded-xl border border-dashed border-slate-300 px-3 py-4 text-center text-xs text-slate-500">
                   Belum ada opsi jawaban.
                 </p>
               ) : (
                 <ul
-                  role="radiogroup"
-                  aria-label={`Kunci jawaban soal ${number}`}
+                  role={
+                    question.question_type === "scored_choice"
+                      ? "radiogroup"
+                      : undefined
+                  }
+                  aria-label={
+                    question.question_type === "scored_choice"
+                      ? `Kunci jawaban soal ${number}`
+                      : undefined
+                  }
                   className="mt-3 space-y-2"
                 >
                   {options.map((option, index) => (
@@ -437,12 +522,15 @@ export function QuestionCard({
                       isCorrect={option.is_correct}
                       letter={String.fromCharCode(65 + index)}
                       frozen={frozen}
+                      scored={question.question_type === "scored_choice"}
                     />
                   ))}
                 </ul>
               )}
 
-              <AddOptionForm questionId={question.id} frozen={frozen} />
+              {question.question_type === "likert" ? null : (
+                <AddOptionForm questionId={question.id} frozen={frozen} />
+              )}
             </div>
 
             <form
@@ -469,17 +557,95 @@ export function QuestionCard({
   );
 }
 
+const selectClass =
+  "min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-slate-100";
+
 export function AddQuestionForm({ frozen }: { frozen: boolean }) {
   const [state, action] = useActionState(
     createQuestionAction,
     initialRegistrationActionState,
   );
+  const [questionType, setQuestionType] =
+    useState<AssessmentQuestionType>("scored_choice");
 
   return (
     <form action={action}>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label
+            htmlFor="new-question-type"
+            className="block text-xs font-medium uppercase tracking-wide text-slate-500"
+          >
+            Tipe soal
+          </label>
+          <select
+            id="new-question-type"
+            name="questionType"
+            value={questionType}
+            disabled={frozen}
+            onChange={(event) =>
+              setQuestionType(event.currentTarget.value as AssessmentQuestionType)
+            }
+            className={`${selectClass} mt-1.5`}
+          >
+            {QUESTION_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {QUESTION_TYPE_LABELS[type]}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1.5 text-xs leading-5 text-slate-500">
+            {QUESTION_TYPE_HINTS[questionType]}
+          </p>
+        </div>
+
+        <div>
+          <label
+            htmlFor="new-question-scope"
+            className="block text-xs font-medium uppercase tracking-wide text-slate-500"
+          >
+            Muncul di
+          </label>
+          <select
+            id="new-question-scope"
+            name="phaseScope"
+            defaultValue="both"
+            disabled={frozen}
+            className={`${selectClass} mt-1.5`}
+          >
+            {PHASE_SCOPES.map((scope) => (
+              <option key={scope} value={scope}>
+                {PHASE_SCOPE_LABELS[scope]}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1.5 text-xs leading-5 text-slate-500">
+            Soal khusus post-test tidak pernah masuk ke attempt pre-test.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <label
+          htmlFor="new-question-category"
+          className="block text-xs font-medium uppercase tracking-wide text-slate-500"
+        >
+          Kategori (opsional)
+        </label>
+        <input
+          id="new-question-category"
+          name="category"
+          type="text"
+          maxLength={120}
+          disabled={frozen}
+          placeholder="Misalnya: Problem Understanding"
+          className={`${textControlClass} mt-1.5`}
+        />
+      </div>
+
       <label
         htmlFor="new-question-prompt"
-        className="block text-xs font-medium uppercase tracking-wide text-slate-500"
+        className="mt-4 block text-xs font-medium uppercase tracking-wide text-slate-500"
       >
         Pertanyaan baru
       </label>

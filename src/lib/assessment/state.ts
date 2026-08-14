@@ -47,10 +47,14 @@ export async function getAssessmentState(
       .eq("event_id", target.eventId)
       .eq("phase", phase)
       .maybeSingle(),
+    // Dihitung per phase, bukan seluruh bank soal: soal berlingkup
+    // 'post_test' tidak pernah masuk attempt pre-test, jadi menghitungnya
+    // akan menjanjikan jumlah soal yang tidak akan peserta temui.
     target.supabase
       .from("assessment_questions")
       .select("id", { count: "exact", head: true })
-      .eq("event_id", target.eventId),
+      .eq("event_id", target.eventId)
+      .in("phase_scope", phase === "post_test" ? ["both", "post_test"] : ["both"]),
   ]);
 
   if (settingsResult.error) {

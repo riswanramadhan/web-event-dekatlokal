@@ -17,6 +17,7 @@ import {
   updateQuestion,
   type QuestionsWriteResult,
 } from "@/lib/assessment/questions";
+import { PHASE_SCOPES, QUESTION_TYPES } from "@/lib/assessment/question-type";
 import type { RegistrationActionState } from "@/lib/registration/result";
 
 const idSchema = z.string().uuid();
@@ -65,6 +66,11 @@ async function runWrite(
   return { status: "success", message: successMessage };
 }
 
+const categorySchema = z
+  .string()
+  .trim()
+  .max(120, "Kategori maksimal 120 karakter.");
+
 export async function createQuestionAction(
   _prevState: RegistrationActionState,
   formData: FormData,
@@ -72,6 +78,17 @@ export async function createQuestionAction(
   await requireAdmin();
 
   const prompt = promptSchema.safeParse(formData.get("prompt"));
+  const questionType = z
+    .enum(QUESTION_TYPES)
+    .safeParse(formData.get("questionType"));
+  const phaseScope = z
+    .enum(PHASE_SCOPES)
+    .safeParse(formData.get("phaseScope"));
+  const category = categorySchema.safeParse(formData.get("category") ?? "");
+
+  if (!questionType.success || !phaseScope.success) {
+    return INVALID_COMMAND;
+  }
 
   if (!prompt.success) {
     return {
@@ -81,10 +98,25 @@ export async function createQuestionAction(
     };
   }
 
+  if (!category.success) {
+    return {
+      status: "validation_error",
+      message: category.error.issues[0]?.message ?? "Kategori tidak valid.",
+    };
+  }
+
   return runWrite(
-    () => createQuestion(prompt.data),
+    () =>
+      createQuestion(
+        prompt.data,
+        questionType.data,
+        phaseScope.data,
+        category.data === "" ? null : category.data,
+      ),
     "create_question",
-    "Soal ditambahkan.",
+    questionType.data === "likert"
+      ? "Soal skala ditambahkan beserta lima opsinya."
+      : "Soal ditambahkan.",
   );
 }
 

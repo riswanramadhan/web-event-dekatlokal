@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { ASSESSMENT_PHASES } from "./phase";
+import { PHASE_SCOPES, QUESTION_TYPES } from "./question-type";
 
 /**
  * Every row this feature reads back from Supabase is parsed, whatever its
@@ -37,6 +38,8 @@ export const assessmentOptionRowSchema = z.object({
   body: z.string(),
   order_index: z.number().int().min(0),
   is_correct: z.boolean(),
+  /** Nilai skala 1–5 untuk opsi Likert; null untuk tipe soal lain. */
+  value: z.number().int().min(1).max(5).nullable(),
 });
 
 export type AssessmentOptionRow = z.infer<typeof assessmentOptionRowSchema>;
@@ -46,6 +49,9 @@ export const assessmentQuestionRowSchema = z.object({
   prompt: z.string(),
   order_index: z.number().int().min(0),
   points: z.number().int().min(1),
+  question_type: z.enum(QUESTION_TYPES),
+  phase_scope: z.enum(PHASE_SCOPES),
+  category: z.string().nullable(),
   assessment_options: z.array(assessmentOptionRowSchema),
 });
 
