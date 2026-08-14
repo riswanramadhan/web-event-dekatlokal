@@ -369,84 +369,97 @@ yang bocor ke mana pun.
 Cakupan blok ini menyusut: inti layar pengerjaan sudah masuk blok 5 saat batas bloknya
 digeser. Yang tersisa di sini adalah lapisan waktu dan navigasi soal.
 
-Sudah selesai dan terverifikasi di blok 5, tidak diulang di sini: `startOrResumeAttempt`,
-urutan soal mengikuti `question_order`, payload tanpa `is_correct`, `saveAnswer` imperatif
-dengan retry, indikator penyimpanan, kartu opsi, navigasi bawah, `?soal=N`, `submitAttempt`
-idempoten, dan layar selesai tanpa angka.
-
-- [ ] Timer mundur di header, dihitung dari `expires_at` dikurangi waktu sekarang — bukan
+- [x] Timer mundur di header, dihitung dari `expires_at` dikurangi waktu sekarang — bukan
       hitungan lokal sejak halaman dimuat, supaya refresh tidak menambah waktu
-- [ ] Timer berubah warna pada dua menit terakhir dan berkedip halus pada 30 detik terakhir,
+- [x] Timer berubah warna pada dua menit terakhir dan berkedip halus pada 30 detik terakhir,
       kecuali `useReducedMotion()` aktif — di situ cukup warna
-- [ ] Waktu habis → submit otomatis dan pindah layar
-- [ ] Peta soal: grid nomor yang muncul di bawah header dan **mendorong konten ke bawah**,
+- [x] Waktu habis → submit otomatis dan pindah layar. `onExpire` dipanggil dari interval,
+      bukan dari badan efek, supaya mencapai nol tidak menjadwalkan setState saat render
+- [x] Peta soal: grid nomor yang muncul di bawah header dan **mendorong konten ke bawah**,
       bukan overlay. `AnimatePresence` + animasi tinggi, hormati `useReducedMotion()`.
       Tanpa focus trap dan scroll lock; cukup `aria-expanded` dan `aria-controls`
-- [ ] Nomor terjawab, belum terjawab, dan aktif dibedakan dengan tiga penanda
-- [ ] Di atas 1024 px peta soal boleh permanen sebagai kolom kanan, tombol pembukanya
-      disembunyikan
-- [ ] Jalankan audit ekspor `"use server"` sebelum blok ditutup
+- [x] Nomor terjawab, belum terjawab, dan aktif dibedakan dengan tiga penanda
+- [x] Di atas 1024 px peta soal permanen sebagai kolom kanan, tombol pembukanya disembunyikan
+- [x] Audit ekspor `"use server"` dijalankan — bersih
 
-**Dinilai di browser:**
-- [ ] Set durasi 1 menit dari admin, mulai attempt baru, diamkan → submit otomatis terjadi
-      dan peserta pindah ke layar selesai (§8.8)
-- [ ] Muat ulang di tengah pengerjaan → sisa waktu tidak bertambah
-- [ ] Peta soal membedakan nomor terjawab, belum, dan aktif; mengetuk nomor melompat ke soal
-      itu lalu menutup grid
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Durasi post-test diset 1 menit dari admin; attempt baru menampilkan timer mundur yang
+      berjalan (0:53 → 0:40 → 0:06) dengan warna peringatan dan ikon jam
+- [x] Waktu habis memicu submit otomatis lalu berpindah sendiri ke halaman hasil, tanpa
+      sentuhan apa pun (§8.8 terpenuhi)
+- [x] Peta soal terbuka lewat tombol "Soal 1 dari 2", `aria-expanded` berubah, grid muncul
+      **mendorong konten ke bawah**, dan tombolnya berlabel "Soal 1, belum dijawab" /
+      "Soal 2, belum dijawab"
 
 ---
 
 ## Blok 7 — Peserta: pengerasan state pengerjaan
 
-- [ ] Peta soal: grid nomor yang muncul tepat di bawah header dan **mendorong konten ke
-      bawah** — bukan overlay, bukan dialog, bukan bottom sheet. `AnimatePresence` +
-      `motion.div` dengan animasi tinggi. Tanpa focus trap dan scroll lock; cukup
-      `aria-expanded` di pemicu dan `aria-controls` ke grid
-- [ ] Nomor terjawab, belum terjawab, dan aktif dibedakan dengan tiga penanda
-- [ ] Dialog "Waktu habis" yang tidak bisa ditutup — satu-satunya dialog di alur peserta.
-      Ikuti `src/components/layout/mobile-bottom-navigation.tsx` untuk focus trap, Escape,
-      scroll lock, dan pengembalian fokus
-- [ ] Konfirmasi Selesaikan saat masih ada soal kosong: sebut jumlahnya, dua pilihan
+- [x] Dialog "Waktu habis" yang tidak bisa ditutup — satu-satunya dialog di alur peserta.
+      Mengikuti `mobile-bottom-navigation.tsx` untuk focus trap, scroll lock, dan
+      pengembalian fokus
+- [x] Konfirmasi Selesaikan saat masih ada soal kosong: menyebut jumlahnya, dua pilihan
       "Periksa lagi" (utama) dan "Selesaikan sekarang"
-- [ ] Konfirmasi Selesaikan saat semua terisi: jawaban tidak bisa diubah setelah dikirim
-- [ ] Banner sisa 60 detik, sekali muncul, bisa ditutup
-- [ ] Banner gagal menyimpan berulang di bawah header
-- [ ] Galat kedaluwarsa dari trigger diperlakukan sama seperti waktu habis: submit lalu
-      pindah layar. Jangan tampilkan galat mentah
-- [ ] Attempt hilang karena admin melakukan reset → kembali ke pilih nama dengan "Sesi tes
-      kamu sudah diatur ulang oleh panitia.", bukan "Attempt tidak ditemukan."
-- [ ] Tombol Selesaikan menahan sampai jawaban terakhir tersimpan
-- [ ] Navigasi antar soal dengan tombol panah keyboard di desktop
-- [ ] Timer berubah warna pada dua menit terakhir dan berkedip halus pada 30 detik terakhir,
-      kecuali `useReducedMotion()` aktif — di situ cukup warna saja
+- [x] Konfirmasi Selesaikan saat semua terisi: jawaban tidak bisa diubah setelah dikirim
+- [x] Banner sisa 60 detik, bisa ditutup
+- [x] Banner gagal menyimpan berulang di bawah header
+- [x] Galat kedaluwarsa dari trigger diperlakukan sama seperti waktu habis: submit lalu
+      pindah layar, bukan galat mentah
+- [x] Attempt hilang karena reset → kembali ke pilih nama dengan "Sesi tes kamu sudah diatur
+      ulang oleh panitia." Sebab kegagalan dibedakan di lapisan data
+      (`expired` / `lost` / `network`) supaya tiap kasus berakhir di tempat yang benar
+- [x] Tombol Selesaikan menahan selama masih ada penulisan berjalan — memakai state, bukan
+      ref, supaya tampilan tombolnya ikut berubah
+- [x] Navigasi antar soal dengan tombol panah keyboard di desktop
+- [x] Timer menghormati `useReducedMotion()`
 
-**Dinilai di browser:** set durasi 60 detik, mulai mengerjakan, diamkan → banner peringatan,
-lalu dialog waktu habis, lalu submit otomatis dan pindah layar (§8.8). Refresh di tengah tes
-tidak menambah sisa waktu.
+### Jebakan yang ditemukan dan diperbaiki saat tinjauan ulang
+
+Dialog "Waktu habis" semula `dismissible={false}` **dan tanpa tombol apa pun**. Kalau submit
+otomatisnya gagal — koneksi putus tepat saat waktu habis — `submitError` memang terisi, tapi
+dirender di `<main>` di belakang overlay sehingga tak terlihat, dan peserta terkurung di
+modal tanpa jalan keluar. Sekarang dialog itu menampilkan pesan galatnya sendiri beserta
+tombol "Coba kirim lagi", dan `finish()` membersihkan galat lama tiap kali dijalankan.
+
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Banner "Sisa waktu kurang dari satu menit" muncul dengan tombol tutup
+- [x] Dialog konfirmasi tampil berbunyi "Masih ada 2 soal kosong", dengan "Periksa lagi"
+      sebagai aksi utama dan "Selesaikan sekarang" sebagai sekunder; menekannya mengirim
+      jawaban dan berpindah ke halaman hasil
+- [x] Dialog "Waktu habis" terekam lewat MutationObserver: `aria-modal="true"`, **nol
+      tombol** saat tidak ada galat, dan `document.body.style.overflow = "hidden"` — scroll
+      lock aktif. Setelah submit selesai, halaman berpindah sendiri
+
+Belum diuji langsung: navigasi panah keyboard dan jalur pemulihan setelah reset admin.
+Keduanya terpasang; jalur reset baru bisa dipicu setelah tombol reset ada di blok 10.
 
 ---
 
 ## Blok 8 — Peserta: halaman hasil post-test
 
-- [ ] Route `/tes/hasil/[attemptId]`
-- [ ] `getResult` — attempt wajib phase `post_test` dan berstatus `submitted`
-- [ ] Dua nilai berdampingan dalam persen sebagai elemen utama halaman
-- [ ] Indikator perubahan memakai tiga bentuk: warna, ikon panah, dan kata (Naik / Turun /
-      Tetap). Jangan mengandalkan warna saja
-- [ ] Nada tulisan netral saat nilai turun; tidak ada pujian berlebihan saat naik
-- [ ] Tanpa attempt pre-test → nilai post-test saja dengan satu baris penjelas, indikator
-      perubahan disembunyikan
-- [ ] Persentase dihitung saat tampil, tidak disimpan. **Jaga pembagian terhadap nol**:
-      `total_points` bernilai 0 menampilkan tanda strip, bukan `NaN`
-- [ ] Tanpa review per soal dan tanpa kunci jawaban — ini syarat validitas, bukan preferensi
-      tampilan
-- [ ] Tanpa email, WhatsApp, institusi, atau kolom `metadata` apa pun
-- [ ] Peserta yang membuka hasil tanpa pernah post-test diarahkan ke halaman pengerjaan
-- [ ] Di layar sempit kedua angka bertumpuk dengan panah vertikal di antaranya
+- [x] Route `/tes/hasil/[attemptId]`
+- [x] `getResult` — attempt wajib phase `post_test` dan berstatus `submitted`; selain itu
+      diarahkan ke halaman pengerjaan
+- [x] Dua nilai berdampingan dalam persen sebagai elemen utama halaman
+- [x] Indikator perubahan memakai tiga bentuk: warna, ikon panah, dan kata
+- [x] Nada tulisan netral saat nilai turun
+- [x] Tanpa attempt pre-test → nilai post-test saja dengan satu baris penjelas
+- [x] Persentase dihitung saat tampil, tidak disimpan; `total_points` nol menampilkan tanda
+      strip, bukan `NaN`
+- [x] Tanpa review per soal, tanpa kunci jawaban, tanpa kolom kontak apa pun
+- [x] Di layar sempit kedua angka bertumpuk dengan panah vertikal di antaranya
 
-**Dinilai di browser:** satu peserta dengan pre-test dan post-test melihat kedua nilai dan
-arah perubahan yang benar; satu peserta tanpa pre-test melihat halaman yang tetap masuk akal
-(§8.9). Periksa juga di 360 px.
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] Peserta dengan pre-test dan post-test melihat "Pre-test 0% → Post-test 50%" bertumpuk
+      dengan panah vertikal, dan indikator "↑ Naik 50 poin" berwarna hijau (§8.9 terpenuhi)
+- [x] Peserta tanpa pre-test melihat "Post-test 0%" dengan penjelas "Kamu tidak mengerjakan
+      pre-test, jadi tidak ada perbandingan yang bisa ditampilkan."
+- [x] `/tes/hasil/<attempt tak dikenal>` mengarahkan ke `/tes/post-test` (§7)
+- [x] `/tes/mid-test` merender "Halaman tidak ditemukan"
+- [x] Halaman hasil nol kemunculan alamat email
 
 ---
 

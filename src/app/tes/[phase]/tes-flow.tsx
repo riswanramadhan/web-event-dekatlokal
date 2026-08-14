@@ -15,7 +15,10 @@ import { useFormStatus } from "react-dom";
 import { SelectInput } from "@/components/registration/form-components";
 import type { AttemptPayload } from "@/lib/assessment/attempts";
 import type { Participant } from "@/lib/assessment/participants";
-import type { AssessmentPhaseSlug } from "@/lib/assessment/phase";
+import type {
+  AssessmentPhase,
+  AssessmentPhaseSlug,
+} from "@/lib/assessment/phase";
 import type { AssessmentPublicState } from "@/lib/assessment/state";
 
 import {
@@ -82,7 +85,14 @@ function LockedGate({ phaseLabel }: { phaseLabel: string }) {
   );
 }
 
-function FinishedScreen({ phaseLabel }: { phaseLabel: string }) {
+function FinishedScreen({
+  phaseLabel,
+  alreadyDone,
+}: {
+  phaseLabel: string;
+  /** True when the participant picked a name that had already finished. */
+  alreadyDone: boolean;
+}) {
   return (
     <Shell>
       <div className="rounded-3xl border border-slate-200 bg-white p-6 text-center">
@@ -91,7 +101,9 @@ function FinishedScreen({ phaseLabel }: { phaseLabel: string }) {
           aria-hidden="true"
         />
         <h1 className="mt-4 text-lg font-semibold text-ink">
-          Jawaban {phaseLabel.toLowerCase()} kamu sudah tersimpan
+          {alreadyDone
+            ? `Kamu sudah menyelesaikan ${phaseLabel.toLowerCase()}`
+            : `Jawaban ${phaseLabel.toLowerCase()} kamu sudah tersimpan`}
         </h1>
         <p className="mt-2 text-sm leading-6 text-slate-600">
           Nilai akan ditampilkan setelah post-test selesai.
@@ -126,12 +138,15 @@ function NamePicker({
   phaseSlug,
   state,
   participants,
+  notice,
   onStarted,
 }: {
   phaseLabel: string;
   phaseSlug: AssessmentPhaseSlug;
   state: AssessmentPublicState;
   participants: Participant[] | null;
+  /** Set when the participant was sent back here, e.g. after an admin reset. */
+  notice: string | null;
   onStarted: (attempt: AttemptPayload) => void;
 }) {
   const [actionState, formAction] = useActionState(
@@ -174,6 +189,15 @@ function NamePicker({
         <p className="mt-1 text-sm leading-6 text-slate-600">
           {state.questionCount} soal · {formatDuration(state.durationSeconds)}
         </p>
+
+        {notice ? (
+          <p
+            role="status"
+            className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm leading-6 text-slate-700"
+          >
+            {notice}
+          </p>
+        ) : null}
 
         {closedNotice ? (
           <p className="mt-4 flex items-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2.5 text-sm leading-6 text-amber-900">
@@ -252,11 +276,13 @@ function NamePicker({
 }
 
 export function TesFlow({
+  phase,
   phaseLabel,
   phaseSlug,
   initialState,
   initialParticipants,
 }: {
+  phase: AssessmentPhase;
   phaseLabel: string;
   phaseSlug: AssessmentPhaseSlug;
   initialState: AssessmentPublicState;
@@ -267,7 +293,11 @@ export function TesFlow({
   const [state, setState] = useState(initialState);
   const [participants, setParticipants] = useState(initialParticipants);
   const [attempt, setAttempt] = useState<AttemptPayload | null>(null);
-  const [finished, setFinished] = useState(false);
+  const [finishedState, setFinishedState] = useState({
+    done: false,
+    alreadyDone: false,
+  });
+  const [notice, setNotice] = useState<string | null>(null);
 
   const locked = !state.isOpen && !state.hasEverOpened;
   const parsedQuestion = Number(searchParams.get("soal"));
@@ -325,21 +355,47 @@ export function TesFlow({
     };
   }, [locked, phaseSlug]);
 
+  // Spec §4.2: an attempt that is already submitted never reopens. The pre-test
+  // ends at a plain confirmation, the post-test at the comparison page.
+  const settleFinished = useCallback(
+    (attemptId: string, alreadyDone: boolean) => {
+      if (phase === "post_test") {
+        router.replace(`/tes/hasil/${attemptId}`);
+        return;
+      }
+
+      setFinishedState({ done: true, alreadyDone });
+    },
+    [phase, router],
+  );
+
   const handleStarted = useCallback(
     (started: AttemptPayload) => {
+      setNotice(null);
+
       if (started.status === "submitted") {
-        setFinished(true);
+        settleFinished(started.attemptId, true);
         return;
       }
 
       setAttempt(started);
       goToQuestion(0);
     },
-    [goToQuestion],
+    [goToQuestion, settleFinished],
   );
 
-  if (finished) {
-    return <FinishedScreen phaseLabel={phaseLabel} />;
+  const handleAttemptLost = useCallback((message: string) => {
+    setAttempt(null);
+    setNotice(message);
+  }, []);
+
+  if (finishedState.done) {
+    return (
+      <FinishedScreen
+        phaseLabel={phaseLabel}
+        alreadyDone={finishedState.alreadyDone}
+      />
+    );
   }
 
   if (attempt) {
@@ -349,7 +405,8 @@ export function TesFlow({
         attempt={attempt}
         questionIndex={questionIndex}
         onQuestionIndexChange={goToQuestion}
-        onFinished={() => setFinished(true)}
+        onFinished={() => settleFinished(attempt.attemptId, false)}
+        onAttemptLost={handleAttemptLost}
       />
     );
   }
@@ -364,6 +421,7 @@ export function TesFlow({
       phaseSlug={phaseSlug}
       state={state}
       participants={participants}
+      notice={notice}
       onStarted={handleStarted}
     />
   );

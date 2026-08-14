@@ -39,7 +39,7 @@ export type AttemptResult =
 
 export type SubmitResult =
   | { ok: true; phase: AssessmentPhase }
-  | { ok: false; message: string };
+  | { ok: false; reason: "lost" | "error"; message: string };
 
 const startRowSchema = z.object({
   attempt_id: z.string().uuid(),
@@ -202,9 +202,16 @@ export async function startOrResumeAttempt(
   };
 }
 
+/**
+ * Why a write was refused, because each one leads somewhere different:
+ * `expired` submits and moves on, `lost` sends the participant back to the
+ * name picker, `network` shows the small "belum tersimpan" indicator.
+ */
+export type SaveFailureReason = "expired" | "lost" | "network";
+
 export type SaveAnswerResult =
   | { ok: true }
-  | { ok: false; expired: boolean; message: string };
+  | { ok: false; reason: SaveFailureReason; message: string };
 
 /**
  * Stores one answer, overwriting the previous choice for the same question.
@@ -223,7 +230,7 @@ export async function saveAnswer(
   const target = await resolveAssessmentTarget();
 
   if (!target.ok) {
-    return { ok: false, expired: false, message: target.message };
+    return { ok: false, reason: "network", message: target.message };
   }
 
   const { error } = await target.supabase
@@ -235,20 +242,38 @@ export async function saveAnswer(
 
   if (error) {
     const raw = error.message ?? "";
-    const expired =
-      raw.includes("Waktu pengerjaan sudah habis") ||
-      raw.includes("Attempt sudah dikirim");
 
-    if (!expired) {
-      logAssessmentFailure("save_answer", error);
+    // The attempt row is gone: an administrator reset the event while this
+    // participant still had the screen open.
+    if (
+      raw.includes("Attempt tidak ditemukan") ||
+      error.code === "23503" ||
+      error.code === "P0002"
+    ) {
+      return {
+        ok: false,
+        reason: "lost",
+        message: "Sesi tes kamu sudah diatur ulang oleh panitia.",
+      };
     }
+
+    if (
+      raw.includes("Waktu pengerjaan sudah habis") ||
+      raw.includes("Attempt sudah dikirim")
+    ) {
+      return {
+        ok: false,
+        reason: "expired",
+        message: "Waktu pengerjaan sudah habis. Jawaban kamu dikirim.",
+      };
+    }
+
+    logAssessmentFailure("save_answer", error);
 
     return {
       ok: false,
-      expired,
-      message: expired
-        ? "Waktu pengerjaan sudah habis. Jawaban kamu dikirim."
-        : "Jawaban belum tersimpan. Periksa koneksi kamu.",
+      reason: "network",
+      message: "Jawaban belum tersimpan. Periksa koneksi kamu.",
     };
   }
 
@@ -267,7 +292,7 @@ export async function submitAttempt(attemptId: string): Promise<SubmitResult> {
   const target = await resolveAssessmentTarget();
 
   if (!target.ok) {
-    return target;
+    return { ok: false, reason: "error", message: target.message };
   }
 
   const attemptResult = await target.supabase
@@ -279,7 +304,11 @@ export async function submitAttempt(attemptId: string): Promise<SubmitResult> {
 
   if (attemptResult.error) {
     logAssessmentFailure("submit_lookup", attemptResult.error);
-    return { ok: false, message: translateAssessmentError(attemptResult.error) };
+    return {
+      ok: false,
+      reason: "error",
+      message: translateAssessmentError(attemptResult.error),
+    };
   }
 
   const attempt = attemptRowSchema.safeParse(attemptResult.data);
@@ -287,6 +316,7 @@ export async function submitAttempt(attemptId: string): Promise<SubmitResult> {
   if (!attempt.success) {
     return {
       ok: false,
+      reason: "lost",
       message: "Sesi tes kamu sudah diatur ulang oleh panitia.",
     };
   }
@@ -297,8 +327,116 @@ export async function submitAttempt(attemptId: string): Promise<SubmitResult> {
 
   if (error) {
     logAssessmentFailure("submit_attempt", error);
-    return { ok: false, message: translateAssessmentError(error) };
+    return {
+      ok: false,
+      reason: "error",
+      message: translateAssessmentError(error),
+    };
   }
 
   return { ok: true, phase: attempt.data.phase };
+}
+
+const scoredAttemptSchema = z.object({
+  registration_id: z.string().uuid(),
+  status: z.enum(["in_progress", "submitted"]),
+  phase: z.enum(ASSESSMENT_PHASES),
+  score: z.number().int().nullable(),
+  total_points: z.number().int().nullable(),
+});
+
+export type AssessmentResult = {
+  /** Rounded percentage, or null when total_points is 0. */
+  postPercent: number | null;
+  postScore: number;
+  postTotal: number;
+  /** Null when this participant never took the pre-test. */
+  prePercent: number | null;
+};
+
+export type GetResultOutcome =
+  | { ok: true; result: AssessmentResult }
+  /** Not a post-test attempt, not submitted, or gone: send them to the test. */
+  | { ok: false; redirect: true }
+  | { ok: false; redirect: false; message: string };
+
+/**
+ * Percentages are computed at display time and never stored. `total_points` of
+ * zero should be impossible — an attempt cannot exist without questions — but
+ * the display must not depend on that assumption, so it yields null and the
+ * page renders a dash instead of NaN.
+ */
+function toPercent(score: number | null, total: number | null): number | null {
+  if (score === null || total === null || total <= 0) {
+    return null;
+  }
+
+  return Math.round((score / total) * 100);
+}
+
+export async function getResult(attemptId: string): Promise<GetResultOutcome> {
+  const target = await resolveAssessmentTarget();
+
+  if (!target.ok) {
+    return { ok: false, redirect: false, message: target.message };
+  }
+
+  const postResult = await target.supabase
+    .from("assessment_attempts")
+    .select("registration_id, status, phase, score, total_points")
+    .eq("id", attemptId)
+    .eq("event_id", target.eventId)
+    .maybeSingle();
+
+  if (postResult.error) {
+    logAssessmentFailure("get_result", postResult.error);
+    return {
+      ok: false,
+      redirect: false,
+      message: translateAssessmentError(postResult.error),
+    };
+  }
+
+  const post = scoredAttemptSchema.safeParse(postResult.data);
+
+  // A missing attempt, the wrong phase, or one still in progress all mean the
+  // same thing for the participant: there is no result to look at yet.
+  if (
+    !post.success ||
+    post.data.phase !== "post_test" ||
+    post.data.status !== "submitted"
+  ) {
+    return { ok: false, redirect: true };
+  }
+
+  const preResult = await target.supabase
+    .from("assessment_attempts")
+    .select("registration_id, status, phase, score, total_points")
+    .eq("registration_id", post.data.registration_id)
+    .eq("phase", "pre_test")
+    .maybeSingle();
+
+  if (preResult.error) {
+    logAssessmentFailure("get_result_pre", preResult.error);
+    return {
+      ok: false,
+      redirect: false,
+      message: translateAssessmentError(preResult.error),
+    };
+  }
+
+  const pre = scoredAttemptSchema.safeParse(preResult.data);
+  const preSubmitted = pre.success && pre.data.status === "submitted";
+
+  return {
+    ok: true,
+    result: {
+      postPercent: toPercent(post.data.score, post.data.total_points),
+      postScore: post.data.score ?? 0,
+      postTotal: post.data.total_points ?? 0,
+      prePercent: preSubmitted
+        ? toPercent(pre.data.score, pre.data.total_points)
+        : null,
+    },
+  };
 }

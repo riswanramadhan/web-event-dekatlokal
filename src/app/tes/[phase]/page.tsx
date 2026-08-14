@@ -70,6 +70,7 @@ export default async function TesPage({ params }: PageProps) {
   return (
     <Suspense fallback={null}>
       <TesFlow
+        phase={phase}
         phaseLabel={ASSESSMENT_PHASE_LABELS[phase]}
         phaseSlug={toPhaseSlug(phase)}
         initialState={stateResult.state}

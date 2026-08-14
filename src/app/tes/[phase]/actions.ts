@@ -116,7 +116,7 @@ export async function startAttemptAction(
 
 export type SaveAnswerOutcome =
   | { ok: true }
-  | { ok: false; expired: boolean; message: string };
+  | { ok: false; reason: "expired" | "lost" | "network"; message: string };
 
 export async function saveAnswerAction(
   attemptId: string,
@@ -134,7 +134,7 @@ export async function saveAnswerAction(
   if (!parsed.success) {
     return {
       ok: false,
-      expired: false,
+      reason: "network",
       message: "Jawaban belum tersimpan. Periksa koneksi kamu.",
     };
   }
@@ -146,7 +146,9 @@ export async function saveAnswerAction(
   );
 }
 
-export type SubmitOutcome = { ok: true } | { ok: false; message: string };
+export type SubmitOutcome =
+  | { ok: true }
+  | { ok: false; reason: "lost" | "error"; message: string };
 
 /**
  * Returns nothing but success. The RPC hands back a score for both phases; it
@@ -160,10 +162,12 @@ export async function submitAttemptAction(
   const parsed = idSchema.safeParse(attemptId);
 
   if (!parsed.success) {
-    return { ok: false, message: "Sesi tes tidak dikenali." };
+    return { ok: false, reason: "error", message: "Sesi tes tidak dikenali." };
   }
 
   const result = await submitAttempt(parsed.data);
 
-  return result.ok ? { ok: true } : { ok: false, message: result.message };
+  return result.ok
+    ? { ok: true }
+    : { ok: false, reason: result.reason, message: result.message };
 }
