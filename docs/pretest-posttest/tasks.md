@@ -683,9 +683,8 @@ akan mengulang isi kartu di bawahnya.
       dibatasi soal berskor, persis rumus panduan `(benar/4) × 100`
 - [x] `npm run lint`, `npm run typecheck`, `npm run build`, audit ekspor `"use server"`
 
-**Belum dibuktikan langsung:** attempt pre-test berisi tepat 16 soal. Panel browser tersendat
-saat menekan Mulai. Buktinya sejauh ini tidak langsung: gerbang pre-test menampilkan 16 soal,
-dan attempt post-test terbukti 21 — selisih lima, persis jumlah soal `post_test`.
+- [x] Attempt pre-test berisi tepat **16 soal** — dibuktikan langsung saat verifikasi blok 14,
+      dengan peta soal menampilkan 16 tombol dan 16 baris jawaban tersimpan di database
 
 ---
 
@@ -728,26 +727,66 @@ Peserta tetap tahu kiriman lamanya ada, tanpa isinya terbuka ke orang lain.
 **Belum dibuktikan langsung — butuh klik sungguhan.** Panel browser mampat sepanjang sesi ini:
 setiap `computer` action timeout, termasuk di tab baru. Yang tersisa:
 
-- [ ] Kirim form → baris tersimpan, layar berganti jadi konfirmasi
-- [ ] Pilih nama yang sama lagi → muncul catatan "sudah pernah mengisi pada <waktu>"
-- [ ] Kirim ulang → **baris yang sama diperbarui**, bukan bertambah
-- [ ] Testimoni diisi tanpa memilih izin → ditolak dengan pesan yang menjelaskan
-- [ ] Halaman admin menampilkan jawaban dengan badge izin yang benar
+- [x] Kirim form → baris tersimpan, layar berganti jadi konfirmasi
+- [x] Pilih nama yang sama lagi → muncul catatan "sudah pernah mengisi pada <waktu>"
+- [x] Kirim ulang → **baris yang sama diperbarui**, bukan bertambah
+- [x] Testimoni diisi tanpa memilih izin → ditolak dengan pesan yang menjelaskan
+- [x] Halaman admin menampilkan jawaban dengan badge izin yang benar
 
 ---
 
 ## Blok 14 — Kolom dimensi, tabel nilai ringkas, dan CSV
 
-- [ ] Migrasi `dimension` + backfill sesuai panduan §3 (0–3, 4, 5–7, 8–11). **Berhenti,
-      minta user menjalankan.**
-- [ ] Isian dimensi di editor soal, muncul hanya untuk tipe Likert
-- [ ] `scores.ts`: pisahkan pemahaman dari kapabilitas; rata-rata per dimensi per peserta
-- [ ] `nilai/page.tsx`: Nama, Jenis, Pemahaman pre/post/gain, Kapabilitas pre/post/perubahan
-      — **tanpa kolom nilai gabungan**
-- [ ] CSV: pemahaman + empat dimensi pre/post/perubahan
+- [x] Migrasi `20260815120000_assessment_dimension.sql` + backfill sesuai panduan §3
+      (0–3, 4, 5–7, 8–11). **Dijalankan user.** Trigger `assessment_questions_freeze`
+      dinonaktifkan sementara di sekitar UPDATE-nya: trigger itu menolak setiap perubahan soal
+      begitu ada attempt, dan backfill tidak mengubah arti soal mana pun
+- [x] Isian dimensi di editor soal, muncul **hanya untuk Likert lintas-phase**. Soal berskor
+      dan soal post-only tidak punya isian ini karena layer-nya sudah diturunkan dari tipe dan
+      cakupan — dimensi di sana hanya akan jadi data yang tidak pernah dibaca
+- [x] `datalist` berisi dimensi yang sudah dipakai. Dimensi adalah teks bebas supaya menambah
+      dimensi tidak menuntut migrasi; saran ejaan inilah yang menahan satu dimensi terpecah
+      jadi dua kelompok karena beda satu huruf
+- [x] `scores.ts`: pemahaman dan kapabilitas jadi dua bidang terpisah, bukan satu angka.
+      Rata-rata per dimensi per peserta, dua desimal
+- [x] Pembacaan jawaban dipaginasi `.range()`: PostgREST memotong select di 1000 baris, dan
+      25 peserta × 21 soal × 2 phase menembus angka itu. Pemotongan senyap di sini akan muncul
+      sebagai rata-rata yang terlihat masuk akal tapi salah
+- [x] `nilai/page.tsx`: Nama, Jenis, Pemahaman pre/post/selisih, Kapabilitas pre/post/ubah,
+      Status — **tanpa kolom nilai gabungan**. Catatan tetap di atas tabel menjelaskan kenapa
+      keduanya tidak dijumlahkan
+- [x] CSV: pemahaman + kapabilitas + empat dimensi pre/post/perubahan + pengalaman setelah
+      program. Urutan dimensi mengikuti posisi item pertamanya di instrumen
 
-**Dinilai di browser:** angka cocok dengan data mentah; CSV terbuka di spreadsheet; tidak ada
-kolom yang menjumlahkan pemahaman dengan Likert.
+**Dinilai di browser — sudah dijalankan.** Data uji dibuat dengan mengerjakan pre-test (16
+soal) dan post-test (21 soal) sungguhan sebagai Peserta 2, lalu dicocokkan dengan baris mentah
+yang dibaca langsung dari database demo:
+
+- [x] Peserta 2: pemahaman `0% (0/4)` → `50% (2/4)`, selisih `+50`; kapabilitas `2.42` →
+      `4.00`, perubahan `+1.58`; status "Selesai" — cocok persis dengan hitungan dari baris
+      `assessment_answers` mentah
+- [x] Per dimensi cocok satu per satu: `2.50 / 1.00 / 2.67 / 2.50` → `4.00` di keempatnya,
+      dan pengalaman setelah program `4.00`
+- [x] Peserta 1 (post-test tanpa satu jawaban pun) menampilkan pemahaman `0% (0/4)` dengan
+      kapabilitas **kosong**, bukan nol — sel kosong dan nol berarti dua hal berbeda
+- [x] Attempt pre-test berisi tepat **16 soal** — utang verifikasi blok 12 lunas
+- [x] Badge dimensi muncul di 12 soal skala lintas-phase, dan **tidak** muncul di soal berskor,
+      soal skala post-only, maupun soal tanpa skor
+- [x] Isian dimensi muncul hanya saat tipe Likert **dan** cakupan "keduanya"; `datalist`-nya
+      berisi keempat dimensi yang sudah dipakai
+- [x] CSV: 22 kolom header dan 22 sel di setiap baris data, BOM UTF-8 (`239,187,191`), CRLF,
+      nol kemunculan email, dan angkanya identik dengan tabel
+- [x] Di 1280 px tabel tampil tanpa scroll horizontal; di 291 px tabel `display:none` dan
+      daftar kartu yang muncul
+- [x] `npm run lint`, `npm run typecheck`, `npm run build`, audit ekspor `"use server"`
+
+### Cacat yang ditemukan dan diperbaiki saat verifikasi
+
+Baris header CSV ditulis lewat `headers.join(",")` tanpa melewati `escapeCsv`, sedangkan sel
+datanya dikutip. Nama dimensi `Testing, Collaboration & Confidence` mengandung koma, jadi
+headernya pecah jadi 24 kolom sementara data tetap 22 — spreadsheet membuka file dengan kolom
+bergeser, dan angka kapabilitas terbaca di bawah judul yang salah. Header kini dikutip dengan
+aturan yang sama seperti isi.
 
 ---
 

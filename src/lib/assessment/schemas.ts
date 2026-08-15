@@ -52,6 +52,8 @@ export const assessmentQuestionRowSchema = z.object({
   question_type: z.enum(QUESTION_TYPES),
   phase_scope: z.enum(PHASE_SCOPES),
   category: z.string().nullable(),
+  /** Pengelompokan laporan; hanya berarti untuk skala lintas-phase. */
+  dimension: z.string().nullable(),
   assessment_options: z.array(assessmentOptionRowSchema),
 });
 

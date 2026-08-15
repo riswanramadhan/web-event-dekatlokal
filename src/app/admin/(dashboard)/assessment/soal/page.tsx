@@ -72,7 +72,18 @@ export default async function AssessmentQuestionsPage() {
             title="Tambah soal"
             description="Soal baru masuk ke urutan paling akhir."
           >
-            <AddQuestionForm frozen={result.frozen} />
+            <AddQuestionForm
+              frozen={result.frozen}
+              dimensions={[
+                ...new Set(
+                  result.questions
+                    .map((question) => question.dimension)
+                    .filter((dimension): dimension is string =>
+                      Boolean(dimension),
+                    ),
+                ),
+              ]}
+            />
           </Card>
         </div>
       )}

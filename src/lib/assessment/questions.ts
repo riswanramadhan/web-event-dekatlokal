@@ -99,7 +99,7 @@ export async function listQuestions(): Promise<QuestionsReadResult> {
     target.supabase
       .from("assessment_questions")
       .select(
-        "id, prompt, order_index, points, question_type, phase_scope, category, assessment_options(id, body, order_index, is_correct, value)",
+        "id, prompt, order_index, points, question_type, phase_scope, category, dimension, assessment_options(id, body, order_index, is_correct, value)",
       )
       .eq("event_id", target.eventId)
       .order("order_index", { ascending: true })
@@ -173,6 +173,7 @@ export async function createQuestion(
   questionType: AssessmentQuestionType,
   phaseScope: PhaseScope,
   category: string | null,
+  dimension: string | null,
 ): Promise<QuestionsWriteResult> {
   const target = await resolveAssessmentTarget();
 
@@ -206,6 +207,9 @@ export async function createQuestion(
       question_type: questionType,
       phase_scope: phaseScope,
       category,
+      // Dimensi hanya berarti untuk skala lintas-phase; tipe lain menyimpan
+      // null supaya laporan tidak salah mengelompokkan.
+      dimension: questionType === "likert" && phaseScope === "both" ? dimension : null,
     })
     .select("id")
     .maybeSingle();

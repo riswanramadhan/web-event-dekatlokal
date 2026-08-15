@@ -1,12 +1,14 @@
 import "server-only";
 
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import { toPercent } from "./attempts";
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
 import { resolveAssessmentTarget } from "./event";
 import { PARTICIPANT_STATUS_EXCLUSION } from "./participants";
-import { ASSESSMENT_PHASES } from "./phase";
+import { ASSESSMENT_PHASES, type AssessmentPhase } from "./phase";
+import { QUESTION_TYPES, PHASE_SCOPES } from "./question-type";
 
 const registrationRowSchema = z.object({
   id: z.string().uuid(),
@@ -15,6 +17,7 @@ const registrationRowSchema = z.object({
 });
 
 const scoreAttemptRowSchema = z.object({
+  id: z.string().uuid(),
   registration_id: z.string().uuid(),
   phase: z.enum(ASSESSMENT_PHASES),
   status: z.enum(["in_progress", "submitted"]),
@@ -22,15 +25,46 @@ const scoreAttemptRowSchema = z.object({
   total_points: z.number().int().nullable(),
 });
 
-export type AttemptSummary = {
-  status: "in_progress" | "submitted";
-  score: number | null;
-  totalPoints: number | null;
-  /** Null while in progress, and null when there are no points to divide by. */
+const scoringQuestionSchema = z.object({
+  id: z.string().uuid(),
+  order_index: z.number().int().min(0),
+  question_type: z.enum(QUESTION_TYPES),
+  phase_scope: z.enum(PHASE_SCOPES),
+  dimension: z.string().nullable(),
+});
+
+const answerRowSchema = z.object({
+  attempt_id: z.string().uuid(),
+  question_id: z.string().uuid(),
+  option_id: z.string().uuid(),
+});
+
+const optionValueSchema = z.object({
+  id: z.string().uuid(),
+  value: z.number().int().min(1).max(5).nullable(),
+});
+
+/**
+ * Pemahaman objektif. Panduan Scoring §1: `(benar / jumlah soal berskor) × 100`.
+ * Persentase inilah Knowledge Score, dan hanya angka ini yang boleh disebut
+ * nilai.
+ */
+export type KnowledgeSummary = {
+  score: number;
+  total: number;
   percent: number | null;
 };
 
-/** How far through the two tests this participant is. */
+/**
+ * Kapabilitas menurut penilaian sendiri, skala 1–5. Bukan nilai kemampuan
+ * objektif — Panduan Scoring §2 melarang menyebutnya begitu, dan melarang
+ * mempersenkannya.
+ */
+export type CapabilityMeans = {
+  overall: number | null;
+  byDimension: Record<string, number | null>;
+};
+
 export type ScoreProgress =
   | "not_started"
   | "in_progress"
@@ -42,53 +76,104 @@ export type ParticipantScore = {
   registrationId: string;
   fullName: string;
   registrationType: string;
-  pre: AttemptSummary | null;
-  post: AttemptSummary | null;
-  /** Post minus pre in percentage points; null unless both are submitted. */
-  difference: number | null;
+  knowledgePre: KnowledgeSummary | null;
+  knowledgePost: KnowledgeSummary | null;
+  /** Selisih poin persen; null kecuali kedua phase sudah terkirim. */
+  knowledgeGain: number | null;
+  capabilityPre: CapabilityMeans | null;
+  capabilityPost: CapabilityMeans | null;
+  /** Selisih skala; null kecuali kedua phase punya jawaban skala. */
+  capabilityChange: number | null;
+  /** Rata-rata Q17–Q20, layer terpisah tanpa baseline pre. */
+  postProgramMean: number | null;
+  /** Jawaban Q21 apa adanya; kategorikal, tidak pernah dirata-rata. */
+  stewardChoice: string | null;
   progress: ScoreProgress;
 };
 
-export type ScoreboardSummary = {
-  averagePre: number | null;
-  averagePost: number | null;
-  averageGain: number | null;
-  completedBoth: number;
-};
-
 export type ScoreboardResult =
-  | { ok: true; rows: ParticipantScore[]; summary: ScoreboardSummary }
+  | {
+      ok: true;
+      rows: ParticipantScore[];
+      /** Nama dimensi urut sesuai posisi item pertamanya di instrumen. */
+      dimensions: string[];
+    }
   | { ok: false; message: string };
 
-function average(values: number[]): number | null {
+const PAGE_SIZE = 1000;
+
+/**
+ * Membaca seluruh jawaban dengan paginasi.
+ *
+ * PostgREST memotong select biasa di 1000 baris. Dengan 25 peserta × 21 soal ×
+ * 2 phase, plafonnya menembus angka itu — dan pemotongan senyap di sini akan
+ * muncul sebagai rata-rata yang terlihat masuk akal tapi salah.
+ */
+async function fetchAllAnswers(
+  supabase: SupabaseClient,
+  attemptIds: string[],
+): Promise<z.infer<typeof answerRowSchema>[] | null> {
+  if (attemptIds.length === 0) {
+    return [];
+  }
+
+  const collected: z.infer<typeof answerRowSchema>[] = [];
+
+  for (let page = 0; ; page += 1) {
+    const { data, error } = await supabase
+      .from("assessment_answers")
+      .select("attempt_id, question_id, option_id")
+      .in("attempt_id", attemptIds)
+      .range(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE - 1);
+
+    if (error) {
+      logAssessmentFailure("list_answers", error);
+      return null;
+    }
+
+    const parsed = z.array(answerRowSchema).safeParse(data ?? []);
+
+    if (!parsed.success) {
+      logAssessmentFailure("list_answers_shape", { code: "INVALID_SHAPE" });
+      return null;
+    }
+
+    collected.push(...parsed.data);
+
+    if (parsed.data.length < PAGE_SIZE) {
+      return collected;
+    }
+  }
+}
+
+function mean(values: number[]): number | null {
   if (values.length === 0) {
     return null;
   }
 
-  return Math.round(
-    values.reduce((total, value) => total + value, 0) / values.length,
+  // Dua desimal, sesuai contoh penyajian di Panduan Scoring §3.
+  return (
+    Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 100) / 100
   );
 }
 
-function toSummary(
-  row: z.infer<typeof scoreAttemptRowSchema> | undefined,
-): AttemptSummary | null {
-  if (!row) {
+function toKnowledge(
+  attempt: z.infer<typeof scoreAttemptRowSchema> | undefined,
+): KnowledgeSummary | null {
+  if (!attempt || attempt.status !== "submitted") {
     return null;
   }
 
   return {
-    status: row.status,
-    score: row.score,
-    totalPoints: row.total_points,
-    percent:
-      row.status === "submitted" ? toPercent(row.score, row.total_points) : null,
+    score: attempt.score ?? 0,
+    total: attempt.total_points ?? 0,
+    percent: toPercent(attempt.score, attempt.total_points),
   };
 }
 
 function toProgress(
-  pre: AttemptSummary | null,
-  post: AttemptSummary | null,
+  pre: z.infer<typeof scoreAttemptRowSchema> | undefined,
+  post: z.infer<typeof scoreAttemptRowSchema> | undefined,
 ): ScoreProgress {
   if (pre?.status === "in_progress" || post?.status === "in_progress") {
     return "in_progress";
@@ -97,28 +182,16 @@ function toProgress(
   const preDone = pre?.status === "submitted";
   const postDone = post?.status === "submitted";
 
-  if (preDone && postDone) {
-    return "complete";
-  }
-
-  if (preDone) {
-    return "pre_only";
-  }
-
-  if (postDone) {
-    return "post_only";
-  }
-
+  if (preDone && postDone) return "complete";
+  if (preDone) return "pre_only";
+  if (postDone) return "post_only";
   return "not_started";
 }
 
 /**
- * Every participant, with whatever they have done so far.
- *
- * Driven by the registration list rather than by the attempts, so someone who
- * has not started still appears as an empty row. The same status filter as the
- * name dropdown applies, which is what keeps rejected and withdrawn applicants
- * out of the report as well as off the participant screens.
+ * Seluruh peserta beserta apa yang sudah mereka kerjakan, dipecah menjadi layer
+ * yang dipisahkan Panduan Scoring §9. Ketiganya sengaja tidak pernah
+ * dijumlahkan menjadi satu angka.
  */
 export async function listScores(): Promise<ScoreboardResult> {
   const target = await resolveAssessmentTarget();
@@ -127,33 +200,37 @@ export async function listScores(): Promise<ScoreboardResult> {
     return target;
   }
 
-  const [registrationsResult, attemptsResult] = await Promise.all([
-    target.supabase
-      .from("registrations")
-      .select("id, full_name, registration_type")
-      .eq("event_id", target.eventId)
-      .not("status", "in", PARTICIPANT_STATUS_EXCLUSION)
-      .order("full_name", { ascending: true }),
-    target.supabase
-      .from("assessment_attempts")
-      .select("registration_id, phase, status, score, total_points")
-      .eq("event_id", target.eventId),
-  ]);
+  const [registrationsResult, attemptsResult, questionsResult, optionsResult] =
+    await Promise.all([
+      target.supabase
+        .from("registrations")
+        .select("id, full_name, registration_type")
+        .eq("event_id", target.eventId)
+        .not("status", "in", PARTICIPANT_STATUS_EXCLUSION)
+        .order("full_name", { ascending: true }),
+      target.supabase
+        .from("assessment_attempts")
+        .select("id, registration_id, phase, status, score, total_points")
+        .eq("event_id", target.eventId),
+      target.supabase
+        .from("assessment_questions")
+        .select("id, order_index, question_type, phase_scope, dimension")
+        .eq("event_id", target.eventId)
+        .order("order_index", { ascending: true }),
+      target.supabase
+        .from("assessment_options")
+        .select("id, value"),
+    ]);
 
-  if (registrationsResult.error) {
-    logAssessmentFailure("list_scores_registrations", registrationsResult.error);
-    return {
-      ok: false,
-      message: translateAssessmentError(registrationsResult.error),
-    };
-  }
+  const failure =
+    registrationsResult.error ??
+    attemptsResult.error ??
+    questionsResult.error ??
+    optionsResult.error;
 
-  if (attemptsResult.error) {
-    logAssessmentFailure("list_scores_attempts", attemptsResult.error);
-    return {
-      ok: false,
-      message: translateAssessmentError(attemptsResult.error),
-    };
+  if (failure) {
+    logAssessmentFailure("list_scores", failure);
+    return { ok: false, message: translateAssessmentError(failure) };
   }
 
   const registrations = z
@@ -162,66 +239,168 @@ export async function listScores(): Promise<ScoreboardResult> {
   const attempts = z
     .array(scoreAttemptRowSchema)
     .safeParse(attemptsResult.data ?? []);
+  const questions = z
+    .array(scoringQuestionSchema)
+    .safeParse(questionsResult.data ?? []);
+  const options = z
+    .array(optionValueSchema)
+    .safeParse(optionsResult.data ?? []);
 
-  if (!registrations.success || !attempts.success) {
+  if (
+    !registrations.success ||
+    !attempts.success ||
+    !questions.success ||
+    !options.success
+  ) {
     logAssessmentFailure("list_scores_shape", { code: "INVALID_SHAPE" });
     return { ok: false, message: translateAssessmentError(null) };
   }
 
-  const byParticipant = new Map<
-    string,
-    Partial<Record<"pre_test" | "post_test", z.infer<typeof scoreAttemptRowSchema>>>
-  >();
+  const answers = await fetchAllAnswers(
+    target.supabase,
+    attempts.data.map((attempt) => attempt.id),
+  );
 
+  if (answers === null) {
+    return { ok: false, message: translateAssessmentError(null) };
+  }
+
+  const questionById = new Map(questions.data.map((row) => [row.id, row]));
+  const optionValueById = new Map(
+    options.data.map((row) => [row.id, row.value]),
+  );
+
+  // Urutan dimensi mengikuti posisi item pertamanya, supaya tabel laporan
+  // terbaca dengan alur yang sama seperti instrumennya.
+  const dimensions: string[] = [];
+  for (const question of questions.data) {
+    if (
+      question.question_type === "likert" &&
+      question.phase_scope === "both" &&
+      question.dimension &&
+      !dimensions.includes(question.dimension)
+    ) {
+      dimensions.push(question.dimension);
+    }
+  }
+
+  const attemptByKey = new Map<string, z.infer<typeof scoreAttemptRowSchema>>();
   for (const attempt of attempts.data) {
-    const existing = byParticipant.get(attempt.registration_id) ?? {};
-    existing[attempt.phase] = attempt;
-    byParticipant.set(attempt.registration_id, existing);
+    attemptByKey.set(`${attempt.registration_id}:${attempt.phase}`, attempt);
+  }
+
+  const answersByAttempt = new Map<string, typeof answers>();
+  for (const answer of answers) {
+    const bucket = answersByAttempt.get(answer.attempt_id) ?? [];
+    bucket.push(answer);
+    answersByAttempt.set(answer.attempt_id, bucket);
+  }
+
+  function capabilityFor(attemptId: string | undefined): CapabilityMeans | null {
+    if (!attemptId) return null;
+
+    const own = answersByAttempt.get(attemptId) ?? [];
+    const perDimension = new Map<string, number[]>();
+    const all: number[] = [];
+
+    for (const answer of own) {
+      const question = questionById.get(answer.question_id);
+      const value = optionValueById.get(answer.option_id);
+
+      if (
+        !question ||
+        question.question_type !== "likert" ||
+        question.phase_scope !== "both" ||
+        value == null
+      ) {
+        continue;
+      }
+
+      all.push(value);
+
+      const key = question.dimension ?? "Belum dikelompokkan";
+      perDimension.set(key, [...(perDimension.get(key) ?? []), value]);
+    }
+
+    if (all.length === 0) {
+      return null;
+    }
+
+    const byDimension: Record<string, number | null> = {};
+    for (const name of dimensions) {
+      byDimension[name] = mean(perDimension.get(name) ?? []);
+    }
+
+    return { overall: mean(all), byDimension };
+  }
+
+  function postProgramMeanFor(attemptId: string | undefined): number | null {
+    if (!attemptId) return null;
+
+    const values: number[] = [];
+
+    for (const answer of answersByAttempt.get(attemptId) ?? []) {
+      const question = questionById.get(answer.question_id);
+      const value = optionValueById.get(answer.option_id);
+
+      if (
+        question?.question_type === "likert" &&
+        question.phase_scope === "post_test" &&
+        value != null
+      ) {
+        values.push(value);
+      }
+    }
+
+    return mean(values);
+  }
+
+  function stewardChoiceFor(attemptId: string | undefined): string | null {
+    if (!attemptId) return null;
+
+    for (const answer of answersByAttempt.get(attemptId) ?? []) {
+      const question = questionById.get(answer.question_id);
+
+      if (question?.question_type === "unscored_choice") {
+        return answer.option_id;
+      }
+    }
+
+    return null;
   }
 
   const rows: ParticipantScore[] = registrations.data.map((registration) => {
-    const found = byParticipant.get(registration.id) ?? {};
-    const pre = toSummary(found.pre_test);
-    const post = toSummary(found.post_test);
+    const pre = attemptByKey.get(`${registration.id}:pre_test`);
+    const post = attemptByKey.get(`${registration.id}:post_test`);
+    const knowledgePre = toKnowledge(pre);
+    const knowledgePost = toKnowledge(post);
+    const capabilityPre = capabilityFor(pre?.id);
+    const capabilityPost = capabilityFor(post?.id);
 
     return {
       registrationId: registration.id,
       fullName: registration.full_name,
       registrationType: registration.registration_type,
-      pre,
-      post,
-      difference:
-        pre?.percent !== null &&
-        pre?.percent !== undefined &&
-        post?.percent !== null &&
-        post?.percent !== undefined
-          ? post.percent - pre.percent
+      knowledgePre,
+      knowledgePost,
+      knowledgeGain:
+        knowledgePre?.percent != null && knowledgePost?.percent != null
+          ? knowledgePost.percent - knowledgePre.percent
           : null,
+      capabilityPre,
+      capabilityPost,
+      capabilityChange:
+        capabilityPre?.overall != null && capabilityPost?.overall != null
+          ? Math.round((capabilityPost.overall - capabilityPre.overall) * 100) /
+            100
+          : null,
+      postProgramMean: postProgramMeanFor(post?.id),
+      stewardChoice: stewardChoiceFor(post?.id),
       progress: toProgress(pre, post),
     };
   });
 
-  // Averages count only what has actually been submitted, and the gain counts
-  // only participants who finished both — averaging a difference against a
-  // missing pre-test would invent a number nobody earned.
-  const preScores = rows
-    .map((row) => row.pre?.percent)
-    .filter((value): value is number => typeof value === "number");
-  const postScores = rows
-    .map((row) => row.post?.percent)
-    .filter((value): value is number => typeof value === "number");
-  const gains = rows
-    .map((row) => row.difference)
-    .filter((value): value is number => typeof value === "number");
-
-  return {
-    ok: true,
-    rows,
-    summary: {
-      averagePre: average(preScores),
-      averagePost: average(postScores),
-      averageGain: average(gains),
-      completedBoth: gains.length,
-    },
-  };
+  return { ok: true, rows, dimensions };
 }
+
+export type { AssessmentPhase };

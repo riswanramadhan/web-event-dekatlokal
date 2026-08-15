@@ -2,21 +2,15 @@
 
 import { requireAdmin } from "@/lib/admin/auth";
 import {
-  formatDifference,
+  dimensionMean,
+  formatKnowledge,
+  formatKnowledgeGain,
   formatRegistrationType,
-  formatScoreCell,
+  formatScale,
+  formatScaleChange,
   PROGRESS_LABELS,
 } from "@/lib/assessment/score-format";
 import { listScores } from "@/lib/assessment/scores";
-
-const CSV_HEADERS = [
-  "Nama",
-  "Jenis",
-  "Pre-test",
-  "Post-test",
-  "Selisih",
-  "Status",
-] as const;
 
 /**
  * RFC 4180 quoting: wrap anything containing a delimiter, quote or newline, and
@@ -36,12 +30,12 @@ export type ExportOutcome =
   | { ok: false; message: string };
 
 /**
- * Builds the CSV from the same rows and the same formatters the table renders,
- * so the file cannot say something different from the screen.
+ * Satu baris per peserta, dengan layer dipisahkan sesuai Panduan Scoring §9.
+ * **Tidak ada kolom yang menjumlahkan pemahaman dengan kapabilitas** — §8
+ * melarang nilai akhir gabungan, dan file inilah yang paling mungkin dijadikan
+ * dasar laporan.
  *
- * Email and WhatsApp are absent by construction — `listScores` never selects
- * them. A score file travels further than the admin panel, and contact details
- * are not needed to read a result.
+ * Email dan WhatsApp tidak ada karena `listScores` memang tidak memilihnya.
  */
 export async function exportScoresAction(): Promise<ExportOutcome> {
   await requireAdmin();
@@ -52,20 +46,58 @@ export async function exportScoresAction(): Promise<ExportOutcome> {
     return { ok: false, message: result.message };
   }
 
+  const headers = [
+    "Nama",
+    "Jenis",
+    "Pemahaman pre (0-100)",
+    "Pemahaman post (0-100)",
+    "Selisih pemahaman",
+    "Kapabilitas pre (1-5)",
+    "Kapabilitas post (1-5)",
+    "Perubahan kapabilitas",
+    ...result.dimensions.flatMap((dimension) => [
+      `${dimension} pre (1-5)`,
+      `${dimension} post (1-5)`,
+      `${dimension} perubahan`,
+    ]),
+    "Pengalaman setelah program (1-5)",
+    "Status",
+  ];
+
   const lines = [
-    CSV_HEADERS.join(","),
-    ...result.rows.map((row) =>
-      [
+    // Header dikutip dengan aturan yang sama seperti isi: nama dimensi adalah
+    // teks bebas dari admin, dan satu koma di dalamnya menggeser seluruh kolom.
+    headers.map(escapeCsv).join(","),
+    ...result.rows.map((row) => {
+      const dimensionCells = result.dimensions.flatMap((dimension) => {
+        const pre = dimensionMean(row.capabilityPre, dimension);
+        const post = dimensionMean(row.capabilityPost, dimension);
+
+        return [
+          formatScale(pre),
+          formatScale(post),
+          pre !== null && post !== null
+            ? formatScaleChange(Math.round((post - pre) * 100) / 100)
+            : "",
+        ];
+      });
+
+      return [
         row.fullName,
         formatRegistrationType(row.registrationType),
-        formatScoreCell(row.pre),
-        formatScoreCell(row.post),
-        formatDifference(row.difference),
+        formatKnowledge(row.knowledgePre),
+        formatKnowledge(row.knowledgePost),
+        formatKnowledgeGain(row.knowledgeGain),
+        formatScale(row.capabilityPre?.overall),
+        formatScale(row.capabilityPost?.overall),
+        formatScaleChange(row.capabilityChange),
+        ...dimensionCells,
+        formatScale(row.postProgramMean),
         PROGRESS_LABELS[row.progress],
       ]
         .map(escapeCsv)
-        .join(","),
-    ),
+        .join(",");
+    }),
   ];
 
   const stamp = new Date().toISOString().slice(0, 10);
@@ -73,8 +105,7 @@ export async function exportScoresAction(): Promise<ExportOutcome> {
   return {
     ok: true,
     filename: `nilai-pre-post-test-${stamp}.csv`,
-    // Leading BOM so spreadsheets open it as UTF-8 instead of guessing, which
-    // is what turns "Ridwan" into "Ridwanï»¿" when a name carries an accent.
+    // Leading BOM so spreadsheets open it as UTF-8 instead of guessing.
     content: `﻿${lines.join("\r\n")}\r\n`,
   };
 }

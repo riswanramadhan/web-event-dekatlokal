@@ -1,11 +1,20 @@
 import { TYPE_LABELS } from "@/components/admin/ui";
 
-import type { AttemptSummary, ScoreProgress } from "./scores";
+import type {
+  CapabilityMeans,
+  KnowledgeSummary,
+  ScoreProgress,
+} from "./scores";
 
 /**
- * One place for every cell in the scores table, because the CSV must carry the
- * same columns as the screen. Two formatters would eventually disagree, and the
- * export is the copy that leaves the panel.
+ * Satu tempat untuk setiap sel di tabel nilai, karena CSV harus membawa kolom
+ * yang sama dengan layar. Dua formatter akan berbeda cepat atau lambat, dan
+ * ekspor adalah salinan yang keluar dari panel.
+ *
+ * Istilahnya mengikuti Panduan Scoring §2 dan §8:
+ * - Pemahaman skala 0–100, boleh disebut nilai.
+ * - Kapabilitas skala 1–5 dua desimal, tidak pernah dipersenkan.
+ * - Keduanya tidak pernah dijumlahkan.
  */
 
 export const PROGRESS_LABELS: Record<ScoreProgress, string> = {
@@ -20,40 +29,48 @@ export function formatRegistrationType(value: string): string {
   return TYPE_LABELS[value] ?? value;
 }
 
-/**
- * `80% (12/15)` once submitted. An attempt still running is named rather than
- * scored, and a participant who never started leaves the cell empty — an empty
- * cell and a zero mean very different things here.
- */
-export function formatScoreCell(summary: AttemptSummary | null): string {
+/** `75% (3/4)` — persentase untuk laporan, pecahan supaya asalnya terbaca. */
+export function formatKnowledge(summary: KnowledgeSummary | null): string {
   if (!summary) {
     return "";
-  }
-
-  if (summary.status === "in_progress") {
-    return "Sedang mengerjakan";
   }
 
   if (summary.percent === null) {
     return "–";
   }
 
-  return `${summary.percent}% (${summary.score ?? 0}/${summary.totalPoints ?? 0})`;
+  return `${summary.percent}% (${summary.score}/${summary.total})`;
 }
 
-/** Signed so the direction is readable without comparing the two columns. */
-export function formatDifference(difference: number | null): string {
-  if (difference === null) {
+/** Selisih pemahaman dalam poin persen, bertanda supaya arahnya terbaca. */
+export function formatKnowledgeGain(gain: number | null): string {
+  if (gain === null) {
     return "";
   }
 
-  if (difference > 0) {
-    return `+${difference}`;
-  }
-
-  return String(difference);
+  return gain > 0 ? `+${gain}` : String(gain);
 }
 
-export function formatPercent(value: number | null): string {
-  return value === null ? "–" : `${value}%`;
+/** Skala 1–5 dua desimal. Tidak pernah dipersenkan. */
+export function formatScale(value: number | null | undefined): string {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return value.toFixed(2);
+}
+
+export function formatScaleChange(change: number | null): string {
+  if (change === null) {
+    return "";
+  }
+
+  return change > 0 ? `+${change.toFixed(2)}` : change.toFixed(2);
+}
+
+export function dimensionMean(
+  means: CapabilityMeans | null,
+  dimension: string,
+): number | null {
+  return means?.byDimension[dimension] ?? null;
 }

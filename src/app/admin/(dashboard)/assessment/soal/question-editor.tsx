@@ -18,6 +18,7 @@ import {
   QUESTION_TYPE_LABELS,
   QUESTION_TYPES,
   type AssessmentQuestionType,
+  type PhaseScope,
 } from "@/lib/assessment/question-type";
 import type { AssessmentQuestionRow } from "@/lib/assessment/schemas";
 import { initialRegistrationActionState } from "@/lib/registration/result";
@@ -417,6 +418,11 @@ export function QuestionCard({
                     {PHASE_SCOPE_LABELS.post_test}
                   </span>
                 ) : null}
+                {question.dimension ? (
+                  <span className="rounded-md bg-slate-100 px-1.5 py-0.5 font-medium text-slate-600">
+                    {question.dimension}
+                  </span>
+                ) : null}
                 {question.category ? <span>{question.category}</span> : null}
                 <span>· {options.length} opsi</span>
               </span>
@@ -560,13 +566,25 @@ export function QuestionCard({
 const selectClass =
   "min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand-100 disabled:cursor-not-allowed disabled:bg-slate-100";
 
-export function AddQuestionForm({ frozen }: { frozen: boolean }) {
+export function AddQuestionForm({
+  frozen,
+  dimensions,
+}: {
+  frozen: boolean;
+  /** Dimensi yang sudah dipakai, untuk saran ejaan yang konsisten. */
+  dimensions: string[];
+}) {
   const [state, action] = useActionState(
     createQuestionAction,
     initialRegistrationActionState,
   );
   const [questionType, setQuestionType] =
     useState<AssessmentQuestionType>("scored_choice");
+  const [phaseScope, setPhaseScope] = useState<PhaseScope>("both");
+
+  // Dimensi hanya berarti untuk skala lintas-phase: itulah satu-satunya layer
+  // yang dirata-rata per dimensi dan dibandingkan pre → post.
+  const showDimension = questionType === "likert" && phaseScope === "both";
 
   return (
     <form action={action}>
@@ -609,8 +627,11 @@ export function AddQuestionForm({ frozen }: { frozen: boolean }) {
           <select
             id="new-question-scope"
             name="phaseScope"
-            defaultValue="both"
+            value={phaseScope}
             disabled={frozen}
+            onChange={(event) =>
+              setPhaseScope(event.currentTarget.value as PhaseScope)
+            }
             className={`${selectClass} mt-1.5`}
           >
             {PHASE_SCOPES.map((scope) => (
@@ -625,22 +646,54 @@ export function AddQuestionForm({ frozen }: { frozen: boolean }) {
         </div>
       </div>
 
-      <div className="mt-4">
-        <label
-          htmlFor="new-question-category"
-          className="block text-xs font-medium uppercase tracking-wide text-slate-500"
-        >
-          Kategori (opsional)
-        </label>
-        <input
-          id="new-question-category"
-          name="category"
-          type="text"
-          maxLength={120}
-          disabled={frozen}
-          placeholder="Misalnya: Problem Understanding"
-          className={`${textControlClass} mt-1.5`}
-        />
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <label
+            htmlFor="new-question-category"
+            className="block text-xs font-medium uppercase tracking-wide text-slate-500"
+          >
+            Kategori (opsional)
+          </label>
+          <input
+            id="new-question-category"
+            name="category"
+            type="text"
+            maxLength={120}
+            disabled={frozen}
+            placeholder="Misalnya: Problem Understanding"
+            className={`${textControlClass} mt-1.5`}
+          />
+        </div>
+
+        {showDimension ? (
+          <div>
+            <label
+              htmlFor="new-question-dimension"
+              className="block text-xs font-medium uppercase tracking-wide text-slate-500"
+            >
+              Dimensi (opsional)
+            </label>
+            <input
+              id="new-question-dimension"
+              name="dimension"
+              type="text"
+              maxLength={120}
+              list="assessment-dimensions"
+              disabled={frozen}
+              placeholder="Misalnya: MVP & Solution Thinking"
+              className={`${textControlClass} mt-1.5`}
+            />
+            <datalist id="assessment-dimensions">
+              {dimensions.map((dimension) => (
+                <option key={dimension} value={dimension} />
+              ))}
+            </datalist>
+            <p className="mt-1.5 text-xs leading-5 text-slate-500">
+              Pernyataan dengan dimensi yang sama dirata-ratakan bersama di tabel
+              nilai. Tulis persis sama supaya tidak terpecah jadi dua kelompok.
+            </p>
+          </div>
+        ) : null}
       </div>
 
       <label

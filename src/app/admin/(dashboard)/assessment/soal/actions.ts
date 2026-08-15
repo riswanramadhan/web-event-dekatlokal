@@ -71,6 +71,16 @@ const categorySchema = z
   .trim()
   .max(120, "Kategori maksimal 120 karakter.");
 
+/**
+ * Dimensi mengelompokkan pernyataan skala untuk rata-rata per dimensi di
+ * laporan. Sengaja teks bebas dan bukan enum: pengelompokan disimpan sebagai
+ * data, jadi menambah dimensi tidak menuntut migrasi.
+ */
+const dimensionSchema = z
+  .string()
+  .trim()
+  .max(120, "Dimensi maksimal 120 karakter.");
+
 export async function createQuestionAction(
   _prevState: RegistrationActionState,
   formData: FormData,
@@ -85,6 +95,7 @@ export async function createQuestionAction(
     .enum(PHASE_SCOPES)
     .safeParse(formData.get("phaseScope"));
   const category = categorySchema.safeParse(formData.get("category") ?? "");
+  const dimension = dimensionSchema.safeParse(formData.get("dimension") ?? "");
 
   if (!questionType.success || !phaseScope.success) {
     return INVALID_COMMAND;
@@ -105,6 +116,13 @@ export async function createQuestionAction(
     };
   }
 
+  if (!dimension.success) {
+    return {
+      status: "validation_error",
+      message: dimension.error.issues[0]?.message ?? "Dimensi tidak valid.",
+    };
+  }
+
   return runWrite(
     () =>
       createQuestion(
@@ -112,6 +130,7 @@ export async function createQuestionAction(
         questionType.data,
         phaseScope.data,
         category.data === "" ? null : category.data,
+        dimension.data === "" ? null : dimension.data,
       ),
     "create_question",
     questionType.data === "likert"

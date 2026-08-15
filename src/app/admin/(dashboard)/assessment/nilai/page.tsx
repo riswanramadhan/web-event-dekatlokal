@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 
-import { Card, PageHeader, StatCard, TypeBadge } from "@/components/admin/ui";
+import { Card, PageHeader, TypeBadge } from "@/components/admin/ui";
 import { EmptyState } from "@/components/ui/empty-state";
 import { requireAdmin } from "@/lib/admin/auth";
 import {
-  formatDifference,
-  formatPercent,
-  formatScoreCell,
+  formatKnowledge,
+  formatKnowledgeGain,
+  formatScale,
+  formatScaleChange,
   PROGRESS_LABELS,
 } from "@/lib/assessment/score-format";
 import { listScores, type ParticipantScore } from "@/lib/assessment/scores";
@@ -20,31 +21,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-function differenceTone(difference: number | null): string {
-  if (difference === null) {
-    return "text-slate-400";
-  }
-
-  if (difference > 0) {
-    return "text-emerald-700";
-  }
-
-  if (difference < 0) {
-    return "text-amber-700";
-  }
-
+function changeTone(value: number | null): string {
+  if (value === null) return "text-slate-400";
+  if (value > 0) return "text-emerald-700";
+  if (value < 0) return "text-amber-700";
   return "text-slate-600";
 }
 
-/** Empty means "never started"; a dash would read as a score of nothing. */
-function ScoreCell({ value }: { value: string }) {
-  return value === "" ? (
-    <span className="text-slate-300">—</span>
-  ) : (
-    <span className={value === "Sedang mengerjakan" ? "text-amber-700" : ""}>
-      {value}
-    </span>
-  );
+/** Sel kosong berarti belum mengerjakan — berbeda arti dari nol. */
+function Cell({ value }: { value: string }) {
+  return value === "" ? <span className="text-slate-300">—</span> : <>{value}</>;
 }
 
 function ScoreTable({ rows }: { rows: ParticipantScore[] }) {
@@ -54,31 +40,57 @@ function ScoreTable({ rows }: { rows: ParticipantScore[] }) {
         <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
           <th className="px-5 py-3 font-medium">Nama</th>
           <th className="px-5 py-3 font-medium">Jenis</th>
-          <th className="px-5 py-3 font-medium">Pre-test</th>
-          <th className="px-5 py-3 font-medium">Post-test</th>
-          <th className="px-5 py-3 font-medium">Selisih</th>
+          <th className="px-5 py-3 font-medium" colSpan={3}>
+            Pemahaman <span className="normal-case text-slate-400">(0–100)</span>
+          </th>
+          <th className="px-5 py-3 font-medium" colSpan={3}>
+            Kapabilitas <span className="normal-case text-slate-400">(1–5)</span>
+          </th>
           <th className="px-5 py-3 font-medium">Status</th>
+        </tr>
+        <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wide text-slate-400">
+          <th className="px-5 pb-2" />
+          <th className="px-5 pb-2" />
+          <th className="px-5 pb-2 font-medium">Pre</th>
+          <th className="px-5 pb-2 font-medium">Post</th>
+          <th className="px-5 pb-2 font-medium">Selisih</th>
+          <th className="px-5 pb-2 font-medium">Pre</th>
+          <th className="px-5 pb-2 font-medium">Post</th>
+          <th className="px-5 pb-2 font-medium">Ubah</th>
+          <th className="px-5 pb-2" />
         </tr>
       </thead>
       <tbody className="divide-y divide-slate-100">
         {rows.map((row) => (
-          <tr key={row.registrationId} className="transition hover:bg-slate-50/70">
+          <tr
+            key={row.registrationId}
+            className="transition hover:bg-slate-50/70"
+          >
             <td className="px-5 py-3.5 font-medium text-ink">{row.fullName}</td>
             <td className="px-5 py-3.5">
               <TypeBadge type={row.registrationType} />
             </td>
             <td className="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-slate-700">
-              <ScoreCell value={formatScoreCell(row.pre)} />
+              <Cell value={formatKnowledge(row.knowledgePre)} />
             </td>
             <td className="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-slate-700">
-              <ScoreCell value={formatScoreCell(row.post)} />
+              <Cell value={formatKnowledge(row.knowledgePost)} />
             </td>
             <td
-              className={`whitespace-nowrap px-5 py-3.5 font-mono text-xs font-semibold ${differenceTone(
-                row.difference,
-              )}`}
+              className={`whitespace-nowrap px-5 py-3.5 font-mono text-xs font-semibold ${changeTone(row.knowledgeGain)}`}
             >
-              {formatDifference(row.difference) || "—"}
+              <Cell value={formatKnowledgeGain(row.knowledgeGain)} />
+            </td>
+            <td className="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-slate-700">
+              <Cell value={formatScale(row.capabilityPre?.overall)} />
+            </td>
+            <td className="whitespace-nowrap px-5 py-3.5 font-mono text-xs text-slate-700">
+              <Cell value={formatScale(row.capabilityPost?.overall)} />
+            </td>
+            <td
+              className={`whitespace-nowrap px-5 py-3.5 font-mono text-xs font-semibold ${changeTone(row.capabilityChange)}`}
+            >
+              <Cell value={formatScaleChange(row.capabilityChange)} />
             </td>
             <td className="whitespace-nowrap px-5 py-3.5 text-xs text-slate-600">
               {PROGRESS_LABELS[row.progress]}
@@ -91,9 +103,9 @@ function ScoreTable({ rows }: { rows: ParticipantScore[] }) {
 }
 
 /**
- * Below 768 px the same rows render as cards. Six columns are unreadable on a
- * phone, and the horizontal-scroll idiom the other admin tables use would make
- * the organiser swipe sideways to compare two numbers.
+ * Di bawah 768 px baris yang sama jadi kartu. Delapan kolom tidak terbaca di
+ * ponsel, dan idiom scroll horizontal yang dipakai tabel admin lain memaksa
+ * panitia menggeser ke samping hanya untuk membandingkan dua angka.
  */
 function ScoreCards({ rows }: { rows: ParticipantScore[] }) {
   return (
@@ -108,27 +120,27 @@ function ScoreCards({ rows }: { rows: ParticipantScore[] }) {
             <TypeBadge type={row.registrationType} />
           </div>
 
-          <dl className="mt-3 grid grid-cols-3 gap-3">
-            <div>
-              <dt className="text-xs text-slate-500">Pre-test</dt>
-              <dd className="mt-0.5 font-mono text-xs text-slate-700">
-                <ScoreCell value={formatScoreCell(row.pre)} />
+          <dl className="mt-3 space-y-2 text-xs">
+            <div className="flex items-baseline justify-between gap-3">
+              <dt className="text-slate-500">Pemahaman (0–100)</dt>
+              <dd className="font-mono text-slate-700">
+                <Cell value={formatKnowledge(row.knowledgePre)} /> →{" "}
+                <Cell value={formatKnowledge(row.knowledgePost)} />{" "}
+                <span className={`font-semibold ${changeTone(row.knowledgeGain)}`}>
+                  {formatKnowledgeGain(row.knowledgeGain)}
+                </span>
               </dd>
             </div>
-            <div>
-              <dt className="text-xs text-slate-500">Post-test</dt>
-              <dd className="mt-0.5 font-mono text-xs text-slate-700">
-                <ScoreCell value={formatScoreCell(row.post)} />
-              </dd>
-            </div>
-            <div>
-              <dt className="text-xs text-slate-500">Selisih</dt>
-              <dd
-                className={`mt-0.5 font-mono text-xs font-semibold ${differenceTone(
-                  row.difference,
-                )}`}
-              >
-                {formatDifference(row.difference) || "—"}
+            <div className="flex items-baseline justify-between gap-3">
+              <dt className="text-slate-500">Kapabilitas (1–5)</dt>
+              <dd className="font-mono text-slate-700">
+                <Cell value={formatScale(row.capabilityPre?.overall)} /> →{" "}
+                <Cell value={formatScale(row.capabilityPost?.overall)} />{" "}
+                <span
+                  className={`font-semibold ${changeTone(row.capabilityChange)}`}
+                >
+                  {formatScaleChange(row.capabilityChange)}
+                </span>
               </dd>
             </div>
           </dl>
@@ -153,7 +165,7 @@ export default async function AssessmentScoresPage() {
     <>
       <PageHeader
         title="Pre-test & Post-test"
-        description="Nilai peserta untuk kedua tes. Pendaftar berstatus ditolak dan mundur tidak muncul di sini maupun di CSV."
+        description="Pendaftar berstatus ditolak dan mundur tidak muncul di sini maupun di CSV."
       />
 
       <AssessmentTabs active="/admin/assessment/nilai" />
@@ -162,36 +174,21 @@ export default async function AssessmentScoresPage() {
         <EmptyState title="Gagal memuat nilai" description={result.message} />
       ) : (
         <div className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <StatCard
-              label="Rata-rata pre-test"
-              value={formatPercent(result.summary.averagePre)}
-            />
-            <StatCard
-              label="Rata-rata post-test"
-              value={formatPercent(result.summary.averagePost)}
-            />
-            <StatCard
-              label="Rata-rata kenaikan"
-              value={
-                result.summary.averageGain === null
-                  ? "–"
-                  : formatDifference(result.summary.averageGain)
-              }
-              tone={
-                result.summary.averageGain !== null &&
-                result.summary.averageGain > 0
-                  ? "green"
-                  : "neutral"
-              }
-              hint={`Dari ${result.summary.completedBoth} peserta yang menyelesaikan keduanya`}
-            />
+          {/* Panduan Scoring §8: ketiga layer dipakai berdampingan, tidak
+              dijumlahkan jadi satu nilai akhir. */}
+          <div className="rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 text-xs leading-5 text-slate-600">
+            <strong className="font-semibold text-ink">Pemahaman</strong> berasal
+            dari soal pengetahuan dan boleh disebut nilai.{" "}
+            <strong className="font-semibold text-ink">Kapabilitas</strong>{" "}
+            berasal dari pernyataan skala — itu persepsi peserta terhadap
+            kemampuannya sendiri, bukan kemampuan objektif, jadi jangan
+            dipersenkan. Keduanya sengaja tidak dijumlahkan.
           </div>
 
           <div className="flex flex-wrap items-start justify-between gap-3">
             <p className="max-w-md text-xs leading-5 text-slate-500">
-              CSV memuat kolom yang sama persis dengan tabel ini, tanpa email dan
-              nomor WhatsApp.
+              CSV membawa kolom yang sama plus rincian per dimensi, tanpa email
+              dan nomor WhatsApp.
             </p>
             <ExportScoresButton disabled={result.rows.length === 0} />
           </div>
