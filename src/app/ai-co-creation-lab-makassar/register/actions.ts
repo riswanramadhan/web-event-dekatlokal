@@ -7,6 +7,10 @@ import { randomInt } from "node:crypto";
 import { headers } from "next/headers";
 import { z, type ZodError } from "zod";
 
+import {
+  aiCoCreationLabEvent as eventConfig,
+  type EventStatus,
+} from "@/data/events";
 import { getFormDataString } from "@/lib/registration/normalizers";
 import {
   checkRateLimit,
@@ -64,6 +68,22 @@ type EventLookupResult =
   | { ok: true; eventId: string }
   | { ok: false; state: RegistrationActionState };
 
+function staticRegistrationFailure(
+  status: EventStatus,
+): RegistrationActionState | null {
+  if (status === "registration_open") {
+    return null;
+  }
+
+  return {
+    status: "unavailable",
+    message:
+      status === "completed" || status === "archived"
+        ? "Pendaftaran sudah ditutup karena kegiatan telah selesai."
+        : "Pendaftaran tidak tersedia pada fase kegiatan saat ini.",
+  };
+}
+
 function toFieldErrors(error: ZodError): Record<string, string[]> {
   const flattened = error.flatten().fieldErrors;
 
@@ -114,6 +134,12 @@ function getEventSlug(): string | null {
 }
 
 async function lookupOpenEvent(): Promise<EventLookupResult> {
+  const staticFailure = staticRegistrationFailure(eventConfig.status);
+
+  if (staticFailure) {
+    return { ok: false, state: staticFailure };
+  }
+
   const supabase = getSupabaseAdminClient();
 
   if (!supabase) {
@@ -513,6 +539,12 @@ export async function submitStudentRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
+  const staticFailure = staticRegistrationFailure(eventConfig.status);
+
+  if (staticFailure) {
+    return staticFailure;
+  }
+
   // Validation runs before the rate limiter so that ordinary form mistakes do
   // not consume quota. A long form is easy to get wrong several times, and
   // shared NAT (campus or office) means one bucket can cover many people.
@@ -552,6 +584,12 @@ export async function submitUmkmRegistration(
   _previousState: RegistrationActionState,
   formData: FormData,
 ): Promise<RegistrationActionState> {
+  const staticFailure = staticRegistrationFailure(eventConfig.status);
+
+  if (staticFailure) {
+    return staticFailure;
+  }
+
   // Validation first, then quota. See the note in submitStudentRegistration.
   const parsed = umkmRegistrationSchema.safeParse(
     buildUmkmRegistrationCandidate(formData),

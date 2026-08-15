@@ -2,13 +2,29 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import {
+  FinalActionPlanReportPage,
+  FinalPresentationReportPage,
+  GlobalCommunicationReportPage,
+  ImpactMeasurementReportPage,
+  LeadershipConversationReportPage,
+  LeadershipReflectionReportPage,
+  MeetTheLeaderReportPage,
+  MiniProjectImplementationReportPage,
+  NetworkMobilizationReportPage,
   PartnershipCollaborationReportPage,
+  PitchingMiniProjectReportPage,
   ProblemValidationReportPage,
+  ProcessDocumentationReportPage,
+  ProjectCompletionMonitoringReportPage,
   ProgressReportPage,
+  WeekFourHubReportPage,
 } from "@/components/reports";
+import { weekFourHeaders, type WeekFourProgressSlug } from "@/data/gep-week-4";
 import {
-  getGepWeekOneReport,
-} from "@/data/gep-week-1-reports";
+  weekTwoThreeHeaders,
+  type WeekTwoThreeProgressSlug,
+} from "@/data/gep-week-2-3";
+import { getGepWeekOneReport } from "@/data/gep-week-1-reports";
 import { problemValidationHeader } from "@/data/problem-validation";
 import { partnershipHeader } from "@/data/partnership-collaboration";
 import { PROGRESS_REPORT_SLUGS } from "@/data/progress-reports";
@@ -89,6 +105,53 @@ export async function generateMetadata({
           },
         ],
       },
+      robots: {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      },
+    };
+  }
+
+  const currentHeader = weekTwoThreeHeaders[slug as WeekTwoThreeProgressSlug];
+
+  const currentWeekFourHeader = weekFourHeaders[slug as WeekFourProgressSlug];
+
+  if (currentHeader || currentWeekFourHeader) {
+    const metadataHeader = currentHeader ?? currentWeekFourHeader;
+    return {
+      title: {
+        absolute: metadataHeader.metadataTitle,
+      },
+      description: metadataHeader.subtitle,
+      alternates: {
+        canonical: metadataHeader.progressUrl,
+      },
+      openGraph: {
+        title: metadataHeader.metadataTitle,
+        description: metadataHeader.subtitle,
+        url: metadataHeader.progressUrl,
+        type: "article",
+        images: [
+          {
+            url: "/aicl-cocreation-indonesia.webp",
+            width: 1600,
+            height: 900,
+            alt: "Mahasiswa dan pelaku UMKM dalam proses co-creation",
+          },
+        ],
+      },
+      robots: {
+        index: false,
+        follow: false,
+        googleBot: {
+          index: false,
+          follow: false,
+        },
+      },
     };
   }
 
@@ -130,11 +193,43 @@ export default async function ProgressReportRoute({
     return <PartnershipCollaborationReportPage />;
   }
 
-  const report = getGepWeekOneReport(slug);
-
-  if (!report) {
-    notFound();
+  switch (slug as WeekTwoThreeProgressSlug) {
+    case "pitching-mini-project":
+      return <PitchingMiniProjectReportPage />;
+    case "final-action-plan":
+      return <FinalActionPlanReportPage />;
+    case "global-communication":
+      return <GlobalCommunicationReportPage />;
+    case "meet-the-leader":
+      return <MeetTheLeaderReportPage />;
+    case "leadership-conversation":
+      return <LeadershipConversationReportPage />;
+    case "mini-project-implementation":
+      return <MiniProjectImplementationReportPage />;
+    case "network-mobilization":
+      return <NetworkMobilizationReportPage />;
+    case "process-documentation":
+      return <ProcessDocumentationReportPage />;
   }
 
-  return <ProgressReportPage report={report} />;
+  switch (slug as WeekFourProgressSlug) {
+    case "measure-reflect-sustain":
+      return <WeekFourHubReportPage />;
+    case "project-completion-monitoring":
+      return <ProjectCompletionMonitoringReportPage />;
+    case "impact-measurement":
+      return <ImpactMeasurementReportPage />;
+    case "leadership-reflection":
+      return <LeadershipReflectionReportPage />;
+    case "final-presentation":
+      return <FinalPresentationReportPage />;
+  }
+
+  const report = getGepWeekOneReport(slug);
+
+  if (report !== undefined) {
+    return <ProgressReportPage report={report!} />;
+  }
+
+  return notFound();
 }

@@ -4,12 +4,12 @@ import { SiWhatsapp } from "@icons-pack/react-simple-icons";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   Calendar,
+  CheckCircle,
   HomeSimple,
   Map,
   MenuScale,
   Page,
   PrivacyPolicy,
-  QrCode,
   Xmark,
 } from "iconoir-react";
 import Link from "next/link";
@@ -18,7 +18,6 @@ import { useEffect, useRef, useState } from "react";
 
 const eventPath = "/ai-co-creation-lab-makassar";
 const journeyHref = `${eventPath}#alur-kegiatan`;
-const studentRegistrationPath = `${eventPath}/register/student`;
 
 const sheetLinks = [
   { href: "/privacy", label: "Privacy", icon: PrivacyPolicy },
@@ -91,12 +90,11 @@ export function MobileBottomNavigation() {
 
   const journeyActive =
     pathname === eventPath && hash === "#alur-kegiatan" && !isOpen;
-  const studentRegistrationActive =
-    pathname === studentRegistrationPath && !isOpen;
+  const eventOverviewActive =
+    pathname === eventPath && !journeyActive && !isOpen;
   const eventActive =
-    (pathname === eventPath || pathname.startsWith(`${eventPath}/`)) &&
+    pathname.startsWith(`${eventPath}/`) &&
     !journeyActive &&
-    !studentRegistrationActive &&
     !isOpen;
 
   const closeSheet = (restoreFocus = false) => {
@@ -289,21 +287,21 @@ export function MobileBottomNavigation() {
 
           <div className="relative flex items-center justify-center">
             <Link
-              href={studentRegistrationPath}
+              href={eventPath}
               onClick={() => closeSheet()}
-              aria-label="Daftar sebagai mahasiswa"
-              aria-current={studentRegistrationActive ? "page" : undefined}
+              aria-label="Lihat event yang telah selesai"
+              aria-current={eventOverviewActive ? "page" : undefined}
               className={`mobile-register-cta absolute bottom-4 flex h-[4.2rem] w-[4.2rem] flex-col items-center justify-center gap-0.5 rounded-[1.45rem] border-[3px] border-white text-white shadow-[0_16px_34px_rgba(2,85,245,0.34)] transition-transform hover:-translate-y-1 focus-visible:-translate-y-1 ${
-                studentRegistrationActive ? "bg-brand-700" : "bg-brand"
+                eventOverviewActive ? "bg-brand-700" : "bg-brand"
               }`}
             >
-              <QrCode
+              <CheckCircle
                 className="relative z-[1] h-[1.35rem] w-[1.35rem]"
                 strokeWidth={1.9}
                 aria-hidden="true"
               />
               <span className="relative z-[1] text-[0.6rem] font-semibold leading-none">
-                Daftar
+                Selesai
               </span>
             </Link>
           </div>

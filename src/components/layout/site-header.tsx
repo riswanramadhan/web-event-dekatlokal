@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { BrandLockup } from "@/components/brand/brand-lockup";
 import { ActiveLink } from "@/components/navigation/active-link";
+import { aiCoCreationLabEvent as event } from "@/data/events";
 
 const navigation = [
   { href: "/", label: "Beranda", icon: "home" },
@@ -49,10 +50,10 @@ export function SiteHeader() {
 
           <div className="justify-self-end">
             <Link
-              href="/ai-co-creation-lab-makassar/register"
+              href={event.routes.detail}
               className="button-loop inline-flex min-h-11 items-center gap-2 rounded-full border border-brand bg-brand px-5 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(2,85,245,0.18)] transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-brand-600"
             >
-              Ikut Program
+              Lihat Event
               <ArrowUpRight
                 className="h-4 w-4"
                 strokeWidth={1.9}

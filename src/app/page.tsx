@@ -86,20 +86,24 @@ export default async function PlatformHomePage() {
               AI bukan cuma buat nanya. Saatnya dipakai bantu usaha lokal.
             </h1>
             <p className="mt-6 max-w-2xl text-balance text-base leading-8 text-slate-600 sm:text-lg">
-              {participantComposition} bakal satu meja, bongkar masalah usaha
-              yang real, lalu ngeracik solusi digital yang simpel dan bisa
-              langsung dicoba.
+              {registration.isOpen
+                ? `${participantComposition} bakal satu meja, bongkar masalah usaha yang real, lalu ngeracik solusi digital yang simpel dan bisa langsung dicoba.`
+                : `${participantComposition} telah berkolaborasi untuk memahami masalah usaha nyata dan merancang solusi digital yang relevan.`}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <PrimaryButton href={featuredEvent.route}>
                 Lihat Event
               </PrimaryButton>
-              <SecondaryButton href={featuredEvent.routes.register}>
-                Ikut Program
-              </SecondaryButton>
+              {registration.isOpen ? (
+                <SecondaryButton href={featuredEvent.routes.register}>
+                  Ikut Program
+                </SecondaryButton>
+              ) : null}
             </div>
             <p className="mt-6 text-sm font-medium text-slate-700">
-              Datang bawa rasa penasaran. Pulang bawa karya yang kepakai.
+              {registration.isOpen
+                ? "Datang bawa rasa penasaran. Pulang bawa karya yang kepakai."
+                : "Kegiatan utama telah dilaksanakan pada 10 Agustus 2026."}
             </p>
           </div>
 

@@ -1,5 +1,10 @@
+import {
+  challenges,
+  type Challenge,
+} from "@/data/challenges";
+
 export type TeamStatus = "planned" | "forming" | "active" | "completed";
-export type TeamRoleStatus = "open" | "assigned";
+export type TeamRoleStatus = "open" | "assigned" | "not_published";
 export type TeamPartnerStatus =
   | "unconfirmed"
   | "in_validation"
@@ -7,6 +12,7 @@ export type TeamPartnerStatus =
 export type TeamSolutionStatus =
   | "not_started"
   | "in_progress"
+  | "functional"
   | "tested"
   | "handed_over";
 
@@ -41,38 +47,39 @@ export interface CollaborationTeam {
   readonly solutionStatusLabel: string;
 }
 
-const openTeamRoles: readonly TeamRoleSlot[] = [
+const unpublishedTeamRoles: readonly TeamRoleSlot[] = [
   {
     role: "Problem Facilitator",
     responsibility:
       "Memfasilitasi pemahaman konteks usaha dan perumusan masalah.",
-    status: "open",
+    status: "not_published",
     memberName: null,
   },
   {
     role: "AI Workflow Builder",
     responsibility:
       "Menyusun dan mencoba workflow atau prototype berbantuan AI.",
-    status: "open",
+    status: "not_published",
     memberName: null,
   },
   {
     role: "Quality & Ethics Reviewer",
     responsibility:
       "Memeriksa relevansi, akurasi, privasi, dan batas penggunaan hasil.",
-    status: "open",
+    status: "not_published",
     memberName: null,
   },
   {
     role: "Documentation & Trainer",
     responsibility:
       "Mendokumentasikan proses dan menyiapkan panduan penggunaan.",
-    status: "open",
+    status: "not_published",
     memberName: null,
   },
 ];
 
-function createPlannedTeam(slot: number): CollaborationTeam {
+function createActiveTeam(challenge: Challenge): CollaborationTeam {
+  const { slot } = challenge;
   const slotLabel = String(slot).padStart(2, "0");
 
   return {
@@ -80,26 +87,22 @@ function createPlannedTeam(slot: number): CollaborationTeam {
     slot,
     temporaryName: `Tim ${slotLabel}`,
     name: null,
-    displayName: `Tim ${slotLabel}, nama sementara`,
-    status: "planned",
-    statusLabel: "Dalam Perencanaan",
-    roles: openTeamRoles.map((role) => ({ ...role })),
-    challengeId: null,
-    challengePartnerName: null,
-    challengePartnerStatus: "unconfirmed",
-    challengePartnerStatusLabel: "Challenge Partner Belum Dikonfirmasi",
-    solutionName: null,
-    solutionStatus: "not_started",
-    solutionStatusLabel: "Solusi Belum Dimulai",
+    displayName: `Tim ${slotLabel} — ${challenge.partnerDisplayName}`,
+    status: "completed",
+    statusLabel: "Week 3 Completed · Monitoring Week 4",
+    roles: unpublishedTeamRoles.map((role) => ({ ...role })),
+    challengeId: challenge.id,
+    challengePartnerName: challenge.partnerName,
+    challengePartnerStatus: "confirmed",
+    challengePartnerStatusLabel: "Challenge Partner Tervalidasi",
+    solutionName: challenge.solution,
+    solutionStatus: "functional",
+    solutionStatusLabel: "Completed · Functional",
   };
 }
 
-export const teams = [
-  createPlannedTeam(1),
-  createPlannedTeam(2),
-  createPlannedTeam(3),
-  createPlannedTeam(4),
-] as const satisfies readonly CollaborationTeam[];
+export const teams: readonly CollaborationTeam[] =
+  challenges.map(createActiveTeam);
 
 export const teamSlots = teams;
 
