@@ -136,8 +136,8 @@ where proname = 'start_assessment_attempt'
 
 ## Langkah 2b — Hak akses `service_role`
 
-**Berkas:** tidak ada; salin blok di bawah. Dijalankan setelah langkah 2, karena baru di situlah
-keenam tabel lengkap.
+**Berkas:** tidak ada; salin kedua blok di bawah. Dijalankan setelah langkah 2, karena baru di
+situlah keenam tabel lengkap. **Kedua blok wajib**, bukan salah satu.
 
 ```sql
 grant all privileges on table
@@ -150,36 +150,6 @@ grant all privileges on table
 to service_role;
 ```
 
-Seluruh modul assessment mengakses tabel lewat `getSupabaseAdminClient()`, yaitu klien
-`service_role` — termasuk halaman peserta. `service_role` punya `BYPASSRLS`, tapi itu bukan
-superuser: ia tetap butuh hak tabel biasa.
-
-`ALTER DEFAULT PRIVILEGES` bawaan Supabase **tidak selalu** memberikannya. Di database demo hak
-itu terpasang sendiri saat tabel dibuat; di produksi tidak, dan seluruh halaman
-`/admin/assessment` serta `/tes` gagal dengan `SQLSTATE 42501 permission denied for table
-assessment_settings`. Jangan mengandalkan default — pasang eksplisit.
-
-> `42501` bukan gejala RLS. RLS yang menolak mengembalikan **nol baris**, bukan error. Kalau yang
-> muncul `42501`, yang kurang selalu GRANT, bukan policy.
-
-**Jangan** menambahkan `anon` atau `authenticated`. Keduanya tidak dipakai jalur mana pun, dan
-ketiadaan grant menjadi kunci kedua yang berdiri sendiri di samping RLS.
-
-Tidak ada grant sequence yang perlu dipasang: seluruh primary key memakai `gen_random_uuid()`.
-
-**Verifikasi — 6 baris, semuanya `true`/`true`:**
-
-```sql
-select tablename,
-       has_table_privilege('service_role', 'public.'||tablename, 'select') as bisa_baca,
-       has_table_privilege('service_role', 'public.'||tablename, 'insert') as bisa_tulis
-from pg_tables
-where schemaname = 'public' and tablename like 'assessment_%'
-order by tablename;
-```
-
-**Kalau `anon` atau `authenticated` terlanjur diberi hak, cabut:**
-
 ```sql
 revoke all on table
   public.assessment_settings,
@@ -190,6 +160,51 @@ revoke all on table
   public.assessment_reflections
 from anon, authenticated;
 ```
+
+### Kenapa grant-nya perlu
+
+Seluruh modul assessment mengakses tabel lewat `getSupabaseAdminClient()`, yaitu klien
+`service_role` — termasuk halaman peserta. `service_role` punya `BYPASSRLS`, tapi itu bukan
+superuser: ia tetap butuh hak tabel biasa.
+
+Default privileges di proyek produksi memberi tabel baru hanya `REFERENCES, TRIGGER, TRUNCATE` —
+**tepat keempat hak DML-nya hilang**. `registrations` punya tujuh hak lengkap untuk `service_role`
+karena dibuat jauh sebelumnya dengan konfigurasi berbeda. Akibatnya seluruh halaman
+`/admin/assessment` dan `/tes` gagal dengan `SQLSTATE 42501 permission denied for table
+assessment_settings`, sementara kelima fungsi RPC tetap bekerja karena `security definer` membuat
+mereka berjalan sebagai `postgres`.
+
+> `42501` bukan gejala RLS. RLS yang menolak mengembalikan **nol baris**, bukan error. Kalau yang
+> muncul `42501`, yang kurang selalu GRANT, bukan policy.
+
+### Kenapa revoke-nya perlu
+
+Default yang sama juga memberi `anon` dan `authenticated` hak `TRUNCATE` dan `TRIGGER` atas tabel
+baru. `registrations` tidak memberi kedua role itu apa pun, dan itulah postur yang benar.
+
+**`TRUNCATE` tidak tunduk pada RLS.** Policy tidak menahannya, dan `anon` adalah role yang
+dijangkau dari internet publik. PostgREST memang tidak menyediakan jalur TRUNCATE dalam pemakaian
+normal, jadi ini bukan lubang yang bisa langsung ditembak — tapi menyisakannya berarti seluruh
+perlindungan tabel ini bergantung pada satu lapis saja.
+
+Tidak ada grant sequence yang perlu dipasang: seluruh primary key memakai `gen_random_uuid()`.
+
+**Verifikasi — jalankan ini; yang benar adalah tepat 2 baris per tabel (`postgres` dan
+`service_role`), keduanya dengan tujuh hak. `anon` dan `authenticated` tidak boleh muncul sama
+sekali:**
+
+```sql
+select table_name, grantee,
+       string_agg(privilege_type, ', ' order by privilege_type) as hak
+from information_schema.role_table_grants
+where table_schema = 'public'
+  and (table_name like 'assessment_%' or table_name = 'registrations')
+group by table_name, grantee
+order by table_name, grantee;
+```
+
+Baris `registrations` ikut ditarik sebagai pembanding: keenam tabel baru harus terlihat persis
+sama dengannya.
 
 ---
 
@@ -334,7 +349,7 @@ Bukan ancaman terhadap data yang ada, tapi aturan baru yang berlaku setelah migr
 |---|---|---|---|
 | 1 | `supabase/migrations/20260809_assessment_pretest_posttest.sql` | skema | — |
 | 2 | `supabase/migrations/20260815000000_assessment_question_types.sql` | skema | 1 |
-| 2b | blok `grant ... to service_role` di dokumen ini | hak akses | 2 |
+| 2b | blok `grant` + `revoke` di dokumen ini | hak akses | 2 |
 | 3 | blok `insert into assessment_settings` di dokumen ini | isi | 1 |
 | 4 | `docs/pretest-posttest/seed-instrumen.sql` | isi | 2 |
 | 5 | `supabase/migrations/20260815120000_assessment_dimension.sql` | skema + backfill | 4 |
