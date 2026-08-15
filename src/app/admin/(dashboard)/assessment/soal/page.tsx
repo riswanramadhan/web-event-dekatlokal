@@ -42,7 +42,7 @@ export default async function AssessmentQuestionsPage() {
                 Soal terkunci karena sudah ada peserta yang mengerjakan tes.
                 Mengubah soal sekarang akan membuat nilai yang sudah tersimpan
                 tidak lagi sebanding. Untuk membukanya kembali, reset data
-                pengerjaan dari halaman Ringkasan — dan itu menghapus seluruh
+                pengerjaan dari halaman Pengaturan — dan itu menghapus seluruh
                 nilai peserta.
               </p>
             </div>

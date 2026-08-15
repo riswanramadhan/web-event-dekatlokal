@@ -1,9 +1,15 @@
 import Link from "next/link";
 
+/**
+ * `/admin/assessment` semula berlabel "Ringkasan", tapi isinya saklar buka-tutup,
+ * durasi, dan perawatan data — itu pengaturan. Label "Ringkasan" dipindahkan ke
+ * halaman laporan lima layer, satu-satunya halaman yang benar-benar meringkas.
+ */
 const TABS = [
-  { href: "/admin/assessment", label: "Ringkasan" },
+  { href: "/admin/assessment", label: "Pengaturan" },
   { href: "/admin/assessment/soal", label: "Kelola soal" },
   { href: "/admin/assessment/nilai", label: "Nilai" },
+  { href: "/admin/assessment/ringkasan", label: "Ringkasan" },
   { href: "/admin/assessment/refleksi", label: "Refleksi" },
 ] as const;
 

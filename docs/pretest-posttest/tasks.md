@@ -794,15 +794,50 @@ aturan yang sama seperti isi.
 
 Halaman baru `/admin/assessment/ringkasan`:
 
-- [ ] Pemahaman: rata-rata pre → post dari 100, gain, persentase peserta yang meningkat
-- [ ] Kapabilitas: empat dimensi, pre → post dari 5 dua desimal, perubahan
-- [ ] Pengalaman setelah program: rata-rata 1–5 dan persentase Setuju + Sangat Setuju
-- [ ] Minat steward: jumlah dan persentase per kategori
-- [ ] Dampak kualitatif: tautan ke halaman refleksi, tanpa analisis tema otomatis
-- [ ] Catatan tetap: ketiga layer tidak dijumlahkan, dipakai berdampingan
+- [x] Pemahaman: rata-rata pre → post dari 100, rata-rata kenaikan, persentase peserta yang
+      meningkat
+- [x] Kapabilitas: baris keseluruhan + empat dimensi, pre → post dari 5 dua desimal, perubahan
+- [x] Pengalaman setelah program: rata-rata 1–5 dan persentase Setuju + Sangat Setuju per item
+- [x] Minat steward: jumlah dan persentase per kategori, **termasuk kategori yang belum pernah
+      dipilih siapa pun** — kategori kosong adalah temuan, bukan baris yang boleh hilang
+- [x] Dampak kualitatif: tautan ke halaman refleksi, tanpa analisis tema otomatis
+- [x] Catatan tetap di atas seluruh layer: ketiganya dipakai berdampingan dan tidak dijumlahkan
+- [x] `summary.ts` diturunkan dari `listScores()` yang sama dengan tabel per peserta, bukan
+      query kedua yang menghitung ulang dari nol. Dua jalur perhitungan untuk angka yang sama
+      cepat atau lambat akan berbeda, dan halaman inilah yang dikutip ke laporan
+- [x] Perubahan kapabilitas dihitung dari rata-rata **selisih per peserta berpasangan**, bukan
+      selisih dua rata-rata yang penyebutnya berbeda — kalau ada peserta yang hanya mengisi
+      satu phase, selisih itu membandingkan dua kelompok berbeda
+- [x] `stewardChoice` di `scores.ts` semula mengembalikan **id opsi**, bukan labelnya. Belum
+      ada konsumennya sampai halaman ini, jadi UUID itu tidak pernah tampil — sekarang
+      mengembalikan label kategorinya
 
-**Dinilai di browser:** setiap layer cocok dengan tabel per peserta; tidak ada satu pun angka
-gabungan; label memakai istilah panduan.
+### Tab "Ringkasan" berpindah arti
+
+`/admin/assessment` semula berlabel "Ringkasan" padahal isinya saklar buka-tutup, durasi, dan
+perawatan data. Labelnya diganti jadi **"Pengaturan"**, dan "Ringkasan" dipakai halaman laporan
+ini — satu-satunya halaman yang benar-benar meringkas. Kalimat rujukan di halaman Kelola soal
+ikut diperbarui.
+
+**Dinilai di browser — sudah dijalankan.** Setiap angka dicocokkan dengan tabel Nilai dan CSV
+blok 14:
+
+- [x] Pemahaman: rata-rata pre `0%` (1 peserta), post `25%` (2 peserta — rerata 0 dan 50),
+      kenaikan `+50` dari 1 peserta berpasangan, peserta meningkat `100%` (1 dari 1)
+- [x] Kapabilitas: `2.42 → 4.00 +1.58` keseluruhan, dan keempat dimensi
+      `2.50 / 1.00 / 2.67 / 2.50 → 4.00` — identik dengan CSV
+- [x] Pengalaman setelah program: keempat item `4.00 dari 5`, Setuju + Sangat Setuju
+      `100% (1 dari 1)`
+- [x] Minat steward: "Mungkin" 1 peserta 100%, tiga kategori lain tetap tampil dengan 0
+- [x] Tidak ada satu pun angka yang menjumlahkan layer, dan tidak ada persentase pada angka
+      skala 1–5
+- [x] Tab aktif benar di kedua arah: "Pengaturan" di `/admin/assessment`, "Ringkasan" di
+      halaman baru
+- [x] Di 291 px tabel kapabilitas `display:none` dan daftar kartunya muncul, tanpa scroll
+      horizontal; di 1280 px sebaliknya
+- [x] `<main>` nol kemunculan alamat email (dua kemunculan `@example.com` di HTML adalah email
+      admin yang sedang login di kerangka panel, bukan data peserta)
+- [x] `npm run lint`, `npm run typecheck`, `npm run build`, audit ekspor `"use server"`
 
 ---
 

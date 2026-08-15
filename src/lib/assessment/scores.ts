@@ -27,6 +27,7 @@ const scoreAttemptRowSchema = z.object({
 
 const scoringQuestionSchema = z.object({
   id: z.string().uuid(),
+  prompt: z.string(),
   order_index: z.number().int().min(0),
   question_type: z.enum(QUESTION_TYPES),
   phase_scope: z.enum(PHASE_SCOPES),
@@ -41,6 +42,9 @@ const answerRowSchema = z.object({
 
 const optionValueSchema = z.object({
   id: z.string().uuid(),
+  question_id: z.string().uuid(),
+  body: z.string(),
+  order_index: z.number().int().min(0),
   value: z.number().int().min(1).max(5).nullable(),
 });
 
@@ -86,7 +90,12 @@ export type ParticipantScore = {
   capabilityChange: number | null;
   /** Rata-rata Q17–Q20, layer terpisah tanpa baseline pre. */
   postProgramMean: number | null;
-  /** Jawaban Q21 apa adanya; kategorikal, tidak pernah dirata-rata. */
+  /** Nilai per item Q17–Q20, dikunci id soal. Dipakai ringkasan per pernyataan. */
+  postProgramItems: Record<string, number>;
+  /**
+   * Jawaban Q21 sebagai **label kategorinya**, bukan id opsi. Kategorikal, jadi
+   * tidak pernah dirata-rata — hanya dihitung distribusinya.
+   */
   stewardChoice: string | null;
   progress: ScoreProgress;
 };
@@ -97,6 +106,13 @@ export type ScoreboardResult =
       rows: ParticipantScore[];
       /** Nama dimensi urut sesuai posisi item pertamanya di instrumen. */
       dimensions: string[];
+      /** Q17–Q20 urut instrumen, supaya ringkasan bisa memberi label per item. */
+      postProgramQuestions: { id: string; prompt: string }[];
+      /**
+       * Kategori Q21 urut opsi, termasuk yang belum pernah dipilih siapa pun —
+       * kategori kosong adalah temuan, bukan baris yang boleh hilang.
+       */
+      stewardCategories: string[];
     }
   | { ok: false; message: string };
 
@@ -214,12 +230,13 @@ export async function listScores(): Promise<ScoreboardResult> {
         .eq("event_id", target.eventId),
       target.supabase
         .from("assessment_questions")
-        .select("id, order_index, question_type, phase_scope, dimension")
+        .select("id, prompt, order_index, question_type, phase_scope, dimension")
         .eq("event_id", target.eventId)
         .order("order_index", { ascending: true }),
       target.supabase
         .from("assessment_options")
-        .select("id, value"),
+        .select("id, question_id, body, order_index, value")
+        .order("order_index", { ascending: true }),
     ]);
 
   const failure =
@@ -269,6 +286,25 @@ export async function listScores(): Promise<ScoreboardResult> {
   const optionValueById = new Map(
     options.data.map((row) => [row.id, row.value]),
   );
+  const optionBodyById = new Map(options.data.map((row) => [row.id, row.body]));
+
+  const postProgramQuestions = questions.data
+    .filter(
+      (question) =>
+        question.question_type === "likert" &&
+        question.phase_scope === "post_test",
+    )
+    .map((question) => ({ id: question.id, prompt: question.prompt }));
+
+  const stewardQuestionIds = new Set(
+    questions.data
+      .filter((question) => question.question_type === "unscored_choice")
+      .map((question) => question.id),
+  );
+
+  const stewardCategories = options.data
+    .filter((option) => stewardQuestionIds.has(option.question_id))
+    .map((option) => option.body);
 
   // Urutan dimensi mengikuti posisi item pertamanya, supaya tabel laporan
   // terbaca dengan alur yang sama seperti instrumennya.
@@ -334,10 +370,12 @@ export async function listScores(): Promise<ScoreboardResult> {
     return { overall: mean(all), byDimension };
   }
 
-  function postProgramMeanFor(attemptId: string | undefined): number | null {
-    if (!attemptId) return null;
+  function postProgramItemsFor(
+    attemptId: string | undefined,
+  ): Record<string, number> {
+    if (!attemptId) return {};
 
-    const values: number[] = [];
+    const items: Record<string, number> = {};
 
     for (const answer of answersByAttempt.get(attemptId) ?? []) {
       const question = questionById.get(answer.question_id);
@@ -348,11 +386,11 @@ export async function listScores(): Promise<ScoreboardResult> {
         question.phase_scope === "post_test" &&
         value != null
       ) {
-        values.push(value);
+        items[question.id] = value;
       }
     }
 
-    return mean(values);
+    return items;
   }
 
   function stewardChoiceFor(attemptId: string | undefined): string | null {
@@ -362,7 +400,7 @@ export async function listScores(): Promise<ScoreboardResult> {
       const question = questionById.get(answer.question_id);
 
       if (question?.question_type === "unscored_choice") {
-        return answer.option_id;
+        return optionBodyById.get(answer.option_id) ?? null;
       }
     }
 
@@ -376,6 +414,7 @@ export async function listScores(): Promise<ScoreboardResult> {
     const knowledgePost = toKnowledge(post);
     const capabilityPre = capabilityFor(pre?.id);
     const capabilityPost = capabilityFor(post?.id);
+    const postProgramItems = postProgramItemsFor(post?.id);
 
     return {
       registrationId: registration.id,
@@ -394,13 +433,20 @@ export async function listScores(): Promise<ScoreboardResult> {
           ? Math.round((capabilityPost.overall - capabilityPre.overall) * 100) /
             100
           : null,
-      postProgramMean: postProgramMeanFor(post?.id),
+      postProgramMean: mean(Object.values(postProgramItems)),
+      postProgramItems,
       stewardChoice: stewardChoiceFor(post?.id),
       progress: toProgress(pre, post),
     };
   });
 
-  return { ok: true, rows, dimensions };
+  return {
+    ok: true,
+    rows,
+    dimensions,
+    postProgramQuestions,
+    stewardCategories,
+  };
 }
 
 export type { AssessmentPhase };

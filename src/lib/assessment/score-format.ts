@@ -42,13 +42,28 @@ export function formatKnowledge(summary: KnowledgeSummary | null): string {
   return `${summary.percent}% (${summary.score}/${summary.total})`;
 }
 
+/**
+ * Rata-rata pemahaman satu kelompok. Desimal dipertahankan hanya bila ada —
+ * "13%" untuk rata-rata bulat, "12.5%" kalau memang pecahan, tanpa nol ekor
+ * yang menyiratkan ketelitian yang tidak dimiliki datanya.
+ */
+export function formatPercentMean(value: number | null): string {
+  if (value === null) {
+    return "";
+  }
+
+  return `${Number(value.toFixed(2))}%`;
+}
+
 /** Selisih pemahaman dalam poin persen, bertanda supaya arahnya terbaca. */
 export function formatKnowledgeGain(gain: number | null): string {
   if (gain === null) {
     return "";
   }
 
-  return gain > 0 ? `+${gain}` : String(gain);
+  const rounded = Number(gain.toFixed(2));
+
+  return rounded > 0 ? `+${rounded}` : String(rounded);
 }
 
 /** Skala 1–5 dua desimal. Tidak pernah dipersenkan. */
