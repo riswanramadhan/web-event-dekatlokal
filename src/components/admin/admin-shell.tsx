@@ -106,7 +106,8 @@ function SidebarContent({
                 </span>
                 <span
                   className={`block text-xs ${
-                    active ? "text-brand/70" : "text-slate-400"
+                    // slate-400 di atas putih hanya 2,6:1.
+                    active ? "text-brand/70" : "text-slate-500"
                   }`}
                 >
                   {item.description}
@@ -121,7 +122,7 @@ function SidebarContent({
         {registrationToggle}
 
         <div className="border-t border-slate-200 pt-4">
-          <p className="text-xs text-slate-400">Masuk sebagai</p>
+          <p className="text-xs text-slate-500">Masuk sebagai</p>
           <p className="mt-0.5 truncate text-sm font-medium text-ink">
             {adminEmail}
           </p>
@@ -236,7 +237,12 @@ export function AdminShell({
           </p>
         </header>
 
-        <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+        {/* Tautan lewati-ke-konten di root layout menunjuk ke id ini. Tanpa id,
+            tautan itu ada tapi tidak memindahkan fokus ke mana pun. */}
+        <main
+          id="main-content"
+          className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-10"
+        >
           <div className="mx-auto w-full max-w-6xl">{children}</div>
         </main>
       </div>

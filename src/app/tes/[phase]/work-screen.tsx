@@ -306,7 +306,7 @@ export function WorkScreen({
             onClick={() => setMapOpen((open) => !open)}
             aria-expanded={mapOpen}
             aria-controls={mapId}
-            className="mt-2 inline-flex min-h-9 items-center gap-1.5 rounded-lg px-1 text-xs font-medium text-slate-500 transition hover:text-brand lg:hidden"
+            className="mt-1 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-1 text-xs font-medium text-slate-500 transition hover:text-brand lg:hidden"
           >
             Soal {safeIndex + 1} dari {total}
             <NavArrowRight
@@ -362,7 +362,8 @@ export function WorkScreen({
         </div>
       ) : null}
 
-      <main className="flex-1 px-4 py-6">
+      {/* Sasaran tautan "Lewati ke konten" di root layout. */}
+      <main id="main-content" className="flex-1 px-4 py-6">
         <div className="mx-auto flex w-full max-w-[720px] gap-8 lg:max-w-[960px]">
           <div className="min-w-0 flex-1">
             <h1 className="text-lg font-semibold leading-7 text-ink sm:text-xl">
@@ -412,7 +413,7 @@ export function WorkScreen({
           <p
             aria-live="polite"
             className={`mb-2 text-center text-xs ${
-              saveStatus === "error" ? "text-amber-700" : "text-slate-400"
+              saveStatus === "error" ? "text-amber-700" : "text-slate-500"
             }`}
           >
             {SAVE_STATUS_LABELS[saveStatus]}
@@ -450,7 +451,7 @@ export function WorkScreen({
               </button>
             )}
           </div>
-          <p className="mt-2 text-center text-xs text-slate-400">
+          <p className="mt-2 text-center text-xs text-slate-500">
             {answeredCount} dari {total} soal terjawab
           </p>
         </div>

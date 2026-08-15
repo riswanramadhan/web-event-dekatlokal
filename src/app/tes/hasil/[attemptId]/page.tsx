@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 
 import { getResult } from "@/lib/assessment/attempts";
 
+import { TesShell as Shell } from "../../tes-shell";
+
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -15,14 +17,6 @@ export const metadata: Metadata = {
 type PageProps = {
   params: Promise<{ attemptId: string }>;
 };
-
-function Shell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col justify-center px-4 py-10">
-      {children}
-    </div>
-  );
-}
 
 /** A dash rather than NaN when there are no points to divide by. */
 function percentLabel(value: number | null): string {

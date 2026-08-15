@@ -35,7 +35,7 @@ function QuestionGrid({
               aria-label={`Soal ${index + 1}${
                 entry.answered ? ", sudah dijawab" : ", belum dijawab"
               }`}
-              className={`grid h-11 w-full place-items-center rounded-xl border text-sm font-semibold transition focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 ${
+              className={`grid h-11 w-full place-items-center content-center rounded-xl border text-sm font-semibold leading-none transition focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-100 ${
                 isActive
                   ? "border-brand bg-brand text-white"
                   : entry.answered
@@ -44,6 +44,19 @@ function QuestionGrid({
               }`}
             >
               {index + 1}
+              {/* Terjawab ditandai dua kali: hijau versus abu-abu justru pasangan
+                  warna yang paling sering tertukar pada buta warna merah-hijau,
+                  jadi titik ini yang membedakannya tanpa bergantung pada warna. */}
+              <span
+                aria-hidden="true"
+                className={`mt-1 h-1 w-1 rounded-full ${
+                  entry.answered
+                    ? isActive
+                      ? "bg-white"
+                      : "bg-emerald-600"
+                    : "bg-transparent"
+                }`}
+              />
             </button>
           </li>
         );

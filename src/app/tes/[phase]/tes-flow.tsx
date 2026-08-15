@@ -21,6 +21,8 @@ import type {
 } from "@/lib/assessment/phase";
 import type { AssessmentPublicState } from "@/lib/assessment/state";
 
+import { TesShell } from "../tes-shell";
+
 import {
   refreshGateAction,
   startAttemptAction,
@@ -60,13 +62,7 @@ function formatDuration(seconds: number): string {
   return `${minutes} menit`;
 }
 
-function Shell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col justify-center px-4 py-10">
-      {children}
-    </div>
-  );
-}
+const Shell = TesShell;
 
 function LockedGate({ phaseLabel }: { phaseLabel: string }) {
   return (

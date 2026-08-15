@@ -731,7 +731,9 @@ export function SelectInput({
           className={`min-w-0 flex-1 truncate ${
             selectedOption && selectedOption.value !== ""
               ? "text-ink"
-              : "text-slate-400"
+              // slate-400 di atas putih hanya 2,6:1 — placeholder ini teks yang
+              // dibaca, bukan hiasan, jadi dinaikkan ke slate-500 (4,8:1).
+              : "text-slate-500"
           }`}
         >
           {selectedOption?.label || "Pilih opsi"}

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 
 import { listParticipants } from "@/lib/assessment/participants";
 
+import { TesShell } from "../tes-shell";
+
 import { RefleksiForm } from "./refleksi-form";
 
 /** Selalu segar: daftar peserta ikut filter status yang bisa berubah. */
@@ -19,10 +21,10 @@ export default async function RefleksiPage() {
   const participants = await listParticipants();
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[640px] flex-col justify-center px-4 py-10">
+    <TesShell>
       <RefleksiForm
         participants={participants.ok ? participants.participants : null}
       />
-    </div>
+    </TesShell>
   );
 }

@@ -22,15 +22,18 @@ export const metadata: Metadata = {
 };
 
 function changeTone(value: number | null): string {
-  if (value === null) return "text-slate-400";
+  if (value === null) return "text-slate-500";
   if (value > 0) return "text-emerald-700";
   if (value < 0) return "text-amber-700";
   return "text-slate-600";
 }
 
-/** Sel kosong berarti belum mengerjakan — berbeda arti dari nol. */
+/**
+ * Sel kosong berarti belum mengerjakan — berbeda arti dari nol, jadi strip ini
+ * teks yang harus terbaca dan bukan hiasan. slate-300 sebelumnya hanya 1,5:1.
+ */
 function Cell({ value }: { value: string }) {
-  return value === "" ? <span className="text-slate-300">—</span> : <>{value}</>;
+  return value === "" ? <span className="text-slate-500">—</span> : <>{value}</>;
 }
 
 function ScoreTable({ rows }: { rows: ParticipantScore[] }) {
@@ -41,14 +44,14 @@ function ScoreTable({ rows }: { rows: ParticipantScore[] }) {
           <th className="px-5 py-3 font-medium">Nama</th>
           <th className="px-5 py-3 font-medium">Jenis</th>
           <th className="px-5 py-3 font-medium" colSpan={3}>
-            Pemahaman <span className="normal-case text-slate-400">(0–100)</span>
+            Pemahaman <span className="normal-case text-slate-500">(0–100)</span>
           </th>
           <th className="px-5 py-3 font-medium" colSpan={3}>
-            Kapabilitas <span className="normal-case text-slate-400">(1–5)</span>
+            Kapabilitas <span className="normal-case text-slate-500">(1–5)</span>
           </th>
           <th className="px-5 py-3 font-medium">Status</th>
         </tr>
-        <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wide text-slate-400">
+        <tr className="border-b border-slate-100 text-[11px] uppercase tracking-wide text-slate-500">
           <th className="px-5 pb-2" />
           <th className="px-5 pb-2" />
           <th className="px-5 pb-2 font-medium">Pre</th>

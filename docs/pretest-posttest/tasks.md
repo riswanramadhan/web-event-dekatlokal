@@ -847,26 +847,74 @@ Jalankan daftar periksa `ui-flow.md` §6 di semua layar dan **perbaiki temuannya
 sekadar mencentang. Dijalankan terakhir supaya layar yang berubah bentuk karena instrumen
 baru — soal skala dan form refleksi — ikut tersapu.
 
-- [ ] Seluruh layar peserta dipakai di viewport 360 px tanpa scroll horizontal
-- [ ] Header dan navigasi tetap terlihat saat keyboard virtual muncul
-- [ ] Setiap kartu opsi bisa diketuk di seluruh areanya, tinggi minimal 44 px
-- [ ] Kondisi terpilih dapat dikenali tanpa membedakan warna
-- [ ] Fokus keyboard terlihat di semua kontrol, urutan tab masuk akal
-- [ ] Soal bisa dinavigasi dengan tombol panah keyboard di desktop
-- [ ] `useReducedMotion()` menghilangkan kedipan timer dan transisi antar soal
-- [ ] Polling di layar gerbang berhenti saat tab tidak terlihat
-- [ ] Timer tidak bertambah setelah refresh
-- [ ] Tiga kondisi gerbang tampil berbeda, dan yang "sudah ditutup" tetap menampilkan dropdown
-- [ ] Tidak ada lompatan tata letak antara skeleton dan konten
-- [ ] Tabel nilai admin berubah menjadi kartu di bawah 768 px
-- [ ] Tidak ada nilai apa pun yang muncul di layar maupun payload setelah submit pre-test
-- [ ] Kontras teks memenuhi WCAG AA
-- [ ] Tidak ada dependensi baru di `package.json`
-- [ ] Form registrasi student dan UMKM masih berperilaku persis sama
+- [x] Seluruh layar peserta dipakai di viewport 360 px tanpa scroll horizontal
+- [x] Header dan navigasi tetap terlihat saat keyboard virtual muncul — satu-satunya layar
+      peserta dengan isian teks adalah refleksi, dan layar itu tidak punya elemen sticky sama
+      sekali, jadi tidak ada yang bisa tertutup keyboard. Layar pengerjaan yang punya header
+      dan footer sticky tidak memuat satu pun input teks
+- [x] Setiap kartu opsi bisa diketuk di seluruh areanya (tombol selebar kartu), tinggi
+      terukur 62 px
+- [x] Kondisi terpilih dapat dikenali tanpa membedakan warna
+- [x] Fokus keyboard terlihat di semua kontrol: keempat tempat yang memakai
+      `focus:outline-none` selalu memasangkan `focus-visible:ring-4`, tidak ada yang menghapus
+      indikator tanpa pengganti
+- [x] Soal bisa dinavigasi dengan tombol panah keyboard di desktop
+- [x] `useReducedMotion()` menghilangkan kedipan timer dan animasi peta soal — diperiksa di
+      kode; panel browser ini tidak bisa mengemulasi `prefers-reduced-motion`
+- [x] Polling di layar gerbang berhenti saat tab tidak terlihat — diperiksa di kode
+      (`document.hidden` menjaga `refresh()`), tidak bisa diuji ulang di browser karena kedua
+      phase sudah pernah dibuka sehingga gerbang terkunci tidak lagi bisa dicapai
+- [x] Timer tidak bertambah setelah refresh — terukur: 229 detik sebelum muat ulang, 214 detik
+      sesudahnya, dengan 15 detik waktu nyata berlalu
+- [x] Tiga kondisi gerbang tampil berbeda, dan yang "sudah ditutup" tetap menampilkan dropdown
+      (terverifikasi di blok 3 dan 5)
+- [x] Tidak ada skeleton di fitur ini — tidak ada `loading.tsx` maupun placeholder animasi di
+      `/tes` atau `/admin/assessment`, jadi tidak ada lompatan tata letak yang bisa terjadi
+- [x] Tabel nilai dan tabel kapabilitas berubah menjadi kartu di bawah 768 px
+- [x] Submit pre-test membalas `{"ok":true}` — nol angka di layar maupun di payload
+- [x] Kontras teks memenuhi WCAG AA di seluruh layar `/tes` dan `/admin/assessment`
+- [x] Tidak ada dependensi baru di `package.json` (`git diff main` kosong)
+- [x] Form registrasi student dan UMKM masih berperilaku persis sama: 2 dan 3 combobox,
+      `<select>` native tetap ada, **nol** kotak pencarian meski menu dibuka, Escape menutup
 
-**Dinilai di browser:** DevTools 360 px pada gerbang, pilih nama, pengerjaan, selesai, hasil,
-dan ketiga halaman admin — tidak ada satu pun scroll horizontal (§8.12). Verifikasi ulang
-keempat belas kriteria selesai di `spec.md` §8.
+### Temuan dan perbaikannya
+
+Audit kontras dijalankan lewat skrip yang menghitung rasio dari warna terkomputasi. Versi
+pertamanya hanya mengurai `rgb()` dan **melewatkan diam-diam** setiap elemen yang Chrome
+laporkan sebagai `lab()` — yaitu hampir seluruh warna Tailwind v4 di repo ini. Skrip itu
+melaporkan "nol pelanggaran" sementara sebenarnya tidak memeriksa apa pun. Diperbaiki dengan
+mengubah warna lewat canvas, lalu seluruh halaman diaudit ulang.
+
+1. **`text-slate-400` di atas putih hanya 2,5–2,6:1.** Ditemukan di keterangan `StatCard`,
+   dua baris di footer layar pengerjaan, huruf opsi read-only di editor soal, deskripsi menu
+   sidebar admin, dan placeholder `SelectInput`. Semuanya dinaikkan ke `slate-500` (4,8:1).
+2. **`text-slate-300` untuk strip "belum ada data" hanya 1,5:1** di tabel Nilai dan Ringkasan.
+   Strip itu membedakan "belum mengerjakan" dari "nol" — informasi, bukan hiasan — jadi ikut
+   dinaikkan ke `slate-500`.
+3. **Peta soal membedakan terjawab dan belum hanya lewat warna** (hijau versus abu-abu, persis
+   pasangan yang paling sering tertukar pada buta warna merah-hijau). Ditambahkan titik kecil
+   di bawah angkanya untuk nomor yang sudah dijawab.
+4. **Tombol peta soal hanya 36 px** di layar sempit. Dinaikkan ke 44 px.
+5. **Tautan "Lewati ke konten" mati di seluruh `/tes` dan seluruh `/admin`.** Root layout
+   menunjuk ke `#main-content`, tapi `ChromeGate` hanya memasang id itu di cabang publik —
+   `/tes` tidak punya `<main>` sama sekali dan `<main>` panel admin tidak punya id. Ditambahkan
+   `TesShell` (`<main id="main-content">`) yang dipakai gerbang, hasil, dan refleksi;
+   layar pengerjaan memakai `<main>`-nya sendiri; `admin-shell` diberi id yang sama.
+
+Yang **tidak** diperbaiki, dan sebabnya:
+
+- Kontrol admin 40 px (tombol Simpan durasi, tombol buka menu) dan saklar 44×24 px. WCAG 2.2
+  AA menetapkan minimum 24×24 px, jadi semuanya lolos; 44 px adalah target kenyamanan repo ini
+  untuk kontrol peserta, dan ukuran itu sudah dicatat serta diterima di blok 2.
+- Kontrol dalam keadaan nonaktif yang kontrasnya rendah — WCAG 1.4.3 mengecualikan komponen
+  nonaktif, dan menaikkannya justru membuat tombol mati terlihat bisa ditekan.
+- `text-slate-400` di halaman admin **di luar** fitur ini (daftar pendaftar, detail pendaftar,
+  login, kelola admin). Cacat yang sama, tapi memperbaikinya berarti menyapu seluruh panel di
+  tengah fitur. Dicatat di sini supaya tidak hilang, tidak dikerjakan di blok ini.
+
+Perubahan yang menyentuh berkas bersama: `StatCard`, `admin-shell`, dan placeholder
+`SelectInput`. Ketiganya hanya menggelapkan warna teks — tidak ada perubahan perilaku, dan
+form registrasi diuji ulang untuk memastikannya.
 
 ---
 

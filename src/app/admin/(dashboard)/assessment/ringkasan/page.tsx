@@ -25,13 +25,16 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Sel kosong berarti belum ada datanya — berbeda arti dari nol. */
+/**
+ * Sel kosong berarti belum ada datanya — berbeda arti dari nol, jadi strip ini
+ * teks yang harus terbaca dan bukan hiasan.
+ */
 function Value({ text }: { text: string }) {
-  return text === "" ? <span className="text-slate-300">—</span> : <>{text}</>;
+  return text === "" ? <span className="text-slate-500">—</span> : <>{text}</>;
 }
 
 function changeTone(value: number | null): string {
-  if (value === null) return "text-slate-400";
+  if (value === null) return "text-slate-500";
   if (value > 0) return "text-emerald-700";
   if (value < 0) return "text-amber-700";
   return "text-slate-600";

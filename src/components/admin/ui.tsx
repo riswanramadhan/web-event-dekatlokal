@@ -53,7 +53,9 @@ export function StatCard({
       >
         {value}
       </p>
-      {hint ? <p className="mt-1 text-xs text-slate-400">{hint}</p> : null}
+      {/* slate-400 di atas putih hanya 2,6:1. Keterangan ini kalimat yang
+          dibaca — kadang satu-satunya penjelas penyebut angkanya. */}
+      {hint ? <p className="mt-1 text-xs text-slate-500">{hint}</p> : null}
     </div>
   );
 }

@@ -202,7 +202,7 @@ function OptionRow({
           </form>
         ) : (
           <span
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 text-sm font-semibold text-slate-400"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 text-sm font-semibold text-slate-500"
             aria-hidden="true"
           >
             {letter}
