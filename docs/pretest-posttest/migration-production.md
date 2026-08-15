@@ -134,6 +134,65 @@ where proname = 'start_assessment_attempt'
 
 ---
 
+## Langkah 2b — Hak akses `service_role`
+
+**Berkas:** tidak ada; salin blok di bawah. Dijalankan setelah langkah 2, karena baru di situlah
+keenam tabel lengkap.
+
+```sql
+grant all privileges on table
+  public.assessment_settings,
+  public.assessment_questions,
+  public.assessment_options,
+  public.assessment_attempts,
+  public.assessment_answers,
+  public.assessment_reflections
+to service_role;
+```
+
+Seluruh modul assessment mengakses tabel lewat `getSupabaseAdminClient()`, yaitu klien
+`service_role` — termasuk halaman peserta. `service_role` punya `BYPASSRLS`, tapi itu bukan
+superuser: ia tetap butuh hak tabel biasa.
+
+`ALTER DEFAULT PRIVILEGES` bawaan Supabase **tidak selalu** memberikannya. Di database demo hak
+itu terpasang sendiri saat tabel dibuat; di produksi tidak, dan seluruh halaman
+`/admin/assessment` serta `/tes` gagal dengan `SQLSTATE 42501 permission denied for table
+assessment_settings`. Jangan mengandalkan default — pasang eksplisit.
+
+> `42501` bukan gejala RLS. RLS yang menolak mengembalikan **nol baris**, bukan error. Kalau yang
+> muncul `42501`, yang kurang selalu GRANT, bukan policy.
+
+**Jangan** menambahkan `anon` atau `authenticated`. Keduanya tidak dipakai jalur mana pun, dan
+ketiadaan grant menjadi kunci kedua yang berdiri sendiri di samping RLS.
+
+Tidak ada grant sequence yang perlu dipasang: seluruh primary key memakai `gen_random_uuid()`.
+
+**Verifikasi — 6 baris, semuanya `true`/`true`:**
+
+```sql
+select tablename,
+       has_table_privilege('service_role', 'public.'||tablename, 'select') as bisa_baca,
+       has_table_privilege('service_role', 'public.'||tablename, 'insert') as bisa_tulis
+from pg_tables
+where schemaname = 'public' and tablename like 'assessment_%'
+order by tablename;
+```
+
+**Kalau `anon` atau `authenticated` terlanjur diberi hak, cabut:**
+
+```sql
+revoke all on table
+  public.assessment_settings,
+  public.assessment_questions,
+  public.assessment_options,
+  public.assessment_attempts,
+  public.assessment_answers,
+  public.assessment_reflections
+from anon, authenticated;
+```
+
+---
+
 ## Langkah 3 — Pengaturan tes untuk event
 
 **Berkas:** tidak ada; salin blok di bawah. Sumbernya adalah blok komentar di ekor migrasi
@@ -275,9 +334,11 @@ Bukan ancaman terhadap data yang ada, tapi aturan baru yang berlaku setelah migr
 |---|---|---|---|
 | 1 | `supabase/migrations/20260809_assessment_pretest_posttest.sql` | skema | — |
 | 2 | `supabase/migrations/20260815000000_assessment_question_types.sql` | skema | 1 |
+| 2b | blok `grant ... to service_role` di dokumen ini | hak akses | 2 |
 | 3 | blok `insert into assessment_settings` di dokumen ini | isi | 1 |
 | 4 | `docs/pretest-posttest/seed-instrumen.sql` | isi | 2 |
 | 5 | `supabase/migrations/20260815120000_assessment_dimension.sql` | skema + backfill | 4 |
 
-Langkah 3 boleh ditukar posisinya dengan 2 atau 4 — ia hanya butuh langkah 1. Urutan 4 sebelum 5
-dan 2 sebelum 4 **tidak boleh** ditukar.
+Langkah 3 boleh ditukar posisinya dengan 2, 2b, atau 4 — ia hanya butuh langkah 1. Urutan 4
+sebelum 5 dan 2 sebelum 4 **tidak boleh** ditukar. Langkah 2b boleh dijalankan kapan saja setelah
+langkah 2, asalkan sebelum aplikasi menyentuh tabelnya.
