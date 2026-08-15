@@ -691,13 +691,48 @@ dan attempt post-test terbukti 21 — selisih lima, persis jumlah soal `post_tes
 
 ## Blok 13 — Form refleksi dan testimonial
 
-- [ ] Route `/tes/refleksi` tanpa timer: pilih nama, empat isian panjang, pilihan izin
-      testimoni
-- [ ] `robots.ts` + `sitemap.ts` + `noindex` diubah bersamaan
-- [ ] Halaman admin membaca jawabannya dengan label izin yang jelas
+- [x] Route `/tes/refleksi` tanpa timer: pilih nama, tiga isian refleksi, satu testimoni
+      opsional, dan pilihan izin pemakaian
+- [x] Tabel `assessment_reflections` sudah ada dari migrasi blok 11 — tidak ada migrasi baru
+- [x] `reflection-consent.ts` menyimpan teks pertanyaan, label pilihan izin, dan label badge
+      di satu tempat: kalimat yang dibaca peserta saat memberi izin tidak boleh berbeda dari
+      yang dibaca panitia saat memutuskan boleh dipakai atau tidak
+- [x] Upsert `onConflict: registration_id` — mengisi ulang menimpa baris yang sama, jadi
+      tidak ada dua versi yang harus dipilih panitia saat menyusun laporan
+- [x] Izin hanya wajib bila testimoni benar-benar diisi
+- [x] `saveReflection` memeriksa peserta lolos filter status §4.1, sama seperti dropdown nama
+- [x] Halaman admin `/admin/assessment/refleksi` + tab, badge izin ditempatkan **di dekat
+      testimoninya**, bukan di kolom terpisah — testimoni yang dikutip tanpa izin tidak bisa
+      ditarik kembali setelah terbit
+- [x] `robots.ts` dan `sitemap.ts` **tidak perlu diubah**: aturan `Disallow: /tes` yang sudah
+      ada menutupi `/tes/refleksi`, dan sitemap memang tidak pernah memuat `/tes`. Diperiksa,
+      bukan diasumsikan
 
-**Dinilai di browser:** isi form lalu muncul di panel admin; mengisi ulang memperbarui baris
-yang sama, bukan menambah.
+### Keputusan privasi yang menyimpang dari rencana
+
+Rencana menyebut form "prefilled" saat peserta kembali. Itu tidak dilakukan. Layar ini tanpa
+autentikasi — siapa pun bisa memilih nama siapa pun — dan spec §4.9 hanya menerima **nilai**
+sebagai semi-publik di dalam ruangan, bukan tulisan reflektif seseorang.
+
+Gantinya `getReflectionSummary()` hanya mengembalikan waktu pengisian, dan layar menampilkan
+"Kamu sudah pernah mengisi pada <waktu>. Mengirim lagi akan menggantikan jawaban sebelumnya."
+Peserta tetap tahu kiriman lamanya ada, tanpa isinya terbuka ke orang lain.
+
+**Dinilai di browser — sudah dijalankan:**
+
+- [x] `/tes/refleksi` merender 5 nama peserta, 4 isian, dan 3 pilihan izin
+- [x] `noindex` aktif; **nol** kemunculan alamat email di HTML
+- [x] `robots.txt` memuat `Disallow: /tes`; `sitemap.xml` nol kemunculan refleksi
+- [x] `npm run lint`, `npm run typecheck`, `npm run build`, audit ekspor `"use server"`
+
+**Belum dibuktikan langsung — butuh klik sungguhan.** Panel browser mampat sepanjang sesi ini:
+setiap `computer` action timeout, termasuk di tab baru. Yang tersisa:
+
+- [ ] Kirim form → baris tersimpan, layar berganti jadi konfirmasi
+- [ ] Pilih nama yang sama lagi → muncul catatan "sudah pernah mengisi pada <waktu>"
+- [ ] Kirim ulang → **baris yang sama diperbarui**, bukan bertambah
+- [ ] Testimoni diisi tanpa memilih izin → ditolak dengan pesan yang menjelaskan
+- [ ] Halaman admin menampilkan jawaban dengan badge izin yang benar
 
 ---
 

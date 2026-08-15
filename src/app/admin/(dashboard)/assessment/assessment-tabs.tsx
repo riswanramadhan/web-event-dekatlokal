@@ -4,6 +4,7 @@ const TABS = [
   { href: "/admin/assessment", label: "Ringkasan" },
   { href: "/admin/assessment/soal", label: "Kelola soal" },
   { href: "/admin/assessment/nilai", label: "Nilai" },
+  { href: "/admin/assessment/refleksi", label: "Refleksi" },
 ] as const;
 
 export type AssessmentTabHref = (typeof TABS)[number]["href"];
