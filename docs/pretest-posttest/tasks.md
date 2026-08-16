@@ -918,6 +918,81 @@ form registrasi diuji ulang untuk memastikannya.
 
 ---
 
+## Revisi pasca-rilis (setelah blok 16)
+
+Tiga permintaan yang masuk setelah migrasi produksi selesai. Ketiganya murni lapisan
+aplikasi — **tanpa migrasi database**.
+
+### R1 — Kelayakan peserta: mahasiswa saja
+
+- [x] `selectEligibleParticipants()` di `participants.ts` menggantikan lima query yang
+      sebelumnya menulis filter statusnya masing-masing. Syarat kedua (`registration_type =
+      'student'`) cukup ditambahkan sekali; menambahkannya ke lima tempat dengan tangan
+      berarti satu tempat cepat atau lambat tertinggal — diam-diam, karena yang muncul cuma
+      angka yang sedikit berbeda dari halaman sebelahnya
+- [x] Penjagaan sisi server di `startOrResumeAttempt()` dan `saveReflection()`. Dropdown yang
+      tidak memuat nama UMKM bukan kontrol: Server Action bisa dijangkau langsung dengan UUID
+      apa pun, dan `start_assessment_attempt()` di database hanya memeriksa keberadaan baris
+- [x] Syaratnya **tidak** dipindahkan ke fungsi database, yang menuntut migrasi produksi baru
+      padahal rangkaiannya baru selesai. Preseden yang sama sudah ada di `setAssessmentOpen()`
+- [x] Satu baris penjelas di gerbang `/tes/[phase]` dan `/tes/refleksi`, plus deskripsi keempat
+      halaman admin yang kini menyebut dua penyaringan
+
+**Dinilai di browser — sudah dijalankan.** Demo berisi lima pendaftar mahasiswa dan dua UMKM
+(satu di antaranya dibuat lewat form pendaftaran publik khusus untuk uji ini):
+
+- [x] Dropdown ketiga layar peserta memuat **5 nama**, semuanya mahasiswa, dan HTML-nya nol
+      kemunculan nama UMKM — disaring di query, bukan disembunyikan di client
+- [x] Ketiga penyebut berubah bersamaan ke 5, bukan 7: "1 dari 5 peserta" di Pengaturan,
+      5 baris tabel Nilai, "1 dari 5" di tab Refleksi
+- [x] **Penjagaan server terbukti:** id pendaftar UMKM disuntikkan ke `<select>` native yang
+      benar-benar diserialisasi form, lalu dikirim → ditolak dengan "Tes ini hanya untuk
+      peserta mahasiswa.", dan jumlah baris `assessment_attempts` tidak bertambah
+
+### R2 — Tanggal tampilan tetap 10 Agustus 2026
+
+- [x] `src/lib/assessment/report-date.ts`: tanggal dipaksa, **jam tetap asli**
+- [x] Dipakai di halaman admin Refleksi, catatan "sudah pernah mengisi" di layar peserta, dan
+      nama berkas CSV
+- [x] Stempel "Dibuka …"/"Ditutup …" di Pengaturan sengaja dibiarkan apa adanya — itu catatan
+      operasional panitia, bukan tanggal pengisian peserta
+
+**Dinilai di browser — sudah dijalankan.**
+
+- [x] Layar menampilkan "Diperbarui 10 Agu 2026, 13.31" sementara baris yang sama di database
+      menyimpan `updated_at = 2026-08-15T05:31:46Z`. Itu yang membedakan penggantian tampilan
+      dari pemalsuan data, dan itulah yang dibuktikan — bukan diasumsikan
+
+### R3 — Unduh PDF di tab Ringkasan dan Refleksi
+
+- [x] `PrintPageButton` memanggil `window.print()`, mengikuti `PrintReportButton` di halaman
+      progress report. **Tanpa dependensi baru**, dan hasil cetaknya mewarisi tata letak
+      halaman — laporan di kertas tidak bisa diam-diam berbeda isinya dari laporan di layar
+- [x] `PrintHeader` (`print-only`) memberi kop: nama acara, judul laporan, tanggal. Dialog
+      cetak tidak membawa judul halaman ke PDF dengan cara yang bisa diandalkan
+- [x] Blok `@media print` baru di `globals.css` dengan pengait `.assessment-print` sendiri,
+      terpisah dari `.progress-report`
+- [x] Testimoni berizin "Tidak boleh dipakai" **ikut dicetak** beserta badge izinnya, atas
+      keputusan user: PDF ini dokumen kerja internal, dan batasannya harus terbaca bersamaan
+      dengan kutipannya
+
+**Dinilai di browser — sudah dijalankan.** Aturan cetaknya diuji dengan menyalin seluruh
+deklarasi di dalam `@media print` yang mengenai `.assessment-print` lalu menerapkannya sebagai
+CSS layar sementara. Media switch-nya sendiri tidak perlu diuji: 18 aturannya memang berada di
+dalam `@media print`, dan itu terbaca langsung dari CSSOM.
+
+- [x] Sidebar, top bar mobile, baris tab, dan tombol unduh **hilang**; kop cetak muncul dengan
+      "10 Agustus 2026"
+- [x] Tabel kapabilitas tampil **sekali** — varian kartu `md:hidden` dipaksa tersembunyi,
+      karena media cetak tidak mewarisi lebar viewport dengan pasti dan keduanya muncul berarti
+      isinya tercetak ganda
+- [x] Badge izin tetap tampil di halaman Refleksi
+- [x] **Tanpa regresi pada laporan publik:** di `/ai-co-creation-lab-makassar/progress/[slug]`,
+      nol aturan baru yang cocok dengan satu elemen pun
+- [x] `npm run lint`, `npm run typecheck`, `npm run build`, audit ekspor `"use server"`
+
+---
+
 ## Yang sengaja tidak dikerjakan
 
 - **Refactor Zod pada `admin/(dashboard)/page.tsx` dan `registrations/[id]/page.tsx`.**

@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
 import { resolveAssessmentTarget } from "./event";
+import { selectEligibleParticipants } from "./participants";
 import { ASSESSMENT_PHASES, type AssessmentPhase } from "./phase";
 import {
   QUESTION_TYPES,
@@ -112,6 +113,34 @@ export async function startOrResumeAttempt(
 
   if (!target.ok) {
     return target;
+  }
+
+  // Kelayakan diperiksa di sini, bukan di dalam `start_assessment_attempt()`.
+  // Fungsi database itu hanya memastikan pendaftarannya ada — ia tidak memeriksa
+  // tipe pendaftar, dan memindahkan syaratnya ke sana menuntut migrasi produksi
+  // baru. Preseden yang sama sudah ada di `setAssessmentOpen()`, yang juga
+  // mengulang pemeriksaan kesiapan di aplikasi karena database tidak menjaganya.
+  //
+  // Dropdown yang tidak memuat nama UMKM bukan kontrol: Server Action ini bisa
+  // dijangkau langsung dengan UUID apa pun.
+  const eligible = await selectEligibleParticipants(
+    target.supabase,
+    target.eventId,
+    "id",
+  )
+    .eq("id", registrationId)
+    .maybeSingle();
+
+  if (eligible.error) {
+    logAssessmentFailure("start_attempt_eligibility", eligible.error);
+    return { ok: false, message: translateAssessmentError(eligible.error) };
+  }
+
+  if (eligible.data === null) {
+    return {
+      ok: false,
+      message: "Tes ini hanya untuk peserta mahasiswa.",
+    };
   }
 
   // Every attempt is created or resumed through this function. The application

@@ -185,6 +185,12 @@ function NamePicker({
         <p className="mt-1 text-sm leading-6 text-slate-600">
           {state.questionCount} soal · {formatDuration(state.durationSeconds)}
         </p>
+        {/* Disebut di muka, bukan dibiarkan ditemukan sendiri: pendaftar UMKM
+            yang membuka tautan ini akan mencari namanya dan menyangka daftarnya
+            rusak. */}
+        <p className="mt-1 text-xs leading-5 text-slate-500">
+          Hanya untuk peserta mahasiswa.
+        </p>
 
         {notice ? (
           <p

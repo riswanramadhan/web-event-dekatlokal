@@ -6,7 +6,7 @@ import { z } from "zod";
 import { toPercent } from "./attempts";
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
 import { resolveAssessmentTarget } from "./event";
-import { PARTICIPANT_STATUS_EXCLUSION } from "./participants";
+import { selectEligibleParticipants } from "./participants";
 import { ASSESSMENT_PHASES, type AssessmentPhase } from "./phase";
 import { QUESTION_TYPES, PHASE_SCOPES } from "./question-type";
 
@@ -218,12 +218,11 @@ export async function listScores(): Promise<ScoreboardResult> {
 
   const [registrationsResult, attemptsResult, questionsResult, optionsResult] =
     await Promise.all([
-      target.supabase
-        .from("registrations")
-        .select("id, full_name, registration_type")
-        .eq("event_id", target.eventId)
-        .not("status", "in", PARTICIPANT_STATUS_EXCLUSION)
-        .order("full_name", { ascending: true }),
+      selectEligibleParticipants(
+        target.supabase,
+        target.eventId,
+        "id, full_name, registration_type",
+      ).order("full_name", { ascending: true }),
       target.supabase
         .from("assessment_attempts")
         .select("id, registration_id, phase, status, score, total_points")

@@ -2,6 +2,7 @@ import { ArrowRight } from "iconoir-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { PrintPageButton } from "@/components/admin/print-button";
 import { Card, PageHeader, StatCard } from "@/components/admin/ui";
 import { EmptyState } from "@/components/ui/empty-state";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -19,6 +20,7 @@ import {
 } from "@/lib/assessment/summary";
 
 import { AssessmentTabs } from "../assessment-tabs";
+import { PrintHeader } from "../print-header";
 
 export const metadata: Metadata = {
   title: "Ringkasan",
@@ -173,13 +175,18 @@ export default async function AssessmentSummaryPage() {
   const result = await getAssessmentSummary();
 
   return (
-    <>
-      <PageHeader
-        title="Pre-test & Post-test"
-        description="Ringkasan lima layer untuk laporan impact. Angka di sini berasal dari perhitungan yang sama dengan tabel Nilai."
-      />
+    <div className="assessment-print">
+      <div className="print-hidden">
+        <PageHeader
+          title="Pre-test & Post-test"
+          description="Ringkasan lima layer untuk laporan impact. Angka di sini berasal dari perhitungan yang sama dengan tabel Nilai."
+          actions={<PrintPageButton label="Unduh PDF" />}
+        />
 
-      <AssessmentTabs active="/admin/assessment/ringkasan" />
+        <AssessmentTabs active="/admin/assessment/ringkasan" />
+      </div>
+
+      <PrintHeader title="Ringkasan Pre-test & Post-test" />
 
       {!result.ok ? (
         <EmptyState title="Gagal memuat ringkasan" description={result.message} />
@@ -281,19 +288,25 @@ export default async function AssessmentSummaryPage() {
           >
             <Link
               href="/admin/assessment/refleksi"
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-slate-200 px-4 text-sm font-medium text-brand transition hover:border-brand-200 hover:bg-brand-50"
+              className="print-hidden inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-slate-200 px-4 text-sm font-medium text-brand transition hover:border-brand-200 hover:bg-brand-50"
             >
               Buka jawaban refleksi
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
+            {/* Tautan tidak berarti apa-apa di kertas; PDF refleksi dicetak
+                terpisah dari tabnya sendiri. */}
+            <p className="print-only text-sm text-slate-600">
+              Jawaban refleksi lengkap ada di dokumen terpisah.
+            </p>
           </Card>
 
           <p className="text-xs text-slate-500">
-            Dihitung dari {result.summary.participantCount} pendaftar yang lolos
-            filter status; pendaftar berstatus ditolak dan mundur tidak ikut.
+            Dihitung dari {result.summary.participantCount} pendaftar mahasiswa
+            yang lolos filter status. Pendaftar UMKM, serta yang berstatus
+            ditolak dan mundur, tidak ikut.
           </p>
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -157,7 +157,7 @@ export default async function AssessmentOverviewPage() {
     <>
       <PageHeader
         title="Pre-test & Post-test"
-        description="Kontrol tes peserta untuk event ini. Pendaftar berstatus ditolak dan mundur tidak dihitung sebagai peserta."
+        description="Kontrol tes peserta untuk event ini. Hanya pendaftar mahasiswa yang dihitung sebagai peserta; pendaftar UMKM, serta yang berstatus ditolak dan mundur, tidak ikut."
       />
 
       <AssessmentTabs active="/admin/assessment" />

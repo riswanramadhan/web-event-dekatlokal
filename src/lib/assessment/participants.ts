@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
@@ -23,6 +24,39 @@ export const HIDDEN_PARTICIPANT_STATUSES = ["rejected", "withdrawn"] as const;
 export const PARTICIPANT_STATUS_EXCLUSION = `(${HIDDEN_PARTICIPANT_STATUSES.join(
   ",",
 )})`;
+
+/**
+ * Hanya pendaftar mahasiswa yang mengerjakan tes dan mengisi refleksi.
+ *
+ * Instrumennya memang ditulis untuk mereka: dua belas pernyataan skala berbicara
+ * tentang membangun solusi *untuk* UMKM sebagai pengguna, bukan tentang menjadi
+ * UMKM. Pendaftar UMKM yang ikut mengisi menghasilkan angka yang tidak berarti
+ * dan mengotori penyebut setiap rata-rata di laporan.
+ */
+export const ELIGIBLE_REGISTRATION_TYPE = "student";
+
+/**
+ * Satu-satunya cara membaca daftar peserta yang berhak.
+ *
+ * Sebelumnya lima query menuliskan filter statusnya masing-masing, dan menambah
+ * syarat kedua ke lima tempat dengan tangan berarti satu tempat cepat atau
+ * lambat tertinggal — diam-diam, karena yang muncul cuma angka yang sedikit
+ * berbeda dari halaman sebelahnya. Filter berantai lain (`.eq("id", …)`,
+ * `.order(…)`, `.maybeSingle()`) tetap disambung di pemanggil.
+ */
+export function selectEligibleParticipants(
+  supabase: SupabaseClient,
+  eventId: string,
+  columns: string,
+  options?: { count: "exact"; head: true },
+) {
+  return supabase
+    .from("registrations")
+    .select(columns, options)
+    .eq("event_id", eventId)
+    .eq("registration_type", ELIGIBLE_REGISTRATION_TYPE)
+    .not("status", "in", PARTICIPANT_STATUS_EXCLUSION);
+}
 
 const participantRowSchema = z.object({
   id: z.string().uuid(),
@@ -56,12 +90,11 @@ export async function listParticipants(): Promise<ParticipantsResult> {
     return target;
   }
 
-  const { data, error } = await target.supabase
-    .from("registrations")
-    .select("id, full_name, institution_name, business_name")
-    .eq("event_id", target.eventId)
-    .not("status", "in", PARTICIPANT_STATUS_EXCLUSION)
-    .order("full_name", { ascending: true });
+  const { data, error } = await selectEligibleParticipants(
+    target.supabase,
+    target.eventId,
+    "id, full_name, institution_name, business_name",
+  ).order("full_name", { ascending: true });
 
   if (error) {
     logAssessmentFailure("list_participants", error);
@@ -80,9 +113,9 @@ export async function listParticipants(): Promise<ParticipantsResult> {
     participants: parsed.data.map((row) => ({
       id: row.id,
       fullName: row.full_name,
-      // For registration_type 'general' both can be empty. That leaves the row
-      // without a distinguishing line, which spec §4.1 accepts rather than
-      // padding it with a dash.
+      // Kolomnya nullable di database, jadi baris tanpa keduanya tetap mungkin.
+      // Itu meninggalkan opsi tanpa baris pembeda — yang diterima spec §4.1,
+      // alih-alih diisi tanda strip.
       label: row.institution_name ?? row.business_name ?? null,
     })),
   };

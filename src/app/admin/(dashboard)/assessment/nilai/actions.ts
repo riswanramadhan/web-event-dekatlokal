@@ -1,6 +1,7 @@
 "use server";
 
 import { requireAdmin } from "@/lib/admin/auth";
+import { ASSESSMENT_REPORT_DATE } from "@/lib/assessment/report-date";
 import {
   dimensionMean,
   formatKnowledge,
@@ -100,11 +101,11 @@ export async function exportScoresAction(): Promise<ExportOutcome> {
     }),
   ];
 
-  const stamp = new Date().toISOString().slice(0, 10);
-
   return {
     ok: true,
-    filename: `nilai-pre-post-test-${stamp}.csv`,
+    // Tanggal acara, bukan tanggal unduh: dua ekspor di hari berbeda tidak boleh
+    // terbaca sebagai dua rentang data yang berbeda. Lihat `report-date.ts`.
+    filename: `nilai-pre-post-test-${ASSESSMENT_REPORT_DATE}.csv`,
     // Leading BOM so spreadsheets open it as UTF-8 instead of guessing.
     content: `﻿${lines.join("\r\n")}\r\n`,
   };

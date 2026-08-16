@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { PrintPageButton } from "@/components/admin/print-button";
 import { Card, PageHeader, StatCard } from "@/components/admin/ui";
 import { EmptyState } from "@/components/ui/empty-state";
 import { requireAdmin } from "@/lib/admin/auth";
@@ -9,20 +10,15 @@ import {
   REFLECTION_QUESTIONS,
 } from "@/lib/assessment/reflection-consent";
 import { listReflections, type AdminReflection } from "@/lib/assessment/reflections";
+import { formatFilledAt } from "@/lib/assessment/report-date";
 
 import { AssessmentTabs } from "../assessment-tabs";
+import { PrintHeader } from "../print-header";
 
 export const metadata: Metadata = {
   title: "Refleksi",
   robots: { index: false, follow: false },
 };
-
-function formatWhen(value: string): string {
-  return new Intl.DateTimeFormat("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
 
 /**
  * Izin ditampilkan sebagai badge di dekat testimoninya, bukan di kolom
@@ -70,13 +66,18 @@ export default async function AssessmentReflectionsPage() {
   const result = await listReflections();
 
   return (
-    <>
-      <PageHeader
-        title="Pre-test & Post-test"
-        description="Jawaban refleksi dan testimoni peserta. Tidak diberi skor — panduan scoring §6 meminta ini dibaca sebagai tema dan kutipan."
-      />
+    <div className="assessment-print">
+      <div className="print-hidden">
+        <PageHeader
+          title="Pre-test & Post-test"
+          description="Jawaban refleksi dan testimoni peserta mahasiswa. Tidak diberi skor — panduan scoring §6 meminta ini dibaca sebagai tema dan kutipan."
+          actions={<PrintPageButton label="Unduh PDF" />}
+        />
 
-      <AssessmentTabs active="/admin/assessment/refleksi" />
+        <AssessmentTabs active="/admin/assessment/refleksi" />
+      </div>
+
+      <PrintHeader title="Refleksi & Testimoni Peserta" />
 
       {!result.ok ? (
         <EmptyState title="Gagal memuat refleksi" description={result.message} />
@@ -125,7 +126,7 @@ export default async function AssessmentReflectionsPage() {
                         {row.fullName}
                       </h2>
                       <p className="mt-0.5 text-xs text-slate-500">
-                        Diperbarui {formatWhen(row.updatedAt)}
+                        Diperbarui {formatFilledAt(row.updatedAt)}
                       </p>
                     </div>
                   </div>
@@ -169,6 +170,6 @@ export default async function AssessmentReflectionsPage() {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }

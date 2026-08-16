@@ -12,6 +12,7 @@ import {
   REFLECTION_QUESTIONS,
   TESTIMONIAL_CONSENTS,
 } from "@/lib/assessment/reflection-consent";
+import { formatFilledAt } from "@/lib/assessment/report-date";
 import { initialRegistrationActionState } from "@/lib/registration/result";
 
 import { checkReflectionAction, submitReflectionAction } from "./actions";
@@ -31,13 +32,6 @@ function SubmitButton({ disabled }: { disabled: boolean }) {
       {pending ? "Mengirim…" : "Kirim jawaban"}
     </button>
   );
-}
-
-function formatWhen(value: string): string {
-  return new Intl.DateTimeFormat("id-ID", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
 }
 
 export function RefleksiForm({
@@ -94,6 +88,11 @@ export function RefleksiForm({
       <p className="mt-1 text-sm leading-6 text-slate-600">
         Tidak ada batas waktu di halaman ini. Tulis sesantai kamu mau.
       </p>
+      {/* Disebut di muka, bukan dibiarkan ditemukan sendiri: pendaftar UMKM yang
+          membuka tautan ini akan mencari namanya dan menyangka daftarnya rusak. */}
+      <p className="mt-1 text-xs leading-5 text-slate-500">
+        Hanya untuk peserta mahasiswa.
+      </p>
 
       {participants === null ? (
         <p className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-4 text-sm text-slate-600">
@@ -140,7 +139,7 @@ export function RefleksiForm({
                 role="status"
                 className="mt-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900"
               >
-                Kamu sudah pernah mengisi pada {formatWhen(previous)}. Mengirim
+                Kamu sudah pernah mengisi pada {formatFilledAt(previous)}. Mengirim
                 lagi akan menggantikan jawaban sebelumnya.
               </p>
             ) : null}

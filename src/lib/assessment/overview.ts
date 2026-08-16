@@ -6,7 +6,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
 import { getManagedEventId } from "./event";
-import { PARTICIPANT_STATUS_EXCLUSION } from "./participants";
+import { selectEligibleParticipants } from "./participants";
 import { ASSESSMENT_PHASES, type AssessmentPhase } from "./phase";
 import {
   assessmentProblemsSchema,
@@ -148,11 +148,10 @@ export async function getAssessmentOverview(): Promise<AssessmentOverviewResult>
         .select("phase, is_open, duration_seconds, opened_at, closed_at")
         .eq("event_id", event.eventId),
       supabase.rpc("assessment_problems", { p_event_id: event.eventId }),
-      supabase
-        .from("registrations")
-        .select("id", { count: "exact", head: true })
-        .eq("event_id", event.eventId)
-        .not("status", "in", PARTICIPANT_STATUS_EXCLUSION),
+      selectEligibleParticipants(supabase, event.eventId, "id", {
+        count: "exact",
+        head: true,
+      }),
       supabase
         .from("assessment_attempts")
         .select("id", { count: "exact", head: true })

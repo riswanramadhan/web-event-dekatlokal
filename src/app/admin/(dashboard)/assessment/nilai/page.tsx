@@ -168,7 +168,7 @@ export default async function AssessmentScoresPage() {
     <>
       <PageHeader
         title="Pre-test & Post-test"
-        description="Pendaftar berstatus ditolak dan mundur tidak muncul di sini maupun di CSV."
+        description="Hanya pendaftar mahasiswa yang mengerjakan tes. Pendaftar UMKM, serta yang berstatus ditolak dan mundur, tidak muncul di sini maupun di CSV."
       />
 
       <AssessmentTabs active="/admin/assessment/nilai" />

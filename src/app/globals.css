@@ -766,4 +766,108 @@ html:not(.aos-ready) [data-aos] {
     color: inherit !important;
     text-decoration: none !important;
   }
+
+  /* --------------------------------------------------------------------
+     Laporan admin pre-test / post-test.
+     Pengaitnya sendiri (.assessment-print), terpisah dari .progress-report
+     di atas: keduanya mencetak halaman yang sangat berbeda, dan menumpang
+     pada selector yang sama akan membuat perubahan di satu laporan
+     diam-diam mengubah laporan yang lain.
+     -------------------------------------------------------------------- */
+
+  html:has(.assessment-print),
+  body:has(.assessment-print) {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  body:has(.assessment-print) {
+    min-height: 0;
+    padding: 0 !important;
+    background-image: none !important;
+  }
+
+  /* Kerangka panel admin: sidebar, top bar mobile, drawer, dan tautan
+     lewati-ke-konten. */
+  body:has(.assessment-print) aside,
+  body:has(.assessment-print) header,
+  body:has(.assessment-print) [role="dialog"],
+  body:has(.assessment-print) > a[href="#main-content"],
+  .assessment-print .print-hidden,
+  .assessment-print [data-report-action] {
+    display: none !important;
+  }
+
+  body:has(.assessment-print) main,
+  .assessment-print {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #ffffff !important;
+  }
+
+  .assessment-print,
+  .assessment-print * {
+    box-shadow: none !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .assessment-print .print-only {
+    display: block !important;
+  }
+
+  /* Satu jawaban refleksi atau satu baris peserta yang terbelah antar
+     halaman adalah alasan utama PDF cetakan terlihat asal-asalan. */
+  .assessment-print section,
+  .assessment-print li,
+  .assessment-print tr,
+  .assessment-print dl > div {
+    break-inside: avoid-page;
+    page-break-inside: avoid;
+  }
+
+  .assessment-print h1,
+  .assessment-print h2,
+  .assessment-print h3 {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+
+  .assessment-print p,
+  .assessment-print dd {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Kedua tabel dipasangkan dengan varian kartu lewat `hidden md:table` dan
+     `md:hidden`. Media cetak tidak mewarisi lebar viewport dengan pasti, jadi
+     variannya dipaksa di sini — kalau tidak, isinya berpeluang tercetak dua
+     kali dalam dua bentuk. Tabel yang dipilih, karena itu yang muat di kertas
+     A4 dan yang dibaca sebagai laporan. */
+  .assessment-print table {
+    display: table !important;
+    width: 100% !important;
+    table-layout: auto;
+    border-collapse: collapse;
+    font-size: 9pt;
+  }
+
+  .assessment-print thead {
+    display: table-header-group;
+  }
+
+  .assessment-print ul.md\:hidden {
+    display: none !important;
+  }
+
+  .assessment-print th,
+  .assessment-print td {
+    padding: 0.42rem 0.5rem !important;
+    border-color: #cbd5e1 !important;
+    overflow-wrap: anywhere;
+    white-space: normal !important;
+    color: #111827 !important;
+  }
 }

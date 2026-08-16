@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { logAssessmentFailure, translateAssessmentError } from "./errors";
 import { resolveAssessmentTarget } from "./event";
-import { PARTICIPANT_STATUS_EXCLUSION } from "./participants";
+import { selectEligibleParticipants } from "./participants";
 import { TESTIMONIAL_CONSENTS, type TestimonialConsent } from "./reflection-consent";
 
 /** Cermin `assessment_reflections_length_check` di migrasi. */
@@ -53,14 +53,16 @@ export async function saveReflection(
     return target;
   }
 
-  // Peserta yang tidak lolos filter status tidak boleh menitipkan refleksi,
-  // dengan alasan yang sama seperti dropdown nama: mereka memang tidak hadir.
-  const owner = await target.supabase
-    .from("registrations")
-    .select("id")
+  // Peserta yang tidak lolos filter kelayakan tidak boleh menitipkan refleksi,
+  // dengan alasan yang sama seperti dropdown nama. Dropdown yang tidak memuat
+  // namanya bukan kontrol — Server Action ini bisa dijangkau langsung dengan
+  // UUID apa pun.
+  const owner = await selectEligibleParticipants(
+    target.supabase,
+    target.eventId,
+    "id",
+  )
     .eq("id", registrationId)
-    .eq("event_id", target.eventId)
-    .not("status", "in", PARTICIPANT_STATUS_EXCLUSION)
     .maybeSingle();
 
   if (owner.error) {
@@ -168,11 +170,7 @@ export async function listReflections(): Promise<ReflectionListResult> {
       )
       .eq("event_id", target.eventId)
       .order("updated_at", { ascending: false }),
-    target.supabase
-      .from("registrations")
-      .select("id, full_name")
-      .eq("event_id", target.eventId)
-      .not("status", "in", PARTICIPANT_STATUS_EXCLUSION),
+    selectEligibleParticipants(target.supabase, target.eventId, "id, full_name"),
   ]);
 
   if (reflectionsResult.error) {
