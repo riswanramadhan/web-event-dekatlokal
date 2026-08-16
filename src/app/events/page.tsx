@@ -27,7 +27,7 @@ export default async function EventsPage() {
               Program lokal dengan <span className="text-brand">jejak digital yang utuh.</span>
             </h1>
             <p className="mt-6 text-base leading-8 text-slate-600 sm:text-lg">
-              MVP ini menampilkan satu event publik aktif. Event berikutnya akan ditambahkan setelah informasi dan penyelenggaranya siap.
+              MVP ini menampilkan satu rekam event publik. Event berikutnya akan ditambahkan setelah informasi dan penyelenggaranya siap.
             </p>
           </div>
         </div>

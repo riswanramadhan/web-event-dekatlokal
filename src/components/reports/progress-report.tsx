@@ -18,7 +18,7 @@ import type {
   ReportBlock,
   ReportSection as ReportSectionData,
 } from "@/data/gep-week-1-reports";
-import type { ProgressReportSlug } from "@/data/progress-reports";
+import type { ProgressNavigationSlug } from "@/data/progress-reports";
 
 import {
   CopyProgressDescriptionButton,
@@ -218,17 +218,32 @@ export function ProgressReportBreadcrumb({ title }: { title: string }) {
   );
 }
 
-export function StatusBadge({ status }: { status: string }) {
-  const isCompleted = status.toLowerCase().includes("completed");
+type ReportStatusTone = "green" | "amber" | "blue" | "neutral";
+
+const reportStatusToneClasses: Record<ReportStatusTone, string> = {
+  green: "border-emerald-200 bg-emerald-50 text-emerald-800",
+  amber: "border-amber-200 bg-amber-50 text-amber-900",
+  blue: "border-brand-200 bg-brand-50 text-brand-800",
+  neutral: "border-slate-200 bg-slate-50 text-slate-700",
+};
+
+export function StatusBadge({
+  status,
+  tone,
+}: {
+  status: string;
+  tone?: ReportStatusTone;
+}) {
+  const normalizedStatus = status.trim().toLowerCase();
+  const isCompleted =
+    !normalizedStatus.includes("to be completed") &&
+    normalizedStatus.includes("completed");
   const Icon = isCompleted ? CheckCircle : Circle;
+  const inferredTone: ReportStatusTone = isCompleted ? "green" : "blue";
 
   return (
     <span
-      className={`inline-flex min-h-9 max-w-full flex-wrap items-center gap-2 rounded-2xl border px-3.5 py-1.5 text-xs font-semibold sm:rounded-full ${
-        isCompleted
-          ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-          : "border-brand-200 bg-brand-50 text-brand-800"
-      }`}
+      className={`inline-flex min-h-9 max-w-full flex-wrap items-center gap-2 rounded-2xl border px-3.5 py-1.5 text-xs font-semibold sm:rounded-full ${reportStatusToneClasses[tone ?? inferredTone]}`}
     >
       <Icon className="h-4 w-4 shrink-0" strokeWidth={1.9} aria-hidden="true" />
       <span className="font-mono text-[0.65rem] uppercase tracking-[0.12em] opacity-75">
@@ -246,7 +261,11 @@ export function NextStepCard({ nextStep }: { nextStep: string }) {
     <div className="report-card rounded-2xl border border-brand-100 bg-white p-4 shadow-[0_12px_32px_rgba(1,34,98,0.06)] sm:p-5">
       <div className="flex items-start gap-3">
         <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand">
-          <ArrowRight className="h-4 w-4" strokeWidth={1.9} aria-hidden="true" />
+          <ArrowRight
+            className="h-4 w-4"
+            strokeWidth={1.9}
+            aria-hidden="true"
+          />
         </span>
         <div className="min-w-0">
           <p className="font-mono text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
@@ -291,12 +310,13 @@ function UpdatedAtCard({
 }
 
 export interface ProgressReportHeaderData {
-  readonly slug: ProgressReportSlug;
+  readonly slug: ProgressNavigationSlug;
   readonly title: string;
   readonly weekLabel: string;
   readonly phase: string;
   readonly subtitle: string;
   readonly status: string;
+  readonly statusTone?: ReportStatusTone;
   readonly nextStep: string;
   readonly updatedAt: string;
   readonly updatedAtIso: string;
@@ -312,6 +332,9 @@ export function ProgressReportHeader({
 }: {
   report: ProgressReportHeaderData;
 }) {
+  const weekNumber = report.weekLabel.match(/\d+/)?.[0];
+  const navigationWeekHint = weekNumber ? `Week ${weekNumber}` : undefined;
+
   return (
     <header className="progress-report-header relative overflow-hidden border-b border-brand-100 bg-white py-10 sm:py-14 lg:py-16">
       <div
@@ -357,7 +380,7 @@ export function ProgressReportHeader({
             </p>
 
             <div className="mt-6">
-              <StatusBadge status={report.status} />
+              <StatusBadge status={report.status} tone={report.statusTone} />
             </div>
           </div>
 
@@ -380,7 +403,11 @@ export function ProgressReportHeader({
             <PrintReportButton />
           </div>
 
-          <ProgressReportNavigation currentSlug={report.slug} />
+          <ProgressReportNavigation
+            key={report.slug}
+            currentSlug={report.slug}
+            weekHint={navigationWeekHint}
+          />
         </div>
       </div>
     </header>
@@ -583,11 +610,7 @@ function ReportBlockView({
   }
 }
 
-export function ReportSection({
-  section,
-}: {
-  section: ReportSectionData;
-}) {
+export function ReportSection({ section }: { section: ReportSectionData }) {
   const headingId = `${section.id}-heading`;
 
   return (
@@ -841,18 +864,13 @@ export function PrintReportFooter({
         URL laporan: <span>{progressUrl}</span>
       </p>
       <p>
-        Terakhir diperbarui:{" "}
-        <time dateTime={updatedAtIso}>{updatedAt}</time>
+        Terakhir diperbarui: <time dateTime={updatedAtIso}>{updatedAt}</time>
       </p>
     </footer>
   );
 }
 
-export function ProgressReportPage({
-  report,
-}: {
-  report: GepWeekOneReport;
-}) {
+export function ProgressReportPage({ report }: { report: GepWeekOneReport }) {
   return (
     <article className="progress-report relative isolate overflow-hidden bg-[#f8fbff]">
       <ReportPrintStyles />
@@ -868,9 +886,7 @@ export function ProgressReportPage({
             <ReportSection key={section.id} section={section} />
           ))}
 
-          <LeadershipReflectionCard
-            reflection={report.leadershipReflection}
-          />
+          <LeadershipReflectionCard reflection={report.leadershipReflection} />
           <ReportOutputList outputs={report.outputs} />
           <ProgressDescriptionCard description={report.progressDescription} />
           <ProgressUrlCard url={report.progressUrl} />

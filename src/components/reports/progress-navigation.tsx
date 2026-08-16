@@ -1,21 +1,78 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, CheckCircle, Circle } from "iconoir-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle,
+  Circle,
+  Clock,
+} from "iconoir-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import {
   getAdjacentProgressReports,
   progressReports,
-  type ProgressReportSlug,
+  type ProgressNavigationSlug,
 } from "@/data/progress-reports";
+
+type ProgressStatusKind = "completed" | "in_progress" | "planned";
+
+function getProgressStatusKind(status: string): ProgressStatusKind {
+  const normalizedStatus = status.trim().toLowerCase();
+
+  if (
+    normalizedStatus.includes("to be completed") ||
+    normalizedStatus.includes("preparation") ||
+    normalizedStatus.includes("planned") ||
+    normalizedStatus.includes("pending")
+  ) {
+    return "planned";
+  }
+
+  if (
+    normalizedStatus.includes("in progress") ||
+    normalizedStatus.includes("data collection") ||
+    normalizedStatus.includes("finalization") ||
+    normalizedStatus.includes("documentation") ||
+    normalizedStatus.includes("being prepared") ||
+    normalizedStatus.includes("framework development")
+  ) {
+    return "in_progress";
+  }
+
+  return normalizedStatus.includes("completed") ? "completed" : "in_progress";
+}
+
+const progressStatusStyles = {
+  completed: {
+    icon: CheckCircle,
+    textClassName: "text-emerald-700",
+  },
+  in_progress: {
+    icon: Clock,
+    textClassName: "text-amber-700",
+  },
+  planned: {
+    icon: Circle,
+    textClassName: "text-slate-600",
+  },
+} as const satisfies Record<
+  ProgressStatusKind,
+  {
+    readonly icon: typeof Circle;
+    readonly textClassName: string;
+  }
+>;
 
 export function ProgressReportNavigation({
   currentSlug,
+  weekHint,
   className = "report-no-print mt-8 max-w-5xl border-t border-slate-200 pt-6",
   showLabel = true,
 }: {
-  currentSlug?: ProgressReportSlug;
+  currentSlug?: ProgressNavigationSlug;
+  weekHint?: string;
   className?: string;
   showLabel?: boolean;
 }) {
@@ -23,11 +80,12 @@ export function ProgressReportNavigation({
     (report) => report.slug === currentSlug,
   );
   const availableWeeks = useMemo(
-    () => Array.from(new Set(progressReports.map((report) => report.weekLabel))),
+    () =>
+      Array.from(new Set(progressReports.map((report) => report.weekLabel))),
     [],
   );
   const [selectedWeek, setSelectedWeek] = useState(
-    currentReport?.weekLabel ?? "Semua",
+    currentReport?.weekLabel ?? weekHint ?? "Semua",
   );
   const filteredReports =
     selectedWeek === "Semua"
@@ -46,6 +104,7 @@ export function ProgressReportNavigation({
       ) : null}
 
       <div
+        role="group"
         className={`${showLabel ? "mt-3" : ""} flex flex-wrap gap-2`}
         aria-label="Filter progress berdasarkan week"
       >
@@ -72,7 +131,9 @@ export function ProgressReportNavigation({
               {week}
               <span
                 className={`inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 font-mono text-[0.58rem] ${
-                  isSelected ? "bg-white/15 text-white" : "bg-slate-100 text-slate-500"
+                  isSelected
+                    ? "bg-white/15 text-white"
+                    : "bg-slate-100 text-slate-500"
                 }`}
               >
                 {count}
@@ -89,7 +150,9 @@ export function ProgressReportNavigation({
       <ol className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {filteredReports.map((report) => {
           const isCurrent = report.slug === currentSlug;
-          const Icon = isCurrent ? CheckCircle : Circle;
+          const statusKind = getProgressStatusKind(report.status);
+          const statusStyle = progressStatusStyles[statusKind];
+          const Icon = statusStyle.icon;
           const reportIndex = progressReports.findIndex(
             (item) => item.slug === report.slug,
           );
@@ -117,7 +180,7 @@ export function ProgressReportNavigation({
                 <span className="min-w-0">
                   <span
                     className={`flex items-center gap-1.5 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] ${
-                      isCurrent ? "text-white/75" : "text-slate-500"
+                      isCurrent ? "text-white/90" : "text-slate-500"
                     }`}
                   >
                     <Icon className="h-3 w-3" aria-hidden="true" />
@@ -125,6 +188,13 @@ export function ProgressReportNavigation({
                   </span>
                   <span className="mt-1 block text-xs font-semibold leading-5">
                     {report.title}
+                  </span>
+                  <span
+                    className={`mt-1.5 block text-[0.68rem] font-medium leading-4 ${
+                      isCurrent ? "text-white/90" : statusStyle.textClassName
+                    }`}
+                  >
+                    {report.status}
                   </span>
                 </span>
               </Link>
@@ -139,7 +209,7 @@ export function ProgressReportNavigation({
 export function AdjacentProgressNavigation({
   currentSlug,
 }: {
-  currentSlug: ProgressReportSlug;
+  currentSlug: ProgressNavigationSlug;
 }) {
   const { previous, next } = getAdjacentProgressReports(currentSlug);
 

@@ -2,6 +2,10 @@ import "server-only";
 
 import { connection } from "next/server";
 
+import {
+  aiCoCreationLabEvent as event,
+  type EventStatus,
+} from "@/data/events";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 
 const DEFAULT_EVENT_SLUG = "ai-co-creation-lab-makassar";
@@ -23,9 +27,40 @@ export type RegistrationState = {
  */
 const CLOSED: RegistrationState = {
   isOpen: false,
-  statusLabel: "Pendaftaran Belum Dibuka",
+  statusLabel: "Pendaftaran Tidak Tersedia",
   resolved: false,
 };
+
+const NOT_OPEN: RegistrationState = {
+  isOpen: false,
+  statusLabel: "Pendaftaran Belum Dibuka",
+  resolved: true,
+};
+
+const REGISTRATION_CLOSED: RegistrationState = {
+  isOpen: false,
+  statusLabel: "Pendaftaran Ditutup",
+  resolved: true,
+};
+
+/**
+ * The database may toggle registration only while the typed event lifecycle
+ * explicitly permits it. This prevents a stale `registration_open` row from
+ * reopening registration after the event has finished.
+ */
+function getStaticRegistrationState(
+  status: EventStatus,
+): RegistrationState | null {
+  if (status === "registration_open") {
+    return null;
+  }
+
+  if (status === "draft") {
+    return NOT_OPEN;
+  }
+
+  return REGISTRATION_CLOSED;
+}
 
 async function fetchRegistrationState(
   slug: string,
@@ -70,6 +105,12 @@ async function fetchRegistrationState(
  */
 export async function getRegistrationState(): Promise<RegistrationState> {
   await connection();
+  const staticState = getStaticRegistrationState(event.status);
+
+  if (staticState) {
+    return staticState;
+  }
+
   return fetchRegistrationState(getEventSlug());
 }
 
@@ -78,6 +119,12 @@ export async function getRegistrationState(): Promise<RegistrationState> {
  * value rather than a cached one.
  */
 export async function getRegistrationStateFresh(): Promise<RegistrationState> {
+  const staticState = getStaticRegistrationState(event.status);
+
+  if (staticState) {
+    return staticState;
+  }
+
   return fetchRegistrationState(getEventSlug());
 }
 
@@ -92,6 +139,14 @@ export type SetRegistrationResult =
 export async function setRegistrationOpen(
   isOpen: boolean,
 ): Promise<SetRegistrationResult> {
+  if (isOpen && getStaticRegistrationState(event.status)) {
+    return {
+      ok: false,
+      message:
+        "Pendaftaran tidak dapat dibuka karena kegiatan sudah tidak berada pada fase pendaftaran.",
+    };
+  }
+
   const supabase = getSupabaseAdminClient();
 
   if (!supabase) {

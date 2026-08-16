@@ -47,10 +47,10 @@ Adaptasi event mempertahankan hierarki tersebut, tetapi teks form dan informasi 
 
 Palet utama referensi:
 
-| Token | Nilai |
-|---|---|
-| Primary | `#0255F5` |
-| Primary 50 | `#EBF1FE` |
+| Token       | Nilai     |
+| ----------- | --------- |
+| Primary     | `#0255F5` |
+| Primary 50  | `#EBF1FE` |
 | Primary 100 | `#B7CFFC` |
 | Primary 200 | `#83AEFA` |
 | Primary 300 | `#4F8DF8` |
@@ -251,6 +251,91 @@ jumlah peserta, partner, hasil, atau dukungan yang belum memiliki bukti.
 - Pola visual boleh diadaptasi; logic dan dependency tidak disalin tanpa alasan.
 - Pemeriksaan akhir harus memastikan tidak ada import production yang mengarah ke `referensi-ui-dekatlokal`.
 
+## Week 2 dan Week 3 Progress Addendum
+
+Progress Pitching Mini Project, Finalisasi Action Plan, Global Communication,
+dan rangkaian Week 3 melanjutkan sistem report produksi yang sudah digunakan
+oleh Week 1 dan dua progress awal Week 2. Implementasi mempertahankan:
+
+- route dinamis `/ai-co-creation-lab-makassar/progress/[slug]`;
+- header report, breadcrumb, status, update date, report actions, dan navigasi
+  previous/next existing;
+- container `max-w-5xl`, card radius `1.5rem`, border netral, shadow ringan,
+  Poppins, label Geist Mono, serta primary blue `#0255F5`;
+- hierarki editorial berupa konteks singkat, evidence, insight, output,
+  progress description, dan next progress;
+- layout mobile-first dengan flow vertikal pada layar sempit dan grid hanya
+  ketika ruang mencukupi;
+- print treatment, focus-visible, touch target, semantic heading, serta
+  reduced-motion behavior existing.
+
+Evidence baru tidak memperkenalkan visual generatif. Pitch deck ditampilkan
+sebagai PDF asli 17 halaman dengan pratinjau click-to-load serta fallback
+view/download agar file besar tidak otomatis dimuat di mobile. Global
+Communication memakai native video player tanpa autoplay dan file MP4 asli.
+Dokumentasi Week 3 memakai foto kegiatan dan screenshot prototype aktual yang
+diberikan pemilik, bukan lagi empty state berbasis evidence pra-pelaksanaan.
+Video Global Communication tetap hanya menjadi evidence Week 2 dan tidak
+dipakai ulang sebagai video report event Week 3.
+
+Untuk menjaga status tetap jujur, report badge tetap memiliki tone eksplisit
+untuk completed, in progress, documentation/finalization, dan placeholder.
+Setelah finalisasi, lima progress Week 3 memakai state `Completed`; state lain
+tetap tersedia bagi Week 4 yang memang belum selesai. Angka pelaksanaan diberi
+label `Actual`, sedangkan target lama tidak diam-diam diubah menjadi impact.
+
+### Week 3 Finalization — 14 Agustus 2026
+
+Finalisasi mempertahankan seluruh design system report existing dan hanya
+mengganti state, copy, serta evidence yang sebelumnya belum tersedia.
+`Lead The Action` hanya menjadi tema: hub non-detail memakai route
+`/progress/week-3`, sedangkan URL lama `/progress/lead-the-action` melakukan
+permanent redirect dan tidak lagi dirender sebagai detail page. Keduanya tidak
+masuk `progressReports`. Karena itu, filter Week 3 dan navigasi previous/next
+hanya memiliki lima item:
+
+1. Meet the Leader Challenge.
+2. Leadership Conversation Report.
+3. Mini Project Implementation.
+4. Network Mobilization.
+5. Process Documentation.
+
+Kelima item menggunakan status `Completed`. `Completed · Functional` hanya
+dipakai pada konteks lima prototype; label tersebut tidak menyatakan UAT,
+deployment, handover, penggunaan berulang, atau adopsi Week 4 telah selesai.
+
+Meet the Leader dan Leadership Conversation memakai identitas serta materi
+yang diberikan pemilik: Ayu Anisela, Koordinator Utama Rumah BUMN BRI
+Makassar. Tiga visual pertemuan disajikan melalui carousel ringan dengan
+autoplay yang dapat dijeda, kontrol dot, interaksi swipe, reduced-motion
+treatment, dan link menuju folder dokumentasi sumber.
+
+Dokumentasi implementasi dikurasi agar halaman tetap ringan dan tidak menjadi
+dump seluruh folder. Struktur aset produksi terdiri dari tiga gambar Meet the
+Leader, lima screenshot prototype, dan dua belas gambar event terpilih; seluruh
+path dicatat dalam `public/week-3/media-manifest.json`. Foto memakai
+`next/image`, ukuran intrinsik, lazy loading untuk item non-hero, serta
+`object-fit: cover` dengan posisi yang menjaga subjek utama.
+
+Tidak ditemukan file video report event yang kompatibel di folder aset lokal.
+Karena itu, implementasi tidak mengganti video tersebut dengan
+`my-leadership-journey.mp4` milik Global Communication. Kategori Video Report
+tetap terhubung ke folder dokumentasi lengkap Google Drive yang diberikan
+pemilik sampai file event video terpisah tersedia sebagai aset runtime.
+
+Partner, sponsor, dan lima UMKM memakai aset logo existing atau visual usaha
+aktual yang sudah digunakan pada halaman lain. Tidak ada logo generatif, URL
+prototype rekaan, stock image, testimoni rekaan, atau perluasan klaim dukungan
+di luar peran yang diberikan pemilik.
+
+Seluruh progress bersifat unlisted: tidak ditampilkan pada landing event,
+navbar, atau sitemap, dan metadata serta header response report memakai
+`noindex, nofollow, noarchive`. Aset evidence PDF/MP4 juga memakai
+`X-Robots-Tag` untuk
+mencegah indexing langsung. URL tetap dapat dibuka melalui link yang dibagikan
+serta saling terhubung melalui navigasi report setelah pengguna masuk ke
+rangkaian progress.
+
 ## Partnership & Collaboration Addendum
 
 Halaman Partnership & Collaboration menggunakan pola report existing tanpa mengimpor runtime dari folder referensi. Implementasi mempertahankan header report, breadcrumb, status badge, card radius, spacing, page container, warna brand, typography, print treatment, serta previous dan next navigation yang sudah digunakan pada Problem Validation.
@@ -261,3 +346,52 @@ Interaksi baru dibatasi pada kebutuhan progress report:
 - Dokumentasi memakai modal gambar di dalam halaman tanpa tab baru.
 - Pratinjau PDF memakai halaman WebP vertikal yang dapat discroll.
 - Card tanpa asset gambar tidak membuat placeholder image.
+
+## Week 4 Progress Addendum
+
+Week 4 — Measure, Reflect & Sustain melanjutkan sistem report yang sama tanpa
+membuat layout atau navigasi paralel. Hub dan detail tetap memakai route datar
+`/ai-co-creation-lab-makassar/progress/[slug]`, header report, breadcrumb,
+filter week, status badge, progress description, navigasi previous/next,
+footer, serta treatment print existing. Route progress tetap unlisted, memakai
+metadata serta response header `noindex, nofollow, noarchive`, dan tidak
+ditambahkan ke sitemap. Route sengaja tetap dapat dicrawl agar crawler dapat
+membaca directive `noindex`; ini bukan access control dan link tetap harus
+dibagikan langsung.
+
+Penyajian visual Week 4 mempertahankan container `max-w-5xl`, typography,
+spacing, radius card, border, shadow, dan warna brand dari Week 1–3. Diagram
+monitoring, measurement timeline, sustainability flow, dan final journey
+memakai pola flow sederhana yang menumpuk vertikal pada mobile lalu membungkus
+secara aman ketika ruang bertambah. Progress cards, evidence cards, checklist,
+dan framework menggunakan surface serta hierarki editorial existing; tidak ada
+chart, ilustrasi AI, gradient tambahan, atau animasi dekoratif baru.
+
+Status Week 4 disampaikan melalui teks, ikon, dan tone. Navigasi hanya memakai
+checkmark hijau untuk status yang benar-benar selesai. `In Progress`, data
+collection, documentation/finalization, dan framework development tetap
+ditampilkan sebagai pekerjaan berjalan; `To Be Completed`, preparation, dan
+planned memakai state netral. Dengan demikian frasa `To Be Completed` tidak
+keliru dibaca sebagai completed hanya karena mengandung kata “completed”.
+
+Boundary evidence dan data tetap eksplisit:
+
+- lima UMKM memakai sumber data Problem Validation existing, bukan daftar nama
+  kedua;
+- 20 mahasiswa, lima UMKM, dan lima tim hanya diposisikan sebagai actual
+  kegiatan yang telah tersedia, bukan bukti impact;
+- status prototype, UAT, deployment, handover, adoption, perubahan kemampuan,
+  operational benefit, persentase, dan testimoni tidak diisi sebelum evidence
+  terverifikasi;
+- target dan actual result dipisahkan secara visual dan semantik;
+- Project Monitoring Report, Impact Report, Leadership Reflection Essay, dan
+  Final Presentation memakai empty state serta aksi nonaktif selama file belum
+  tersedia;
+- struktur Leadership Reflection tidak diisi dengan cerita personal rekaan,
+  dan Final Presentation tidak memakai dummy deck.
+
+Data journey Week 4 diselaraskan ke empat detail progress melalui evidence link
+website. Monitoring dan impact measurement tetap berstatus dalam proses,
+sedangkan leadership reflection dan final presentation tetap planned sampai
+output final tersedia. Tanggal pembaruan pada journey menunjukkan pembaruan
+struktur halaman, bukan tanggal penyelesaian atau klaim hasil.

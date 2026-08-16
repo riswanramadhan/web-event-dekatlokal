@@ -22,6 +22,10 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
+  robots: {
+    index: false,
+    follow: false,
+  },
   alternates: {
     canonical: event.routes.register,
   },
@@ -37,9 +41,12 @@ export default async function RegistrationHubPage() {
   const environmentConfigured = isSupabaseAdminConfigured();
   const submissionsAvailable = registration.isOpen && environmentConfigured;
   const showConfigurationDetails = process.env.NODE_ENV !== "production";
+  const isPostEvent = registration.statusLabel === "Pendaftaran Ditutup";
 
-  const availabilityMessage = !registration.isOpen
-    ? "Pendaftaran belum dibuka. Anda tetap dapat melihat formulir sebagai pratinjau, tetapi tombol kirim masih dinonaktifkan."
+  const availabilityMessage = isPostEvent
+    ? "Kegiatan telah selesai dan pendaftaran ditutup. Formulir tetap tersedia sebagai arsip struktur aplikasi, tetapi seluruh pengiriman dinonaktifkan."
+    : !registration.isOpen
+      ? "Pendaftaran belum dibuka. Anda tetap dapat melihat formulir sebagai pratinjau, tetapi tombol kirim masih dinonaktifkan."
     : !environmentConfigured && showConfigurationDetails
       ? "Pendaftaran belum terhubung ke Supabase. Lengkapi environment server sebelum menguji pengiriman."
       : !environmentConfigured
@@ -49,9 +56,15 @@ export default async function RegistrationHubPage() {
   return (
     <>
       <EventPageHero
-        eyebrow="Portal pendaftaran"
-        title="Mau ikut dari sisi mana?"
-        description="Datang sebagai mahasiswa problem solver atau UMKM challenge partner. Dua jalur, satu meja kolaborasi, dan satu tujuan: bikin solusi yang benar benar kepakai."
+        eyebrow={isPostEvent ? "Arsip pendaftaran" : "Portal pendaftaran"}
+        title={
+          isPostEvent ? "Pendaftaran telah ditutup." : "Mau ikut dari sisi mana?"
+        }
+        description={
+          isPostEvent
+            ? "Kegiatan utama AI Co Creation Lab Makassar telah dilaksanakan pada 10 Agustus 2026. Halaman ini dipertahankan sebagai arsip dua jalur aplikasi."
+            : "Datang sebagai mahasiswa problem solver atau UMKM challenge partner. Dua jalur, satu meja kolaborasi, dan satu tujuan: bikin solusi yang benar benar kepakai."
+        }
         status={registration.statusLabel}
         actions={
           <Link
@@ -66,21 +79,29 @@ export default async function RegistrationHubPage() {
 
       <div className="bg-surface py-12 sm:py-16 lg:py-20">
         <div className="page-container">
-          <div className="mb-8">
-            <RegistrationProgramBanner />
-          </div>
+          {!isPostEvent ? (
+            <div className="mb-8">
+              <RegistrationProgramBanner />
+            </div>
+          ) : null}
 
           <section
             aria-labelledby="registration-availability-title"
             className={`mb-8 rounded-[1.75rem] border p-5 sm:flex sm:items-start sm:gap-4 sm:p-6 ${
               submissionsAvailable
                 ? "border-emerald-200 bg-emerald-50"
-                : "border-amber-200 bg-amber-50"
+                : isPostEvent
+                  ? "border-slate-200 bg-slate-50"
+                  : "border-amber-200 bg-amber-50"
             }`}
           >
             <span
               className={`block shrink-0 ${
-                submissionsAvailable ? "text-emerald-700" : "text-amber-800"
+                submissionsAvailable
+                  ? "text-emerald-700"
+                  : isPostEvent
+                    ? "text-slate-600"
+                    : "text-amber-800"
               }`}
             >
               {submissionsAvailable ? (
@@ -101,7 +122,7 @@ export default async function RegistrationHubPage() {
               <h2
                 id="registration-availability-title"
                 className={`font-semibold text-ink ${
-                  submissionsAvailable
+                  submissionsAvailable || isPostEvent
                     ? ""
                     : "status-attention inline-flex rounded-full px-2 py-1"
                 }`}
@@ -119,18 +140,20 @@ export default async function RegistrationHubPage() {
           <section aria-labelledby="registration-path-title">
             <div className="max-w-3xl">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-                Pilih role kamu
+                {isPostEvent ? "Dua jalur aplikasi" : "Pilih role kamu"}
               </p>
               <h2
                 id="registration-path-title"
                 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-ink sm:text-4xl"
               >
-                Ambil jalur yang paling nyambung sama kontribusimu.
+                {isPostEvent
+                  ? "Lihat kembali struktur aplikasi program."
+                  : "Ambil jalur yang paling nyambung sama kontribusimu."}
               </h2>
               <p className="mt-4 text-base leading-8 text-slate-600">
-                Semua aplikasi tetap kami review supaya komposisi tim dan
-                tantangannya pas. Jadi, isi dengan jujur dan tunjukkan versi
-                terbaikmu tanpa perlu terdengar sempurna.
+                {isPostEvent
+                  ? "Formulir mahasiswa dan UMKM dapat dibuka sebagai pratinjau arsip. Data baru tidak dapat dikirim setelah kegiatan selesai."
+                  : "Semua aplikasi tetap kami review supaya komposisi tim dan tantangannya pas. Jadi, isi dengan jujur dan tunjukkan versi terbaikmu tanpa perlu terdengar sempurna."}
               </p>
             </div>
 
@@ -187,11 +210,34 @@ export default async function RegistrationHubPage() {
                 id="registration-process-title"
                 className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-ink"
               >
-                Habis submit, lanjut apa?
+                {isPostEvent
+                  ? "Bagaimana proses pendaftarannya berjalan?"
+                  : "Habis submit, lanjut apa?"}
               </h2>
             </div>
             <ol className="grid gap-4 sm:grid-cols-3">
-              {[
+              {(isPostEvent
+                ? [
+                    {
+                      number: "01",
+                      title: "Aplikasi dikirim",
+                      description:
+                        "Peserta mengisi jalur mahasiswa atau UMKM sesuai kontribusinya.",
+                    },
+                    {
+                      number: "02",
+                      title: "Seleksi dilakukan",
+                      description:
+                        "Kebutuhan, kemampuan, perangkat, dan komitmen ditinjau oleh tim.",
+                    },
+                    {
+                      number: "03",
+                      title: "Konfirmasi disampaikan",
+                      description:
+                        "Peserta terpilih dihubungi melalui email atau WhatsApp yang didaftarkan.",
+                    },
+                  ]
+                : [
                 {
                   number: "01",
                   title: "Kirim aplikasi",
@@ -210,7 +256,8 @@ export default async function RegistrationHubPage() {
                   description:
                     "Kalau terpilih, kamu kami hubungi lewat email atau WhatsApp.",
                 },
-              ].map((step) => (
+                  ]
+              ).map((step) => (
                 <li
                   key={step.number}
                   className="rounded-2xl border border-slate-200 bg-slate-50 p-4"

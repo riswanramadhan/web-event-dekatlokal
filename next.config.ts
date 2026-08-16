@@ -19,6 +19,17 @@ const nextConfig: NextConfig = {
   },
   poweredByHeader: false,
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source:
+          "/ai-co-creation-lab-makassar/progress/lead-the-action",
+        destination:
+          "/ai-co-creation-lab-makassar/progress/week-3",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
@@ -38,6 +49,44 @@ const nextConfig: NextConfig = {
           {
             key: "Referrer-Policy",
             value: "no-referrer",
+          },
+        ],
+      },
+      {
+        source: "/ai-co-creation-lab-makassar/progress/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        source: "/documents/pitching/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        source: "/media/global-communication/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        // Reserved for future public-safe Week 4 evidence. Raw monitoring,
+        // assessment, and operational records must never be placed here.
+        source: "/documents/week-4/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
           },
         ],
       },

@@ -25,7 +25,10 @@ export function buildEventJsonLd(event: EventConfig) {
     startDate,
     endDate,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-    eventStatus: "https://schema.org/EventScheduled",
+    eventStatus:
+      event.status === "completed"
+        ? "https://schema.org/EventCompleted"
+        : "https://schema.org/EventScheduled",
     location: {
       "@type": "Place",
       name: event.location.name,

@@ -39,6 +39,7 @@ import { submitUmkmRegistration } from "../actions";
 type UmkmRegistrationFormProps = {
   environmentConfigured: boolean;
   registrationOpen: boolean;
+  registrationResolved: boolean;
   showConfigurationDetails: boolean;
   successPath: string;
   turnstileSiteKey?: string;
@@ -54,6 +55,7 @@ function firstError(
 export function UmkmRegistrationForm({
   environmentConfigured,
   registrationOpen,
+  registrationResolved,
   showConfigurationDetails,
   successPath,
   turnstileSiteKey,
@@ -67,6 +69,7 @@ export function UmkmRegistrationForm({
   const startedTrackingRef = useRef(false);
   const submittedTrackingRef = useRef(false);
   const submissionsEnabled = registrationOpen && environmentConfigured;
+  const registrationClosed = !registrationOpen && registrationResolved;
 
   // Client-side mirror of the server's Zod schema: gives instant per-field
   // feedback and blocks obviously-invalid submissions before they leave the
@@ -125,8 +128,10 @@ export function UmkmRegistrationForm({
     }
   }
 
-  const unavailableMessage = !registrationOpen
-    ? "Pendaftaran UMKM belum dibuka. Formulir ini ditampilkan sebagai pratinjau dan belum dapat dikirim."
+  const unavailableMessage = registrationClosed
+    ? "Pendaftaran UMKM telah ditutup. Formulir ini hanya ditampilkan sebagai pratinjau arsip dan tidak dapat dikirim."
+    : !registrationOpen
+      ? "Pendaftaran UMKM belum dibuka. Formulir ini ditampilkan sebagai pratinjau dan belum dapat dikirim."
     : showConfigurationDetails
       ? "Pendaftaran belum terhubung ke Supabase. Lengkapi environment server untuk menguji pengiriman."
       : "Pendaftaran sedang tidak tersedia. Silakan coba lagi nanti.";
@@ -769,7 +774,9 @@ export function UmkmRegistrationForm({
           <p className="text-xs font-medium leading-5 text-slate-500">
             {submissionsEnabled
               ? "Setelah dikirim, Anda akan menerima kode pendaftaran."
-              : "Tombol kirim akan aktif setelah pendaftaran tersedia."}
+              : registrationClosed
+                ? "Pendaftaran telah ditutup dan tombol kirim dinonaktifkan."
+                : "Tombol kirim akan aktif setelah pendaftaran tersedia."}
           </p>
           <SubmitButton
             label="Kirim pendaftaran UMKM"

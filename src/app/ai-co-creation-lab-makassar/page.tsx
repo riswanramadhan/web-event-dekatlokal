@@ -14,7 +14,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { EventEcosystem } from "@/components/event/event-ecosystem";
-import { ProgressReportNavigation } from "@/components/reports";
 import { EventStatusBadge } from "@/components/ui/status-badge";
 import { aiCoCreationLabEvent as event } from "@/data/events";
 import { buildEventJsonLd } from "@/lib/event-json-ld";
@@ -95,13 +94,13 @@ const conciseFlow = [
   {
     title: "Bikin solusi bareng",
     description:
-      "Setiap tim menyusun alur kerja atau prototype sederhana bersama pelaku UMKM.",
+      "Setiap tim menyusun alur kerja atau konsep prototype sederhana bersama pelaku UMKM.",
     icon: Group,
   },
   {
     title: "Coba sampai kepakai",
     description:
-      "UMKM menguji hasil dan menerima panduan yang bisa digunakan lagi setelah kegiatan.",
+      "Pengujian, panduan penggunaan, dan tindak lanjut solusi dikonsolidasikan setelah kegiatan utama.",
     icon: CheckCircle,
   },
 ] as const;
@@ -132,7 +131,7 @@ export default async function EventLandingPage() {
               <EventStatusBadge tone="neutral">
                 {event.statusLabel}
               </EventStatusBadge>
-              <EventStatusBadge tone="amber">
+              <EventStatusBadge tone={registration.isOpen ? "amber" : "neutral"}>
                 {registration.statusLabel}
               </EventStatusBadge>
             </div>
@@ -144,42 +143,55 @@ export default async function EventLandingPage() {
               AI Co Creation Lab <span className="text-brand">Makassar</span>
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-              {participantComposition} bakal satu meja, bongkar masalah usaha
-              yang real, lalu ngeracik solusi AI yang simpel, aman, dan bisa
-              langsung dicoba.
+              {registration.isOpen
+                ? `${participantComposition} bakal satu meja, bongkar masalah usaha yang real, lalu ngeracik solusi AI yang simpel, aman, dan bisa langsung dicoba.`
+                : `${participantComposition} telah berkolaborasi untuk membedah masalah usaha nyata dan merancang solusi AI yang sederhana, aman, serta relevan.`}
             </p>
             <p className="mt-3 text-sm font-medium text-slate-800">
-              Datang bawa rasa penasaran. Pulang bawa karya yang kepakai.
+              {registration.isOpen
+                ? "Datang bawa rasa penasaran. Pulang bawa karya yang kepakai."
+                : "Kegiatan utama telah dilaksanakan pada 10 Agustus 2026."}
             </p>
 
             <div className="mt-8 grid justify-items-center gap-3 sm:flex sm:flex-wrap sm:justify-start">
-              <Link
-                href={event.routes.registerStudent}
-                className="event-cta inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(2,85,245,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:px-6"
-              >
-                Daftar sebagai Mahasiswa
-                <ArrowRight
-                  className="h-4 w-4"
-                  strokeWidth={1.9}
-                  aria-hidden="true"
-                />
-              </Link>
-              <Link
-                href={event.routes.registerUmkm}
-                className="inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-5 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 sm:px-6"
-              >
-                Daftar sebagai UMKM
-              </Link>
+              {registration.isOpen ? (
+                <>
+                  <Link
+                    href={event.routes.registerStudent}
+                    className="event-cta inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white shadow-[0_12px_28px_rgba(2,85,245,0.2)] transition hover:-translate-y-0.5 hover:bg-brand-600 sm:px-6"
+                  >
+                    Daftar sebagai Mahasiswa
+                    <ArrowRight
+                      className="h-4 w-4"
+                      strokeWidth={1.9}
+                      aria-hidden="true"
+                    />
+                  </Link>
+                  <Link
+                    href={event.routes.registerUmkm}
+                    className="inline-flex min-h-12 w-fit max-w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-5 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 sm:px-6"
+                  >
+                    Daftar sebagai UMKM
+                  </Link>
+                </>
+              ) : null}
               <a
                 href="#alur-kegiatan"
-                className="inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full px-4 text-sm font-semibold text-slate-700 underline decoration-brand-200 decoration-2 underline-offset-4 transition hover:text-brand hover:decoration-brand"
+                className={`inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full px-5 text-sm font-semibold transition sm:px-6 ${
+                  registration.isOpen
+                    ? "text-slate-700 underline decoration-brand-200 decoration-2 underline-offset-4 hover:text-brand hover:decoration-brand"
+                    : "border border-brand-200 bg-white text-brand hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50"
+                }`}
               >
-                Lihat Alur Kegiatan
+                {registration.isOpen
+                  ? "Lihat Alur Kegiatan"
+                  : "Lihat Ringkasan Kegiatan"}
               </a>
             </div>
             <p className="mt-4 text-xs leading-6 text-slate-500">
-              Pendaftaran adalah tahap aplikasi. Peserta terpilih akan
-              dikonfirmasi melalui kontak yang diberikan.
+              {registration.isOpen
+                ? "Pendaftaran adalah tahap aplikasi. Peserta terpilih akan dikonfirmasi melalui kontak yang diberikan."
+                : "Pendaftaran telah ditutup. Halaman ini dipertahankan sebagai rekam informasi program."}
             </p>
           </div>
 
@@ -221,11 +233,14 @@ export default async function EventLandingPage() {
               id="informasi-event"
               className="mt-4 text-balance text-3xl font-semibold tracking-[-0.045em] text-ink sm:text-4xl"
             >
-              Semua yang perlu kamu tahu sebelum ikut.
+              {registration.isOpen
+                ? "Semua yang perlu kamu tahu sebelum ikut."
+                : "Rangkuman pelaksanaan kegiatan."}
             </h2>
             <p className="mt-4 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">
-              Tanggal, waktu, tempat, biaya, dan kuota ditampilkan apa adanya
-              supaya kamu bisa menentukan pilihan tanpa menebak.
+              {registration.isOpen
+                ? "Tanggal, waktu, tempat, biaya, dan kuota ditampilkan apa adanya supaya kamu bisa menentukan pilihan tanpa menebak."
+                : "Tanggal, waktu, tempat, biaya, dan komposisi peserta tetap ditampilkan sebagai catatan program yang telah berlangsung."}
             </p>
           </div>
 
@@ -279,8 +294,8 @@ export default async function EventLandingPage() {
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
               Program ini tidak menjanjikan aplikasi kompleks dalam satu hari.
-              Fokusnya adalah solusi sederhana yang relevan, aman, dan bisa
-              diuji bersama.
+              Fokusnya adalah arah solusi sederhana yang relevan dan aman,
+              sementara testing serta handover dilanjutkan dan diverifikasi.
             </p>
           </div>
 
@@ -321,60 +336,47 @@ export default async function EventLandingPage() {
         supportingEcosystem={event.supportingEcosystem}
       />
 
-      <section
-        aria-labelledby="progress-report-title"
-        className="border-y border-slate-200 bg-white py-14 sm:py-20"
-      >
-        <div className="page-container">
-          <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand">
-              Progress report
-            </p>
-            <h2
-              id="progress-report-title"
-              className="mt-4 text-balance text-3xl font-semibold tracking-[-0.045em] text-ink sm:text-4xl"
-            >
-              Cek perkembangan project berdasarkan week.
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
-              Laporan dipisahkan berdasarkan Week 1 dan Week 2. Filter week
-              berikutnya akan muncul otomatis ketika laporannya sudah tersedia.
-            </p>
-          </div>
-          <ProgressReportNavigation
-            showLabel={false}
-            className="report-no-print mt-8 max-w-5xl"
-          />
-        </div>
-      </section>
-
       <section className="px-4 pb-16 sm:px-6 sm:pb-20 lg:px-12">
         <div className="mx-auto max-w-[74rem] rounded-[1.75rem] border border-brand-200 bg-brand px-6 py-10 text-white sm:px-10 lg:flex lg:items-center lg:justify-between lg:gap-12 lg:px-12">
           <div className="max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-100">
-              Pilih peranmu
+              {registration.isOpen ? "Pilih peranmu" : "Kegiatan utama selesai"}
             </p>
             <h2 className="mt-4 text-balance text-3xl font-semibold tracking-[-0.04em]">
-              Ready bikin solusi yang benar benar kepakai?
+              {registration.isOpen
+                ? "Ready bikin solusi yang benar benar kepakai?"
+                : "Kolaborasi mahasiswa dan UMKM telah dilaksanakan."}
             </h2>
             <p className="mt-3 text-sm leading-7 text-white/80">
-              Mahasiswa membawa cara pikir dan perangkat. UMKM membawa
-              tantangan usaha yang nyata. Pilih jalur yang paling sesuai.
+              {registration.isOpen
+                ? "Mahasiswa membawa cara pikir dan perangkat. UMKM membawa tantangan usaha yang nyata. Pilih jalur yang paling sesuai."
+                : "Halaman ini merangkum konteks, alur, dan ekosistem program. Pendaftaran peserta sudah ditutup."}
             </p>
           </div>
           <div className="mt-7 grid justify-items-center gap-3 sm:grid-cols-2 sm:justify-items-stretch lg:mt-0 lg:shrink-0">
-            <Link
-              href={event.routes.registerStudent}
-              className="event-cta inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-brand transition hover:bg-brand-50 sm:w-auto"
-            >
-              Daftar Mahasiswa
-            </Link>
-            <Link
-              href={event.routes.registerUmkm}
-              className="inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full border border-white/45 px-5 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10 sm:w-auto"
-            >
-              Daftar UMKM
-            </Link>
+            {registration.isOpen ? (
+              <>
+                <Link
+                  href={event.routes.registerStudent}
+                  className="event-cta inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-brand transition hover:bg-brand-50 sm:w-auto"
+                >
+                  Daftar Mahasiswa
+                </Link>
+                <Link
+                  href={event.routes.registerUmkm}
+                  className="inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full border border-white/45 px-5 text-sm font-semibold text-white transition hover:border-white hover:bg-white/10 sm:w-auto"
+                >
+                  Daftar UMKM
+                </Link>
+              </>
+            ) : (
+              <a
+                href="#alur-kegiatan"
+                className="inline-flex min-h-12 w-fit max-w-full items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-brand transition hover:bg-brand-50 sm:w-auto"
+              >
+                Lihat Alur Kegiatan
+              </a>
+            )}
           </div>
         </div>
       </section>

@@ -86,10 +86,11 @@ export const partnershipHeader = {
   weekLabel: "GEP WEEK 2",
   phase: "MEMBANGUN KOLABORASI",
   subtitle: "Membangun sistem dukungan di balik proses co-creation.",
-  status: "Pembangunan Partnership Berjalan",
+  status: "Completed — Collaboration Continues",
+  statusTone: "green" as const,
   nextStep: "Pitching Mini Project dan Finalisasi Action Plan",
-  updatedAt: "4 Agustus 2026",
-  updatedAtIso: "2026-08-04",
+  updatedAt: "12 Agustus 2026",
+  updatedAtIso: "2026-08-12",
   route:
     "/ai-co-creation-lab-makassar/progress/partnership-collaboration",
   progressUrl:
