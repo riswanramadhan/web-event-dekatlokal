@@ -2,6 +2,11 @@ import type { MetadataRoute } from "next";
 
 import { getSiteUrl } from "@/lib/site";
 
+/**
+ * `/tes/*` is deliberately absent: those URLs are handed out by the organisers
+ * during the event and are blocked in robots.ts and marked noindex. Adding or
+ * removing an unlisted route means changing all three together.
+ */
 const staticRoutes = [
   "/",
   "/events",

@@ -1,6 +1,13 @@
 "use client";
 
-import { Group, LogOut, Menu, ShieldCheck, Xmark } from "iconoir-react";
+import {
+  ClipboardCheck,
+  Group,
+  LogOut,
+  Menu,
+  ShieldCheck,
+  Xmark,
+} from "iconoir-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -12,6 +19,12 @@ const NAV_ITEMS = [
     label: "Daftar Pendaftar",
     description: "Data peserta masuk",
     icon: Group,
+  },
+  {
+    href: "/admin/assessment",
+    label: "Pre-test & Post-test",
+    description: "Soal, kontrol tes, nilai",
+    icon: ClipboardCheck,
   },
   {
     href: "/admin/users",
@@ -27,6 +40,13 @@ function isActivePath(pathname: string, href: string): boolean {
     // keep "Daftar Pendaftar" highlighted (and shown as the mobile title)
     // rather than falling back to no active item.
     return pathname === "/admin" || pathname.startsWith("/admin/registrations");
+  }
+
+  if (href === "/admin/assessment") {
+    // The question and score screens are sub-pages of this section. Without
+    // this, they lose the sidebar highlight and the mobile top bar falls back
+    // to the generic "Panel Admin" title, because it renders activeItem.label.
+    return pathname === href || pathname.startsWith("/admin/assessment/");
   }
 
   return pathname === href;
@@ -86,7 +106,8 @@ function SidebarContent({
                 </span>
                 <span
                   className={`block text-xs ${
-                    active ? "text-brand/70" : "text-slate-400"
+                    // slate-400 di atas putih hanya 2,6:1.
+                    active ? "text-brand/70" : "text-slate-500"
                   }`}
                 >
                   {item.description}
@@ -101,7 +122,7 @@ function SidebarContent({
         {registrationToggle}
 
         <div className="border-t border-slate-200 pt-4">
-          <p className="text-xs text-slate-400">Masuk sebagai</p>
+          <p className="text-xs text-slate-500">Masuk sebagai</p>
           <p className="mt-0.5 truncate text-sm font-medium text-ink">
             {adminEmail}
           </p>
@@ -216,7 +237,12 @@ export function AdminShell({
           </p>
         </header>
 
-        <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+        {/* Tautan lewati-ke-konten di root layout menunjuk ke id ini. Tanpa id,
+            tautan itu ada tapi tidak memindahkan fokus ke mana pun. */}
+        <main
+          id="main-content"
+          className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-10 lg:py-10"
+        >
           <div className="mx-auto w-full max-w-6xl">{children}</div>
         </main>
       </div>

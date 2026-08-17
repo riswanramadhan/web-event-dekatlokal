@@ -17,11 +17,19 @@ import { SiteHeader } from "./site-header";
 export function ChromeGate({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin") ?? false;
+  const isAssessmentRoute = pathname?.startsWith("/tes") ?? false;
   const isFocusedSupportRoute = pathname === "/community-support";
 
   // The admin shell renders its own <main>, so this branch must not add a
   // second one.
   if (isAdminRoute) {
+    return <div className="flex flex-1 flex-col">{children}</div>;
+  }
+
+  // The test screens are timed and single-purpose: site navigation would invite
+  // a participant out mid-attempt, and the fixed mobile bottom navigation would
+  // sit on top of the test's own sticky footer.
+  if (isAssessmentRoute) {
     return <div className="flex flex-1 flex-col">{children}</div>;
   }
 

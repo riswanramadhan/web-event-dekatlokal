@@ -159,13 +159,27 @@ export async function requireAdmin(): Promise<AdminIdentity> {
   return admin;
 }
 
+/**
+ * Must stay in sync with the `admin_audit_log_action_check` CHECK constraint.
+ * A value that is not listed there makes the insert fail, so adding an action
+ * here alone is not enough — the constraint is altered by migration.
+ */
 export type AdminAuditAction =
   | "login"
   | "login_failed"
   | "create_admin"
   | "delete_admin"
   | "open_registration"
-  | "close_registration";
+  | "close_registration"
+  | "open_assessment"
+  | "close_assessment"
+  | "update_assessment_duration"
+  | "create_question"
+  | "update_question"
+  | "delete_question"
+  | "reorder_questions"
+  | "finalize_assessment"
+  | "reset_assessment";
 
 /**
  * Best-effort audit logging: a failure here must never block the action the
