@@ -76,6 +76,11 @@ export function MediaLightbox({
   const [isInViewport, setIsInViewport] = useState(false);
   const activeItem = items[activeIndex];
   const hasMultipleItems = items.length > 1;
+  // A dot per item stops being readable once there are many of them: on a phone
+  // a 16-slide strip wraps into several rows and covers the artwork. Dense
+  // strips therefore use tighter dots and only appear once there is room for a
+  // single row. Arrows, the counter and swipe still cover navigation below that.
+  const hasDenseDots = items.length > 6;
 
   const closeDialog = useCallback(() => {
     setIsOpen(false);
@@ -481,7 +486,7 @@ export function MediaLightbox({
       </button>
 
       {showInlineNavigation && hasMultipleItems ? (
-        <div className="absolute inset-x-3 bottom-3 flex items-center justify-end gap-2">
+        <div className="absolute inset-x-3 bottom-3 z-20 flex items-center justify-end gap-2">
           <button
             type="button"
             onClick={() => move(-1)}
@@ -505,30 +510,47 @@ export function MediaLightbox({
       ) : null}
 
       {showDots && hasMultipleItems ? (
+        // The container spans the full width only so the dots stay centred. It
+        // must not capture pointer events, otherwise it covers the inline
+        // arrows sitting at the same offset. Only the dots themselves are
+        // clickable.
         <div
-          className="absolute inset-x-0 bottom-3 z-10 flex min-h-11 items-center justify-center gap-1.5 px-16"
+          className={`pointer-events-none absolute bottom-3 z-10 items-center justify-center ${
+            // Leave the right-hand strip free when the arrows are shown, so the
+            // dots never sit on top of them at any viewport width.
+            showInlineNavigation ? "left-3 right-40 px-2" : "inset-x-0 px-16"
+          } ${hasDenseDots ? "hidden min-h-9 md:flex" : "flex min-h-11"}`}
           role="group"
           aria-label={`Pilih foto ${title}`}
         >
-          {items.map((item, index) => (
-            <button
-              key={item.src}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Tampilkan foto ${index + 1} dari ${items.length}`}
-              aria-current={index === activeIndex ? "true" : undefined}
-              className="group/dot inline-flex h-11 w-8 items-center justify-center"
-            >
-              <span
-                className={`block h-2 rounded-full border border-white/80 shadow-sm transition-all ${
-                  index === activeIndex
-                    ? "w-6 bg-white"
-                    : "w-2 bg-white/55 group-hover/dot:bg-white"
+          {/* Scrim keeps the white dots legible on light images. */}
+          <span
+            className={`pointer-events-auto flex max-w-full items-center justify-center rounded-full bg-slate-900/45 px-2 backdrop-blur-sm ${
+              hasDenseDots ? "flex-nowrap gap-1" : "flex-wrap gap-1.5"
+            }`}
+          >
+            {items.map((item, index) => (
+              <button
+                key={item.src}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Tampilkan foto ${index + 1} dari ${items.length}`}
+                aria-current={index === activeIndex ? "true" : undefined}
+                className={`group/dot inline-flex items-center justify-center ${
+                  hasDenseDots ? "h-9 w-5" : "h-11 w-8"
                 }`}
-                aria-hidden="true"
-              />
-            </button>
-          ))}
+              >
+                <span
+                  className={`block h-2 rounded-full border shadow-sm transition-all ${
+                    index === activeIndex
+                      ? "w-6 border-white bg-white"
+                      : "w-2 border-white/70 bg-white/60 group-hover/dot:bg-white"
+                  }`}
+                  aria-hidden="true"
+                />
+              </button>
+            ))}
+          </span>
         </div>
       ) : null}
 

@@ -143,7 +143,7 @@ export const progressReports: readonly ProgressReportSummary[] = [
     title: "Week 4 — Measure, Reflect & Sustain",
     weekLabel: "Week 4",
     phase: "Measure, reflect & sustain",
-    status: "In Progress — Finalization Phase",
+    status: "Completed",
     route: `${progressBaseRoute}/measure-reflect-sustain`,
   },
   {
@@ -151,7 +151,7 @@ export const progressReports: readonly ProgressReportSummary[] = [
     title: "Project Monitoring Report",
     weekLabel: "Week 4",
     phase: "Measure, reflect & sustain",
-    status: "Implementation Complete · Monitoring Active",
+    status: "Completed",
     route: `${progressBaseRoute}/project-completion-monitoring`,
   },
   {
@@ -159,7 +159,7 @@ export const progressReports: readonly ProgressReportSummary[] = [
     title: "Impact & Sustainability Report",
     weekLabel: "Week 4",
     phase: "Measure, reflect & sustain",
-    status: "Impact Data Available",
+    status: "Completed",
     route: `${progressBaseRoute}/impact-measurement`,
   },
   {
@@ -175,7 +175,7 @@ export const progressReports: readonly ProgressReportSummary[] = [
     title: "Final Presentation",
     weekLabel: "Week 4",
     phase: "Measure, reflect & sustain",
-    status: "Final Deck Development",
+    status: "Completed",
     route: `${progressBaseRoute}/final-presentation`,
   },
 ];

@@ -1,4 +1,5 @@
-import { Calendar, CheckCircle, OpenNewWindow } from "iconoir-react";
+import { CheckCircle, Download, OpenNewWindow, Page } from "iconoir-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import {
@@ -6,22 +7,20 @@ import {
   behavioralOutcomeFlow,
   behavioralOutcomeStatement,
   capabilityDimensions,
+  capabilityHeadline,
   capabilityInterpretation,
-  capabilityJourney,
   capabilityStatement,
   coreVsNonCore,
   featuredReflections,
   featuredReflectionsNote,
   impactMeasurementLayers,
   impactMeasurementPrinciple,
-  instrumentRationales,
   knowledgeResult,
-  knowledgeScoringRule,
-  limitationStatement,
   measurementKitImprovements,
-  methodologicalLimitations,
+  methodologyNote,
   mixedTeamPurpose,
   pairedConsistency,
+  participantVoice,
   postProgramExperience,
   reflectionCoverage,
   reflectionThemes,
@@ -29,56 +28,57 @@ import {
 } from "@/data/gep-week-4-assessment";
 import {
   beneficiaries,
-  finalPresentationFileStatus,
+  completionFraming,
+  finalDeckAsset,
   finalPresentationHeader,
   finalPresentationOverview,
-  finalPresentationReadiness,
   finalPresentationSlides,
-  fiveMvpStatus,
-  followUpPlan,
+  fiveSystemsDelivered,
+  fiveSystemsIntro,
   fourWeekProgressFlow,
+  impactContinuity,
+  impactEvidenceFiles,
+  impactEvidenceIntro,
+  impactHeroMetrics,
   impactMeasurementHeader,
-  impactReportAvailability,
-  impactReportContents,
   impactReportPurpose,
-  implementationChallenges,
-  implementationPhases,
+  implementationChallenge,
+  implementationLifecycle,
   keyImplementationLearnings,
-  leadershipReflectionAvailability,
   leadershipReflectionEssay,
   leadershipReflectionHeader,
   leadershipReflectionOwner,
   leadershipReflectionQuestions,
+  lifecycleFlow,
   monitoringDocumentation,
   monitoringExecutiveSummary,
   monitoringPurpose,
-  monitoringReportContents,
-  mvpStatusNote,
+  monthlyMonitoring,
   nonCoreCount,
   outputVsOutcome,
   partnerNetworkGroups,
   partnerNetworkNote,
-  playbookVersioning,
+  playbookAsset,
   projectCompletionMonitoringHeader,
-  projectMonitoringReportAvailability,
   replicationInterest,
   replicationKitAssets,
   replicationKitVersion,
-  replicationStatements,
-  supportedHandoverModel,
-  supportedHandoverStatement,
+  stewardshipModel,
+  studentUniversities,
+  studentUniversitiesIntro,
   supportTeam,
   supportTeamSummary,
   sustainabilityPlan,
   sustainabilitySection,
-  targetAchievementNote,
-  targetAchievementPending,
+  sustainabilityStatement,
+  targetAchievementStatement,
   targetVsAchievement,
   teamDesignNote,
   technicalCoreCount,
-  weekFourActiveReasons,
-  weekFourBigStory,
+  umkmCoCreatorIntro,
+  umkmCoCreatorLogos,
   weekFourClosing,
+  weekFourCompletionHighlights,
   weekFourFinalNarrative,
   weekFourGuidingQuestions,
   weekFourHeader,
@@ -88,7 +88,9 @@ import {
   weekFourSecondaryCard,
   weekFourStatusOverview,
   weekFourTeamDesign,
-  type ReportAvailability,
+  whyRefinement,
+  type DownloadableAsset,
+  type LifecycleState,
 } from "@/data/gep-week-4";
 
 import {
@@ -105,12 +107,13 @@ import {
   ReportSectionCard,
   StatusChip,
 } from "./gep-progress-shared";
+import { MediaLightbox, type LightboxMediaItem } from "./media-lightbox";
 import { ResponsiveReportTable } from "./progress-report";
-import { PrintReportButton } from "./report-actions";
 
-const preTone = { label: "PRE", tone: "pre" as const };
-const postTone = { label: "POST", tone: "post" as const };
-const prePostLegend = [preTone, postTone];
+const prePostLegend = [
+  { label: "PRE", tone: "pre" as const },
+  { label: "POST", tone: "post" as const },
+];
 
 function Quote({ children }: { children: string }) {
   return (
@@ -128,64 +131,134 @@ function SectionNote({ children }: { children: string }) {
   );
 }
 
-function ReportAvailabilityCard({
-  availability,
-}: {
-  availability: ReportAvailability;
-}) {
+function AssetDownloadCard({ asset }: { asset: DownloadableAsset }) {
+  const showSeparateView = asset.viewHref !== null;
+
   return (
-    <article className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-6">
+    <article className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+      <div className="flex items-start justify-between gap-3">
+        <Page className="h-5 w-5 shrink-0 text-brand" aria-hidden="true" />
+        <span className="rounded-full border border-brand-200 bg-brand-50 px-2.5 py-1 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-brand-800">
+          {asset.kind}
+        </span>
+      </div>
+      <h3 className="mt-4 text-lg font-semibold leading-7 tracking-[-0.02em] text-ink">
+        {asset.title}
+      </h3>
+      <p className="mt-2 text-sm leading-7 text-slate-600">
+        {asset.description}
+      </p>
+      <dl className="mt-4 grid gap-2 sm:grid-cols-3">
+        {asset.meta.map((item) => (
+          <div
+            key={item.label}
+            className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2"
+          >
+            <dt className="font-mono text-[0.56rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+              {item.label}
+            </dt>
+            <dd className="mt-1 text-xs font-semibold leading-5 text-ink">
+              {item.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <div className="report-no-print mt-auto flex flex-col gap-2 pt-5 sm:flex-row sm:flex-wrap">
+        {showSeparateView ? (
+          <a
+            href={asset.viewHref ?? undefined}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand-600 sm:w-auto"
+          >
+            <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
+            {asset.viewLabel}
+            <span className="sr-only"> (terbuka di tab baru)</span>
+          </a>
+        ) : null}
+        <a
+          href={asset.downloadHref}
+          download
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 sm:w-auto"
+        >
+          <Download className="h-4 w-4" aria-hidden="true" />
+          {asset.downloadLabel}
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function PlaybookCard() {
+  return (
+    <article className="rounded-2xl border border-brand-100 bg-brand-50/50 p-5 sm:p-6">
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
         <div className="min-w-0">
-          <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-slate-500">
-            Report
+          <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-brand">
+            Replication asset
           </p>
-          <h3 className="mt-2 text-balance text-xl font-semibold leading-7 tracking-[-0.02em] text-ink">
-            {availability.title}
+          <h3 className="mt-2 text-balance text-xl font-semibold leading-7 tracking-[-0.02em] text-ink sm:text-2xl">
+            {playbookAsset.title}
           </h3>
+          <p className="mt-1 text-sm font-semibold text-brand-800">
+            {playbookAsset.subtitle}
+          </p>
         </div>
-        <StatusChip tone={availability.statusTone}>
-          {availability.status}
-        </StatusChip>
+        <StatusChip tone="green">{playbookAsset.badge}</StatusChip>
       </div>
 
       <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600">
-        {availability.description}
+        {playbookAsset.description}
       </p>
 
-      <dl className="mt-5 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
-          <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-            Report status
-          </dt>
-          <dd className="mt-1.5 text-sm font-semibold leading-6 text-ink">
-            {availability.status}
-          </dd>
-        </div>
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
-          <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-            Last updated
-          </dt>
-          <dd className="mt-1.5 flex items-center gap-2 text-sm font-semibold leading-6 text-ink">
-            <Calendar className="h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
-            {availability.lastUpdated}
-          </dd>
-        </div>
+      <dl className="mt-5 grid gap-3 sm:grid-cols-3">
+        {[
+          { label: "Version", value: playbookAsset.version },
+          { label: "Basis", value: playbookAsset.basedOn },
+          { label: "Disusun oleh", value: playbookAsset.preparedBy },
+        ].map((item) => (
+          <div
+            key={item.label}
+            className="rounded-xl border border-slate-200 bg-white px-4 py-3"
+          >
+            <dt className="font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+              {item.label}
+            </dt>
+            <dd className="mt-1.5 text-sm font-semibold leading-6 text-ink">
+              {item.value}
+            </dd>
+          </div>
+        ))}
       </dl>
 
       <div className="report-no-print mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         <a
-          href={availability.viewHref}
+          href={playbookAsset.pdfHref}
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand-600 sm:w-auto"
         >
-          {availability.viewLabel}
+          <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
+          View Playbook
+          <span className="sr-only"> (terbuka di tab baru)</span>
         </a>
-        <PrintReportButton />
+        <a
+          href={playbookAsset.pdfHref}
+          download
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 sm:w-auto"
+        >
+          <Download className="h-4 w-4" aria-hidden="true" />
+          Download PDF
+        </a>
+        <a
+          href={playbookAsset.markdownHref}
+          download
+          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand sm:w-auto"
+        >
+          <Download className="h-4 w-4" aria-hidden="true" />
+          Download Source MD
+        </a>
       </div>
-
-      <p className="mt-4 text-xs leading-6 text-slate-500">
-        {availability.fileNote}
-      </p>
     </article>
   );
 }
@@ -193,6 +266,33 @@ function ReportAvailabilityCard({
 /* -------------------------------------------------------------------------- */
 /* Hub                                                                        */
 /* -------------------------------------------------------------------------- */
+
+function CompletionFraming() {
+  return (
+    <div className="grid gap-4 md:grid-cols-2">
+      {[completionFraming.delivery, completionFraming.continuity].map(
+        (item, index) => (
+          <article
+            key={item.label}
+            className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
+          >
+            <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+              <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-brand">
+                {item.label}
+              </p>
+              <StatusChip tone={index === 0 ? "green" : "blue"}>
+                {item.status}
+              </StatusChip>
+            </div>
+            <p className="mt-3 text-sm leading-7 text-slate-600">
+              {item.description}
+            </p>
+          </article>
+        ),
+      )}
+    </div>
+  );
+}
 
 function FourWeekJourney() {
   return (
@@ -315,35 +415,12 @@ function SustainabilitySummary() {
         ))}
       </ol>
 
+      <div className="mt-7">
+        <Quote>{sustainabilityStatement}</Quote>
+      </div>
+
       <div className="mt-8 border-t border-slate-200 pt-7">
-        <h3 className="text-xl font-semibold text-ink">{replicationKitVersion}</h3>
-        <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
-          Lima aset berikut sedang disusun dari pembelajaran pilot pertama. Tidak
-          ada paket yang dinyatakan siap diunduh sebelum isinya benar-benar
-          selesai.
-        </p>
-        <ul className="mt-5 grid gap-3 md:grid-cols-2">
-          {replicationKitAssets.map((asset) => (
-            <li
-              key={asset.id}
-              className="flex min-h-14 flex-col items-start justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center"
-            >
-              <span className="font-semibold leading-6 text-ink">
-                {asset.title}
-              </span>
-              <StatusChip tone={asset.statusTone}>{asset.status}</StatusChip>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-6">
-          <Quote>{replicationInterest.statement}</Quote>
-        </div>
-        <p className="report-no-print mt-5 text-sm font-semibold text-brand">
-          <Link href={impactMeasurementHeader.route}>
-            Baca sustainability plan dan replication pathway lengkap{" "}
-            <span aria-hidden="true">→</span>
-          </Link>
-        </p>
+        <PlaybookCard />
       </div>
     </ReportSectionCard>
   );
@@ -358,36 +435,26 @@ export function WeekFourHubReportPage() {
       reflection={weekFourReportCopy.hub.reflection}
     >
       <ReportSectionCard
-        id="week-four-story"
-        eyebrow="Big Story"
-        title="The Lab is completed. The adoption journey has started."
-        description={weekFourBigStory.narrative}
-      >
-        <ProcessFlow
-          steps={weekFourBigStory.journey}
-          label="Perjalanan AI Co-Creation Lab dari discover sampai replicate"
-          tone="blue"
-        />
-        <div className="mt-7">
-          <Quote>{weekFourBigStory.statement}</Quote>
-        </div>
-      </ReportSectionCard>
-
-      <ReportSectionCard
         id="week-four-direction"
         eyebrow="Measure, Reflect & Sustain"
         title={weekFourOverview.title}
         description={weekFourOverview.description}
       >
-        <FourWeekJourney />
-        <div className="mt-7 border-t border-slate-200 pt-6">
-          <h3 className="text-lg font-semibold text-ink">
-            Mengapa Week 4 masih berstatus in progress
-          </h3>
-          <div className="mt-4">
-            <CheckList items={weekFourActiveReasons} />
-          </div>
+        <CompletionFraming />
+        <div className="mt-7">
+          <Quote>{completionFraming.statement}</Quote>
         </div>
+        <div className="mt-8 border-t border-slate-200 pt-6">
+          <CheckList items={weekFourCompletionHighlights} />
+        </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="week-four-journey"
+        eyebrow="Program Journey"
+        title="Empat Minggu Global Experience Program"
+      >
+        <FourWeekJourney />
       </ReportSectionCard>
 
       <ReportSectionCard
@@ -428,7 +495,6 @@ export function WeekFourHubReportPage() {
         id="week-four-status"
         eyebrow="Current Status"
         title="Week 4 Status Overview"
-        description="Status setiap deliverable ditulis apa adanya. Bagian yang belum selesai tidak ditampilkan sebagai output final."
       >
         <StatusRows />
       </ReportSectionCard>
@@ -480,20 +546,27 @@ export function WeekFourHubReportPage() {
             </li>
           ))}
         </ol>
+
+        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {weekFourFinalNarrative.pillars.map((pillar) => (
+            <article
+              key={pillar.title}
+              className="rounded-2xl border border-slate-200 bg-white p-5"
+            >
+              <h3 className="font-semibold leading-6 text-ink">
+                {pillar.title}
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                {pillar.description}
+              </p>
+            </article>
+          ))}
+        </div>
+
         <div className="mt-7 space-y-4">
           <Quote>{weekFourClosing.statement}</Quote>
           <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-5 sm:p-6">
-            <ul className="space-y-2">
-              {weekFourFinalNarrative.closingLines.map((line) => (
-                <li
-                  key={line}
-                  className="text-base font-semibold leading-7 text-brand-900"
-                >
-                  {line}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-5 text-lg font-semibold tracking-[-0.02em] text-ink">
+            <p className="text-lg font-semibold tracking-[-0.02em] text-ink">
               {weekFourFinalNarrative.tagline}
             </p>
             <p className="mt-1 text-sm font-semibold text-brand">
@@ -510,149 +583,145 @@ export function WeekFourHubReportPage() {
 /* Project monitoring report                                                  */
 /* -------------------------------------------------------------------------- */
 
-const phaseToneByStatus = {
+const lifecycleToneByState: Record<
+  LifecycleState,
+  "green" | "blue" | "neutral"
+> = {
   Completed: "green",
-  Active: "amber",
-  Next: "neutral",
-} as const;
+  "Post-Program Continuity": "blue",
+  "Structured Transition": "blue",
+  "Sustainability Mechanism": "blue",
+};
 
-function ImplementationPhases() {
+function ImplementationLifecycle() {
   return (
-    <ol className="grid gap-4 md:grid-cols-2">
-      {implementationPhases.map((phase) => (
-        <li
-          key={phase.number}
-          className="flex h-full flex-col rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <span className="font-mono text-sm font-semibold text-brand">
-              {phase.number}
-            </span>
-            <StatusChip tone={phaseToneByStatus[phase.status]}>
-              {phase.status}
-            </StatusChip>
-          </div>
-          <h3 className="mt-4 text-lg font-semibold leading-7 text-ink">
-            {phase.title}
-          </h3>
-          <ul className="mt-3 space-y-2">
-            {phase.details.map((detail) => (
-              <li
-                key={detail}
-                className="flex gap-3 text-sm leading-7 text-slate-600"
-              >
-                <span
-                  className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
-                  aria-hidden="true"
-                />
-                <span>{detail}</span>
-              </li>
-            ))}
-          </ul>
-        </li>
-      ))}
-    </ol>
+    <>
+      <ProcessFlow
+        steps={lifecycleFlow}
+        label="Siklus implementasi dari validasi masalah sampai monitoring bulanan"
+        tone="green"
+      />
+      <ol className="mt-7 grid gap-4 md:grid-cols-2">
+        {implementationLifecycle.map((stage) => (
+          <li
+            key={stage.number}
+            className="flex h-full flex-col rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <span className="font-mono text-sm font-semibold text-brand">
+                {stage.number}
+              </span>
+              <StatusChip tone={lifecycleToneByState[stage.state]}>
+                {stage.state}
+              </StatusChip>
+            </div>
+            <h3 className="mt-4 text-lg font-semibold leading-7 text-ink">
+              {stage.title}
+            </h3>
+            <p className="mt-2 text-sm leading-7 text-slate-600">
+              {stage.description}
+            </p>
+          </li>
+        ))}
+      </ol>
+    </>
   );
 }
 
-function MvpStatusCards() {
+function SystemsDelivered() {
   return (
     <div className="grid gap-5">
-      {fiveMvpStatus.map((mvp) => (
+      {fiveSystemsDelivered.map((system) => (
         <article
-          key={mvp.id}
-          className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5 sm:p-6"
+          key={system.id}
+          className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
         >
-          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
-            <div className="min-w-0">
-              <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.12em] text-brand">
-                MVP {mvp.number}
-              </p>
-              <h3 className="mt-2 text-xl font-semibold leading-7 text-ink">
-                {mvp.businessName}
-              </h3>
-              <p className="mt-1.5 text-sm font-semibold leading-6 text-slate-700">
-                {mvp.solution}
-              </p>
-            </div>
-            <StatusChip tone={mvp.statusTone}>{mvp.status}</StatusChip>
-          </div>
-          <ul className="mt-5 space-y-2">
-            {mvp.condition.map((item) => (
-              <li
-                key={item}
-                className="flex gap-3 text-sm leading-7 text-slate-600"
-              >
-                <CheckCircle
-                  className="mt-1.5 h-4 w-4 shrink-0 text-brand"
-                  aria-hidden="true"
-                />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 rounded-xl border border-slate-200 bg-white p-3 text-sm leading-6 text-slate-700">
-            <span className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-              Next
-            </span>
-            <span className="mt-1 block">{mvp.next}</span>
-          </p>
-        </article>
-      ))}
-    </div>
-  );
-}
+          <div className="grid gap-0 lg:grid-cols-[1.15fr_1fr]">
+            <div className="p-5 sm:p-6">
+              <div className="flex items-center gap-3">
+                <span className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5">
+                  <Image
+                    src={system.logo.src}
+                    alt={system.logo.alt}
+                    width={system.logo.width}
+                    height={system.logo.height}
+                    className="h-full w-full object-contain"
+                    sizes="48px"
+                  />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-brand">
+                    System {system.number}
+                  </p>
+                  <h3 className="text-lg font-semibold leading-7 text-ink">
+                    {system.businessName}
+                  </h3>
+                </div>
+              </div>
 
-function ImplementationChallenges() {
-  return (
-    <div className="grid gap-5">
-      {implementationChallenges.map((challenge) => (
-        <article
-          key={challenge.number}
-          className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5 sm:p-6"
-        >
-          <span className="font-mono text-sm font-semibold text-brand">
-            Challenge {challenge.number}
-          </span>
-          <h3 className="mt-3 text-xl font-semibold leading-7 text-ink">
-            {challenge.title}
-          </h3>
-          <p className="mt-3 text-sm leading-7 text-slate-600">
-            {challenge.context}
-          </p>
-          <dl className="mt-5 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-              <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-                Response
-              </dt>
-              <dd className="mt-2 text-sm leading-7 text-slate-600">
-                {challenge.response}
-              </dd>
+              <p className="mt-4 text-sm font-semibold leading-6 text-brand-800">
+                {system.solution}
+              </p>
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                {system.problemSolved}
+              </p>
+
+              <div className="mt-4">
+                <StatusChip tone="green">{system.status}</StatusChip>
+              </div>
+
+              <ul className="mt-4 space-y-2">
+                {system.continuity.map((item) => (
+                  <li
+                    key={item}
+                    className="flex gap-3 text-sm leading-7 text-slate-600"
+                  >
+                    <CheckCircle
+                      className="mt-1.5 h-4 w-4 shrink-0 text-brand"
+                      aria-hidden="true"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <dl className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-slate-50/60 px-4 py-3">
+                  <dt className="font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                    Steward
+                  </dt>
+                  <dd className="mt-1.5 text-sm font-semibold leading-6 text-ink">
+                    {system.steward}
+                  </dd>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50/60 px-4 py-3">
+                  <dt className="font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                    DekatLokal
+                  </dt>
+                  <dd className="mt-1.5 text-sm font-semibold leading-6 text-ink">
+                    {system.dekatlokalRole}
+                  </dd>
+                </div>
+              </dl>
             </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-              <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-                Lesson
-              </dt>
-              <dd
-                className={`mt-2 text-sm leading-7 ${
-                  challenge.lessonIsQuote
-                    ? "font-semibold text-brand-900"
-                    : "text-slate-600"
-                }`}
-              >
-                {challenge.lesson}
-              </dd>
+
+            <div className="border-t border-slate-200 bg-slate-50 p-4 sm:p-5 lg:border-l lg:border-t-0">
+              <p className="mb-3 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                Solution documentation
+              </p>
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <Image
+                  src={system.screenshot.src}
+                  alt={system.screenshot.alt}
+                  width={system.screenshot.width}
+                  height={system.screenshot.height}
+                  loading="lazy"
+                  className="h-auto w-full object-cover"
+                  sizes="(max-width: 1023px) calc(100vw - 3rem), 40vw"
+                />
+              </div>
             </div>
-          </dl>
-          {challenge.extra ? (
-            <div className="mt-4">
-              <ProcessFlow
-                steps={challenge.extra}
-                label={`Tindak lanjut ${challenge.title}`}
-                tone="slate"
-              />
-            </div>
-          ) : null}
+          </div>
         </article>
       ))}
     </div>
@@ -668,18 +737,10 @@ export function ProjectCompletionMonitoringReportPage() {
       reflection={weekFourReportCopy.monitoring.reflection}
     >
       <ReportSectionCard
-        id="monitoring-purpose"
-        eyebrow="Purpose"
-        title="Apa yang Dicatat Laporan Ini"
-        description={monitoringPurpose}
-      >
-        <CheckList items={monitoringReportContents} />
-      </ReportSectionCard>
-
-      <ReportSectionCard
         id="monitoring-executive-summary"
         eyebrow="Executive Summary"
-        title="Ringkasan Pelaksanaan"
+        title="Implementation Delivered, Continuity Secured"
+        description={monitoringPurpose}
       >
         <div className="space-y-4">
           {monitoringExecutiveSummary.paragraphs.map((paragraph) => (
@@ -697,101 +758,63 @@ export function ProjectCompletionMonitoringReportPage() {
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="implementation-progress"
-        eyebrow="Implementation Progress"
-        title="Delapan Fase Pelaksanaan"
-        description="Enam fase telah selesai, satu fase sedang berjalan, dan dua fase berikutnya belum dimulai. Status ditulis apa adanya per fase."
-      >
-        <ImplementationPhases />
-      </ReportSectionCard>
-
-      <ReportSectionCard
-        id="five-mvp-status"
-        eyebrow="Five MVP Status"
-        title="Status Aktual Lima Functional MVP"
-        description={mvpStatusNote}
-      >
-        <MvpStatusCards />
-      </ReportSectionCard>
-
-      <ReportSectionCard
         id="target-vs-achievement"
-        eyebrow="Target vs Achievement"
+        eyebrow="Target Achievement"
         title="Capaian terhadap Target Awal"
       >
         <ResponsiveReportTable
-          headers={["Indicator", "Target", "Actual"]}
+          headers={["Indicator", "Target", "Achievement"]}
           rows={targetVsAchievement.map((row) => [
             row.indicator,
             row.target,
-            row.actual,
+            row.achievement,
           ])}
           align={["left", "right", "right"]}
           label="Tabel target dan capaian AI Co-Creation Lab Makassar"
         />
-        <div className="mt-7">
-          <h3 className="text-lg font-semibold text-ink">
-            Belum diukur — menunggu pelaksanaan
-          </h3>
-          <ul className="mt-4 grid gap-3 md:grid-cols-3">
-            {targetAchievementPending.map((row) => (
-              <li
-                key={row.indicator}
-                className="rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-4"
-              >
-                <p className="font-semibold leading-6 text-ink">
-                  {row.indicator}
-                </p>
-                <p className="mt-1 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-                  Target {row.target}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {row.status}
-                </p>
-              </li>
-            ))}
-          </ul>
+        <div className="mt-6">
+          <Quote>{targetAchievementStatement}</Quote>
         </div>
-        <SectionNote>{targetAchievementNote}</SectionNote>
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="implementation-challenges"
-        eyebrow="Challenges"
-        title="Empat Kendala dan Cara Menanganinya"
+        id="implementation-lifecycle"
+        eyebrow="Implementation Journey"
+        title="Dari Validasi Masalah sampai Monitoring Bulanan"
+        description="Lima tahap pertama telah dituntaskan sebagai bagian dari GEP. Tiga tahap berikutnya adalah mekanisme keberlanjutan yang berjalan setelah program formal selesai."
       >
-        <ImplementationChallenges />
+        <ImplementationLifecycle />
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="key-learnings"
-        eyebrow="Key Learnings"
-        title="Lima Pembelajaran Utama Implementasi"
+        id="five-systems-delivered"
+        eyebrow="Solution Documentation"
+        title={fiveSystemsIntro.title}
+        description={fiveSystemsIntro.description}
       >
-        <NumberedEditorialList items={keyImplementationLearnings} />
+        <SystemsDelivered />
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="follow-up-plan"
-        eyebrow="Follow-Up Plan"
-        title="Rencana Tindak Lanjut"
-        description="Urutan ini menjadi acuan kerja DekatLokal setelah laporan ini terbit."
+        id="why-refinement"
+        eyebrow="Responsible Deployment"
+        title={whyRefinement.title}
+        description={whyRefinement.lead}
       >
-        <ProcessFlow
-          steps={followUpPlan}
-          label="Rencana tindak lanjut setelah implementation day"
-          tone="blue"
-        />
+        <CheckList items={whyRefinement.protects} />
+        <div className="mt-7">
+          <Quote>{whyRefinement.statement}</Quote>
+        </div>
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="supported-handover"
-        eyebrow="Supported Handover"
-        title="Siapa Bertanggung Jawab atas Apa"
-        description="Handover tidak diperlakukan sebagai penyerahan sekali jalan, melainkan sebagai pembagian peran yang berkelanjutan."
+        id="stewardship-model"
+        eyebrow="Stewardship"
+        title={stewardshipModel.title}
+        description={stewardshipModel.description}
       >
-        <div className="grid gap-4 md:grid-cols-2">
-          {supportedHandoverModel.map((role) => (
+        <div className="grid gap-4 md:grid-cols-3">
+          {stewardshipModel.roles.map((role) => (
             <article
               key={role.number}
               className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
@@ -822,19 +845,52 @@ export function ProjectCompletionMonitoringReportPage() {
             </article>
           ))}
         </div>
+
+        <ul className="mt-7 grid gap-3 md:grid-cols-2">
+          {fiveSystemsDelivered.map((system) => (
+            <li
+              key={system.id}
+              className="flex min-h-14 flex-col items-start justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 sm:flex-row sm:items-center"
+            >
+              <span className="font-semibold leading-6 text-ink">
+                {system.businessName}
+              </span>
+              <StatusChip
+                tone={system.stewardKind === "student" ? "green" : "blue"}
+              >
+                {system.steward}
+              </StatusChip>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-7 grid gap-4 lg:grid-cols-2">
+          {stewardshipModel.statements.map((statement) => (
+            <Quote key={statement.slice(0, 30)}>{statement}</Quote>
+          ))}
+        </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="monthly-monitoring"
+        eyebrow="Sustainability Mechanism"
+        title={monthlyMonitoring.title}
+        description={monthlyMonitoring.description}
+      >
+        <CheckList items={monthlyMonitoring.items} />
         <div className="mt-7">
-          <Quote>{supportedHandoverStatement}</Quote>
+          <Quote>{monthlyMonitoring.statement}</Quote>
         </div>
       </ReportSectionCard>
 
       <ReportSectionCard
         id="monitoring-documentation"
-        eyebrow="Documentation"
-        title="Dokumentasi Kegiatan"
+        eyebrow="Project Documentation"
+        title={monitoringDocumentation.title}
         description={monitoringDocumentation.description}
       >
         <div className="flex flex-wrap gap-2">
-          {monitoringDocumentation.coverage.map((item) => (
+          {monitoringDocumentation.categories.map((item) => (
             <span
               key={item}
               className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600"
@@ -853,7 +909,10 @@ export function ProjectCompletionMonitoringReportPage() {
                   rel="noopener noreferrer"
                   className="flex min-h-12 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-brand transition hover:border-brand hover:bg-brand-50"
                 >
-                  <OpenNewWindow className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <OpenNewWindow
+                    className="h-4 w-4 shrink-0"
+                    aria-hidden="true"
+                  />
                   {link.label}
                   <span className="sr-only"> (terbuka di tab baru)</span>
                 </a>
@@ -872,11 +931,44 @@ export function ProjectCompletionMonitoringReportPage() {
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="monitoring-report-file"
-        eyebrow="Report"
-        title="Project Monitoring Report"
+        id="key-learnings"
+        eyebrow="Implementation Learnings"
+        title="Enam Pembelajaran Utama"
       >
-        <ReportAvailabilityCard availability={projectMonitoringReportAvailability} />
+        <NumberedEditorialList items={keyImplementationLearnings} />
+        <article className="mt-7 rounded-2xl border border-slate-200 bg-slate-50/55 p-5 sm:p-6">
+          <h3 className="text-lg font-semibold leading-7 text-ink">
+            {implementationChallenge.title}
+          </h3>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            {implementationChallenge.context}
+          </p>
+          <dl className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 bg-white p-4">
+              <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                Response
+              </dt>
+              <dd className="mt-2 text-sm leading-7 text-slate-600">
+                {implementationChallenge.response}
+              </dd>
+            </div>
+            <div className="rounded-xl border border-slate-200 bg-white p-4">
+              <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                Recommended replication model
+              </dt>
+              <dd className="mt-2 text-sm leading-7 text-slate-600">
+                {implementationChallenge.lesson}
+              </dd>
+            </div>
+          </dl>
+          <div className="mt-4">
+            <ProcessFlow
+              steps={implementationChallenge.flow}
+              label="Format dua hari yang direkomendasikan untuk replikasi"
+              tone="slate"
+            />
+          </div>
+        </article>
       </ReportSectionCard>
     </GepProgressReportShell>
   );
@@ -885,6 +977,117 @@ export function ProjectCompletionMonitoringReportPage() {
 /* -------------------------------------------------------------------------- */
 /* Impact & sustainability report                                             */
 /* -------------------------------------------------------------------------- */
+
+function HeroMetrics() {
+  return (
+    <>
+      <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {impactHeroMetrics.delivery.map((metric) => (
+          <div
+            key={metric.label}
+            className="rounded-2xl border border-brand-100 bg-brand-50/50 p-5"
+          >
+            <dt className="sr-only">{metric.label}</dt>
+            <dd>
+              <span className="block text-3xl font-semibold tracking-[-0.04em] text-brand-900">
+                {metric.value}
+              </span>
+              <span className="mt-2 block text-sm font-semibold leading-6 text-slate-700">
+                {metric.label}
+              </span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {impactHeroMetrics.learning.map((metric) => (
+          <div
+            key={metric.label}
+            className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5"
+          >
+            <dt className="sr-only">{metric.label}</dt>
+            <dd>
+              <span className="block text-2xl font-semibold tracking-[-0.03em] text-ink">
+                {metric.value}
+              </span>
+              <span className="mt-2 block text-sm font-semibold leading-6 text-slate-700">
+                {metric.label}
+              </span>
+              <span className="mt-1 block text-xs leading-5 text-slate-500">
+                {metric.caption}
+              </span>
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </>
+  );
+}
+
+function UniversityStrip() {
+  return (
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {studentUniversities.map((university) => (
+        <li
+          key={university.id}
+          className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4"
+        >
+          <span className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5">
+            <Image
+              src={university.logo.src}
+              alt={`Logo ${university.name}`}
+              width={university.logo.width}
+              height={university.logo.height}
+              className="h-full w-full object-contain"
+              sizes="56px"
+            />
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold leading-6 text-ink">
+              {university.name}
+            </p>
+            <p className="mt-0.5 text-xs font-semibold text-brand-800">
+              {university.students} mahasiswa
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function UmkmStrip() {
+  return (
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {umkmCoCreatorLogos.map((coCreator) => (
+        <li
+          key={coCreator.id}
+          className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4"
+        >
+          <span className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5">
+            <Image
+              src={coCreator.visual.src}
+              alt={coCreator.visual.alt}
+              width={coCreator.visual.width}
+              height={coCreator.visual.height}
+              className="h-full w-full object-contain"
+              sizes="56px"
+            />
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold leading-6 text-ink">
+              {coCreator.name}
+            </p>
+            <p className="mt-0.5 text-xs font-semibold text-brand-800">
+              {coCreator.label}
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 function KnowledgeChart() {
   return (
@@ -950,7 +1153,6 @@ function CapabilityChart() {
           },
         ],
       }))}
-      footnote="Nilai Likert tidak dikonversi menjadi persentase. Angka 4.72 dibaca sebagai 4.72 dari 5, bukan 94.4%."
     />
   );
 }
@@ -1024,7 +1226,7 @@ function StewardChart() {
       id: item.id,
       label: item.label,
       value: item.count,
-      display: `${item.count} · ${item.share}`,
+      display: `${item.count} peserta`,
       tone: "solid" as const,
     }),
   );
@@ -1089,12 +1291,12 @@ export function ImpactMeasurementReportPage() {
       reflection={weekFourReportCopy.impact.reflection}
     >
       <ReportSectionCard
-        id="impact-purpose"
-        eyebrow="Purpose"
-        title="Apa yang Dicatat Laporan Ini"
+        id="impact-headline"
+        eyebrow="Impact at a Glance"
+        title="Delivered and Measured"
         description={impactReportPurpose}
       >
-        <CheckList items={impactReportContents} />
+        <HeroMetrics />
       </ReportSectionCard>
 
       <ReportSectionCard
@@ -1124,33 +1326,41 @@ export function ImpactMeasurementReportPage() {
             <p className="mt-2 text-sm leading-7 text-slate-600">
               {beneficiaries.umkm.description}
             </p>
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {beneficiaries.umkm.names.map((name) => (
-                <li
-                  key={name}
-                  className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600"
-                >
-                  {name}
-                </li>
-              ))}
-            </ul>
           </article>
         </div>
         <SectionNote>{beneficiaries.separationNote}</SectionNote>
       </ReportSectionCard>
 
       <ReportSectionCard
+        id="student-universities"
+        eyebrow="Students"
+        title={studentUniversitiesIntro.title}
+        description={studentUniversitiesIntro.description}
+      >
+        <UniversityStrip />
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="umkm-co-creators"
+        eyebrow="UMKM"
+        title={umkmCoCreatorIntro.title}
+        description={umkmCoCreatorIntro.description}
+      >
+        <UmkmStrip />
+      </ReportSectionCard>
+
+      <ReportSectionCard
         id="team-design"
         eyebrow="Team Design"
-        title="Lima Tim Campuran, Tujuh Technical Core"
+        title="Lima Tim Campuran"
         description={mixedTeamPurpose.description}
       >
         <TeamDesign />
         <div className="mt-7 border-t border-slate-200 pt-6">
           <p className="text-sm leading-7 text-slate-600">
             Komposisi kohort: {technicalCoreCount} technical core dan{" "}
-            {nonCoreCount} non-core dari total{" "}
-            {assessmentCohort.participants} peserta.
+            {nonCoreCount} non-core dari total {assessmentCohort.participants}{" "}
+            peserta.
           </p>
           <div className="mt-4">
             <ProcessFlow
@@ -1192,63 +1402,13 @@ export function ImpactMeasurementReportPage() {
             </article>
           ))}
         </div>
-      </ReportSectionCard>
-
-      <ReportSectionCard
-        id="instrument-design"
-        eyebrow="Instrument Design"
-        title="Mengapa Instrumennya Disusun Seperti Ini"
-        description="Setiap keputusan desain instrumen dijelaskan bersama batasannya, agar hasilnya dibaca sesuai kekuatan alat ukurnya."
-      >
-        <div className="grid gap-4">
-          {instrumentRationales.map((item) => (
-            <article
-              key={item.id}
-              className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
-            >
-              <span className="font-mono text-sm font-semibold text-brand">
-                {item.number}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold leading-7 text-ink">
-                {item.question}
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
-                {item.summary}
-              </p>
-              <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                {item.points.map((point) => (
-                  <li
-                    key={point}
-                    className="flex gap-3 text-sm leading-6 text-slate-600"
-                  >
-                    <span
-                      className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
-                      aria-hidden="true"
-                    />
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-              {item.note ? (
-                <p className="mt-4 rounded-xl border border-slate-200 bg-white p-3 text-xs leading-6 text-slate-600">
-                  {item.note}
-                </p>
-              ) : null}
-            </article>
-          ))}
-        </div>
-        <div className="mt-7 border-t border-slate-200 pt-6">
-          <h3 className="text-lg font-semibold text-ink">
-            Journey yang diukur item capability
-          </h3>
-          <div className="mt-4">
-            <ProcessFlow
-              steps={capabilityJourney}
-              label="Journey capability dari memahami pengguna sampai komunikasi"
-              tone="blue"
-            />
-          </div>
-          <SectionNote>{knowledgeScoringRule}</SectionNote>
+        <div className="mt-7 rounded-2xl border border-slate-200 bg-slate-50/60 p-5">
+          <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+            {methodologyNote.title}
+          </p>
+          <p className="mt-2 text-sm leading-7 text-slate-600">
+            {methodologyNote.text}
+          </p>
         </div>
       </ReportSectionCard>
 
@@ -1280,19 +1440,11 @@ export function ImpactMeasurementReportPage() {
         <div className="mt-6">
           <KnowledgeChart />
         </div>
-        <ul className="mt-6 space-y-2">
-          {knowledgeResult.interpretation.map((item) => (
-            <li key={item} className="flex gap-3 text-sm leading-7 text-slate-600">
-              <span
-                className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
-                aria-hidden="true"
-              />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
         <div className="mt-6">
           <Quote>{knowledgeResult.headline}</Quote>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            {knowledgeResult.supporting}
+          </p>
         </div>
       </ReportSectionCard>
 
@@ -1305,7 +1457,7 @@ export function ImpactMeasurementReportPage() {
         <CapabilityChart />
         <div className="mt-6">
           <ResponsiveReportTable
-            headers={["Dimension", "PRE", "POST", "Change"]}
+            headers={["Dimension", "Pre", "Post", "Gain"]}
             rows={capabilityDimensions.map((dimension) => [
               dimension.label,
               dimension.pre.toFixed(2),
@@ -1319,6 +1471,9 @@ export function ImpactMeasurementReportPage() {
         <p className="mt-6 text-sm leading-8 text-slate-600 sm:text-base">
           {capabilityInterpretation}
         </p>
+        <div className="mt-6">
+          <Quote>{capabilityHeadline}</Quote>
+        </div>
 
         <div className="mt-8 border-t border-slate-200 pt-7">
           <h3 className="text-xl font-semibold text-ink">
@@ -1345,7 +1500,6 @@ export function ImpactMeasurementReportPage() {
           <p className="mt-4 text-sm leading-7 text-slate-600">
             {pairedConsistency.note}
           </p>
-          <SectionNote>{pairedConsistency.reading}</SectionNote>
         </div>
       </ReportSectionCard>
 
@@ -1353,7 +1507,7 @@ export function ImpactMeasurementReportPage() {
         id="core-vs-non-core"
         eyebrow="Result C · Inclusion"
         title={coreVsNonCore.title}
-        description={coreVsNonCore.label}
+        description={coreVsNonCore.lead}
       >
         <CoreVsNonCoreCharts />
         <p className="mt-6 text-sm leading-8 text-slate-600 sm:text-base">
@@ -1362,7 +1516,7 @@ export function ImpactMeasurementReportPage() {
         <div className="mt-6">
           <Quote>{coreVsNonCore.headline}</Quote>
         </div>
-        <SectionNote>{coreVsNonCore.disclaimer}</SectionNote>
+        <SectionNote>{coreVsNonCore.methodologyNote}</SectionNote>
       </ReportSectionCard>
 
       <ReportSectionCard
@@ -1381,6 +1535,9 @@ export function ImpactMeasurementReportPage() {
           align={["left", "right", "right"]}
           label="Tabel indikator pengalaman pasca-program"
         />
+        <div className="mt-6">
+          <Quote>{postProgramExperience.headline}</Quote>
+        </div>
       </ReportSectionCard>
 
       <ReportSectionCard
@@ -1390,9 +1547,15 @@ export function ImpactMeasurementReportPage() {
         description={stewardIntention.question}
       >
         <StewardChart />
-        <ul className="mt-6 space-y-2">
+        <div className="mt-6">
+          <Quote>{stewardIntention.headline}</Quote>
+        </div>
+        <ul className="mt-5 space-y-2">
           {stewardIntention.interpretation.map((item) => (
-            <li key={item} className="flex gap-3 text-sm leading-7 text-slate-600">
+            <li
+              key={item}
+              className="flex gap-3 text-sm leading-7 text-slate-600"
+            >
               <span
                 className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
                 aria-hidden="true"
@@ -1405,61 +1568,106 @@ export function ImpactMeasurementReportPage() {
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="qualitative-reflection"
-        eyebrow="Result F · Qualitative"
-        title={`Refleksi ${reflectionCoverage.completed}/${reflectionCoverage.total} Peserta`}
-        description={reflectionCoverage.method}
+        id="behavioral-outcome"
+        eyebrow="Result F · Behavioral Output"
+        title="Apa yang Benar-Benar Dibangun"
       >
-        <div className="grid gap-4">
-          {reflectionThemes.map((theme) => (
-            <article
-              key={theme.number}
-              className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
-            >
-              <span className="font-mono text-sm font-semibold text-brand">
-                {theme.number}
-              </span>
-              <h3 className="mt-3 text-lg font-semibold leading-7 text-ink">
-                {theme.title}
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
-                {theme.description}
-              </p>
-              {theme.before && theme.after ? (
-                <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-xl border border-slate-200 bg-white p-4">
-                    <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-                      Sebelum
-                    </p>
-                    <ul className="mt-2 space-y-1.5">
-                      {theme.before.map((item) => (
-                        <li key={item} className="text-sm leading-6 text-slate-600">
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="rounded-xl border border-brand-100 bg-brand-50/60 p-4">
-                    <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-brand">
-                      Sesudah
-                    </p>
-                    <ul className="mt-2 space-y-1.5">
-                      {theme.after.map((item) => (
-                        <li key={item} className="text-sm leading-6 text-brand-900">
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              ) : null}
-            </article>
-          ))}
+        <ProcessFlow
+          steps={behavioralOutcomeFlow}
+          label="Alur output perilaku dari peserta sampai serah terima"
+          tone="green"
+        />
+        <div className="mt-7">
+          <Quote>{behavioralOutcomeStatement}</Quote>
         </div>
+        <div className="mt-8 grid gap-5 lg:grid-cols-3">
+          <article className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5">
+            <h3 className="font-semibold leading-6 text-ink">Output</h3>
+            <ul className="mt-3 space-y-2">
+              {outputVsOutcome.output.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-7 text-slate-600"
+                >
+                  <CheckCircle
+                    className="mt-1.5 h-4 w-4 shrink-0 text-brand"
+                    aria-hidden="true"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+          <article className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5">
+            <h3 className="font-semibold leading-6 text-ink">
+              Outcome — Students
+            </h3>
+            <ul className="mt-3 space-y-2">
+              {outputVsOutcome.studentOutcome.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-7 text-slate-600"
+                >
+                  <CheckCircle
+                    className="mt-1.5 h-4 w-4 shrink-0 text-brand"
+                    aria-hidden="true"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+          <article className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5">
+            <h3 className="font-semibold leading-6 text-ink">
+              Outcome — UMKM
+            </h3>
+            <ul className="mt-3 space-y-2">
+              {outputVsOutcome.umkmOutcome.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-7 text-slate-600"
+                >
+                  <CheckCircle
+                    className="mt-1.5 h-4 w-4 shrink-0 text-brand"
+                    aria-hidden="true"
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="participant-voice"
+        eyebrow="Participant Voice"
+        title={participantVoice.title}
+        description={participantVoice.description}
+      >
+        <ul className="grid gap-3 sm:grid-cols-2">
+          {participantVoice.transformations.map((item) => (
+            <li
+              key={item.from}
+              className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/60 px-4 py-3"
+            >
+              <span className="text-sm leading-6 text-slate-500 line-through decoration-slate-300">
+                {item.from}
+              </span>
+              <span aria-hidden="true" className="font-mono text-slate-400">
+                →
+              </span>
+              <span className="text-sm font-semibold leading-6 text-brand-900">
+                {item.to}
+              </span>
+            </li>
+          ))}
+        </ul>
 
         <div className="mt-8 border-t border-slate-200 pt-7">
           <h3 className="text-xl font-semibold text-ink">
-            Featured participant reflections
+            Refleksi {reflectionCoverage.completed}/{reflectionCoverage.total}{" "}
+            peserta
           </h3>
           <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
             {featuredReflectionsNote}
@@ -1475,7 +1683,7 @@ export function ImpactMeasurementReportPage() {
                     {reflection.name}
                   </p>
                   <span className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-slate-500">
-                    Parafrase
+                    Insight
                   </span>
                 </div>
                 <p className="mt-1 text-xs font-semibold text-slate-500">
@@ -1488,133 +1696,117 @@ export function ImpactMeasurementReportPage() {
             ))}
           </ul>
         </div>
-      </ReportSectionCard>
 
-      <ReportSectionCard
-        id="behavioral-outcome"
-        eyebrow="Behavioral Output"
-        title="Apa yang Benar-Benar Dibangun"
-      >
-        <ProcessFlow
-          steps={behavioralOutcomeFlow}
-          label="Alur output perilaku dari peserta sampai supported handover"
-          tone="green"
-        />
-        <div className="mt-7">
-          <Quote>{behavioralOutcomeStatement}</Quote>
-        </div>
-      </ReportSectionCard>
-
-      <ReportSectionCard
-        id="output-vs-outcome"
-        eyebrow="Output vs Outcome"
-        title="Memisahkan Hasil Kegiatan dari Perubahan"
-      >
-        <div className="grid gap-5 lg:grid-cols-3">
-          <article className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5">
-            <h3 className="font-semibold leading-6 text-ink">Output</h3>
-            <ul className="mt-3 space-y-2">
-              {outputVsOutcome.output.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-7 text-slate-600">
-                  <CheckCircle
-                    className="mt-1.5 h-4 w-4 shrink-0 text-brand"
-                    aria-hidden="true"
-                  />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </article>
-          <article className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5">
-            <h3 className="font-semibold leading-6 text-ink">
-              Early outcome — Students
-            </h3>
-            <ul className="mt-3 space-y-2">
-              {outputVsOutcome.studentOutcome.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-7 text-slate-600">
-                  <CheckCircle
-                    className="mt-1.5 h-4 w-4 shrink-0 text-brand"
-                    aria-hidden="true"
-                  />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </article>
-          <article className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5">
-            <h3 className="font-semibold leading-6 text-ink">
-              Early outcome — UMKM
-            </h3>
-            <ul className="mt-3 space-y-2">
-              {outputVsOutcome.umkmOutcome.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-7 text-slate-600">
-                  <CheckCircle
-                    className="mt-1.5 h-4 w-4 shrink-0 text-brand"
-                    aria-hidden="true"
-                  />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </article>
-        </div>
-
-        <div className="mt-7 rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 p-5">
-          <h3 className="font-semibold leading-6 text-ink">
-            Longer-term outcome to monitor
+        <div className="mt-8 border-t border-slate-200 pt-7">
+          <h3 className="text-xl font-semibold text-ink">
+            Tema refleksi peserta
           </h3>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-            {outputVsOutcome.longerTerm.map((item) => (
-              <li
-                key={item}
-                className="flex items-start justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-700"
+          <div className="mt-5 grid gap-4">
+            {reflectionThemes.map((theme) => (
+              <article
+                key={theme.number}
+                className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
               >
-                <span>{item}</span>
-                <span className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-slate-500">
-                  Not yet
+                <span className="font-mono text-sm font-semibold text-brand">
+                  {theme.number}
                 </span>
-              </li>
+                <h4 className="mt-3 text-lg font-semibold leading-7 text-ink">
+                  {theme.title}
+                </h4>
+                <p className="mt-2 text-sm leading-7 text-slate-600">
+                  {theme.description}
+                </p>
+                {theme.before && theme.after ? (
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-xl border border-slate-200 bg-white p-4">
+                      <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                        Sebelum
+                      </p>
+                      <ul className="mt-2 space-y-1.5">
+                        {theme.before.map((item) => (
+                          <li
+                            key={item}
+                            className="text-sm leading-6 text-slate-600"
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="rounded-xl border border-brand-100 bg-brand-50/60 p-4">
+                      <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-brand">
+                        Sesudah
+                      </p>
+                      <ul className="mt-2 space-y-1.5">
+                        {theme.after.map((item) => (
+                          <li
+                            key={item}
+                            className="text-sm leading-6 text-brand-900"
+                          >
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ) : null}
+              </article>
             ))}
-          </ul>
-          <p className="mt-4 text-xs leading-6 text-slate-600">
-            {outputVsOutcome.longerTermNote}
-          </p>
+          </div>
         </div>
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="methodological-limitations"
-        eyebrow="Limitations"
-        title="Keterbatasan Metodologi"
-        description="Batasan ini ditulis agar hasil di atas tidak dibaca melebihi kekuatan datanya."
+        id="impact-evidence-files"
+        eyebrow="Evidence"
+        title={impactEvidenceIntro.title}
+        description={impactEvidenceIntro.description}
       >
-        <ul className="space-y-2">
-          {methodologicalLimitations.map((item) => (
-            <li key={item} className="flex gap-3 text-sm leading-7 text-slate-600">
-              <span
-                className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400"
-                aria-hidden="true"
-              />
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-6">
-          <Quote>{limitationStatement}</Quote>
+        <div className="flex justify-start">
+          <StatusChip tone="green">
+            {impactEvidenceIntro.reflectionCoverage}
+          </StatusChip>
         </div>
+        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+          {impactEvidenceFiles.map((asset) => (
+            <AssetDownloadCard key={asset.id} asset={asset} />
+          ))}
+        </div>
+        <SectionNote>{impactEvidenceIntro.privacyNote}</SectionNote>
       </ReportSectionCard>
 
       <ReportSectionCard
         id="measurement-kit-improvement"
         eyebrow="Measurement Kit"
-        title="Perbaikan untuk Versi Replikasi"
-        description="Keterbatasan di atas diterjemahkan menjadi perubahan konkret pada instrumen versi berikutnya."
+        title="Instrumen untuk Versi Replikasi"
+        description="Pembelajaran dari pilot diterjemahkan menjadi perubahan konkret pada instrumen versi berikutnya."
       >
         <div className="grid gap-4 md:grid-cols-2">
           {measurementKitImprovements.map((item) => (
             <article
               key={item.title}
               className="rounded-2xl border border-slate-200 bg-white p-5"
+            >
+              <h3 className="font-semibold leading-6 text-ink">{item.title}</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                {item.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="impact-continuity"
+        eyebrow="Continuity"
+        title={impactContinuity.title}
+        description={impactContinuity.lead}
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          {impactContinuity.items.map((item) => (
+            <article
+              key={item.title}
+              className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
             >
               <h3 className="font-semibold leading-6 text-ink">{item.title}</h3>
               <p className="mt-2 text-sm leading-7 text-slate-600">
@@ -1667,13 +1859,16 @@ export function ImpactMeasurementReportPage() {
             </article>
           ))}
         </div>
+        <div className="mt-7">
+          <Quote>{sustainabilityStatement}</Quote>
+        </div>
       </ReportSectionCard>
 
       <ReportSectionCard
         id="replication-interest"
         eyebrow="Replication"
         title={replicationInterest.title}
-        description={replicationInterest.description}
+        description={replicationInterest.lead}
       >
         <div className="flex justify-start">
           <StatusChip tone="blue">{replicationInterest.label}</StatusChip>
@@ -1697,6 +1892,7 @@ export function ImpactMeasurementReportPage() {
         <div className="mt-7">
           <Quote>{replicationInterest.statement}</Quote>
         </div>
+        <SectionNote>{replicationInterest.caution}</SectionNote>
       </ReportSectionCard>
 
       <ReportSectionCard
@@ -1705,23 +1901,16 @@ export function ImpactMeasurementReportPage() {
         title={replicationKitVersion}
         description="Lima aset yang menjadikan pilot pertama dapat dijalankan kembali oleh pihak lain."
       >
-        <div className="grid gap-4 md:grid-cols-2">
+        <PlaybookCard />
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
           {replicationKitAssets.map((asset) => (
             <article
               key={asset.id}
               className="rounded-2xl border border-slate-200 bg-white p-5"
             >
-              <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
-                <div className="min-w-0">
-                  <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-                    {asset.number} · {asset.title}
-                  </p>
-                  <h3 className="mt-2 font-semibold leading-6 text-ink">
-                    {asset.name}
-                  </h3>
-                </div>
-                <StatusChip tone={asset.statusTone}>{asset.status}</StatusChip>
-              </div>
+              <p className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                {asset.number} · {asset.title}
+              </p>
               <p className="mt-3 text-sm leading-7 text-slate-600">
                 {asset.description}
               </p>
@@ -1737,33 +1926,6 @@ export function ImpactMeasurementReportPage() {
               </ul>
             </article>
           ))}
-        </div>
-
-        <div className="mt-8 border-t border-slate-200 pt-7">
-          <h3 className="text-xl font-semibold text-ink">Playbook versioning</h3>
-          <ul className="mt-4 grid gap-3 md:grid-cols-3">
-            {playbookVersioning.map((version) => (
-              <li
-                key={version.version}
-                className="rounded-2xl border border-slate-200 bg-slate-50/55 p-4"
-              >
-                <p className="font-mono text-sm font-semibold text-brand">
-                  {version.version}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {version.description}
-                </p>
-                <p className="mt-3 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-slate-500">
-                  {version.status}
-                </p>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
-            {replicationStatements.map((statement) => (
-              <Quote key={statement.slice(0, 30)}>{statement}</Quote>
-            ))}
-          </div>
         </div>
       </ReportSectionCard>
 
@@ -1827,14 +1989,6 @@ export function ImpactMeasurementReportPage() {
             ))}
           </ul>
         </div>
-      </ReportSectionCard>
-
-      <ReportSectionCard
-        id="impact-report-file"
-        eyebrow="Report"
-        title="Impact & Sustainability Report"
-      >
-        <ReportAvailabilityCard availability={impactReportAvailability} />
       </ReportSectionCard>
     </GepProgressReportShell>
   );
@@ -1912,14 +2066,6 @@ export function LeadershipReflectionReportPage() {
           ))}
         </ol>
       </ReportSectionCard>
-
-      <ReportSectionCard
-        id="reflection-file"
-        eyebrow="Report"
-        title="Leadership Reflection Essay"
-      >
-        <ReportAvailabilityCard availability={leadershipReflectionAvailability} />
-      </ReportSectionCard>
     </GepProgressReportShell>
   );
 }
@@ -1928,28 +2074,35 @@ export function LeadershipReflectionReportPage() {
 /* Final presentation                                                         */
 /* -------------------------------------------------------------------------- */
 
-function PresentationReadiness() {
+// No `label` on purpose: each slide already carries its own title and footer,
+// so an overlay chip would sit on top of the artwork.
+const deckSlides: readonly LightboxMediaItem[] = finalPresentationSlides.map(
+  (slide) => ({
+    src: `${finalDeckAsset.slideBasePath}/slide-${slide.number}.webp`,
+    width: 1920,
+    height: 1080,
+    alt: `Slide ${slide.number} — ${slide.title}: ${slide.headline}`,
+  }),
+);
+
+function DeckViewer() {
   return (
-    <ReportSectionCard
-      id="final-presentation-readiness"
-      eyebrow="Readiness"
-      title="Final Presentation Readiness"
-      description="Checklist ini mengukur kesiapan materi per bagian, bukan menyatakan bahwa file deck sudah selesai."
-    >
-      <ul className="grid gap-3 md:grid-cols-2">
-        {finalPresentationReadiness.map((item) => (
-          <li
-            key={item.title}
-            className="flex min-h-16 flex-col items-start justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/60 p-4 sm:flex-row sm:items-center"
-          >
-            <span className="font-semibold leading-6 text-ink">
-              {item.title}
-            </span>
-            <StatusChip tone={item.tone}>{item.status}</StatusChip>
-          </li>
-        ))}
-      </ul>
-    </ReportSectionCard>
+    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-900">
+      <MediaLightbox
+        title={finalDeckAsset.title}
+        items={deckSlides}
+        mode="document"
+        downloadUrl={finalDeckAsset.pdfHref}
+        downloadLabel="Download PDF"
+        triggerLabel="Buka slide dalam mode layar penuh"
+        triggerClassName="relative block w-full overflow-hidden bg-slate-900"
+        imageClassName="h-auto w-full object-contain"
+        sizes="(max-width: 1023px) calc(100vw - 3rem), 60rem"
+        showInlineNavigation
+        showDots
+        enableSwipe
+      />
+    </div>
   );
 }
 
@@ -1963,6 +2116,50 @@ export function FinalPresentationReportPage() {
       outputs={weekFourReportCopy.finalPresentation.outputs}
       reflection={weekFourReportCopy.finalPresentation.reflection}
     >
+      <ReportSectionCard
+        id="final-presentation-deck"
+        eyebrow="Deck"
+        title={finalDeckAsset.title}
+        description={finalDeckAsset.description}
+      >
+        <div className="flex flex-wrap items-center gap-3">
+          <StatusChip tone={finalDeckAsset.statusTone}>
+            {finalDeckAsset.status}
+          </StatusChip>
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-slate-600">
+            {finalDeckAsset.kind}
+          </span>
+          <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-slate-600">
+            {finalDeckAsset.slideCount} slide · {finalDeckAsset.ratio}
+          </span>
+        </div>
+
+        <div className="mt-6">
+          <DeckViewer />
+        </div>
+
+        <div className="report-no-print mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          <a
+            href={finalDeckAsset.pdfHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-brand-600 sm:w-auto"
+          >
+            <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
+            View Deck
+            <span className="sr-only"> (terbuka di tab baru)</span>
+          </a>
+          <a
+            href={finalDeckAsset.pdfHref}
+            download
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand transition hover:-translate-y-0.5 hover:border-brand hover:bg-brand-50 sm:w-auto"
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            Download PDF
+          </a>
+        </div>
+      </ReportSectionCard>
+
       <ReportSectionCard
         id="final-presentation-structure"
         eyebrow="GEP Final Presentation"
@@ -2004,51 +2201,6 @@ export function FinalPresentationReportPage() {
             </li>
           ))}
         </ol>
-        <SectionNote>{finalPresentationOverview.note}</SectionNote>
-      </ReportSectionCard>
-
-      <PresentationReadiness />
-
-      <ReportSectionCard
-        id="final-presentation-file"
-        eyebrow="Deck File"
-        title={finalPresentationFileStatus.title}
-      >
-        <article className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 sm:p-6">
-          <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
-            <p className="max-w-2xl text-sm leading-7 text-slate-600">
-              {finalPresentationFileStatus.description}
-            </p>
-            <StatusChip tone={finalPresentationFileStatus.statusTone}>
-              {finalPresentationFileStatus.status}
-            </StatusChip>
-          </div>
-          <dl className="mt-5 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
-              <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-                Deck status
-              </dt>
-              <dd className="mt-1.5 text-sm font-semibold leading-6 text-ink">
-                {finalPresentationFileStatus.status}
-              </dd>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
-              <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
-                Last updated
-              </dt>
-              <dd className="mt-1.5 flex items-center gap-2 text-sm font-semibold leading-6 text-ink">
-                <Calendar
-                  className="h-4 w-4 shrink-0 text-brand"
-                  aria-hidden="true"
-                />
-                {finalPresentationFileStatus.lastUpdated}
-              </dd>
-            </div>
-          </dl>
-          <p className="mt-4 text-xs leading-6 text-slate-500">
-            {finalPresentationFileStatus.note}
-          </p>
-        </article>
       </ReportSectionCard>
     </GepProgressReportShell>
   );

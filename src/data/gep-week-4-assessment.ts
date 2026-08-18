@@ -172,9 +172,11 @@ export const knowledgeResult = {
     "Sebelas peserta lainnya masih memiliki room to improve, dan seluruhnya mencapai 100 pada post-test.",
   ],
   headline:
-    "11 of 11 participants who still had room to improve on the knowledge check reached full mastery in the post-test, while the other nine had already achieved the maximum score at baseline.",
+    "11 of 11 participants with room to improve reached the maximum post-test score.",
+  supporting:
+    "Nine additional participants had already achieved the maximum score at baseline.",
   wordingGuard:
-    "Angka ini adalah 100% average score pada four-item core knowledge check, bukan pernyataan bahwa kemampuan mahasiswa sudah 100%.",
+    "Nilai ini adalah rata-rata skor pada core knowledge check empat soal, dibaca pada skala 0-100.",
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -237,7 +239,10 @@ export const capabilityStatement =
   "Average self-reported capability increased from 3.27 to 4.72 on a five-point scale.";
 
 export const capabilityInterpretation =
-  "Peningkatan terbesar tidak berada pada penggunaan AI, melainkan pada Testing, Collaboration & Confidence. Dampak paling terasa justru pada kemampuan berinteraksi dengan pengguna nyata, bekerja dalam tim, menguji hasil, dan memercayai kemampuan sendiri.";
+  "Pergeseran terkuat muncul pada Testing, Collaboration & Confidence. Ini sejalan dengan desain program karena peserta memang dituntut bekerja bersama UMKM nyata, menegosiasikan lingkup, menguji asumsi, membangun dalam tim campuran, dan mempresentasikan solusi kepada penggunanya langsung.";
+
+export const capabilityHeadline =
+  "The impact was not limited to learning about AI. It strengthened how participants worked with people, problems, and feedback.";
 
 export const pairedConsistency = {
   title: "Paired Participant Consistency",
@@ -284,10 +289,11 @@ export const coreVsNonCore = {
       capabilityGain: "+1.63",
     },
   ],
+  lead: "The mixed-team design allowed technical capability to function as shared scaffolding rather than an exclusive skill silo.",
   interpretation:
-    "Non-core participants entered with a substantially lower baseline but showed a larger self-reported capability gain. The post-program gap became substantially smaller.",
-  disclaimer:
-    "Pola ini konsisten dengan niat peer-learning di balik desain mixed team, tetapi tidak membuktikan bahwa pencampuran tim adalah penyebab peningkatan, karena pilot ini tidak menggunakan randomized control group.",
+    "Non-core participants entered with a substantially lower baseline and showed a larger capability gain. By the end of the Lab, the gap between technical and non-technical participants had narrowed considerably.",
+  methodologyNote:
+    "This is pilot-level paired cohort evidence and is not a randomized causal comparison.",
   headline: "Technical talent acted as an anchor, not a silo.",
 } as const;
 
@@ -317,7 +323,9 @@ export const mixedTeamPurpose = {
 
 export const postProgramExperience = {
   label: "Post-program experience indicators",
-  note: "Empat item ini bersifat post-only sehingga tidak memiliki pembanding pre-test dan tidak dilaporkan sebagai learning gain.",
+  note: "Empat item ini bersifat post-only sehingga mengukur pengalaman yang belum terjadi sebelum program berlangsung.",
+  headline:
+    "All 20 participants selected Agree or Strongly Agree across all four post-program experience indicators.",
   agreementLabel: "Agree + Strongly Agree",
   items: [
     {
@@ -361,14 +369,16 @@ export const stewardIntention = {
     { id: "mungkin", label: "Mungkin", count: 10, share: "50%" },
     { id: "tidak-bersedia", label: "Tidak Bersedia", count: 3, share: "15%" },
   ],
+  headline:
+    "Seven participants expressed clear willingness to continue as technical stewards, creating a sufficient talent pool for the five-system support model.",
   interpretation: [
-    "Tujuh peserta — 35% — menyatakan explicit willingness untuk melanjutkan.",
-    "Sepuluh peserta lain — 50% — masih terbuka terhadap kemungkinan tersebut.",
+    "Tujuh peserta menyatakan kesediaan yang jelas untuk melanjutkan.",
+    "Sepuluh peserta lain masih terbuka terhadap keterlibatan berikutnya.",
   ],
   wordingGuard:
-    "Jawaban Sangat Bersedia dan Bersedia tidak digabungkan dengan Mungkin. Program ini tidak melaporkan 85% bersedia.",
+    "Jawaban Sangat Bersedia dan Bersedia tidak digabungkan dengan Mungkin.",
   sustainabilityNote:
-    "Sustainability model membutuhkan sekitar lima steward. Penugasan final per team belum dinyatakan karena proses penunjukan belum dilakukan.",
+    "Tiga sistem berjalan dengan student technical steward dan dua sistem ditangani langsung tim teknis DekatLokal.",
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -454,7 +464,7 @@ export const featuredReflections: readonly FeaturedReflection[] = [
     name: "Syalwah",
     team: "Team 4 — Kira Kira Michi",
     insight:
-      "Solusi perlu dirancang dari sudut pandang pengguna dan diuji lebih dahulu; pembangun tidak boleh merasa paling memahami kebutuhan UMKM.",
+      "Solusi perlu dirancang dari sudut pandang pengguna dan diuji lebih dahulu. Pembangun tidak boleh merasa paling memahami kebutuhan UMKM.",
   },
   {
     id: "muhammad-makbul-n",
@@ -513,16 +523,28 @@ export const behavioralOutcomeFlow = [
 export const behavioralOutcomeStatement =
   "We measured what students understood, how capable they felt, what they experienced, and what they actually managed to build with real users.";
 
-export const methodologicalLimitations = [
-  "n=20 adalah full cohort program ini, bukan sampel representatif seluruh mahasiswa Makassar.",
-  "Tidak ada control group, sehingga perubahan tidak dapat diklaim sebagai efek kausal program.",
-  "Item capability bersifat self-report, bukan pengukuran kinerja objektif.",
-  "Knowledge check empat item memiliki ceiling effect dan sensitivitas terbatas.",
-  "Kemampuan jangka panjang belum terbukti tanpa follow-up setelah program.",
-] as const;
+/**
+ * Satu catatan metodologi ringkas untuk seluruh halaman impact. Catatan ini
+ * sengaja tidak diulang pada setiap bagian hasil.
+ */
+export const methodologyNote = {
+  title: "Methodology note",
+  text: "Seluruh angka berasal dari full cohort 20 peserta dengan perbandingan pre dan post berpasangan per orang. Knowledge diukur pada skala 0-100 melalui empat soal objektif, sedangkan capability dan pengalaman pasca-program adalah penilaian peserta terhadap dirinya sendiri pada skala 1-5 dan tidak pernah dipersentasekan.",
+  statement:
+    "This is pilot-level paired cohort evidence and is not a randomized causal comparison.",
+} as const;
 
-export const limitationStatement =
-  "Results are interpreted as pilot-level evidence, not population-level causal proof.";
+export const participantVoice = {
+  title: "Quantitative Results, Backed by Participant Voice",
+  description:
+    "Tema yang paling sering muncul pada refleksi tertulis peserta, dirangkum dari 20 jawaban.",
+  transformations: [
+    { from: "AI untuk tugas", to: "AI untuk masalah nyata" },
+    { from: "Asumsi", to: "Mendengarkan pengguna" },
+    { from: "Kompleksitas", to: "MVP yang berguna" },
+    { from: "Sekali bangun", to: "Uji dan perbaiki" },
+  ],
+} as const;
 
 export const measurementKitImprovements = [
   {
