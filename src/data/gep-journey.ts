@@ -511,22 +511,23 @@ const journeyActivityDefinitions = [
   {
     slug: "monitoring",
     week: 4,
-    title: "Project Completion & Monitoring",
+    title: "Project Monitoring Report",
     shortDescription:
-      "Menuntaskan pekerjaan terbuka dan menyiapkan pemantauan solusi dari final UAT hingga adopsi.",
+      "Merekam capaian implementasi, status lima MVP setelah initial UAT, dan rencana tindak lanjut sampai monitoring adopsi.",
     progressDescription:
-      "Project Completion & Monitoring sedang berjalan setelah kegiatan utama 10 Agustus 2026. Halaman Week 4 menyiapkan kerangka Prototype Review, Improvement, User Acceptance Testing, Deployment, Handover, dan Adoption Monitoring untuk lima solusi. Status final per solusi, hasil UAT, deployment, handover, dan adopsi belum dinyatakan karena data monitoring masih menunggu verifikasi setelah final UAT.",
+      "Project Monitoring Report telah disusun setelah kegiatan utama 10 Agustus 2026. Laporan memuat delapan fase implementasi, status aktual lima functional MVP yang seluruhnya telah melewati initial UAT, capaian terhadap target awal, empat kendala beserta responsnya, lima pembelajaran utama, model supported handover, dan rencana tindak lanjut. Technical refinement sedang berjalan, sedangkan supported handover serta monitoring H+7 dan H+30 belum dilakukan sehingga status adopsi belum diisi.",
     output: [
-      "Kerangka enam tahap penyelesaian dan monitoring.",
-      "Struktur monitoring untuk lima UMKM dari data existing.",
-      "Placeholder status, masalah, improvement, dan notes per solusi.",
-      "Ruang Project Monitoring Report yang belum diisi file palsu.",
+      "Executive summary pelaksanaan dan kelanjutannya setelah event.",
+      "Delapan fase implementasi dengan status Completed, Active, dan Next.",
+      "Status aktual lima functional MVP setelah initial UAT.",
+      "Tabel target dan capaian dengan baris adopsi yang dipisahkan.",
+      "Model supported handover empat peran dan rencana tindak lanjut.",
     ],
     status: "in_progress",
-    updatedAt: "13 Agustus 2026",
+    updatedAt: "18 Agustus 2026",
     evidence: [
       {
-        label: "Progress Project Completion & Monitoring Week 4",
+        label: "Project Monitoring Report Week 4",
         href: "/ai-co-creation-lab-makassar/progress/project-completion-monitoring",
         type: "website",
       },
@@ -537,23 +538,23 @@ const journeyActivityDefinitions = [
   {
     slug: "impact-measurement",
     week: 4,
-    title: "Impact Measurement",
+    title: "Impact & Sustainability Report",
     shortDescription:
-      "Mengukur perubahan mahasiswa dan UMKM tanpa mencampur target dengan hasil aktual.",
+      "Mengukur perubahan mahasiswa, mencatat outcome awal UMKM, dan menyiapkan jalur keberlanjutan serta replikasi.",
     progressDescription:
-      "Pengukuran dampak sedang berjalan. Data aktual kegiatan utama mencatat 20 mahasiswa, lima UMKM, dan lima co-creation teams; angka partisipasi ini tetap dipisahkan dari hasil perubahan. Data confidence dan kemampuan mahasiswa, penyelesaian prototype, testing, usability, adoption, operational benefit, kepuasan, dan testimoni belum dinyatakan sebagai impact final sampai pengumpulan serta follow-up H+7, H+14, dan H+30 selesai diverifikasi.",
+      "Impact & Sustainability Report telah disusun dari assessment aktual 20 peserta: knowledge check pada skala 0-100 meningkat dari 71.25 menjadi 100, self-reported capability pada skala Likert 1-5 meningkat dari 3.27 menjadi 4.72, dan seluruh peserta mengisi refleksi tertulis. Hasil dilaporkan sebagai pilot-level evidence dengan keterbatasan yang ditulis terbuka. Outcome adopsi jangka panjang UMKM belum ditandai tercapai karena supported handover serta monitoring H+7 dan H+30 belum dilakukan.",
     output: [
-      "Kerangka impact mahasiswa dan UMKM.",
-      "Timeline pengukuran mahasiswa serta follow-up UMKM.",
-      "Indikator potensial untuk lima UMKM tanpa angka rekaan.",
-      "Area Planned Target dan Actual Result yang dipisahkan.",
-      "Ruang Impact Report dengan status Being Prepared.",
+      "Kerangka pengukuran enam lapis tanpa satu skor akhir.",
+      "Hasil knowledge dan self-reported capability beserta interpretasinya.",
+      "Perbandingan technical core dan non-core dengan disclaimer metodologis.",
+      "Analisis tematik refleksi 20 peserta.",
+      "Sustainability plan empat lapis dan kerangka Replication Kit v1.0.",
     ],
     status: "in_progress",
-    updatedAt: "13 Agustus 2026",
+    updatedAt: "18 Agustus 2026",
     evidence: [
       {
-        label: "Progress Impact Measurement Week 4",
+        label: "Impact & Sustainability Report Week 4",
         href: "/ai-co-creation-lab-makassar/progress/impact-measurement",
         type: "website",
       },
@@ -568,17 +569,18 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menyiapkan struktur refleksi atas proses membangun, memimpin, mendengar, dan berkolaborasi.",
     progressDescription:
-      "Struktur Leadership Reflection telah disiapkan, tetapi refleksi final Riswan Ramadhan belum ditulis. Konten personal baru akan dilengkapi setelah project monitoring agar pembelajaran tentang keputusan, tantangan, jejaring, ketidakpastian, feedback, dan arah kepemimpinan berikutnya tetap berbasis pengalaman yang dapat dipertanggungjawabkan.",
+      "Leadership Reflection Essay telah selesai ditulis Riswan Ramadhan dan dipublikasikan dalam sembilan bagian: ide yang membesar ketika melibatkan banyak orang, belajar meminta bantuan dan mendelegasikan, tantangan membangun jejaring yang ternyata lebih sulit daripada persoalan teknis, alasan membentuk mixed team, kelanjutan setelah event, perubahan cara memandang impact, munculnya minat replikasi, hal yang masih perlu dipelajari, dan arah berikutnya.",
     output: [
-      "Tujuh bagian reflection yang siap diisi.",
-      "Prompt tema untuk membantu penulisan berbasis pengalaman.",
-      "Ruang Leadership Reflection Essay dengan status To Be Uploaded.",
+      "Esai refleksi kepemimpinan sembilan bagian.",
+      "Pembelajaran tentang delegasi dan kolaborasi lintas stakeholder.",
+      "Hubungan antara keputusan mixed team dan hasil assessment.",
+      "Komitmen kelanjutan setelah program berakhir.",
     ],
-    status: "planned",
-    updatedAt: "13 Agustus 2026",
+    status: "completed",
+    updatedAt: "18 Agustus 2026",
     evidence: [
       {
-        label: "Struktur Leadership Reflection Week 4",
+        label: "Leadership Reflection Essay Week 4",
         href: "/ai-co-creation-lab-makassar/progress/leadership-reflection",
         type: "website",
       },
@@ -593,14 +595,14 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Menyiapkan struktur presentasi lengkap perjalanan AI Co-Creation Lab Makassar.",
     progressDescription:
-      "Final Presentation masih dalam tahap preparation. Halaman Week 4 menyiapkan outline sepuluh bagian wajib dan readiness checklist, tetapi tidak membuat final deck atau menyatakan impact dan refleksi telah selesai. File presentasi baru akan dihubungkan setelah materi, evidence, impact measurement, leadership reflection, dan sustainability plan selesai diverifikasi.",
+      "Final Presentation berada pada tahap penyusunan deck. Struktur 16 slide telah ditetapkan dan seluruh materi isinya sudah tersedia melalui Project Monitoring Report, Impact & Sustainability Report, dan Leadership Reflection. Readiness checklist memisahkan bagian yang materinya siap dari file deck yang masih dikerjakan; tidak ada file presentasi kosong yang diunggah sebagai pengganti.",
     output: [
-      "Outline sepuluh bagian Final Presentation.",
-      "Readiness checklist yang membedakan available, in progress, dan pending.",
-      "Ruang file presentasi tanpa dummy deck.",
+      "Struktur 16 slide Final Presentation.",
+      "Readiness checklist per bagian materi.",
+      "Rujukan sumber data untuk setiap slide impact.",
     ],
-    status: "planned",
-    updatedAt: "13 Agustus 2026",
+    status: "in_progress",
+    updatedAt: "18 Agustus 2026",
     evidence: [
       {
         label: "Struktur Final Presentation Week 4",
