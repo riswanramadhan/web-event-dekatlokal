@@ -80,7 +80,6 @@ body {
   color: var(--ink);
   font-family: var(--font-poppins), system-ui, sans-serif;
   text-rendering: optimizeLegibility;
-  animation: global-background-drift 36s ease-in-out infinite alternate;
 }
 
 ::selection {
@@ -157,29 +156,6 @@ summary {
   overflow: hidden !important;
 }
 
-@keyframes global-background-drift {
-  from {
-    background-position:
-      center top,
-      -18rem -20rem,
-      calc(100% + 18rem) calc(100% + 18rem),
-      0 0;
-  }
-
-  to {
-    background-position:
-      center top,
-      -12rem -16rem,
-      calc(100% + 11rem) calc(100% + 13rem),
-      24px 12px;
-  }
-}
-
-html:not(.aos-ready) [data-aos] {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
 @keyframes status-attention-pulse {
   0%,
   100% {
@@ -243,54 +219,19 @@ html:not(.aos-ready) [data-aos] {
   }
 }
 
-@keyframes route-progress-run {
-  0% {
-    transform: translateX(-120%) scaleX(0.55);
-  }
-
-  55% {
-    transform: translateX(120%) scaleX(0.95);
-  }
-
-  100% {
-    transform: translateX(320%) scaleX(0.45);
-  }
-}
-
-@keyframes route-loader-turn {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes page-loader-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes page-loader-core-pulse {
-  0%,
-  100% {
-    transform: scale(0.92);
-    opacity: 0.72;
-  }
-
-  50% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
 @keyframes route-page-enter {
   from {
-    opacity: 0.92;
-    transform: translateY(0.5rem);
+    opacity: 0.82;
   }
 
   to {
     opacity: 1;
-    transform: translateY(0);
+  }
+}
+
+@keyframes loading-skeleton-shimmer {
+  to {
+    transform: translateX(100%);
   }
 }
 
@@ -318,12 +259,6 @@ html:not(.aos-ready) [data-aos] {
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes ecosystem-marquee-scroll {
-  to {
-    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -399,201 +334,29 @@ html:not(.aos-ready) [data-aos] {
   pointer-events: none;
 }
 
-.route-progress-track {
-  height: 0.2rem;
-  overflow: hidden;
-  background: rgba(183, 207, 252, 0.52);
-}
-
-.route-progress-bar {
-  height: 100%;
-  width: 38%;
-  transform-origin: left center;
-  border-radius: 999px;
-  background: linear-gradient(
-    90deg,
-    rgba(2, 85, 245, 0),
-    var(--brand),
-    var(--brand-300)
-  );
-  box-shadow: 0 0 0.8rem rgba(2, 85, 245, 0.4);
-  animation: route-progress-run 1.35s ease-in-out infinite;
-}
-
-.route-loader-mark {
-  animation: route-loader-turn 1.8s linear infinite;
-}
-
 .route-page-enter {
   min-height: 100%;
-  animation: route-page-enter 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: route-page-enter 180ms ease-out both;
 }
 
-.ecosystem-marquee {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 1.25rem;
-  padding-block: 0.25rem;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 4%,
-    black 96%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 4%,
-    black 96%,
-    transparent
-  );
-}
-
-.ecosystem-marquee-track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: ecosystem-marquee-scroll 34s linear infinite;
-}
-
-.ecosystem-marquee:hover .ecosystem-marquee-track,
-.ecosystem-marquee:focus .ecosystem-marquee-track,
-.ecosystem-marquee:focus-within .ecosystem-marquee-track {
-  animation-play-state: paused;
-}
-
-.ecosystem-marquee-group {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-.ecosystem-logo-card {
-  display: flex;
-  width: 10rem;
-  height: 6rem;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--line);
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.96);
-  padding: 0.9rem;
-  box-shadow: 0 0.5rem 1.5rem rgba(1, 34, 98, 0.04);
-}
-
-.ecosystem-bumn-cluster {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: 0.4rem;
-  padding-left: 0.2rem;
-}
-
-.ecosystem-logo-card-bumn {
-  width: 8.5rem;
-  padding: 0.7rem;
-}
-
-.sponsor-marquee {
-  width: 100%;
-  overflow: hidden;
-  padding-block: 0.35rem;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 6%,
-    black 94%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 6%,
-    black 94%,
-    transparent
-  );
-}
-
-.sponsor-marquee-track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: ecosystem-marquee-scroll 32s linear infinite;
-}
-
-.sponsor-marquee:hover .sponsor-marquee-track,
-.sponsor-marquee:focus .sponsor-marquee-track,
-.sponsor-marquee:focus-within .sponsor-marquee-track {
-  animation-play-state: paused;
-}
-
-.sponsor-marquee-group {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-.sponsor-logo-card {
-  display: flex;
-  width: 9.5rem;
-  height: 5.75rem;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 1rem;
-  background: rgba(255, 255, 255, 0.97);
-  padding: 0.85rem;
-  box-shadow: 0 0.6rem 1.6rem rgba(0, 24, 74, 0.18);
-}
-
-.page-loader-orbit {
+.loading-skeleton {
   position: relative;
-  width: 4.5rem;
-  height: 4.5rem;
-  border: 1px solid rgba(2, 85, 245, 0.14);
-  border-radius: 999px;
-  animation: page-loader-spin 2.4s linear infinite;
+  overflow: hidden;
+  background: #e7edf6;
 }
 
-.page-loader-core {
+.loading-skeleton::after {
   position: absolute;
-  inset: 1.05rem;
-  border-radius: 1rem;
-  background: var(--brand);
-  box-shadow: 0 0.7rem 1.8rem rgba(2, 85, 245, 0.28);
-  animation: page-loader-core-pulse 1.15s ease-in-out infinite;
-}
-
-.page-loader-dot {
-  position: absolute;
-  width: 0.48rem;
-  height: 0.48rem;
-  border: 2px solid var(--surface);
-  border-radius: 999px;
-  background: var(--brand);
-  box-shadow: 0 0.35rem 0.9rem rgba(2, 85, 245, 0.24);
-}
-
-.page-loader-dot-one {
-  top: -0.14rem;
-  left: calc(50% - 0.24rem);
-}
-
-.page-loader-dot-two {
-  right: 0.2rem;
-  bottom: 0.55rem;
-}
-
-.page-loader-dot-three {
-  bottom: 0.55rem;
-  left: 0.2rem;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.72),
+    transparent
+  );
+  content: "";
+  animation: loading-skeleton-shimmer 1.35s ease-in-out infinite;
 }
 
 @media (max-width: 639px) {
@@ -610,37 +373,6 @@ html:not(.aos-ready) [data-aos] {
 @media (min-width: 640px) {
   .page-container {
     padding-inline: 1.5rem;
-  }
-
-  .ecosystem-marquee-group {
-    gap: 1rem;
-    padding-right: 1rem;
-  }
-
-  .ecosystem-logo-card {
-    width: 12rem;
-    height: 7rem;
-    padding: 1.15rem;
-  }
-
-  .ecosystem-bumn-cluster {
-    gap: 0.55rem;
-  }
-
-  .ecosystem-logo-card-bumn {
-    width: 10rem;
-    padding: 0.9rem;
-  }
-
-  .sponsor-marquee-group {
-    gap: 1rem;
-    padding-right: 1rem;
-  }
-
-  .sponsor-logo-card {
-    width: 11rem;
-    height: 6.75rem;
-    padding: 1.05rem;
   }
 }
 
@@ -668,7 +400,6 @@ html:not(.aos-ready) [data-aos] {
     transition-duration: 0.01ms !important;
   }
 
-  [data-aos],
   [data-motion-reveal] {
     opacity: 1 !important;
     transform: none !important;
@@ -680,36 +411,11 @@ html:not(.aos-ready) [data-aos] {
   .event-cta::after,
   .mobile-register-cta,
   .mobile-register-cta::after,
-  .route-progress-bar,
-  .route-loader-mark,
   .route-page-enter,
   .media-lightbox-backdrop,
   .media-lightbox-pop,
-  .ecosystem-marquee-track,
-  .sponsor-marquee-track,
-  .page-loader-orbit,
-  .page-loader-core {
+  .loading-skeleton::after {
     animation: none !important;
-  }
-
-  .ecosystem-marquee,
-  .sponsor-marquee {
-    overflow-x: auto;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-
-  .ecosystem-marquee-group[aria-hidden="true"],
-  .sponsor-marquee-group[aria-hidden="true"] {
-    display: none;
-  }
-
-  body {
-    background-position:
-      center top,
-      -18rem -20rem,
-      calc(100% + 18rem) calc(100% + 18rem),
-      0 0;
   }
 }
 
@@ -743,8 +449,6 @@ html:not(.aos-ready) [data-aos] {
   body:has(.progress-report) > button[aria-label="Tutup menu lainnya"],
   body:has(.progress-report) > [role="dialog"],
   body:has(.progress-report) > [role="status"],
-  body:has(.progress-report) .route-progress-track,
-  body:has(.progress-report) .route-loader-card,
   .progress-report .report-actions,
   .progress-report .report-action,
   .progress-report [data-report-action],
@@ -769,11 +473,6 @@ html:not(.aos-ready) [data-aos] {
     box-shadow: none !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
-  }
-
-  .progress-report [data-aos] {
-    opacity: 1 !important;
-    transform: none !important;
   }
 
   .progress-report .print-only {

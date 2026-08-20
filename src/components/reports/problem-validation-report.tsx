@@ -832,7 +832,7 @@ export function ProblemValidationReportPage() {
           className="progress-report-decoration dot-grid pointer-events-none absolute inset-y-0 left-0 w-40 opacity-20"
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-5xl space-y-5 sm:space-y-6">
+        <div className="relative space-y-5 sm:space-y-6">
           <ValidationSummary />
           <ValidationApproach />
           <StakeholderOverview />

@@ -245,7 +245,6 @@ function MeetTheLeaderCarousel() {
       <MediaLightbox
         title="Dokumentasi Meet the Leader bersama Ayu Anisela"
         items={lightboxItems}
-        autoPlayIntervalMs={4_500}
         showDots
         enableSwipe
         triggerClassName="relative flex w-full justify-center overflow-hidden bg-slate-100"
@@ -257,7 +256,7 @@ function MeetTheLeaderCarousel() {
           3 foto dokumentasi
         </p>
         <p className="mt-2 text-sm leading-7 text-slate-600">
-          Carousel berpindah otomatis setiap 4,5 detik, dapat dijeda dengan hover atau fokus, digeser pada perangkat sentuh, dan dibuka dalam lightbox.
+          Pilih titik navigasi atau geser pada perangkat sentuh untuk melihat foto berikutnya. Setiap foto dapat dibuka dalam lightbox.
         </p>
       </div>
     </div>
@@ -846,7 +845,7 @@ function UmkmCoCreators() {
       id="five-umkm-co-creators"
       eyebrow="Beneficiary Ecosystem"
       title="5 UMKM Co-Creators"
-      description="Empat usaha menggunakan logo terverifikasi yang sudah ada; Markisa Bintang Jaya menggunakan dokumentasi aktual karena logo standalone belum tersedia."
+      description="Lima UMKM co-creator ditampilkan menggunakan logo usaha yang terverifikasi."
     >
       <ol className="grid grid-cols-2 gap-3 lg:grid-cols-5">
         {fiveUmkmCoCreators.map((item, index) => (
@@ -861,11 +860,7 @@ function UmkmCoCreators() {
                 width={item.visual.width}
                 height={item.visual.height}
                 sizes="(max-width: 639px) 38vw, (max-width: 1023px) 28vw, 10rem"
-                className={
-                  item.visual.kind === "documentation-photo"
-                    ? "h-full w-full object-cover"
-                    : "max-h-full h-auto w-full object-contain"
-                }
+                className="max-h-full h-auto w-full object-contain"
               />
             </div>
             <span className="mt-3 block font-mono text-[0.58rem] font-semibold text-brand">

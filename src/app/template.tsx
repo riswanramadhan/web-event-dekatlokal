@@ -3,5 +3,7 @@ export default function PageTemplate({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="route-page-enter">{children}</div>;
+  return (
+    <div className="route-page-enter motion-reduce:animate-none">{children}</div>
+  );
 }

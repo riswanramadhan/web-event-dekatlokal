@@ -104,13 +104,13 @@ async function fetchRegistrationState(
  * admin toggle is reflected without waiting for a new deployment.
  */
 export async function getRegistrationState(): Promise<RegistrationState> {
-  await connection();
   const staticState = getStaticRegistrationState(event.status);
 
   if (staticState) {
     return staticState;
   }
 
+  await connection();
   return fetchRegistrationState(getEventSlug());
 }
 

@@ -2,6 +2,8 @@ import { CheckCircle, Download, OpenNewWindow, Page } from "iconoir-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { AnimatedNumber } from "@/components/ui/animated-number";
+
 import {
   assessmentCohort,
   behavioralOutcomeFlow,
@@ -10,7 +12,6 @@ import {
   capabilityHeadline,
   capabilityInterpretation,
   capabilityStatement,
-  coreVsNonCore,
   featuredReflections,
   featuredReflectionsNote,
   impactMeasurementLayers,
@@ -32,15 +33,21 @@ import {
   finalDeckAsset,
   finalPresentationHeader,
   finalPresentationOverview,
+  finalPresentationSections,
   finalPresentationSlides,
   fiveSystemsDelivered,
   fiveSystemsIntro,
   fourWeekProgressFlow,
+  impactAccountabilityMetrics,
+  impactChangeMetrics,
   impactContinuity,
+  impactDocumentationHighlights,
+  impactDocumentationSummary,
   impactEvidenceFiles,
   impactEvidenceIntro,
   impactHeroMetrics,
   impactMeasurementHeader,
+  impactReportAsset,
   impactReportPurpose,
   implementationChallenge,
   implementationLifecycle,
@@ -50,9 +57,15 @@ import {
   leadershipReflectionOwner,
   leadershipReflectionQuestions,
   lifecycleFlow,
+  monitoringBenefitNote,
+  monitoringChallengesAndResponses,
   monitoringDocumentation,
+  monitoringDocumentationHighlights,
   monitoringExecutiveSummary,
+  monitoringFollowUpPlan,
   monitoringPurpose,
+  monitoringReportAsset,
+  monitoringReportCoverage,
   monthlyMonitoring,
   nonCoreCount,
   outputVsOutcome,
@@ -249,14 +262,6 @@ function PlaybookCard() {
         >
           <Download className="h-4 w-4" aria-hidden="true" />
           Download PDF
-        </a>
-        <a
-          href={playbookAsset.markdownHref}
-          download
-          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand sm:w-auto"
-        >
-          <Download className="h-4 w-4" aria-hidden="true" />
-          Download Source MD
         </a>
       </div>
     </article>
@@ -634,9 +639,13 @@ function SystemsDelivered() {
       {fiveSystemsDelivered.map((system) => (
         <article
           key={system.id}
+          data-monitoring-system
           className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
         >
-          <div className="grid gap-0 lg:grid-cols-[1.15fr_1fr]">
+          <div
+            data-monitoring-system-grid
+            className="grid gap-0 lg:grid-cols-[1.15fr_1fr]"
+          >
             <div className="p-5 sm:p-6">
               <div className="flex items-center gap-3">
                 <span className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5">
@@ -705,7 +714,10 @@ function SystemsDelivered() {
               </dl>
             </div>
 
-            <div className="border-t border-slate-200 bg-slate-50 p-4 sm:p-5 lg:border-l lg:border-t-0">
+            <div
+              data-monitoring-system-media
+              className="border-t border-slate-200 bg-slate-50 p-4 sm:p-5 lg:border-l lg:border-t-0"
+            >
               <p className="mb-3 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
                 Solution documentation
               </p>
@@ -755,6 +767,36 @@ export function ProjectCompletionMonitoringReportPage() {
         <div className="mt-7">
           <Quote>{monitoringExecutiveSummary.quote}</Quote>
         </div>
+        <SectionNote>{monitoringBenefitNote}</SectionNote>
+        <div className="mt-6 max-w-3xl">
+          <AssetDownloadCard asset={monitoringReportAsset} />
+        </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="monitoring-report-coverage"
+        eyebrow="Report Coverage"
+        title="Isi Project Monitoring Report"
+        description="Tujuh bagian ini menjaga laporan tetap utuh sebagai sumber materi Implementasi Project pada Final Presentation."
+      >
+        <ol className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {monitoringReportCoverage.map((item) => (
+            <li
+              key={item.number}
+              className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
+            >
+              <span className="font-mono text-sm font-semibold text-brand">
+                {item.number}
+              </span>
+              <h3 className="mt-3 text-lg font-semibold leading-7 text-ink">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                {item.description}
+              </p>
+            </li>
+          ))}
+        </ol>
       </ReportSectionCard>
 
       <ReportSectionCard
@@ -804,6 +846,44 @@ export function ProjectCompletionMonitoringReportPage() {
         <CheckList items={whyRefinement.protects} />
         <div className="mt-7">
           <Quote>{whyRefinement.statement}</Quote>
+        </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="challenges-and-solutions"
+        eyebrow="Kendala & Solusi"
+        title="Respons yang Menjaga Implementasi Tetap Bertanggung Jawab"
+        description="Kendala ditulis sebagai batas implementasi yang benar-benar perlu dikelola, bukan sebagai outcome yang sudah dianggap selesai."
+      >
+        <div className="grid gap-4 lg:grid-cols-2">
+          {monitoringChallengesAndResponses.map((item, index) => (
+            <article
+              key={item.challenge}
+              className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5 sm:p-6"
+            >
+              <span className="font-mono text-sm font-semibold text-brand">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <dl className="mt-4 space-y-4">
+                <div>
+                  <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                    Kendala
+                  </dt>
+                  <dd className="mt-2 text-sm font-semibold leading-7 text-ink">
+                    {item.challenge}
+                  </dd>
+                </div>
+                <div className="border-t border-slate-200 pt-4">
+                  <dt className="font-mono text-[0.6rem] font-semibold uppercase tracking-[0.1em] text-brand">
+                    Respons / Solusi
+                  </dt>
+                  <dd className="mt-2 text-sm leading-7 text-slate-600">
+                    {item.response}
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          ))}
         </div>
       </ReportSectionCard>
 
@@ -884,6 +964,56 @@ export function ProjectCompletionMonitoringReportPage() {
       </ReportSectionCard>
 
       <ReportSectionCard
+        id="follow-up-plan"
+        eyebrow="Rencana Tindak Lanjut"
+        title="Owner, Waktu, Status, dan Indikator Keberhasilan"
+        description="Tindak lanjut dibedakan dari hasil aktual agar pembaca dapat melihat apa yang telah dicatat dan apa yang masih diverifikasi."
+      >
+        <div className="grid gap-4">
+          {monitoringFollowUpPlan.map((item, index) => (
+            <article
+              key={item.action}
+              className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
+            >
+              <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+                <div className="min-w-0">
+                  <span className="font-mono text-sm font-semibold text-brand">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="mt-2 text-lg font-semibold leading-7 text-ink">
+                    {item.action}
+                  </h3>
+                </div>
+                <StatusChip tone="blue">{item.status}</StatusChip>
+              </div>
+              <dl className="mt-5 grid gap-3 md:grid-cols-3">
+                {[
+                  { label: "Owner", value: item.owner },
+                  { label: "Waktu", value: item.timing },
+                  {
+                    label: "Indikator keberhasilan",
+                    value: item.successIndicator,
+                  },
+                ].map((entry) => (
+                  <div
+                    key={entry.label}
+                    className="min-w-0 rounded-xl border border-slate-200 bg-slate-50/60 p-4"
+                  >
+                    <dt className="font-mono text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-slate-500">
+                      {entry.label}
+                    </dt>
+                    <dd className="mt-2 [overflow-wrap:anywhere] text-sm leading-7 text-slate-600">
+                      {entry.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </article>
+          ))}
+        </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
         id="monitoring-documentation"
         eyebrow="Project Documentation"
         title={monitoringDocumentation.title}
@@ -898,6 +1028,16 @@ export function ProjectCompletionMonitoringReportPage() {
               {item}
             </span>
           ))}
+        </div>
+        <div className="mt-6">
+          <MediaLightbox
+            title="Dokumentasi Project Monitoring"
+            items={monitoringDocumentationHighlights.map((item) => ({
+              ...item,
+              label: item.caption,
+            }))}
+            sizes="(max-width: 767px) calc(100vw - 3rem), (max-width: 1279px) 28vw, 22rem"
+          />
         </div>
         <ul className="report-no-print mt-6 grid gap-3 md:grid-cols-2">
           {monitoringDocumentation.links.map((link) => (
@@ -990,7 +1130,14 @@ function HeroMetrics() {
             <dt className="sr-only">{metric.label}</dt>
             <dd>
               <span className="block text-3xl font-semibold tracking-[-0.04em] text-brand-900">
-                {metric.value}
+                {"total" in metric ? (
+                  <>
+                    <AnimatedNumber value={metric.value} /> of{" "}
+                    <AnimatedNumber value={metric.total} />
+                  </>
+                ) : (
+                  <AnimatedNumber value={metric.value} />
+                )}
               </span>
               <span className="mt-2 block text-sm font-semibold leading-6 text-slate-700">
                 {metric.label}
@@ -1009,7 +1156,30 @@ function HeroMetrics() {
             <dt className="sr-only">{metric.label}</dt>
             <dd>
               <span className="block text-2xl font-semibold tracking-[-0.03em] text-ink">
-                {metric.value}
+                {"before" in metric ? (
+                  <>
+                    <AnimatedNumber
+                      value={metric.before}
+                      decimals={metric.decimalsBefore}
+                    />{" "}
+                    →{" "}
+                    <AnimatedNumber
+                      value={metric.after}
+                      decimals={metric.decimalsAfter}
+                    />
+                  </>
+                ) : "total" in metric ? (
+                  <>
+                    <AnimatedNumber value={metric.value} /> of{" "}
+                    <AnimatedNumber value={metric.total} />
+                  </>
+                ) : (
+                  <AnimatedNumber
+                    value={metric.value}
+                    decimals={metric.decimals}
+                    prefix={metric.prefix}
+                  />
+                )}
               </span>
               <span className="mt-2 block text-sm font-semibold leading-6 text-slate-700">
                 {metric.label}
@@ -1048,7 +1218,10 @@ function UniversityStrip() {
               {university.name}
             </p>
             <p className="mt-0.5 text-xs font-semibold text-brand-800">
-              {university.students} mahasiswa
+              <AnimatedNumber
+                value={university.students}
+                suffix=" mahasiswa"
+              />
             </p>
           </div>
         </li>
@@ -1106,6 +1279,7 @@ function KnowledgeChart() {
               label: "Pre-test",
               value: knowledgeResult.pre,
               display: knowledgeResult.pre.toFixed(2),
+              animatedValue: { decimals: 2 },
               tone: "pre",
             },
             {
@@ -1113,6 +1287,7 @@ function KnowledgeChart() {
               label: "Post-test",
               value: knowledgeResult.post,
               display: knowledgeResult.post.toFixed(2),
+              animatedValue: { decimals: 0 },
               tone: "post",
             },
           ],
@@ -1142,6 +1317,7 @@ function CapabilityChart() {
             label: "Pre",
             value: dimension.pre,
             display: dimension.pre.toFixed(2),
+            animatedValue: { decimals: 2 },
             tone: "pre" as const,
           },
           {
@@ -1149,74 +1325,12 @@ function CapabilityChart() {
             label: "Post",
             value: dimension.post,
             display: dimension.post.toFixed(2),
+            animatedValue: { decimals: 2 },
             tone: "post" as const,
           },
         ],
       }))}
     />
-  );
-}
-
-function CoreVsNonCoreCharts() {
-  const knowledgeGroups = coreVsNonCore.groups.map((group) => ({
-    id: `${group.id}-knowledge`,
-    label: `${group.label} · ${group.participants} peserta`,
-    bars: [
-      {
-        id: `${group.id}-knowledge-pre`,
-        label: "Pre",
-        value: group.knowledgePre,
-        display: group.knowledgePre.toFixed(2),
-        tone: "pre" as const,
-      },
-      {
-        id: `${group.id}-knowledge-post`,
-        label: "Post",
-        value: group.knowledgePost,
-        display: group.knowledgePost.toFixed(2),
-        tone: "post" as const,
-      },
-    ],
-  }));
-
-  const capabilityGroups = coreVsNonCore.groups.map((group) => ({
-    id: `${group.id}-capability`,
-    label: `${group.label} · perubahan ${group.capabilityGain}`,
-    bars: [
-      {
-        id: `${group.id}-capability-pre`,
-        label: "Pre",
-        value: group.capabilityPre,
-        display: group.capabilityPre.toFixed(2),
-        tone: "pre" as const,
-      },
-      {
-        id: `${group.id}-capability-post`,
-        label: "Post",
-        value: group.capabilityPost,
-        display: group.capabilityPost.toFixed(2),
-        tone: "post" as const,
-      },
-    ],
-  }));
-
-  return (
-    <div className="grid gap-5 lg:grid-cols-2">
-      <GroupedBarChart
-        title="Knowledge — Core vs Non-Core"
-        scaleLabel="Skala 0-100"
-        max={100}
-        legend={prePostLegend}
-        groups={knowledgeGroups}
-      />
-      <GroupedBarChart
-        title="Capability — Core vs Non-Core"
-        scaleLabel="Skala Likert 1-5 · sumbu digambar dari 0"
-        max={5}
-        legend={prePostLegend}
-        groups={capabilityGroups}
-      />
-    </div>
   );
 }
 
@@ -1227,6 +1341,7 @@ function StewardChart() {
       label: item.label,
       value: item.count,
       display: `${item.count} peserta`,
+      animatedValue: { suffix: " peserta" },
       tone: "solid" as const,
     }),
   );
@@ -1297,6 +1412,71 @@ export function ImpactMeasurementReportPage() {
         description={impactReportPurpose}
       >
         <HeroMetrics />
+        <div className="mt-6 max-w-3xl">
+          <AssetDownloadCard asset={impactReportAsset} />
+        </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="impact-accountability"
+        eyebrow="Accountability at a Glance"
+        title="Penerima Manfaat, Ekosistem, Relawan, Output, dan Dokumentasi"
+        description="Setiap angka diturunkan dari data peserta, roster mitra/dukungan, output sistem, dan aset dokumentasi yang benar-benar tersedia."
+      >
+        <dl className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {impactAccountabilityMetrics.map((metric) => (
+            <div
+              key={metric.label}
+              className="min-w-0 rounded-2xl border border-slate-200 bg-slate-50/60 p-4 sm:p-5"
+            >
+              <dt className="text-xs font-semibold leading-5 text-slate-600">
+                {metric.label}
+              </dt>
+              <dd className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-brand-900 sm:text-4xl">
+                <AnimatedNumber value={metric.value} />
+              </dd>
+              <p className="mt-2 text-xs leading-5 text-slate-500">
+                {metric.caption}
+              </p>
+            </div>
+          ))}
+        </dl>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="measured-change"
+        eyebrow="Measured Change"
+        title="Perubahan yang Terjadi pada Full Cohort"
+        description="Knowledge dan self-reported capability memakai skala berbeda, sehingga ditampilkan terpisah dan tidak dijumlahkan menjadi satu skor."
+      >
+        <div className="grid gap-4 lg:grid-cols-2">
+          {impactChangeMetrics.map((metric) => (
+            <article
+              key={metric.label}
+              className="rounded-2xl border border-brand-100 bg-brand-50/45 p-5 sm:p-6"
+            >
+              <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-brand">
+                {metric.label}
+              </p>
+              <p className="mt-4 flex flex-wrap items-baseline gap-2 text-3xl font-semibold tracking-[-0.04em] text-ink sm:text-4xl">
+                <AnimatedNumber
+                  value={metric.before}
+                  decimals={metric.beforeDecimals}
+                />
+                <span className="text-slate-400" aria-hidden="true">
+                  →
+                </span>
+                <AnimatedNumber
+                  value={metric.after}
+                  decimals={metric.afterDecimals}
+                />
+              </p>
+              <p className="mt-3 text-sm font-semibold leading-6 text-brand-900">
+                {metric.scale}
+              </p>
+            </article>
+          ))}
+        </div>
       </ReportSectionCard>
 
       <ReportSectionCard
@@ -1310,7 +1490,10 @@ export function ImpactMeasurementReportPage() {
               {beneficiaries.students.label}
             </p>
             <p className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-ink">
-              {beneficiaries.students.value}
+              <AnimatedNumber
+                value={beneficiaries.students.value}
+                suffix={beneficiaries.students.suffix}
+              />
             </p>
             <p className="mt-2 text-sm leading-7 text-slate-600">
               {beneficiaries.students.description}
@@ -1321,7 +1504,10 @@ export function ImpactMeasurementReportPage() {
               {beneficiaries.umkm.label}
             </p>
             <p className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-ink">
-              {beneficiaries.umkm.value}
+              <AnimatedNumber
+                value={beneficiaries.umkm.value}
+                suffix={beneficiaries.umkm.suffix}
+              />
             </p>
             <p className="mt-2 text-sm leading-7 text-slate-600">
               {beneficiaries.umkm.description}
@@ -1358,9 +1544,18 @@ export function ImpactMeasurementReportPage() {
         <TeamDesign />
         <div className="mt-7 border-t border-slate-200 pt-6">
           <p className="text-sm leading-7 text-slate-600">
-            Komposisi kohort: {technicalCoreCount} technical core dan{" "}
-            {nonCoreCount} non-core dari total {assessmentCohort.participants}{" "}
-            peserta.
+            Komposisi kohort:{" "}
+            <AnimatedNumber
+              value={technicalCoreCount}
+              suffix=" technical core"
+            />{" "}
+            dan <AnimatedNumber value={nonCoreCount} suffix=" non-core" /> dari
+            total{" "}
+            <AnimatedNumber
+              value={assessmentCohort.participants}
+              suffix=" peserta"
+            />
+            .
           </p>
           <div className="mt-4">
             <ProcessFlow
@@ -1422,17 +1617,26 @@ export function ImpactMeasurementReportPage() {
           items={[
             {
               label: "Pre-test",
-              value: knowledgeResult.pre.toFixed(2),
+              value: (
+                <AnimatedNumber value={knowledgeResult.pre} decimals={2} />
+              ),
               caption: "Rata-rata skor sebelum program.",
             },
             {
               label: "Post-test",
-              value: knowledgeResult.post.toFixed(2),
+              value: <AnimatedNumber value={knowledgeResult.post} />,
               caption: "Rata-rata skor setelah program.",
             },
             {
               label: "Average gain",
-              value: knowledgeResult.gainLabel,
+              value: (
+                <AnimatedNumber
+                  value={28.75}
+                  decimals={2}
+                  prefix="+"
+                  suffix=" percentage points"
+                />
+              ),
               caption: knowledgeResult.participantsIncreasedLabel,
             },
           ]}
@@ -1504,24 +1708,8 @@ export function ImpactMeasurementReportPage() {
       </ReportSectionCard>
 
       <ReportSectionCard
-        id="core-vs-non-core"
-        eyebrow="Result C · Inclusion"
-        title={coreVsNonCore.title}
-        description={coreVsNonCore.lead}
-      >
-        <CoreVsNonCoreCharts />
-        <p className="mt-6 text-sm leading-8 text-slate-600 sm:text-base">
-          {coreVsNonCore.interpretation}
-        </p>
-        <div className="mt-6">
-          <Quote>{coreVsNonCore.headline}</Quote>
-        </div>
-        <SectionNote>{coreVsNonCore.methodologyNote}</SectionNote>
-      </ReportSectionCard>
-
-      <ReportSectionCard
         id="post-program-experience"
-        eyebrow="Result D · Experience"
+        eyebrow="Result C · Experience"
         title={postProgramExperience.label}
         description={postProgramExperience.note}
       >
@@ -1542,7 +1730,7 @@ export function ImpactMeasurementReportPage() {
 
       <ReportSectionCard
         id="steward-intention"
-        eyebrow="Result E · Sustainability Intention"
+        eyebrow="Result D · Sustainability Intention"
         title={stewardIntention.title}
         description={stewardIntention.question}
       >
@@ -1569,7 +1757,7 @@ export function ImpactMeasurementReportPage() {
 
       <ReportSectionCard
         id="behavioral-outcome"
-        eyebrow="Result F · Behavioral Output"
+        eyebrow="Result E · Behavioral Output"
         title="Apa yang Benar-Benar Dibangun"
       >
         <ProcessFlow
@@ -1619,7 +1807,7 @@ export function ImpactMeasurementReportPage() {
           </article>
           <article className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5">
             <h3 className="font-semibold leading-6 text-ink">
-              Outcome — UMKM
+              UMKM Delivery & Early Outcome Signals
             </h3>
             <ul className="mt-3 space-y-2">
               {outputVsOutcome.umkmOutcome.map((item) => (
@@ -1635,13 +1823,16 @@ export function ImpactMeasurementReportPage() {
                 </li>
               ))}
             </ul>
+            <p className="mt-4 text-xs leading-6 text-slate-500">
+              Sustained adoption dan manfaat operasional tetap menunggu data monitoring tindak lanjut.
+            </p>
           </article>
         </div>
       </ReportSectionCard>
 
       <ReportSectionCard
         id="participant-voice"
-        eyebrow="Participant Voice"
+        eyebrow="Testimoni & Suara Peserta"
         title={participantVoice.title}
         description={participantVoice.description}
       >
@@ -1754,6 +1945,71 @@ export function ImpactMeasurementReportPage() {
             ))}
           </div>
         </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="impact-documentation"
+        eyebrow="Documentation"
+        title="Dokumentasi Dampak dan Pelaksanaan"
+        description="Dokumentasi visual membantu pembaca menghubungkan perubahan peserta dengan proses workshop, co-creation, build, pitching, dan stakeholder engagement yang benar-benar berlangsung."
+      >
+        <dl className="grid gap-3 sm:grid-cols-3">
+          {[
+            {
+              value: impactDocumentationSummary.eventPhotos,
+              label: "Curated event photos",
+            },
+            {
+              value: impactDocumentationSummary.systemScreens,
+              label: "Functional system screens",
+            },
+            {
+              value: impactDocumentationSummary.evidenceFiles,
+              label: "Public evidence files",
+            },
+          ].map((metric) => (
+            <div
+              key={metric.label}
+              className="rounded-2xl border border-slate-200 bg-slate-50/60 p-4"
+            >
+              <dt className="text-xs font-semibold leading-5 text-slate-600">
+                {metric.label}
+              </dt>
+              <dd className="mt-2 text-3xl font-semibold tracking-[-0.04em] text-brand-900">
+                <AnimatedNumber value={metric.value} />
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <div className="mt-6">
+          <MediaLightbox
+            title="Dokumentasi Impact Report"
+            items={impactDocumentationHighlights.map((item) => ({
+              ...item,
+              label: item.caption,
+            }))}
+            sizes="(max-width: 767px) calc(100vw - 3rem), (max-width: 1279px) 28vw, 22rem"
+          />
+        </div>
+        <div className="report-no-print mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+          <Link
+            href="/ai-co-creation-lab-makassar/progress/process-documentation"
+            className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-brand-200 bg-white px-4 py-2.5 text-sm font-semibold text-brand transition hover:border-brand hover:bg-brand-50 sm:w-auto"
+          >
+            Lihat Process Documentation
+          </Link>
+          <a
+            href={impactDocumentationSummary.fullDocumentationHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-600 sm:w-auto"
+          >
+            <OpenNewWindow className="h-4 w-4" aria-hidden="true" />
+            Buka Dokumentasi Lengkap
+            <span className="sr-only"> (terbuka di tab baru)</span>
+          </a>
+        </div>
+        <SectionNote>{impactDocumentationSummary.note}</SectionNote>
       </ReportSectionCard>
 
       <ReportSectionCard
@@ -1879,7 +2135,18 @@ export function ImpactMeasurementReportPage() {
               key={item.party}
               className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
             >
-              <p className="font-semibold leading-6 text-ink">{item.party}</p>
+              <div className="flex items-center gap-3">
+                <span className="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white p-2">
+                  <Image
+                    src={item.logo.src}
+                    alt={item.logo.alt}
+                    fill
+                    sizes="48px"
+                    className="object-contain p-2"
+                  />
+                </span>
+                <p className="font-semibold leading-6 text-ink">{item.party}</p>
+              </div>
               <p className="mt-2 text-sm leading-7 text-slate-600">
                 {item.note}
               </p>
@@ -1946,16 +2213,31 @@ export function ImpactMeasurementReportPage() {
               </h3>
               <ul className="mt-3 space-y-3">
                 {group.partners.map((partner) => (
-                  <li key={partner.id}>
-                    <p className="text-sm font-semibold leading-6 text-ink">
-                      {partner.name}
-                    </p>
-                    <p className="text-xs font-semibold text-brand-800">
-                      {partner.role}
-                    </p>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">
-                      {partner.support}
-                    </p>
+                  <li
+                    key={partner.id}
+                    className="flex min-w-0 gap-3 rounded-xl border border-slate-200 bg-white p-3"
+                  >
+                    <span className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white p-1.5">
+                      <Image
+                        src={partner.logo.src}
+                        alt={partner.logo.alt}
+                        width={partner.logo.width}
+                        height={partner.logo.height}
+                        sizes="48px"
+                        className="h-full w-full object-contain"
+                      />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="break-words text-sm font-semibold leading-6 text-ink">
+                        {partner.name}
+                      </p>
+                      <p className="text-xs font-semibold text-brand-800">
+                        {partner.role}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">
+                        {partner.support}
+                      </p>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -1965,6 +2247,7 @@ export function ImpactMeasurementReportPage() {
 
         <div className="mt-8 border-t border-slate-200 pt-7">
           <h3 className="text-xl font-semibold text-ink">
+            <AnimatedNumber value={supportTeamSummary.count} />{" "}
             {supportTeamSummary.title}
           </h3>
           <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-600">
@@ -2130,7 +2413,8 @@ export function FinalPresentationReportPage() {
             {finalDeckAsset.kind}
           </span>
           <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-slate-600">
-            {finalDeckAsset.slideCount} slide · {finalDeckAsset.ratio}
+            <AnimatedNumber value={finalDeckAsset.slideCount} /> slide ·{" "}
+            {finalDeckAsset.ratio}
           </span>
         </div>
 
@@ -2157,7 +2441,46 @@ export function FinalPresentationReportPage() {
             <Download className="h-4 w-4" aria-hidden="true" />
             Download PDF
           </a>
+          <a
+            href={finalDeckAsset.pptxHref}
+            download
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-brand-200 hover:text-brand sm:w-auto"
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            Download PowerPoint
+          </a>
         </div>
+      </ReportSectionCard>
+
+      <ReportSectionCard
+        id="final-presentation-ten-sections"
+        eyebrow="Required Structure"
+        title={`${finalPresentationOverview.sectionCount} Bagian Final Presentation`}
+        description="Cover berdiri sebagai pembuka; sepuluh bagian wajib berikut dipetakan secara eksplisit ke 15 slide isi."
+      >
+        <ol className="grid gap-4 md:grid-cols-2">
+          {finalPresentationSections.map((section) => (
+            <li
+              key={section.number}
+              className="rounded-2xl border border-slate-200 bg-slate-50/55 p-5"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-mono text-sm font-semibold text-brand">
+                  {section.number}
+                </span>
+                <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-slate-500">
+                  {section.slideRange}
+                </span>
+              </div>
+              <h3 className="mt-3 text-lg font-semibold leading-7 text-ink">
+                {section.title}
+              </h3>
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                {section.purpose}
+              </p>
+            </li>
+          ))}
+        </ol>
       </ReportSectionCard>
 
       <ReportSectionCard

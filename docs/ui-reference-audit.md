@@ -306,9 +306,9 @@ deployment, handover, penggunaan berulang, atau adopsi Week 4 telah selesai.
 
 Meet the Leader dan Leadership Conversation memakai identitas serta materi
 yang diberikan pemilik: Ayu Anisela, Koordinator Utama Rumah BUMN BRI
-Makassar. Tiga visual pertemuan disajikan melalui carousel ringan dengan
-autoplay yang dapat dijeda, kontrol dot, interaksi swipe, reduced-motion
-treatment, dan link menuju folder dokumentasi sumber.
+Makassar. Tiga visual pertemuan disajikan melalui carousel ringan tanpa
+autoplay, dengan kontrol dot, interaksi swipe, lightbox, dan link menuju folder
+dokumentasi sumber.
 
 Dokumentasi implementasi dikurasi agar halaman tetap ringan dan tidak menjadi
 dump seluruh folder. Struktur aset produksi terdiri dari tiga gambar Meet the
@@ -347,51 +347,44 @@ Interaksi baru dibatasi pada kebutuhan progress report:
 - Pratinjau PDF memakai halaman WebP vertikal yang dapat discroll.
 - Card tanpa asset gambar tidak membuat placeholder image.
 
-## Week 4 Progress Addendum
+## Week 4 Final Report Addendum — 20 Agustus 2026
 
 Week 4 — Measure, Reflect & Sustain melanjutkan sistem report yang sama tanpa
-membuat layout atau navigasi paralel. Hub dan detail tetap memakai route datar
-`/ai-co-creation-lab-makassar/progress/[slug]`, header report, breadcrumb,
-filter week, status badge, progress description, navigasi previous/next,
-footer, serta treatment print existing. Route progress tetap unlisted, memakai
-metadata serta response header `noindex, nofollow, noarchive`, dan tidak
-ditambahkan ke sitemap. Route sengaja tetap dapat dicrawl agar crawler dapat
-membaca directive `noindex`; ini bukan access control dan link tetap harus
-dibagikan langsung.
+membuat layout atau navigasi paralel. Hub dan empat detail tetap memakai route
+datar `/ai-co-creation-lab-makassar/progress/[slug]`, header, breadcrumb,
+filter, previous/next, footer, dan print treatment existing. Route tetap
+unlisted, tidak masuk sitemap, serta memakai metadata dan response header
+`noindex, nofollow, noarchive`.
 
-Penyajian visual Week 4 mempertahankan container `max-w-5xl`, typography,
-spacing, radius card, border, shadow, dan warna brand dari Week 1–3. Diagram
-monitoring, measurement timeline, sustainability flow, dan final journey
-memakai pola flow sederhana yang menumpuk vertikal pada mobile lalu membungkus
-secara aman ketika ruang bertambah. Progress cards, evidence cards, checklist,
-dan framework menggunakan surface serta hierarki editorial existing; tidak ada
-chart, ilustrasi AI, gradient tambahan, atau animasi dekoratif baru.
+Lebar header dan isi report sekarang memakai `.page-container` yang sama dengan
+navbar (maksimum 80rem). Card radius, border, shadow, typography, dan warna
+brand existing dipertahankan. Loading global memakai skeleton yang mengikuti
+layout; full-screen route overlay, runtime AOS, marquee, dan auto-advance
+carousel dihapus. Animasi dibatasi pada fade ringan, shimmer skeleton, serta
+counter KPI yang berhenti pada reduced motion.
 
-Status Week 4 disampaikan melalui teks, ikon, dan tone. Navigasi hanya memakai
-checkmark hijau untuk status yang benar-benar selesai. `In Progress`, data
-collection, documentation/finalization, dan framework development tetap
-ditampilkan sebagai pekerjaan berjalan; `To Be Completed`, preparation, dan
-planned memakai state netral. Dengan demikian frasa `To Be Completed` tidak
-keliru dibaca sebagai completed hanya karena mengandung kata “completed”.
+Project Monitoring Report mempertahankan seluruh materi lama dan menambahkan
+blok eksplisit progres pelaksanaan, capaian target, kendala dan solusi,
+pembelajaran, dokumentasi aktual, serta rencana tindak lanjut. Initial UAT dan
+handover dipakai sebagai bukti penerimaan awal solusi; sustained adoption dan
+manfaat operasional tidak dianggap selesai sebelum data monitoring tersedia.
 
-Boundary evidence dan data tetap eksplisit:
+Impact & Sustainability Report menampilkan jumlah mahasiswa, UMKM, partner dan
+kontributor ekosistem, relawan, sistem, dokumentasi, serta perubahan pre/post
+full cohort. Skala knowledge 0–100 dan capability 1–5 tetap dipisahkan. Agregat
+lama core vs non-core dihapus karena source assessment bernama untuk menghitung
+ulang koreksi roster tidak tersedia; roster UI menempatkan Andi Alfian Rusani
+sebagai technical core Team 4 dan Achmad Alfian Saputra sebagai non-core Team
+2. Logo selalu ditampilkan berdampingan dengan nama pada card ekosistem.
 
-- lima UMKM memakai sumber data Problem Validation existing, bukan daftar nama
-  kedua;
-- 20 mahasiswa, lima UMKM, dan lima tim hanya diposisikan sebagai actual
-  kegiatan yang telah tersedia, bukan bukti impact;
-- status prototype, UAT, deployment, handover, adoption, perubahan kemampuan,
-  operational benefit, persentase, dan testimoni tidak diisi sebelum evidence
-  terverifikasi;
-- target dan actual result dipisahkan secara visual dan semantik;
-- Project Monitoring Report, Impact Report, Leadership Reflection Essay, dan
-  Final Presentation memakai empty state serta aksi nonaktif selama file belum
-  tersedia;
-- struktur Leadership Reflection tidak diisi dengan cerita personal rekaan,
-  dan Final Presentation tidak memakai dummy deck.
+Final Presentation memakai tepat 10 bagian wajib yang dipetakan ke 16 slide
+visual. Viewer WebP, PDF 16:9, dan PowerPoint memakai visual yang sama; slide
+Markisa memakai logo resmi yang sudah dikoreksi. PowerPoint menggunakan satu
+gambar full-bleed per slide untuk menjaga fidelity. Refined Playbook 39 halaman
+disalin byte-for-byte dari source root ke public download. PDF Monitoring dan
+Impact dibuat dari print view report final dan tersedia sebagai evidence.
 
-Data journey Week 4 diselaraskan ke empat detail progress melalui evidence link
-website. Monitoring dan impact measurement tetap berstatus dalam proses,
-sedangkan leadership reflection dan final presentation tetap planned sampai
-output final tersedia. Tanggal pembaruan pada journey menunjukkan pembaruan
-struktur halaman, bukan tanggal penyelesaian atau klaim hasil.
+Boundary evidence tetap eksplisit: hasil assessment hanya memakai full cohort
+terverifikasi, testimoni ditampilkan sebagai parafrasa yang disetujui, file
+publik tidak memuat kontak peserta, dan klaim penggunaan berulang/adopsi UMKM
+tetap mengikuti monitoring lanjutan.

@@ -448,11 +448,11 @@ export const aiCoCreationLabEvent = {
         },
       },
       {
-        id: "wija",
-        name: "Wija",
+        id: "markisa-bintang-jaya",
+        name: "Markisa Bintang Jaya",
         logo: {
-          src: "/sponsorship-logo/optimized/logo-wija.webp",
-          alt: "Logo Wija",
+          src: "/sponsorship-logo/optimized/logo-markisabintangjaya.webp",
+          alt: "Logo Markisa Bintang Jaya",
           width: 575,
           height: 434,
         },

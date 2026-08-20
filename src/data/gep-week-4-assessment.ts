@@ -260,43 +260,6 @@ export const pairedConsistency = {
     "Pola ini dibaca sebagai consistent positive shift within this cohort, bukan bukti kausal.",
 } as const;
 
-/* -------------------------------------------------------------------------- */
-/* Core vs non-core                                                           */
-/* -------------------------------------------------------------------------- */
-
-export const coreVsNonCore = {
-  title: "Technical Core vs Non-Core",
-  label: "Supplementary inclusion insight",
-  groups: [
-    {
-      id: "technical-core",
-      label: "Technical Core",
-      participants: 7,
-      knowledgePre: 92.86,
-      knowledgePost: 100,
-      capabilityPre: 3.82,
-      capabilityPost: 4.95,
-      capabilityGain: "+1.13",
-    },
-    {
-      id: "non-core",
-      label: "Non-Core",
-      participants: 13,
-      knowledgePre: 59.62,
-      knowledgePost: 100,
-      capabilityPre: 2.97,
-      capabilityPost: 4.6,
-      capabilityGain: "+1.63",
-    },
-  ],
-  lead: "The mixed-team design allowed technical capability to function as shared scaffolding rather than an exclusive skill silo.",
-  interpretation:
-    "Non-core participants entered with a substantially lower baseline and showed a larger capability gain. By the end of the Lab, the gap between technical and non-technical participants had narrowed considerably.",
-  methodologyNote:
-    "This is pilot-level paired cohort evidence and is not a randomized causal comparison.",
-  headline: "Technical talent acted as an anchor, not a silo.",
-} as const;
-
 export const mixedTeamPurpose = {
   title: "Mengapa tim sengaja dicampur",
   description:

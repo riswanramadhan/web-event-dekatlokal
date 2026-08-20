@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
+const PptxGenJS = require("pptxgenjs");
 const sharp = require("sharp");
 
 const ROOT = path.resolve(__dirname, "../..");
@@ -8,6 +9,10 @@ const SLIDE_DIR = path.join(ROOT, "public/downloads/final-presentation");
 const PDF_OUT = path.join(
   ROOT,
   "public/downloads/AI_Co-Creation_Lab_Final_Presentation_GEP_2026.pdf",
+);
+const PPTX_OUT = path.join(
+  ROOT,
+  "public/downloads/AI_Co-Creation_Lab_Final_Presentation_GEP_2026.pptx",
 );
 
 const W = 1920;
@@ -235,7 +240,7 @@ async function buildSlides() {
   const umkmDefs = [
     ["public/sponsorship-logo/optimized/logo-eyfa.webp", "Eyfa Natural Oil", "Pencatatan penjualan, stok, dan HPP masih manual"],
     ["public/sponsorship-logo/optimized/logo-sukma-jahe.webp", "Sukmajahe Sarabba", "Stok titip jual tersebar di banyak outlet"],
-    ["public/problem-validation/documentation/markisa-bintang-jaya.webp", "Markisa Bintang Jaya", "Catatan keuangan dan stok terpisah"],
+    ["public/sponsorship-logo/optimized/logo-markisabintangjaya.webp", "Markisa Bintang Jaya", "Catatan keuangan dan stok terpisah"],
     ["public/sponsorship-logo/optimized/logo-kira-kira-michi.webp", "Kira Kira Michi", "Loyalitas pelanggan bergantung kartu fisik"],
     ["public/sponsorship-logo/optimized/logo-dapur-andist.webp", "Dapur Andist", "Pemasukan, pengeluaran, dan omzet belum terstruktur"],
   ];
@@ -401,7 +406,7 @@ ${text("Global Experience Program 2026 · Final Presentation", M, 900, { size: 2
 
   /* 07 Implementation Journey */
   {
-    const h = header("Implementation Journey", "From Validation to Handover");
+    const h = header("Implementasi Project", "From Validation to Handover");
     let s = h.svg;
     const f = arrowFlow(
       ["Validate", "Match", "Learn", "Co-Create", "MVP", "UAT", "Handover"],
@@ -555,33 +560,46 @@ ${text("Global Experience Program 2026 · Final Presentation", M, 900, { size: 2
     slides.push(slideFrame(s + pageNumber(11)));
   }
 
-  /* 12 Inclusive Learning */
+  /* 12 Inclusive Team Design */
   {
-    const h = header("Inclusive Learning", "Technical talent acted as an anchor, not a silo.", { hlSize: 50 });
+    const h = header("Inclusive Team Design", "Technical talent acted as an anchor, not a silo.", { hlSize: 50 });
     let s = h.svg;
-    const colW = (W - M * 2 - 60) / 2;
-    const groups = [
-      ["Knowledge · skala 0-100", [["Technical Core", 92.86, 100], ["Non-Core", 59.62, 100]], 100, ""],
-      ["Capability · skala 1-5", [["Technical Core", 3.82, 4.95], ["Non-Core", 2.97, 4.6]], 5, ""],
-    ];
-    groups.forEach((g, gi) => {
-      const x = M + gi * (colW + 60);
-      s += `<rect x="${x}" y="${h.endY}" width="${colW}" height="360" rx="20" fill="#ffffff" stroke="${LINE}"/>`;
-      s += text(g[0], x + 34, h.endY + 54, { size: 25, weight: 700, fill: BRAND_DARK, maxWidth: colW - 68 });
-      let yy = h.endY + 94;
-      g[1].forEach((row) => {
-        const r = compareBar(row[0], row[1], row[2], g[2], x + 34, yy, colW - 68, { unit: g[3] });
-        s += r.svg;
-        yy = r.endY + 6;
-      });
-    });
-    s += `<rect x="${M}" y="${h.endY + 400}" width="${W - M * 2}" height="120" rx="18" fill="${BRAND_50}" stroke="${BRAND_100}"/>`;
     s += text(
-      "Peserta non-core datang dengan baseline jauh lebih rendah dan menunjukkan kenaikan kapabilitas yang lebih besar. Jarak antar kelompok menyempit setelah program.",
-      M + 36,
-      h.endY + 450,
-      { size: 24, weight: 600, fill: BRAND_DARK, maxWidth: W - M * 2 - 72, lineHeight: 1.35 },
+      "Tujuh technical core disebar ke lima tim sebagai feasibility anchor. Tiga belas peserta non-core tetap terlibat dalam seluruh proses discovery, ideation, testing, communication, pitching, dan product thinking.",
+      M,
+      h.endY + 8,
+      { size: 27, maxWidth: 1460, lineHeight: 1.4 },
     );
+    const teamCards = [
+      ["Team 1", "Eyfa Natural Oil", "1 technical core + 3 non-core"],
+      ["Team 2", "Sukmajahe Sarabba", "1 technical core + 3 non-core"],
+      ["Team 3", "Markisa Bintang Jaya", "2 technical core + 2 non-core"],
+      ["Team 4", "Kira Kira Michi", "1 technical core + 3 non-core"],
+      ["Team 5", "Dapur Andist", "2 technical core + 2 non-core"],
+    ];
+    const gap = 22;
+    const cardW = (W - M * 2 - gap * 2) / 3;
+    teamCards.forEach((team, i) => {
+      const x = M + (i % 3) * (cardW + gap);
+      const y = h.endY + 150 + Math.floor(i / 3) * 190;
+      s += `<rect x="${x}" y="${y}" width="${cardW}" height="162" rx="18" fill="#f8fafc" stroke="${LINE}"/>`;
+      s += text(team[0], x + 28, y + 46, { size: 20, weight: 700, fill: BRAND, maxWidth: cardW - 56 });
+      s += text(team[1], x + 28, y + 84, { size: 25, weight: 700, fill: INK, maxWidth: cardW - 56, lineHeight: 1.2 });
+      s += text(team[2], x + 28, y + 130, { size: 18, fill: BODY, maxWidth: cardW - 56 });
+    });
+    s += `<rect x="${M + 2 * (cardW + gap)}" y="${h.endY + 340}" width="${cardW}" height="162" rx="18" fill="${BRAND_DARK}"/>`;
+    s += text(
+      "Andi Alfian Rusani · Technical Core Team 4",
+      M + 2 * (cardW + gap) + 28,
+      h.endY + 392,
+      { size: 24, weight: 700, fill: "#ffffff", maxWidth: cardW - 56, lineHeight: 1.3 },
+    );
+    s += text("Achmad Alfian Saputra · Non-Core Team 2", M + 2 * (cardW + gap) + 28, h.endY + 458, {
+      size: 19,
+      fill: BRAND_100,
+      maxWidth: cardW - 56,
+      lineHeight: 1.3,
+    });
     slides.push(slideFrame(s + pageNumber(12)));
   }
 
@@ -636,20 +654,20 @@ ${text("Global Experience Program 2026 · Final Presentation", M, 900, { size: 2
 
   /* 15 Sustainability */
   {
-    const h = header("Sustainability", "Four Layers of Continuity");
+    const h = header("Sustainability Plan", "Four Layers of Continuity");
     let s = h.svg;
     const f = arrowFlow(
-      ["Handover", "1-Week Stabilization", "Full Operational Use", "Monthly Monitoring"],
+      ["Handover", "1-Week Stabilization", "Operational Use Check", "Monthly Monitoring"],
       M,
       h.endY,
       W - M * 2,
     );
     s += f.svg;
     const layers = [
-      ["Technology", "Lima sistem aktif dengan infrastruktur digital"],
+      ["Technology", "Lima sistem fungsional dengan infrastruktur digital"],
       ["Human", "Peserta menjadi builder lalu technical steward"],
       ["Impact", "Pemeriksaan H+7 dan monitoring bulanan"],
-      ["Program", "Playbook v1.0 dan Replication Kit"],
+      ["Program", "Refined Playbook dan Replication Kit"],
     ];
     layers.forEach((l, i) => {
       const w = (W - M * 2 - 60) / 4;
@@ -669,12 +687,13 @@ ${text("Global Experience Program 2026 · Final Presentation", M, 900, { size: 2
     slides.push(slideFrame(s + pageNumber(15)));
   }
 
-  /* 16 Closing */
+  /* 16 Closing & Call to Action */
   {
     let s = `<rect width="${W}" height="${H}" fill="${BRAND_DARK}"/>
-<rect x="0" y="0" width="${W}" height="10" fill="${BRAND}"/>`;
+<rect x="0" y="0" width="${W}" height="10" fill="${BRAND}"/>
+<text x="${M}" y="92" font-family="${FONT}" font-size="22" font-weight="700" fill="${BRAND_100}" letter-spacing="3">CLOSING &amp; CALL TO ACTION</text>`;
     const f = arrowFlow(
-      ["Pilot 1", "Lessons", "Playbook v1.0", "Replication Kit", "Next Collaboration"],
+      ["Pilot 1", "Lessons", "Refined Playbook", "Replication Kit", "Next Collaboration"],
       M,
       180,
       W - M * 2,
@@ -716,6 +735,35 @@ ${text("Global Experience Program 2026 · Final Presentation", M, 900, { size: 2
     jpegs.push(jpg);
   }
 
+  const pptx = new PptxGenJS();
+  pptx.layout = "LAYOUT_WIDE";
+  pptx.author = "Riswan Ramadhan · DekatLokal";
+  pptx.company = "DekatLokal";
+  pptx.subject = "Global Experience Program 2026 Final Presentation";
+  pptx.title = "AI Co-Creation Lab Makassar — Final Presentation";
+  pptx.lang = "id-ID";
+  pptx.theme = {
+    headFontFace: "Poppins",
+    bodyFontFace: "Poppins",
+    lang: "id-ID",
+  };
+  pptx.defineSlideMaster({
+    title: "FULL_BLEED",
+    background: { color: "FFFFFF" },
+    objects: [],
+  });
+  for (const jpg of jpegs) {
+    const slide = pptx.addSlide("FULL_BLEED");
+    slide.addImage({
+      data: `data:image/jpeg;base64,${jpg.toString("base64")}`,
+      x: 0,
+      y: 0,
+      w: 13.333,
+      h: 7.5,
+    });
+  }
+  await pptx.writeFile({ fileName: PPTX_OUT });
+
   const doc = new PDFDocument({
     size: [960, 540],
     margin: 0,
@@ -738,6 +786,7 @@ ${text("Global Experience Program 2026 · Final Presentation", M, 900, { size: 2
   console.log("slides:", slides.length);
   console.log("slide dir:", SLIDE_DIR);
   console.log("pdf:", PDF_OUT, `${Math.round(fs.statSync(PDF_OUT).size / 1024)} KB`);
+  console.log("pptx:", PPTX_OUT, `${Math.round(fs.statSync(PPTX_OUT).size / 1024)} KB`);
   for (const f of fs.readdirSync(SLIDE_DIR).slice(0, 3)) {
     console.log("  ", f, `${Math.round(fs.statSync(path.join(SLIDE_DIR, f)).size / 1024)} KB`);
   }

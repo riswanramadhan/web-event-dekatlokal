@@ -2,12 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Poppins } from "next/font/google";
 
 import { ChromeGate } from "@/components/layout/chrome-gate";
-import { AnimationProvider } from "@/components/motion/animation-provider";
-import { RouteTransition } from "@/components/motion/route-transition";
 import { ServiceWorkerRegistration } from "@/components/pwa/service-worker-registration";
 import { getSiteUrl } from "@/lib/site";
 
-import "aos/dist/aos.css";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -92,8 +89,6 @@ export default function RootLayout({
   return (
     <html lang="id" className={`${poppins.variable} ${geistMono.variable}`}>
       <body className="flex min-h-screen flex-col overflow-x-clip antialiased">
-        <AnimationProvider />
-        <RouteTransition />
         <ServiceWorkerRegistration />
         <a
           href="#main-content"

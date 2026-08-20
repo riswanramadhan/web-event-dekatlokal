@@ -68,7 +68,7 @@ const progressStatusStyles = {
 export function ProgressReportNavigation({
   currentSlug,
   weekHint,
-  className = "report-no-print mt-8 max-w-5xl border-t border-slate-200 pt-6",
+  className = "report-no-print mt-8 border-t border-slate-200 pt-6",
   showLabel = true,
 }: {
   currentSlug?: ProgressNavigationSlug;

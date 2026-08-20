@@ -3,16 +3,6 @@ const fs = require("fs");
 const SOURCE = "docs/week-4-assessment/nilai-pre-post-test-2026-08-10.csv";
 const TARGET = "public/week-4/AI_CoCreation_Lab_PrePost_Public_Evidence.csv";
 
-const TECHNICAL_CORE = [
-  "Muhammad Makbul N",
-  "Dimas Jayakusuma Sarma",
-  "Achmad Alfian Saputra",
-  "Fathur Rizqi S Djafar",
-  "Marsha Carolince",
-  "Feri Awal",
-  "Chelsea Shelin Purnaria",
-];
-
 function parseCsv(text) {
   const rows = [];
   let row = [];
@@ -74,13 +64,13 @@ const ordered = [...data].sort((a, b) => {
   return Number(a[cPreIdx]) - Number(b[cPreIdx]);
 });
 
-const outHeader = ["Peserta", "Kelompok", ...keptIdx.map((i) => header[i])];
+// Subgroup labels are intentionally excluded from the public file. The named
+// source is required to recalculate them whenever the technical-core roster is
+// corrected; publishing a stale anonymized label would be misleading.
+const outHeader = ["Peserta", ...keptIdx.map((i) => header[i])];
 const outRows = ordered.map((r, n) => {
   const code = `P${String(n + 1).padStart(2, "0")}`;
-  const group = TECHNICAL_CORE.includes(r[0].trim())
-    ? "Technical Core"
-    : "Non-Core";
-  return [code, group, ...keptIdx.map((i) => r[i])];
+  return [code, ...keptIdx.map((i) => r[i])];
 });
 
 const csv =
@@ -92,9 +82,3 @@ fs.writeFileSync(TARGET, csv, "utf8");
 console.log("wrote", TARGET);
 console.log("rows", outRows.length, "columns", outHeader.length);
 console.log("dropped columns:", dropped.join(", "));
-console.log(
-  "core rows:",
-  outRows.filter((r) => r[1] === "Technical Core").length,
-  "| non-core rows:",
-  outRows.filter((r) => r[1] === "Non-Core").length,
-);

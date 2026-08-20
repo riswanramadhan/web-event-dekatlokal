@@ -805,13 +805,12 @@ const umkmVisualById = {
     fallbackNote: null,
   },
   "markisa-bintang-jaya": {
-    src: "/problem-validation/documentation/markisa-bintang-jaya.webp",
-    alt: "Dokumentasi pemilik Markisa Bintang Jaya dalam proses validasi masalah",
-    width: 1200,
-    height: 1500,
-    kind: "documentation-photo",
-    fallbackNote:
-      "Logo standalone Markisa Bintang Jaya belum tersedia; visual menggunakan dokumentasi aktual problem validation.",
+    src: "/sponsorship-logo/optimized/logo-markisabintangjaya.webp",
+    alt: "Logo Markisa Bintang Jaya",
+    width: 575,
+    height: 434,
+    kind: "official-logo",
+    fallbackNote: null,
   },
   "kira-kira-michi": {
     src: "/sponsorship-logo/optimized/logo-kira-kira-michi.webp",

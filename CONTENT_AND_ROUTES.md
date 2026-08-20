@@ -360,9 +360,11 @@ ulang atau dilabeli sebagai video dokumentasi event Week 3.
 - Final Presentation
 
 Sustainability & Replication tetap menjadi section utama pada hub Week 4,
-bukan detail page kelima. Seluruh hasil monitoring, impact, reflection, dan
-file final yang belum tersedia harus memakai placeholder jujur serta aksi
-nonaktif.
+bukan detail page kelima. Per 20 Agustus 2026, keempat detail page berstatus
+`Completed` dan menyediakan Project Monitoring Report, Impact Report,
+Leadership Reflection, Final Presentation PDF/PPTX, serta Refined Playbook.
+Data implementasi membedakan serah terima dan initial UAT dari sustained
+adoption; penggunaan berulang tetap diverifikasi melalui monitoring lanjutan.
 
 ---
 
@@ -412,12 +414,11 @@ usaha lokal.`
 
 Logo sumber telah diberikan pemilik untuk ditampilkan dalam konteks supporting
 ecosystem. Website memakai turunan WebP pada
-`public/logo-ecosystem/optimized/`. Tampilkan logo sebagai rail horizontal yang
-bergerak tenang dari kanan ke kiri. Susun Danantara, Rumah BUMN, dan BRI
-sebagai satu kelompok visual yang berdekatan. Rail harus dapat dijeda melalui
-hover atau fokus dan menjadi statis ketika reduced motion aktif. Penggunaan
-logo tidak boleh diperluas menjadi klaim sponsorship berbayar tanpa konfirmasi
-terpisah.
+`public/logo-ecosystem/optimized/`. Tampilkan sebagai grid responsif statis
+dengan nama di samping atau di bawah logo agar cepat, terbaca, dan tidak
+bergerak otomatis. Susun Danantara, Rumah BUMN, dan BRI sebagai satu kelompok
+visual yang berdekatan. Penggunaan logo tidak boleh diperluas menjadi klaim
+sponsorship berbayar tanpa konfirmasi terpisah.
 
 ---
 

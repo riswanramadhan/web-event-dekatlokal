@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { AnimatedNumber } from "@/components/ui/animated-number";
+
 /**
  * Bar chart sederhana untuk hasil assessment Week 4.
  *
@@ -25,6 +27,11 @@ export interface ChartBar {
   readonly display: string;
   readonly tone?: SeriesTone;
   readonly note?: string;
+  readonly animatedValue?: {
+    readonly decimals?: number;
+    readonly prefix?: string;
+    readonly suffix?: string;
+  };
 }
 
 export interface ChartGroup {
@@ -118,7 +125,16 @@ function BarRow({
           />
         </div>
         <span className="w-16 shrink-0 text-right font-mono text-sm font-semibold tabular-nums text-ink">
-          {bar.display}
+          {bar.animatedValue ? (
+            <AnimatedNumber
+              value={bar.value}
+              decimals={bar.animatedValue.decimals}
+              prefix={bar.animatedValue.prefix}
+              suffix={bar.animatedValue.suffix}
+            />
+          ) : (
+            bar.display
+          )}
         </span>
       </div>
     </div>
@@ -202,7 +218,7 @@ export function ChangeHighlight({
 }: {
   items: readonly {
     readonly label: string;
-    readonly value: string;
+    readonly value: ReactNode;
     readonly caption: string;
   }[];
 }) {

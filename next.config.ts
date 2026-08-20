@@ -90,6 +90,28 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        // Published Week 4 evidence is intentionally unlisted. This includes
+        // the anonymized assessment file and consented reflection report.
+        source: "/week-4/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        // Final decks and replication materials are shared by direct link,
+        // not advertised as standalone search results.
+        source: "/downloads/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
     ];
   },
 };

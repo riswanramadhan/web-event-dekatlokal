@@ -107,11 +107,6 @@ export function ReportPrintStyles() {
           background: #ffffff !important;
         }
 
-        .progress-report [data-aos] {
-          opacity: 1 !important;
-          transform: none !important;
-        }
-
         .progress-report .page-container {
           max-width: none !important;
           padding-inline: 0 !important;
@@ -161,6 +156,27 @@ export function ReportPrintStyles() {
           min-width: 100% !important;
           table-layout: fixed;
           font-size: 8.5pt !important;
+        }
+
+        [data-monitoring-system] {
+          break-inside: avoid-page !important;
+          page-break-inside: avoid !important;
+          overflow: visible !important;
+        }
+
+        [data-monitoring-system-grid] {
+          display: grid !important;
+          grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) !important;
+        }
+
+        [data-monitoring-system-media] {
+          border-top: 0 !important;
+          border-left: 1px solid #dbe3ef !important;
+        }
+
+        [data-monitoring-system-media] img {
+          max-height: 58mm !important;
+          object-fit: contain !important;
         }
 
         .report-table th,
@@ -347,7 +363,7 @@ export function ProgressReportHeader({
       />
 
       <div className="page-container relative">
-        <div className="mx-auto max-w-5xl">
+        <div>
           <ProgressReportBreadcrumb title={report.title} />
 
           <Link
@@ -392,7 +408,7 @@ export function ProgressReportHeader({
             />
           </div>
 
-          <div className="report-actions report-no-print mt-8 flex max-w-5xl flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-start">
+          <div className="report-actions report-no-print mt-8 flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-start">
             <CopyReportLinkButton url={report.progressUrl} />
             {report.download ? (
               <ReportDownloadLink
@@ -881,7 +897,7 @@ export function ProgressReportPage({ report }: { report: GepWeekOneReport }) {
           className="progress-report-decoration dot-grid pointer-events-none absolute inset-y-0 left-0 w-40 opacity-20"
           aria-hidden="true"
         />
-        <div className="relative mx-auto max-w-5xl space-y-5 sm:space-y-6">
+        <div className="relative space-y-5 sm:space-y-6">
           {report.sections.map((section) => (
             <ReportSection key={section.id} section={section} />
           ))}

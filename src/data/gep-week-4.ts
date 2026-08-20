@@ -3,8 +3,13 @@ import {
   fiveFunctionalSolutions,
   fiveUmkmCoCreators,
   networkPartnerGroups,
+  curatedEventDocumentation,
   studentCoCreationTeams,
 } from "@/data/gep-week-3-completed";
+import {
+  assessmentCohort,
+  featuredReflections,
+} from "@/data/gep-week-4-assessment";
 import { umkmStakeholders } from "@/data/problem-validation";
 
 const progressBaseRoute = "/ai-co-creation-lab-makassar/progress";
@@ -32,8 +37,8 @@ function progressUrl(slug: WeekFourProgressSlug) {
 }
 
 const sharedUpdate = {
-  updatedAt: "18 Agustus 2026",
-  updatedAtIso: "2026-08-18",
+  updatedAt: "20 Agustus 2026",
+  updatedAtIso: "2026-08-20",
 } as const;
 
 /* -------------------------------------------------------------------------- */
@@ -63,7 +68,7 @@ export const projectCompletionMonitoringHeader = {
   metadataTitle: "Project Monitoring Report — AI Co-Creation Lab Makassar 2026",
   weekLabel: "GEP WEEK 4",
   phase: "MEASURE, REFLECT & SUSTAIN",
-  subtitle: "Implementation delivered. Operational continuity secured.",
+  subtitle: "Implementation delivered. Operational continuity structured.",
   status: "Completed",
   statusTone: "green" as const,
   nextStep: "Monthly system health and adoption monitoring",
@@ -83,7 +88,7 @@ export const impactMeasurementHeader = {
     "Measured through knowledge, capability, experience, reflection, and real output.",
   status: "Completed",
   statusTone: "green" as const,
-  nextStep: "Sustainability berjalan melalui stewardship dan monitoring bulanan",
+  nextStep: "Sustainability dilanjutkan melalui stewardship dan monitoring bulanan terjadwal",
   route: progressRoute("impact-measurement"),
   progressUrl: progressUrl("impact-measurement"),
   ...sharedUpdate,
@@ -142,17 +147,17 @@ export const completionFraming = {
   },
   continuity: {
     label: "Post-Program Continuity",
-    status: "Sustained beyond GEP",
+    status: "Active follow-up",
     description:
-      "Refinement, stewardship, dan monitoring bulanan berjalan setelah program formal selesai sebagai bagian dari komitmen dukungan DekatLokal.",
+      "Refinement dan stewardship aktif setelah program formal selesai; monitoring bulanan telah dijadwalkan sebagai bagian dari komitmen dukungan DekatLokal.",
   },
-  statement: "Completion is not where the support stops. It is where long-term use begins.",
+  statement: "Completion is not where the support stops. It is where structured long-term support begins.",
 } as const;
 
 export const weekFourOverview = {
   title: "Week 4 — Measure, Reflect & Sustain",
   subtitle:
-    "The project is complete. The impact continues through adoption, stewardship, and replication.",
+    "The project is complete. Follow-up continues through monitoring, stewardship, and replication.",
   description:
     "AI Co-Creation Lab Makassar telah menyelesaikan seluruh perjalanan GEP dari validasi masalah sampai implementasi, pengukuran dampak, refleksi, dan perencanaan keberlanjutan. Lima sistem fungsional telah diserahterimakan kepada lima UMKM dan kini berjalan melalui siklus refinement dan operasionalisasi terstruktur yang didukung DekatLokal bersama student steward terpilih.",
   status: "Completed",
@@ -165,7 +170,7 @@ export const weekFourCompletionHighlights = [
   "Lima sistem telah diserahterimakan kepada pemilik usahanya.",
   "Pre-test, post-test, dan refleksi lengkap untuk 20 peserta.",
   "Domain dan hosting aktif untuk lima sistem.",
-  "Playbook v1.0 dan Replication Kit tersedia untuk direplikasi.",
+  "Refined Playbook dan Replication Kit tersedia sebagai bahan replikasi.",
 ] as const;
 
 export const weekFourBigStory = {
@@ -182,7 +187,7 @@ export const weekFourBigStory = {
   ],
   narrative:
     "AI Co-Creation Lab Makassar tidak berakhir ketika event selesai pada 10 Agustus 2026. Event tersebut adalah implementation day dari perjalanan yang lebih panjang. Setelah lima tim menghasilkan lima functional MVP, DekatLokal melanjutkan proses melalui refinement, deployment, supported handover, monitoring, impact measurement, dan dokumentasi model agar dapat direplikasi.",
-  statement: "The Lab is completed. The adoption journey has started.",
+  statement: "The Lab is completed. The monitoring journey has started.",
 } as const;
 
 export interface WeekFourProgressCard {
@@ -241,7 +246,7 @@ export const weekFourProgressCards = [
 export const weekFourSecondaryCard = {
   title: "Sustainability & Replication",
   description:
-    "Playbook v1.0, Replication Kit, model stewardship, dan monitoring bulanan yang membuat pilot pertama ini dapat dijalankan kembali.",
+    "Refined Playbook, Replication Kit, model stewardship, dan monitoring bulanan yang membuat pilot pertama ini dapat dijalankan kembali.",
   status: "Completed",
   statusTone: "green" as const,
   href: "#sustainability-replication",
@@ -309,13 +314,13 @@ export const weekFourGuidingQuestions = [
     number: "03",
     question: "What continues after the event?",
     answer:
-      "Stabilisasi satu minggu, penggunaan operasional penuh, technical stewardship, dan monitoring bulanan.",
+      "Stabilisasi, transisi penggunaan operasional, technical stewardship, dan monitoring bulanan.",
   },
   {
     number: "04",
     question: "Can this model be repeated?",
     answer:
-      "Playbook v1.0 dan Replication Kit mengemas pilot pertama menjadi model yang dapat dijalankan kembali.",
+      "Refined Playbook dan Replication Kit mengemas pilot pertama menjadi model yang dapat dijalankan kembali.",
   },
 ] as const;
 
@@ -324,17 +329,148 @@ export const weekFourGuidingQuestions = [
 /* -------------------------------------------------------------------------- */
 
 export const monitoringPurpose =
-  "Merekam capaian pelaksanaan, hasil serah terima lima sistem, pembelajaran, dan mekanisme keberlanjutan sebagai materi utama bagian Project Implementation pada Final Presentation.";
+  "Merekam progres pelaksanaan, capaian target, kendala, solusi, pembelajaran, dokumentasi kegiatan, dan rencana tindak lanjut; memastikan solusi telah diterima melalui initial UAT dan handover; serta menjadi materi utama bagian Implementasi Project pada Final Presentation.";
 
 export const monitoringExecutiveSummary = {
   paragraphs: [
     "AI Co-Creation Lab Makassar berhasil menuntaskan rencana implementasinya bersama 20 mahasiswa, 5 UMKM lokal, 5 tim co-creation campuran, 5 functional MVP, dan 5 sesi initial UAT. Setiap UMKM menguji langsung solusi yang dibangun untuk masalah usahanya dan menerima arah solusi tersebut untuk diserahterimakan serta disempurnakan lebih lanjut.",
     "Kelima sistem telah diserahterimakan. Minggu pertama setelah event sengaja digunakan sebagai periode refinement dan stabilisasi untuk menemukan celah kegunaan, memvalidasi perhitungan, memperkuat kesiapan server, memperbaiki responsiveness, dan memastikan alur kerja yang kritis bagi bisnis berjalan andal sebelum dipakai penuh.",
-    "Pada minggu kedua setelah event, sistem beralih ke penggunaan operasional penuh. Monitoring berlanjut setiap bulan sebagai bagian dari komitmen keberlanjutan DekatLokal.",
+    "Setelah periode refinement, setiap sistem masuk ke tahap transisi penggunaan operasional. Penggunaan berulang dan manfaat berkelanjutan tidak diasumsikan selesai; keduanya diverifikasi melalui monitoring bulanan sebagai bagian dari komitmen keberlanjutan DekatLokal.",
   ],
   quote:
     "Five systems were delivered and accepted through initial UAT. The post-handover stabilization cycle protects data accuracy, usability, and production readiness before daily operational use.",
 } as const;
+
+export const monitoringReportCoverage = [
+  {
+    number: "01",
+    title: "Progres Pelaksanaan",
+    description:
+      "Delapan tahap dari validasi masalah, co-creation, functional MVP, initial UAT, handover, refinement, transisi penggunaan, sampai monitoring bulanan.",
+  },
+  {
+    number: "02",
+    title: "Capaian Target",
+    description:
+      "Target mahasiswa, UMKM, tim, functional MVP, initial UAT, handover, infrastruktur, assessment, dan refleksi dibandingkan dengan catatan implementasi.",
+  },
+  {
+    number: "03",
+    title: "Kendala",
+    description:
+      "Format satu hari, kesiapan produksi, pembagian tanggung jawab pasca-event, dan kebutuhan membuktikan penggunaan berulang.",
+  },
+  {
+    number: "04",
+    title: "Solusi",
+    description:
+      "Refinement pasca-handover, quality control, technical stewardship, escalation support, dan monitoring berkala.",
+  },
+  {
+    number: "05",
+    title: "Pembelajaran",
+    description:
+      "Enam pembelajaran implementasi tentang pengguna, MVP, AI, tim campuran, deployment yang bertanggung jawab, dan dukungan setelah handover.",
+  },
+  {
+    number: "06",
+    title: "Dokumentasi Kegiatan",
+    description:
+      "Foto aktual workshop, diskusi mahasiswa–UMKM, hands-on build, prototype review, pitching, dan dokumentasi kelompok.",
+  },
+  {
+    number: "07",
+    title: "Rencana Tindak Lanjut",
+    description:
+      "Stabilisasi, pencatatan isu, validasi penggunaan operasional, review sistem bulanan, dan pembaruan model replikasi.",
+  },
+] as const;
+
+export const monitoringChallengesAndResponses = [
+  {
+    challenge: "Format implementasi satu hari sangat intensif.",
+    response:
+      "Penyempurnaan tidak dipaksakan selesai di ruang acara; refinement dan quality control dilanjutkan setelah handover.",
+  },
+  {
+    challenge:
+      "Functional MVP belum otomatis sama dengan sistem yang siap dipakai secara konsisten.",
+    response:
+      "Stabilisasi memeriksa akurasi data, perhitungan, akses, responsiveness, server, dan alur kerja prioritas.",
+  },
+  {
+    challenge:
+      "Tanggung jawab pemeliharaan dapat terputus setelah peserta meninggalkan event.",
+    response:
+      "Setiap sistem memiliki steward dan jalur eskalasi ke tim teknis DekatLokal.",
+  },
+  {
+    challenge:
+      "Handover membuktikan penerimaan solusi, tetapi belum membuktikan adopsi berulang.",
+    response:
+      "Penggunaan, kegunaan, akurasi, isu, dan kebutuhan perbaikan dipantau secara berkala tanpa mengklaim outcome sebelum datanya tersedia.",
+  },
+] as const;
+
+export const monitoringFollowUpPlan = [
+  {
+    action: "Refinement & stabilization",
+    owner: "DekatLokal Technical Team + Technical Steward",
+    timing: "Siklus awal pasca-handover",
+    status: "Recorded implementation step",
+    successIndicator:
+      "Core workflow, akses, perhitungan, responsiveness, dan kesiapan server diperiksa.",
+  },
+  {
+    action: "Operational-use check",
+    owner: "UMKM + Technical Steward",
+    timing: "Setelah stabilisasi dan saat penggunaan berlangsung",
+    status: "Monitoring ongoing",
+    successIndicator:
+      "Pengguna dapat menjalankan alur kerja prioritas dan mencatat isu yang ditemukan.",
+  },
+  {
+    action: "Issue & improvement log",
+    owner: "Technical Steward + DekatLokal",
+    timing: "Setiap ada temuan penggunaan",
+    status: "Ongoing",
+    successIndicator:
+      "Temuan memiliki prioritas, penanggung jawab, tindak lanjut, dan status penyelesaian.",
+  },
+  {
+    action: "Monthly system review",
+    owner: "DekatLokal + UMKM",
+    timing: "Bulanan",
+    status: "Scheduled continuity mechanism",
+    successIndicator:
+      "Penggunaan, kegunaan, akurasi, kesehatan server, dan relevansi operasional ditinjau kembali.",
+  },
+  {
+    action: "Replication learning update",
+    owner: "DekatLokal",
+    timing: "Setelah siklus monitoring menghasilkan temuan baru",
+    status: "Playbook refined; future updates evidence-led",
+    successIndicator:
+      "Temuan pilot diterjemahkan menjadi perbaikan playbook, toolkit, dan desain program berikutnya.",
+  },
+] as const;
+
+export const monitoringBenefitNote =
+  "Initial UAT dan handover menjadi bukti implementasi bahwa solusi telah diterima oleh masing-masing UMKM. Manfaat berkelanjutan, penggunaan berulang, dan outcome operasional tetap diverifikasi melalui monitoring; laporan ini tidak menganggap adopsi jangka panjang selesai tanpa data tindak lanjut.";
+
+const monitoringDocumentationIds = new Set([
+  "event-opening",
+  "student-umkm-discussion",
+  "hands-on-building",
+  "prototype-review",
+  "team-pitching",
+  "group-documentation",
+]);
+
+export const monitoringDocumentationHighlights =
+  curatedEventDocumentation.filter((item) =>
+    monitoringDocumentationIds.has(item.id),
+  );
 
 export type LifecycleState =
   | "Completed"
@@ -394,17 +530,17 @@ export const implementationLifecycle: readonly LifecycleStage[] = [
   },
   {
     number: "07",
-    title: "Full Operational Use",
+    title: "Operational Use Transition",
     state: "Structured Transition",
     description:
-      "Pada minggu kedua sistem masuk ke penggunaan operasional harian oleh pemilik usaha.",
+      "Setelah stabilisasi, sistem diarahkan ke penggunaan operasional; penggunaan berulang dan manfaatnya diverifikasi melalui monitoring.",
   },
   {
     number: "08",
     title: "Monthly Monitoring",
     state: "Sustainability Mechanism",
     description:
-      "Pemantauan penggunaan, kegunaan, akurasi, dan kebutuhan perbaikan berjalan rutin setiap bulan.",
+      "Pemantauan penggunaan, kegunaan, akurasi, dan kebutuhan perbaikan dijadwalkan serta dicatat setiap bulan.",
   },
 ];
 
@@ -415,7 +551,7 @@ export const lifecycleFlow = [
   "Initial UAT",
   "Handover",
   "1-Week Refinement & Stabilization",
-  "Full Operational Use",
+  "Operational Use Transition",
   "Monthly Monitoring",
 ] as const;
 
@@ -762,37 +898,56 @@ export interface DownloadableAsset {
   readonly meta: readonly { readonly label: string; readonly value: string }[];
 }
 
+export const monitoringReportAsset: DownloadableAsset = {
+  id: "project-monitoring-report",
+  title: "AI Co-Creation Lab Project Monitoring Report",
+  kind: "PDF Report",
+  description:
+    "Versi unduh dari laporan progres pelaksanaan, capaian target, kendala, solusi, pembelajaran, dokumentasi kegiatan, dan rencana tindak lanjut.",
+  viewHref: "/week-4/AI_CoCreation_Lab_Project_Monitoring_Report.pdf",
+  downloadHref: "/week-4/AI_CoCreation_Lab_Project_Monitoring_Report.pdf",
+  viewLabel: "View Monitoring Report",
+  downloadLabel: "Download Monitoring Report",
+  meta: [
+    { label: "Status", value: "Completed · Updated 20 Aug 2026" },
+    { label: "Use", value: "Final Presentation · Implementasi Project" },
+    { label: "Format", value: "PDF · 28 pages · 7.61 MB" },
+  ],
+};
+
+export const impactReportAsset: DownloadableAsset = {
+  id: "impact-report",
+  title: "AI Co-Creation Lab Impact Report",
+  kind: "PDF Report",
+  description:
+    "Laporan penerima manfaat, keterlibatan ekosistem, relawan, output, outcome mahasiswa, suara peserta, dokumentasi, Sustainability Plan, dan jalur replikasi.",
+  viewHref: "/week-4/AI_CoCreation_Lab_Impact_Report.pdf",
+  downloadHref: "/week-4/AI_CoCreation_Lab_Impact_Report.pdf",
+  viewLabel: "View Impact Report",
+  downloadLabel: "Download Impact Report",
+  meta: [
+    { label: "Status", value: "Completed · Updated 20 Aug 2026" },
+    { label: "Use", value: "Final Presentation · Dampak & Keberlanjutan" },
+    { label: "Format", value: "PDF · 39 pages · 5.68 MB" },
+  ],
+};
+
 export const impactEvidenceFiles: readonly DownloadableAsset[] = [
+  impactReportAsset,
   {
     id: "prepost-public-evidence",
     title: "Pre-Test & Post-Test Participant Data",
     kind: "CSV",
     description:
-      "Data assessment berpasangan yang dipakai menghitung perubahan knowledge objektif dan self-reported capability pada 20 peserta. Identitas peserta diganti kode P01 sampai P20 agar dapat dibuka publik tanpa membuka data pribadi.",
+      "Data assessment berpasangan yang dipakai menghitung perubahan knowledge objektif dan self-reported capability pada 20 peserta. Identitas peserta diganti kode P01 sampai P20 dan klasifikasi subgroup yang tidak dapat diverifikasi ulang tidak dipublikasikan.",
     viewHref: null,
     downloadHref: "/week-4/AI_CoCreation_Lab_PrePost_Public_Evidence.csv",
     viewLabel: "Download CSV",
     downloadLabel: "Download CSV",
     meta: [
       { label: "Baris", value: "20 peserta" },
-      { label: "Kolom", value: "21 kolom skor" },
+      { label: "Kolom", value: "20 kolom skor" },
       { label: "Format", value: "CSV" },
-    ],
-  },
-  {
-    id: "assessment-summary",
-    title: "Pre-Test & Post-Test Assessment Summary",
-    kind: "PDF",
-    description:
-      "Ringkasan skor knowledge objektif, dimensi capability, pengalaman pasca-program, minat technical steward, dan kerangka pengukuran yang dipakai pada pilot ini.",
-    viewHref: "/week-4/AI_CoCreation_Lab_Ringkasan_Pre_Post_Test.pdf",
-    downloadHref: "/week-4/AI_CoCreation_Lab_Ringkasan_Pre_Post_Test.pdf",
-    viewLabel: "View PDF",
-    downloadLabel: "Download PDF",
-    meta: [
-      { label: "Halaman", value: "5 halaman" },
-      { label: "Tanggal", value: "10 Agustus 2026" },
-      { label: "Format", value: "PDF" },
     ],
   },
   {
@@ -816,36 +971,37 @@ export const impactEvidenceFiles: readonly DownloadableAsset[] = [
 export const impactEvidenceIntro = {
   title: "Impact Evidence Files",
   description:
-    "Tiga berkas bukti yang dapat diunduh dan diperiksa ulang oleh pembaca laporan ini.",
+    "Impact Report, data assessment berpasangan yang dianonimkan, dan refleksi peserta dapat diunduh serta diperiksa ulang.",
   privacyNote:
     "Berkas CSV publik memakai kode peserta, bukan nama, dan tidak memuat kontak pribadi. Data bernama disimpan internal untuk keperluan verifikasi program.",
   reflectionCoverage: "20 of 20 participants completed the reflection.",
 } as const;
 
 export const playbookAsset = {
-  id: "playbook-v1",
-  title: "AI Co-Creation Lab Playbook v1.0",
+  id: "playbook-refined",
+  title: "AI Co-Creation Lab Playbook — Refined Edition",
   subtitle: "A Replication Guide for Student × UMKM Digital Co-Creation",
-  badge: "Completed · Replication Ready",
+  badge: "Refined · Replication Ready",
   description:
     "Panduan replikasi praktis yang disusun dari pilot pertama Makassar, mencakup pemilihan UMKM, validasi masalah, desain tim campuran, kurikulum, build berbantuan AI, UAT, supported handover, pengukuran dampak, stewardship, dan keberlanjutan.",
-  version: "Version 1.0",
+  version: "Refined Edition · 39 pages",
   basedOn: "Based on Pilot 1 Makassar 2026",
   preparedBy: "Prepared by DekatLokal",
-  pdfHref: "/downloads/AI_Co-Creation_Lab_Playbook_v1.0.pdf",
-  markdownHref: "/downloads/AI_Co-Creation_Lab_Playbook_v1.0.md",
+  pdfHref: "/downloads/AI_Co-Creation_Lab_Playbook_Refined.pdf",
   sectionCount: 30,
 } as const;
 
 export const finalDeckAsset = {
   id: "final-presentation-deck",
   title: "Final Presentation — GEP 2026",
-  kind: "PDF Presentation Deck",
+  kind: "PDF & PowerPoint Presentation Deck",
   description:
     "Perjalanan lengkap Week 1 sampai Week 4 yang mencakup personal leadership, identifikasi isu, partnership, validasi, implementasi, pengukuran dampak, refleksi, keberlanjutan, dan replikasi.",
   status: "Completed",
   statusTone: "green" as const,
   pdfHref: "/downloads/AI_Co-Creation_Lab_Final_Presentation_GEP_2026.pdf",
+  pptxHref:
+    "/downloads/AI_Co-Creation_Lab_Final_Presentation_GEP_2026.pptx",
   slideBasePath: "/downloads/final-presentation",
   slideCount: 16,
   ratio: "16:9",
@@ -860,29 +1016,38 @@ export const impactReportPurpose =
 
 export const impactHeroMetrics = {
   delivery: [
-    { value: "20", label: "University Students" },
-    { value: "5", label: "UMKM Co-Creators" },
-    { value: "5", label: "Functional Systems" },
-    { value: "5 of 5", label: "Initial UAT Completed" },
+    { value: 20, label: "University Students" },
+    { value: 5, label: "UMKM Co-Creators" },
+    { value: 5, label: "Functional Systems" },
+    { value: 5, total: 5, label: "Initial UAT Completed" },
   ],
   learning: [
     {
-      value: "71.25 → 100",
+      before: 71.25,
+      after: 100,
+      decimalsBefore: 2,
+      decimalsAfter: 0,
       label: "Core Knowledge Score",
       caption: "Skala 0-100",
     },
     {
-      value: "3.27 → 4.72",
+      before: 3.27,
+      after: 4.72,
+      decimalsBefore: 2,
+      decimalsAfter: 2,
       label: "Self-Reported Capability",
       caption: "Skala Likert 1-5",
     },
     {
-      value: "+1.56",
+      value: 1.56,
+      prefix: "+",
+      decimals: 2,
       label: "Largest Capability Gain",
       caption: "Testing, Collaboration & Confidence",
     },
     {
-      value: "20 of 20",
+      value: 20,
+      total: 20,
       label: "Participants Increased Overall Capability",
       caption: "Perbandingan berpasangan per peserta",
     },
@@ -892,15 +1057,17 @@ export const impactHeroMetrics = {
 export const beneficiaries = {
   students: {
     label: "Direct Student Beneficiaries",
-    value: "20 university students",
+    value: 20,
+    suffix: " university students",
     description:
       "Dua puluh mahasiswa dari enam perguruan tinggi yang mengikuti seluruh rangkaian pembelajaran, co-creation, build, dan assessment.",
   },
   umkm: {
     label: "Direct UMKM Beneficiaries",
-    value: "5 local UMKM",
+    value: 5,
+    suffix: " local UMKM",
     description:
-      "Lima pelaku usaha yang membawa masalah operasional nyata dan kini menggunakan sistem yang dibangun bersama.",
+      "Lima pelaku usaha yang membawa masalah operasional nyata, melakukan initial UAT, dan menerima handover sistem yang dibangun bersama; penggunaan berulangnya dipantau setelah program.",
     names: umkmStakeholders.map((stakeholder) => stakeholder.businessName),
   },
   separationNote:
@@ -987,7 +1154,7 @@ export const umkmCoCreatorIntro = {
 const technicalCoreNames = [
   "Muhammad Makbul N",
   "Dimas Jayakusuma Sarma",
-  "Achmad Alfian Saputra",
+  "Andi Alfian Rusani",
   "Fathur Rizqi S Djafar",
   "Marsha Carolince",
   "Feri Awal",
@@ -1029,16 +1196,16 @@ export const nonCoreCount =
   technicalCoreCount;
 
 export const teamDesignNote =
-  "Nama dan asal kampus mengikuti data peserta yang tersimpan pada dokumentasi Week 3. Penandaan technical core mengikuti pengelompokan yang dipakai saat menghitung hasil assessment.";
+  "Nama dan asal kampus mengikuti dokumentasi Week 3. Penandaan technical core telah dikoreksi: Andi Alfian Rusani adalah core Team 4 dan Achmad Alfian Saputra bukan core. Agregat lama core vs non-core tidak ditampilkan karena pemetaan data assessment bernama untuk menghitung ulang subgroup tidak tersedia di workspace; hasil full cohort tetap digunakan.";
 
 export const impactContinuity = {
   title: "Impact Continuity",
-  lead: "Model dampak berlanjut setelah event melalui adopsi operasional dan monitoring sistem bulanan. Ini membuat program bergerak dari output langsung menuju penggunaan berkelanjutan tanpa memperlakukan keberlanjutan sebagai pemeriksaan sekali jalan setelah acara.",
+  lead: "Model tindak lanjut berlanjut setelah event melalui transisi penggunaan dan monitoring sistem bulanan. Ini memungkinkan program bergerak dari output langsung menuju bukti penggunaan berkelanjutan tanpa menganggap adopsi selesai sebelum data monitoring tersedia.",
   items: [
     {
-      title: "Operational Adoption",
+      title: "Operational Adoption Monitoring",
       description:
-        "Sistem beralih ke penggunaan bisnis harian setelah minggu stabilisasi.",
+        "Arah penggunaan operasional diverifikasi bertahap setelah stabilisasi; status penggunaan berulang tetap mengikuti data monitoring.",
     },
     {
       title: "Monthly Monitoring",
@@ -1081,7 +1248,7 @@ export const outputVsOutcome = {
     "Masalah nyata diterjemahkan menjadi sistem yang berfungsi.",
     "UMKM menguji langsung sistem yang dibangun untuk usahanya.",
     "Arah solusi diterima dan sistem diserahterimakan.",
-    "Lima sistem masuk ke siklus stabilisasi menuju penggunaan harian.",
+    "Lima sistem masuk ke siklus stabilisasi dan monitoring menuju penggunaan yang konsisten.",
   ],
 } as const;
 
@@ -1095,7 +1262,7 @@ export const sustainabilityPlan = [
       "Functional MVP",
       "Handover",
       "1-Week Stabilization",
-      "Full Operational Use",
+      "Operational Use Check",
       "Maintenance",
     ],
   },
@@ -1129,12 +1296,12 @@ export const sustainabilityPlan = [
     number: "04",
     title: "Program Sustainability",
     description:
-      "Playbook v1.0 dan Replication Kit membuat model ini dapat dijalankan kembali.",
+      "Refined Playbook dan Replication Kit membuat model ini dapat dijalankan kembali.",
     flow: [
       "Pilot 1 Makassar",
       "Capture Lessons",
       "Standardize",
-      "Playbook v1.0",
+      "Refined Playbook",
       "Replication Kit",
       "Replicate",
     ],
@@ -1151,16 +1318,28 @@ export const replicationInterest = {
   items: [
     {
       party: "Rumah BUMN Makassar",
+      logo: {
+        src: "/logo-ecosystem/optimized/logo-rumahbumn.webp",
+        alt: "Logo Rumah BUMN Makassar",
+      },
       note: "Mendorong agar model ini dibuat dapat direplikasi bersama ekosistem UMKM binaannya.",
       status: "Replication interest",
     },
     {
       party: "BBLSDM Komdigi Makassar",
+      logo: {
+        src: "/logo-ecosystem/optimized/logo-komdigimakassar.webp",
+        alt: "Logo BBLSDM Komdigi Makassar",
+      },
       note: "Menunjukkan ketertarikan pada kegiatan serupa dan meminta materi terstruktur untuk penyusunan proposal internal.",
       status: "Requested replication materials",
     },
     {
       party: "DekatLokal",
+      logo: {
+        src: "/logo-ecosystem/optimized/logo-dekatlokal.webp",
+        alt: "Logo DekatLokal",
+      },
       note: "Dapat berperan sebagai model owner, implementation partner, dan technical mentor bila replikasi berlanjut.",
       status: "Potential collaboration",
     },
@@ -1282,6 +1461,99 @@ export const supportTeamSummary = {
     "Lima relawan dan tim pendukung yang menjalankan dokumentasi, operasional, registrasi, dan liaison selama kegiatan.",
 } as const;
 
+const ecosystemContributorCount = networkPartnerGroups.reduce(
+  (total, group) => total + group.partners.length,
+  0,
+);
+
+export const impactAccountabilityMetrics = [
+  {
+    value: studentCoCreationTeams.flatMap((team) => team.members).length,
+    label: "Student beneficiaries",
+    caption: "Penerima manfaat langsung dari enam perguruan tinggi.",
+  },
+  {
+    value: umkmStakeholders.length,
+    label: "UMKM beneficiaries",
+    caption: "Penerima manfaat bisnis dengan initial UAT dan handover tercatat.",
+  },
+  {
+    value: ecosystemContributorCount,
+    label: "Partners & ecosystem contributors",
+    caption: "Entitas program, UMKM, infrastruktur, learning, venue, dan event support.",
+  },
+  {
+    value: eventVolunteers.length,
+    label: "Volunteers & support team",
+    caption: "Mendukung dokumentasi, operasional, registrasi, dan liaison.",
+  },
+  {
+    value: fiveFunctionalSolutions.length,
+    label: "Functional systems",
+    caption: "Output digital yang dibangun bersama lima UMKM.",
+  },
+  {
+    value: curatedEventDocumentation.length,
+    label: "Curated event photos",
+    caption: "Dokumentasi aktual yang dioptimalkan untuk laporan web.",
+  },
+  {
+    value: assessmentCohort.reflectionCompleted,
+    label: "Participant reflections",
+    caption: "Seluruh peserta menyelesaikan refleksi pasca-program.",
+  },
+  {
+    value: featuredReflections.length,
+    label: "Featured participant voices",
+    caption: "Parafrasa refleksi yang ditampilkan dengan persetujuan penggunaan.",
+  },
+] as const;
+
+export const impactChangeMetrics = [
+  {
+    before: 71.25,
+    after: 100,
+    change: 28.75,
+    beforeDecimals: 2,
+    afterDecimals: 0,
+    label: "Core knowledge",
+    scale: "Skala 0–100 · +28.75 poin",
+  },
+  {
+    before: 3.27,
+    after: 4.72,
+    change: 1.45,
+    beforeDecimals: 2,
+    afterDecimals: 2,
+    label: "Self-reported capability",
+    scale: "Skala Likert 1–5 · +1.45 poin",
+  },
+] as const;
+
+const impactDocumentationIds = new Set([
+  "event-opening",
+  "workshop-collaboration",
+  "student-umkm-discussion",
+  "hands-on-building",
+  "team-pitching",
+  "stakeholder-recognition",
+  "group-documentation",
+]);
+
+export const impactDocumentationHighlights = curatedEventDocumentation.filter(
+  (item) => impactDocumentationIds.has(item.id),
+);
+
+export const impactDocumentationSummary = {
+  eventPhotos: curatedEventDocumentation.length,
+  systemScreens: fiveFunctionalSolutions.length,
+  evidenceFiles: impactEvidenceFiles.length,
+  fullDocumentationHref:
+    "https://drive.google.com/drive/folders/1whE01s1U86R6QEfs5sPHpj7wA6SrcJRN?usp=sharing",
+  note:
+    "Jumlah dokumentasi di atas menghitung aset yang benar-benar tersedia pada laporan ini; folder sumber lengkap tetap dibuka melalui Google Drive.",
+} as const;
+
 /* -------------------------------------------------------------------------- */
 /* Leadership reflection essay                                                */
 /* -------------------------------------------------------------------------- */
@@ -1345,7 +1617,7 @@ export const leadershipReflectionEssay = {
         "Salah satu keputusan terbaik saya adalah tidak membuat tim berdasarkan jurusan. Saya sengaja menyebarkan mahasiswa yang punya pengalaman teknis ke kelompok yang berbeda.",
         "Saya tidak ingin acara ini berubah menjadi lima meja kecil tempat mahasiswa Informatika coding sementara yang lain melihat. Saya ingin semua orang ikut memahami masalah.",
         "Ada yang mungkin tidak menulis code, tetapi mampu bertanya kepada UMKM. Ada yang membantu menyederhanakan workflow. Ada yang melihat UX yang tidak terpikirkan developer. Ada yang membantu menjelaskan solusi dengan bahasa yang lebih manusiawi.",
-        "Setelah melihat hasil pre-test dan post-test, saya semakin yakin bahwa keputusan itu punya nilai. Mahasiswa technical core memang datang dengan baseline yang lebih tinggi. Tetapi peserta non-core menunjukkan peningkatan yang sangat besar dan gap antar kelompok menjadi jauh lebih kecil setelah program.",
+        "Setelah melihat hasil pre-test dan post-test seluruh cohort, saya semakin yakin bahwa keputusan itu punya nilai. Pengetahuan objektif dan kepercayaan diri peserta meningkat, sementara dinamika tim menunjukkan bahwa kemampuan teknis, komunikasi, riset pengguna, dan product thinking dapat saling menguatkan.",
         "Bagi saya, itu bukan bukti bahwa semua orang harus menjadi programmer. Justru sebaliknya. Teknologi akan lebih berguna ketika lebih banyak orang merasa bahwa mereka juga punya tempat dalam proses menciptakannya.",
       ],
       pullQuote: "Technical talent acted as an anchor, not a silo.",
@@ -1423,9 +1695,90 @@ export const leadershipReflectionQuestions = [
 export const finalPresentationOverview = {
   title: "Final Presentation",
   subtitle:
-    "The complete journey from personal leadership to measurable impact and a repeatable co-creation model.",
+    "Sepuluh bagian utama dalam 16 slide yang merangkum perjalanan personal leadership, implementasi, dampak terukur, dan model co-creation yang dapat direplikasi.",
   deckLength: "16 slide",
+  sectionCount: 10,
 } as const;
+
+export interface FinalPresentationSection {
+  readonly number: string;
+  readonly title: string;
+  readonly slideRange: string;
+  readonly purpose: string;
+}
+
+export const finalPresentationSections: readonly FinalPresentationSection[] = [
+  {
+    number: "01",
+    title: "Personal Leadership Profile",
+    slideRange: "Slide 02",
+    purpose:
+      "Memperkenalkan Riswan Ramadhan, nilai kepemimpinan, dan titik berangkat project.",
+  },
+  {
+    number: "02",
+    title: "Identifikasi Isu",
+    slideRange: "Slide 03",
+    purpose:
+      "Menjelaskan jarak antara masalah operasional UMKM dan pengalaman mahasiswa menggunakan AI untuk pengguna nyata.",
+  },
+  {
+    number: "03",
+    title: "Network Mapping & Partnership",
+    slideRange: "Slide 04",
+    purpose:
+      "Memetakan ekosistem program, UMKM, learning, infrastruktur, venue, akademik, sponsor, dan event support.",
+  },
+  {
+    number: "04",
+    title: "Mini Project Canvas",
+    slideRange: "Slide 05",
+    purpose:
+      "Merangkum desain lima tim campuran dan alur Listen → Define → Build → Test → Improve.",
+  },
+  {
+    number: "05",
+    title: "Validasi Permasalahan",
+    slideRange: "Slide 06",
+    purpose:
+      "Menampilkan lima UMKM, logo resminya, dan masalah yang sudah divalidasi sebelum implementasi.",
+  },
+  {
+    number: "06",
+    title: "Implementasi Project",
+    slideRange: "Slide 07–09",
+    purpose:
+      "Menyajikan perjalanan implementasi, lima sistem yang dibangun, initial UAT, handover, serta capaian target.",
+  },
+  {
+    number: "07",
+    title: "Impact Measurement",
+    slideRange: "Slide 10–13",
+    purpose:
+      "Menjelaskan metode, perubahan knowledge dan capability seluruh cohort, desain tim inklusif, dan suara peserta.",
+  },
+  {
+    number: "08",
+    title: "Leadership Reflection",
+    slideRange: "Slide 14",
+    purpose:
+      "Merangkum pembelajaran meminta bantuan, mendelegasikan, mendengar, dan membangun struktur yang berlanjut.",
+  },
+  {
+    number: "09",
+    title: "Sustainability Plan",
+    slideRange: "Slide 15",
+    purpose:
+      "Menjelaskan kesinambungan teknologi, manusia, pengukuran dampak, serta program dan replikasi.",
+  },
+  {
+    number: "10",
+    title: "Closing & Call to Action",
+    slideRange: "Slide 16",
+    purpose:
+      "Menutup perjalanan dengan ajakan Build With AI. Solve Real Problems.",
+  },
+];
 
 export interface FinalPresentationSlide {
   readonly number: string;
@@ -1483,7 +1836,7 @@ export const finalPresentationSlides: readonly FinalPresentationSlide[] = [
   },
   {
     number: "07",
-    title: "Implementation Journey",
+    title: "Implementasi Project",
     headline: "From Validation to Handover",
     description: "Alur pelaksanaan sampai serah terima sistem.",
     points: [
@@ -1520,7 +1873,7 @@ export const finalPresentationSlides: readonly FinalPresentationSlide[] = [
   },
   {
     number: "10",
-    title: "Impact Measurement Framework",
+    title: "Impact Measurement",
     headline: "Six Layers, Not One Score",
     description:
       "Knowledge, capability, experience, reflection, dan behavioral output dibaca terpisah.",
@@ -1540,14 +1893,15 @@ export const finalPresentationSlides: readonly FinalPresentationSlide[] = [
   },
   {
     number: "12",
-    title: "Inclusive Learning",
+    title: "Inclusive Team Design",
     headline: "Technical talent acted as an anchor, not a silo.",
-    description: "Perbandingan technical core dan non-core.",
+    description:
+      "Tujuh technical core disebar ke lima tim sebagai feasibility anchor; koreksi roster menempatkan Andi Alfian Rusani sebagai core Team 4 dan Achmad Alfian Saputra sebagai non-core.",
     points: [
-      "Core knowledge 92.86 → 100",
-      "Non-core knowledge 59.62 → 100",
-      "Core capability 3.82 → 4.95",
-      "Non-core capability 2.97 → 4.60",
+      "7 technical core",
+      "13 non-core",
+      "5 mixed teams",
+      "Seluruh peserta tetap terlibat dalam discovery, build, testing, dan pitching",
     ],
   },
   {
@@ -1577,15 +1931,15 @@ export const finalPresentationSlides: readonly FinalPresentationSlide[] = [
   },
   {
     number: "15",
-    title: "Sustainability",
+    title: "Sustainability Plan",
     headline: "Four Layers of Continuity",
     description:
-      "Handover, stabilisasi satu minggu, penggunaan penuh, lalu monitoring bulanan. Tiga sistem dipegang student steward dan dua sistem ditangani DekatLokal.",
+      "Handover, stabilisasi, transisi penggunaan, lalu monitoring bulanan. Tiga sistem dipegang student steward dan dua sistem ditangani DekatLokal.",
     points: ["Technology", "Human", "Impact", "Program"],
   },
   {
     number: "16",
-    title: "Replication & Closing",
+    title: "Closing & Call to Action",
     headline: "From AI Users to Local Problem Solvers",
     description:
       "We started with five real problems and delivered five working systems. What continues beyond GEP is a support model and a replication guide that can bring the same process to new students, new UMKM, and new partners.",
@@ -1611,7 +1965,7 @@ export const weekFourClosing = {
   items: [
     {
       value: "5 Systems",
-      label: "diserahterimakan dan berlanjut ke penggunaan operasional.",
+      label: "diserahterimakan dan berlanjut ke transisi penggunaan serta monitoring.",
     },
     {
       value: "5 Supported Systems",
@@ -1620,7 +1974,7 @@ export const weekFourClosing = {
     },
     {
       value: "1 Replicable Model",
-      label: "didokumentasikan melalui Playbook v1.0 dan Replication Kit.",
+      label: "didokumentasikan melalui Refined Playbook dan Replication Kit.",
     },
   ],
   statement:
@@ -1651,12 +2005,12 @@ export const weekFourFinalNarrative = {
     {
       title: "Impact Is Measured",
       description:
-        "Knowledge, capability, pengalaman, refleksi, dan output perilaku memberi lapisan bukti yang berbeda.",
+        "Knowledge, capability, pengalaman, refleksi, dan output perilaku mahasiswa memberi lapisan bukti yang berbeda; outcome adopsi UMKM tetap mengikuti monitoring.",
     },
     {
       title: "The Model Is Replicable",
       description:
-        "Playbook v1.0 mengemas pilot pertama menjadi model profesional yang dapat diulang.",
+        "Refined Playbook mengemas pilot pertama menjadi model profesional yang dapat diulang.",
     },
   ],
   tagline: "From AI Users to Local Problem Solvers",
@@ -1670,19 +2024,19 @@ export const weekFourFinalNarrative = {
 export const weekFourReportCopy = {
   hub: {
     progressDescription:
-      "Week 4 telah diselesaikan. AI Co-Creation Lab Makassar menuntaskan seluruh perjalanan GEP dari validasi masalah sampai implementasi, pengukuran dampak, refleksi, dan perencanaan keberlanjutan. Lima sistem fungsional telah diserahterimakan kepada lima UMKM dan berlanjut melalui siklus refinement, penggunaan operasional, technical stewardship, serta monitoring bulanan yang didukung DekatLokal.",
+      "Week 4 telah diselesaikan. AI Co-Creation Lab Makassar menuntaskan seluruh perjalanan GEP dari validasi masalah sampai implementasi, pengukuran dampak mahasiswa, refleksi, dan perencanaan keberlanjutan. Lima sistem fungsional telah diserahterimakan kepada lima UMKM dan berlanjut melalui siklus refinement, transisi penggunaan, technical stewardship, serta monitoring bulanan yang didukung DekatLokal.",
     outputs: [
       "Project Monitoring Report dengan lima sistem yang diserahterimakan dan model stewardship.",
       "Impact Measurement berbasis assessment 20 peserta beserta tiga berkas bukti terunduh.",
       "Leadership Reflection Essay sembilan bagian dari project lead.",
-      "Sustainability plan empat lapis, Playbook v1.0, dan Replication Kit.",
+      "Sustainability plan empat lapis, Refined Playbook, dan Replication Kit.",
       "Final Presentation deck 16 slide.",
     ],
     reflection: null,
   },
   monitoring: {
     progressDescription:
-      "Project Monitoring Report telah diselesaikan. Laporan memuat capaian terhadap seluruh target utama, siklus implementasi dari validasi masalah sampai monitoring bulanan, lima sistem yang telah diserahterimakan beserta tangkapan layar aslinya, alasan siklus stabilisasi pasca-handover, model stewardship, dokumentasi kegiatan, dan pembelajaran implementasi.",
+      "Project Monitoring Report telah diselesaikan. Laporan memuat progres pelaksanaan, capaian target, kendala dan respons, lima sistem yang telah diserahterimakan beserta tangkapan layar aslinya, pembelajaran, dokumentasi kegiatan, model stewardship, serta rencana tindak lanjut dan monitoring bulanan. Laporan ini menjadi materi bagian Implementasi Project pada Final Presentation.",
     outputs: [
       "Executive summary pelaksanaan dan kelanjutannya setelah handover.",
       "Siklus implementasi delapan tahap beserta mekanisme keberlanjutannya.",
@@ -1690,18 +2044,21 @@ export const weekFourReportCopy = {
       "Tabel target dan capaian yang seluruhnya terpenuhi.",
       "Model stewardship dan monitoring bulanan.",
       "Enam pembelajaran implementasi.",
+      "Kendala, solusi, dan rencana tindak lanjut dengan owner serta indikator keberhasilan.",
+      "Project Monitoring Report dalam format PDF.",
     ],
     reflection: null,
   },
   impact: {
     progressDescription:
-      "Impact Measurement telah diselesaikan. Laporan memuat penerima manfaat, sebaran kampus peserta, kerangka pengukuran enam lapis, hasil knowledge pada skala 0-100, hasil self-reported capability pada skala 1-5, perbandingan technical core dan non-core, indikator pengalaman pasca-program, distribusi kesediaan technical steward, suara peserta, tiga berkas bukti yang dapat diunduh, model keberlanjutan, dan jalur replikasi.",
+      "Impact Report telah diselesaikan. Laporan memuat jumlah penerima manfaat, keterlibatan mitra dan relawan, output, outcome mahasiswa, perubahan knowledge dan self-reported capability pada skala yang terpisah, testimoni dan suara peserta, dokumentasi aktual, Sustainability Plan, dan jalur replikasi. Outcome penggunaan UMKM tetap ditandai sebagai area monitoring, bukan hasil yang diasumsikan. Laporan ini menjadi materi bagian Dampak dan Keberlanjutan pada Final Presentation.",
     outputs: [
       "Kerangka pengukuran enam lapis tanpa satu skor akhir.",
       "Hasil knowledge dan self-reported capability beserta interpretasinya.",
-      "Perbandingan technical core dan non-core.",
+      "Jumlah penerima manfaat, ekosistem, relawan, dokumentasi, dan perubahan yang terukur.",
+      "Testimoni peserta dan galeri dokumentasi aktual.",
       "Tiga berkas bukti impact yang dapat diunduh publik.",
-      "Sustainability plan empat lapis dan Playbook v1.0.",
+      "Sustainability plan empat lapis dan Refined Playbook.",
     ],
     reflection: null,
   },
@@ -1718,11 +2075,12 @@ export const weekFourReportCopy = {
   },
   finalPresentation: {
     progressDescription:
-      "Final Presentation telah diselesaikan. Deck 16 slide berformat 16:9 tersedia untuk dilihat langsung pada halaman ini maupun diunduh sebagai PDF, mencakup personal leadership, identifikasi isu, partnership, validasi, implementasi, lima sistem yang diserahterimakan, pengukuran dampak, suara peserta, refleksi, keberlanjutan, dan replikasi.",
+      "Final Presentation telah diselesaikan. Deck 16 slide berformat 16:9 tersedia untuk dilihat langsung pada halaman ini serta diunduh sebagai PDF dan PowerPoint. Sepuluh bagian wajib mencakup personal leadership, identifikasi isu, partnership, Mini Project Canvas, validasi, implementasi, impact measurement, refleksi, Sustainability Plan, serta Closing & Call to Action.",
     outputs: [
       "Deck Final Presentation 16 slide berformat 16:9.",
+      "Sepuluh bagian wajib dipetakan secara eksplisit ke slide isi.",
       "Slide viewer dengan navigasi dan mode layar penuh.",
-      "Berkas PDF yang dapat diunduh.",
+      "Berkas PDF dan PowerPoint yang dapat diunduh.",
     ],
     reflection: null,
   },

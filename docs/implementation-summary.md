@@ -15,11 +15,12 @@ Revisi terakhir memusatkan pengalaman pada informasi event dan pendaftaran:
 - dock mobile melayang dengan CTA tengah menuju registrasi mahasiswa;
 - bottom sheet mobile yang mendukung click outside, Escape, focus trap, dan
   focus restore;
-- loading state, route transition, AOS, dan Framer Motion yang menghormati
-  `prefers-reduced-motion`;
+- loading state berbasis skeleton, page fade ringan, dan Framer Motion yang
+  menghormati `prefers-reduced-motion`; full-screen route overlay dan runtime
+  AOS sudah dihapus untuk mempercepat navigasi;
 - sponsorship invitation `Your Brand` yang tidak mengarang sponsor aktif;
-- rail `Our Supporting Ecosystem` yang bergerak dari kanan ke kiri, dapat
-  dijeda, dan menempatkan Danantara, Rumah BUMN, serta BRI sebagai satu trio;
+- grid statis `Our Supporting Ecosystem` dengan logo dan nama yang menempatkan
+  Danantara, Rumah BUMN, serta BRI sebagai satu trio;
 - logo event serta sembilan logo ecosystem dalam WebP teroptimasi;
 - banner informasi program pada seluruh jalur pendaftaran;
 - field Instagram mahasiswa dan konfirmasi wajib follow `@dekatlokal` serta

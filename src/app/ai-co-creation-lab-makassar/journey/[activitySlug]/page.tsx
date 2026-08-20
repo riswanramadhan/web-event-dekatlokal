@@ -137,7 +137,7 @@ export default async function ActivityPage({ params }: ActivityPageProps) {
         </div>
       </section>
 
-      <div className="page-container max-w-5xl py-12 sm:py-16 lg:py-20">
+      <div className="page-container py-12 sm:py-16 lg:py-20">
         <div className="space-y-8">
           <section
             aria-labelledby="progress-heading"

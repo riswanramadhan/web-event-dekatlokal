@@ -15,22 +15,25 @@ export function EventEcosystem({
   const approvedMembers = supportingEcosystem.members.filter(
     (member) => member.approvedForDisplay,
   );
-  const mainMembers = approvedMembers.filter(
-    (member) => member.cluster === "main",
-  );
-  const bumnMembers = approvedMembers.filter(
-    (member) => member.cluster === "bumn",
-  );
+  const ecosystemGroups = [
+    {
+      id: "main",
+      label: "Kolaborator program",
+      members: approvedMembers.filter((member) => member.cluster === "main"),
+    },
+    {
+      id: "bumn",
+      label: "Ekosistem BUMN",
+      members: approvedMembers.filter((member) => member.cluster === "bumn"),
+    },
+  ].filter((group) => group.members.length > 0);
 
   return (
     <>
-      <section
-        aria-labelledby="sponsorship-title"
-        className="px-4 py-14 sm:px-6 sm:py-20 lg:px-12"
-      >
-        <div className="mx-auto max-w-[74rem]">
+      <section aria-labelledby="sponsorship-title" className="py-14 sm:py-20">
+        <div className="page-container">
           <Reveal>
-            <div className="relative isolate overflow-hidden rounded-[1.75rem] border border-brand-200 bg-brand px-6 py-8 text-white shadow-[0_22px_55px_rgba(2,85,245,0.18)] sm:px-9 sm:py-10 lg:px-12">
+            <div className="relative isolate overflow-hidden rounded-[1.75rem] border border-brand-200 bg-brand px-5 py-8 text-white shadow-[0_22px_55px_rgba(2,85,245,0.18)] sm:px-9 sm:py-10 lg:px-12">
               <div
                 className="pointer-events-none absolute -right-16 -top-24 -z-10 h-64 w-64 rounded-full border border-white/15"
                 aria-hidden="true"
@@ -50,39 +53,27 @@ export function EventEcosystem({
                 </p>
               </div>
 
-              <div
-                className="sponsor-marquee mt-9"
-                tabIndex={0}
-                role="region"
-                aria-label="Logo sponsor dan partner bergerak dari kanan ke kiri. Arahkan pointer atau fokuskan area ini untuk menjeda."
-              >
-                <div className="sponsor-marquee-track">
-                  {[false, true].map((duplicate) => (
-                    <div
-                      key={duplicate ? "duplicate" : "primary"}
-                      className="sponsor-marquee-group"
-                      aria-hidden={duplicate || undefined}
-                    >
-                      {sponsorship.partners.map((partner) => (
-                        <div
-                          key={`${duplicate ? "duplicate-" : ""}${partner.id}`}
-                          className="sponsor-logo-card"
-                        >
-                          <Image
-                            src={partner.logo.src}
-                            alt={partner.logo.alt}
-                            width={partner.logo.width}
-                            height={partner.logo.height}
-                            sizes="(max-width: 639px) 9.5rem, 11rem"
-                            loading={duplicate ? "lazy" : "eager"}
-                            className="h-full w-full object-contain"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <ul className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+                {sponsorship.partners.map((partner) => (
+                  <li
+                    key={partner.id}
+                    className="flex min-h-32 flex-col items-center justify-center gap-3 rounded-2xl border border-white/55 bg-white px-3 py-4 text-center shadow-[0_10px_26px_rgba(0,24,74,0.16)]"
+                  >
+                    <Image
+                      src={partner.logo.src}
+                      alt={partner.logo.alt}
+                      width={partner.logo.width}
+                      height={partner.logo.height}
+                      sizes="(max-width: 639px) 38vw, (max-width: 1023px) 24vw, 13rem"
+                      loading="lazy"
+                      className="h-14 w-full object-contain sm:h-16"
+                    />
+                    <span className="text-xs font-semibold leading-5 text-slate-700 sm:text-sm">
+                      {partner.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </Reveal>
         </div>
@@ -108,61 +99,42 @@ export function EventEcosystem({
             </p>
           </Reveal>
 
-          <div
-            className="ecosystem-marquee mt-10"
-            tabIndex={0}
-            role="region"
-            aria-label="Logo supporting ecosystem bergerak dari kanan ke kiri. Arahkan pointer atau fokuskan area ini untuk menjeda."
-          >
-            <div className="ecosystem-marquee-track">
-              {[false, true].map((duplicate) => (
-                <div
-                  key={duplicate ? "duplicate" : "primary"}
-                  className="ecosystem-marquee-group"
-                  aria-hidden={duplicate || undefined}
-                >
-                  {mainMembers.map((member) => (
-                    <div
-                      key={`${duplicate ? "duplicate-" : ""}${member.id}`}
-                      className="ecosystem-logo-card"
+          <div className="mt-10 space-y-8">
+            {ecosystemGroups.map((group) => (
+              <div key={group.id}>
+                <h3 className="mb-3 text-sm font-semibold text-slate-700">
+                  {group.label}
+                </h3>
+                <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {group.members.map((member) => (
+                    <li
+                      key={member.id}
+                      className="flex min-h-24 items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_10px_28px_rgba(1,34,98,0.05)] transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-[0_14px_34px_rgba(1,34,98,0.09)]"
                     >
-                      <Image
-                        src={member.logo.src}
-                        alt={member.logo.alt}
-                        width={member.logo.width}
-                        height={member.logo.height}
-                        sizes="(max-width: 639px) 10rem, 12rem"
-                        loading={duplicate ? "lazy" : "eager"}
-                        className="h-full max-h-20 w-full object-contain sm:max-h-24"
-                      />
-                    </div>
-                  ))}
-
-                  <div
-                    className="ecosystem-bumn-cluster"
-                    aria-label={duplicate ? undefined : "Klaster ecosystem BUMN"}
-                  >
-                    {bumnMembers.map((member) => (
-                      <div
-                        key={`${duplicate ? "duplicate-" : ""}${member.id}`}
-                        className="ecosystem-logo-card ecosystem-logo-card-bumn"
-                      >
+                      <span className="flex h-16 w-20 shrink-0 items-center justify-center rounded-xl bg-slate-50 p-2.5 sm:w-24">
                         <Image
                           src={member.logo.src}
                           alt={member.logo.alt}
                           width={member.logo.width}
                           height={member.logo.height}
-                          sizes="(max-width: 639px) 8.5rem, 10rem"
-                          loading={duplicate ? "lazy" : "eager"}
-                          className="h-full max-h-16 w-full object-contain sm:max-h-20"
+                          sizes="(max-width: 639px) 5rem, 6rem"
+                          loading="lazy"
+                          className="h-full w-full object-contain"
                         />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+                      </span>
+                      <span className="min-w-0 text-sm font-semibold leading-6 text-slate-800">
+                        {member.name}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
+
+          <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-6 text-slate-500">
+            {supportingEcosystem.disclaimer}
+          </p>
         </div>
       </section>
     </>

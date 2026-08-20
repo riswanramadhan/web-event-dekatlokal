@@ -542,11 +542,11 @@ const journeyActivityDefinitions = [
     shortDescription:
       "Mengukur perubahan mahasiswa, mencatat outcome awal UMKM, dan menyiapkan jalur keberlanjutan serta replikasi.",
     progressDescription:
-      "Impact & Sustainability Report telah disusun dari assessment aktual 20 peserta: knowledge check pada skala 0-100 meningkat dari 71.25 menjadi 100, self-reported capability pada skala Likert 1-5 meningkat dari 3.27 menjadi 4.72, dan seluruh peserta mengisi refleksi tertulis. Hasil dilaporkan sebagai pilot-level evidence dengan keterbatasan yang ditulis terbuka. Outcome adopsi jangka panjang UMKM belum ditandai tercapai karena supported handover serta monitoring H+7 dan H+30 belum dilakukan.",
+      "Impact & Sustainability Report telah disusun dari assessment aktual 20 peserta: knowledge check pada skala 0-100 meningkat dari 71.25 menjadi 100, self-reported capability pada skala Likert 1-5 meningkat dari 3.27 menjadi 4.72, dan seluruh peserta mengisi refleksi tertulis. Hasil dilaporkan sebagai pilot-level evidence dengan keterbatasan yang ditulis terbuka. Outcome adopsi jangka panjang UMKM belum ditandai tercapai karena penggunaan berulang dan manfaat operasional masih mengikuti data monitoring.",
     output: [
       "Kerangka pengukuran enam lapis tanpa satu skor akhir.",
       "Hasil knowledge dan self-reported capability beserta interpretasinya.",
-      "Perbandingan technical core dan non-core dengan disclaimer metodologis.",
+      "Hasil full cohort dan konsistensi perubahan peserta dengan disclaimer metodologis.",
       "Analisis tematik refleksi 20 peserta.",
       "Sustainability plan empat lapis dan kerangka Replication Kit v1.0.",
     ],
